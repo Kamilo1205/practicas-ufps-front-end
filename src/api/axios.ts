@@ -6,12 +6,16 @@ const axiosInstance = axios.create({
 });
 
 axiosInstance.interceptors.response.use(
-  response => response,
-  async error => {
-    if (error.response && error.response.status === 401 && !error.config.__isRetryRequest) {
+  (response) => response,
+  async (error) => {
+    if (
+      error.response &&
+      error.response.status === 401 &&
+      !error.config.__isRetryRequest
+    ) {
       // El token ha expirado o es inválido, intenta renovarlo
       let retries = 0;
-      const maxRetries = 3;
+      const maxRetries = 2;
       while (retries < maxRetries) {
         try {
           // Agrega encabezados para evitar el almacenamiento en caché de la respuesta
@@ -19,20 +23,18 @@ axiosInstance.interceptors.response.use(
             ...error.config,
             headers: {
               ...error.config.headers,
-              'Cache-Control': 'no-cache',
-              Pragma: 'no-cache',
-              Expires: '0',
+              "Cache-Control": "no-cache",
+              Pragma: "no-cache",
+              Expires: "0",
             },
           };
-          await axios.get('/auth/refresh', config);
+          await axios.get("/auth/refresh", config);
           error.config.__isRetryRequest = true;
           return axios(error.config);
         } catch (refreshError) {
           retries++;
-          console.error(`Error al renovar el token, intento ${retries} de ${maxRetries}:`, refreshError);
         }
       }
-      console.error('No se pudo renovar el token después de varios intentos');
       // Manejo adicional o redirigir al usuario al inicio de sesión
       return Promise.reject(error);
     }
@@ -40,6 +42,5 @@ axiosInstance.interceptors.response.use(
     return Promise.reject(error);
   }
 );
-
 
 export default axiosInstance;
