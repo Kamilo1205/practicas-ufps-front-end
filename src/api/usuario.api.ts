@@ -1,7 +1,7 @@
 import axios from './axios';
 
-export async function fetchGetUsuarios() {
-  const response = await axios.get('/usuarios');
+export async function fetchGetUsuarios(page: number = 1, limit: number = 10) {
+  const response = await axios.get(`/usuarios?page=${page}&limit=${limit}`);
   return response.data;
 }
 

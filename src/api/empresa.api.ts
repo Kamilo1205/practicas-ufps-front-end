@@ -1,6 +1,5 @@
 import { z } from 'zod';
 import axios from './axios';
-import { EmpresaSchema } from '../schemas';
 
 const formDataConfig = {
   headers: {
@@ -10,6 +9,11 @@ const formDataConfig = {
 
 export async function fetchGetEmpresa() {
   const response = await axios.get('/empresas/perfil');
+  return response.data;
+}
+
+export async function fetchGetEmpresas(page: number = 1, limit: number = 10) {
+  const response = await axios.get(`/empresas?page=${page}&limit=${limit}`);
   return response.data;
 }
 
