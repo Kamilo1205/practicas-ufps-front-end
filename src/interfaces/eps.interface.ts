@@ -1,5 +1,5 @@
 export interface Eps {
-  id: string;
+  id:     string;
   nombre: string;
-  nit: string;
+  nit:    string;
 }

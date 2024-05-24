@@ -26,54 +26,52 @@ export const ForgotPassword = () => {
   };
 
   return (
-    <div className="h-screen">
-      <div className="flex min-h-full flex-1 flex-col justify-center px-6 py-12 lg:px-8">
-        <div className="sm:mx-auto sm:w-full sm:max-w-sm">
-          <h2 className="mt-2 text-center text-2xl font-bold leading-9 tracking-tight text-gray-900">
-            Recuperar contraseña
-          </h2>
-          <p className="mt-4 text-center text-sm text-gray-500">
-            Ingresa el correo electrónico asociado a la cuenta, a continuación te enviaremos un 
-            link para restablecer la contraseña
-          </p>
-        </div>
-
-        <div className="mt-10 sm:mx-auto sm:w-full sm:max-w-sm">
-          <form className="space-y-6" onSubmit={handleSubmit(onSubmit)}>
-            <div>
-              <Label htmlFor="email">Correo electronico</Label>
-              <div className="mt-2">
-                <Input
-                  id="email"
-                  type="email"
-                  autoComplete="email"
-                  {...register("email")}
-                />
-                <ErrorMessage errors={errors} name="email"></ErrorMessage>
-              </div>
-            </div>
-
-            <div>
-              <Button 
-                type="submit" 
-                disabled={isSubmitting}
-              >
-                Recuperar contraseña
-              </Button>
-            </div>
-          </form>
-
-          <p className="mt-10 text-center text-sm text-gray-500">
-            Ya tienes un usuario?
-            <Link 
-              to="/auth/login" 
-              className="font-semibold ml-1 leading-6 text-indigo-600 hover:text-indigo-500"  
-            >
-              Iniciar sesion
-            </Link>
-          </p>
-        </div>
+    <>
+      <div className="sm:mx-auto sm:w-full sm:max-w-sm">
+        <h2 className="mt-10 text-center text-2xl font-bold leading-9 tracking-tight text-gray-900">
+          Recuperar contraseña
+        </h2>
+        <p className="mt-4 text-center text-sm text-gray-500">
+          Ingresa el correo electrónico asociado a la cuenta, a continuación te enviaremos un 
+          link para restablecer la contraseña
+        </p>
       </div>
-    </div>
+
+      <div className="mt-10 sm:mx-auto sm:w-full sm:max-w-sm">
+        <form className="space-y-6" onSubmit={handleSubmit(onSubmit)}>
+          <div>
+            <Label htmlFor="email">Correo electronico</Label>
+            <div className="mt-2">
+              <Input
+                id="email"
+                type="email"
+                autoComplete="email"
+                {...register("email")}
+              />
+              <ErrorMessage errors={errors} name="email"></ErrorMessage>
+            </div>
+          </div>
+
+          <div>
+            <Button 
+              type="submit" 
+              disabled={isSubmitting}
+            >
+              Recuperar contraseña
+            </Button>
+          </div>
+        </form>
+
+        <p className="mt-10 text-center text-sm text-gray-500">
+          Ya tienes un usuario?
+          <Link 
+            to="/auth/login" 
+            className="font-semibold ml-1 leading-6 text-indigo-600 hover:text-indigo-500"  
+          >
+            Iniciar sesion
+          </Link>
+        </p>
+      </div>
+    </>
   );
 }

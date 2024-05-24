@@ -8,7 +8,7 @@ export const EmpresaPage = () => {
   const [empresas, setEmpresas] = useState<Empresa[]>([]);
   const [totalItems, setTotalItems] = useState<number>(0); // Número total de ítems
   const [currentPage, setCurrentPage] = useState<number>(1);
-  const [itemsPerPage] = useState<number>(10); // Suponiendo que el backend maneja 10 ítems por página
+  const [itemsPerPage] = useState<number>(5); // Suponiendo que el backend maneja 10 ítems por página
   const navigate = useNavigate();
   const location = useLocation();
   

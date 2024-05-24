@@ -1,9 +1,9 @@
-import { FC, Fragment, useEffect, useState } from 'react';
+import { FC, useEffect, useState } from 'react';
 import { Controller } from 'react-hook-form';
 import { Listbox, ListboxButton, ListboxOption, ListboxOptions, Transition } from '@headlessui/react';
 import clsx from 'clsx';
 import { HiMiniChevronDown } from 'react-icons/hi2';
-import { ErrorMessage, Label } from '../ui';
+import { Label } from '../ui';
 import { TipoDocumento } from '../../interfaces';
 import { fetchGetTipoDocumentosData } from '../../api/tipoDocumento.api';
 
@@ -37,7 +37,7 @@ export const TipoDocumentoListbox: FC<TipoDocumentoListboxProps> = ({ control, n
               <ListboxButton
                 id={listboxId}
                 className={clsx(
-                  "relative block w-full rounded-md py-1.5 text-gray-900 pr-8 pl-3 shadow-sm ring-1 ring-inset ring-gray-300 text-left sm:text-sm sm:sm:leading-6 capitalize",
+                  "relative block w-full rounded-md py-1.5 text-gray-900 pr-8 pl-3 shadow-sm ring-1 ring-inset ring-gray-300 text-left text-sm leading-6 capitalize",
                   "focus:outline-none data-[focus]:ring-2  data-[focus]:ring-inset data-[focus]:ring-indigo-600"
                 )}
               >

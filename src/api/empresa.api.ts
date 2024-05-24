@@ -1,4 +1,3 @@
-import { z } from 'zod';
 import axios from './axios';
 
 const formDataConfig = {
@@ -28,7 +27,7 @@ export async function fetchPatchEmpresa(data: any) {
   return response.data;
 }
 
-const empresaFormData = (data: z.infer<typeof EmpresaSchema>) => {
+const empresaFormData = (data: any) => {
   const formData = new FormData(); 
   for (let campo in data) {
     if (data[campo] instanceof FileList) {

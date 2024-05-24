@@ -1,8 +1,11 @@
-import { FC, useState } from 'react';
+import { FC, useEffect, useState } from 'react';
 import { Combobox, ComboboxButton, ComboboxInput, ComboboxOption, ComboboxOptions, Transition } from '@headlessui/react';
 import { Controller } from 'react-hook-form';
 import { Label } from '../ui';
 import clsx from 'clsx';
+import { Eps } from '../../interfaces/eps.interface';
+import { fetchGetEps } from '../../api/eps.api';
+import { HiMiniChevronDown } from 'react-icons/hi2';
 
 interface EpsComboboxProps {
   control: any;
@@ -10,9 +13,20 @@ interface EpsComboboxProps {
 }
 
 export const EpsCombobox: FC<EpsComboboxProps> = ({ control, name }) => {
+  const [query, setQuery] = useState<string>('');
   const [eps, setEps] = useState<Eps[]>([]);
   const comboboxId = `${name}-combobox`;
+
+  useEffect(() => {
+    const fetchData = async () => {
+      const eps = await fetchGetEps();
+      setEps(eps);
+    };
+    fetchData();
+  }, []);
   
+  const filteredEps = query === '' ? eps : eps.filter((item) => item.nombre.toLowerCase().includes(query.toLowerCase()) || item.nit.includes(query))
+
   return (
     <>
       <Label htmlFor={comboboxId}>Empresa Prestadora de Salud</Label>
@@ -26,14 +40,16 @@ export const EpsCombobox: FC<EpsComboboxProps> = ({ control, name }) => {
               <div className="relative">
                 <ComboboxInput
                   className={clsx(
-                    "w-full rounded-lg border-none bg-white/5 py-1.5 pr-8 pl-3 text-sm/6 text-white",
+                    "w-full rounded-md py-1.5 text-gray-900 pr-8 pl-3 shadow-sm ring-1 ring-inset ring-gray-300 border-none text-sm leading-6",
                     "focus:outline-none data-[focus]:outline-2 data-[focus]:-outline-offset-2 data-[focus]:outline-white/25"
                   )}
-                  displayValue={(person) => person?.name}
+                  displayValue={(eps: Eps) => eps ? `${eps?.nombre} - ${eps?.nit}`: ''}
                   onChange={(event) => setQuery(event.target.value)}
+                  autoComplete="off"
                 />
                 <ComboboxButton className="group absolute inset-y-0 right-0 px-2.5">
-                  <ChevronDownIcon className="size-4 fill-white/60 group-data-[hover]:fill-white" />
+                  {/* <ChevronDownIcon className="size-4 fill-white/60 group-data-[hover]:fill-white" /> */}
+                  <HiMiniChevronDown className="size-2.4"/>
                 </ComboboxButton>
               </div>
               <Transition
@@ -44,18 +60,20 @@ export const EpsCombobox: FC<EpsComboboxProps> = ({ control, name }) => {
               >
                 <ComboboxOptions
                   anchor="bottom"
-                  className="w-[var(--input-width)] rounded-xl border border-white/5 bg-white/5 p-1 [--anchor-gap:var(--spacing-1)] empty:hidden"
+                  className="w-[var(--input-width)] rounded-md border border-gray-200 bg-white p-1 [--anchor-gap:4px] empty:hidden"
                 >
-                  {filteredPeople.map((person) => (
-                    <ComboboxOption
-                      key={person.id}
-                      value={person}
-                      className="group flex cursor-default items-center gap-2 rounded-lg py-1.5 px-3 select-none data-[focus]:bg-white/10"
-                    >
-                      <CheckIcon className="invisible size-4 fill-white group-data-[selected]:visible" />
-                      <div className="text-sm/6 text-white">{person.name}</div>
-                    </ComboboxOption>
-                  ))}
+                  {
+                    filteredEps.map((eps) => (
+                      <ComboboxOption
+                        key={eps.id}
+                        value={eps}
+                        className="group flex cursor-pointer items-center gap-2 rounded-md py-1.5 px-3 select-none data-[focus]:bg-gray-200 data-[selected]:bg-gray-300/90"
+                      >
+                        {/* <CheckIcon className="invisible size-4 fill-white group-data-[selected]:visible" /> */}
+                        <div className="text-sm/6 text-gray-900">{eps.nombre} - {eps.nit}</div>
+                      </ComboboxOption>
+                    ))
+                  }
                 </ComboboxOptions>
               </Transition>
             </Combobox>
