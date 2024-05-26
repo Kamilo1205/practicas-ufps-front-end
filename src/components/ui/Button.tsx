@@ -22,9 +22,9 @@ interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
 }
 
 export const Button: React.FC<ButtonProps> = ({ children, variant, className, ...props }) => {
-    return (
-      <button className={cn(buttonStyles({ variant, className }))} { ...props }>
-        { children }
-      </button>
-    );
+  return (
+    <button className={cn(buttonStyles({ variant, className }))} { ...props }>
+      { children }
+    </button>
+  );
 }

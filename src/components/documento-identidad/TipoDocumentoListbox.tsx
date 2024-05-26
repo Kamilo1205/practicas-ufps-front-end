@@ -38,7 +38,7 @@ export const TipoDocumentoListbox: FC<TipoDocumentoListboxProps> = ({ control, n
                 id={listboxId}
                 className={clsx(
                   "relative block w-full rounded-md py-1.5 text-gray-900 pr-8 pl-3 shadow-sm ring-1 ring-inset ring-gray-300 text-left text-sm leading-6 capitalize",
-                  "focus:outline-none data-[focus]:ring-2  data-[focus]:ring-inset data-[focus]:ring-indigo-600"
+                  "focus:outline-none data-[focus]:ring-2  data-[focus]:ring-inset data-[focus]:ring-indigo-600 truncate"
                 )}
               >
                 { field.value ? field.value.nombre : 'Seleccione un tipo de documento' }

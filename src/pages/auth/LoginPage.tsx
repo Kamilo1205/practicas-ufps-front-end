@@ -75,6 +75,7 @@ export const LoginPage = () => {
               <Label htmlFor="password">Contraseña</Label>
               <Link
                 to="/auth/forgot-password"
+                tabIndex={-1}
                 className="font-semibold ml-1 text-sm leading-6 text-indigo-600 hover:text-indigo-500"
               >
                 Olvidaste tu contraseña?

@@ -31,9 +31,13 @@ export const RegistroPage = () => {
   return (
     <>
       <div className="sm:mx-auto sm:w-full sm:max-w-sm">
-        <h2 className="mt-10 text-center text-2xl font-bold leading-9 tracking-tight text-gray-900">
-          Registra un nuevo usuario
+        <h2 className="text-center text-2xl font-bold leading-9 tracking-tight text-gray-900">
+          Registra tu empresa
         </h2>
+        <p className="mt-4 text-center text-sm text-gray-500">
+          Regístrate como empresa colaboradora para establecer convenios con la Universidad y 
+          acceder a practicantes de Ingeniería de Sistemas.
+        </p>
       </div>
 
       <div className="mt-10 sm:mx-auto sm:w-full sm:max-w-sm">
@@ -61,6 +65,19 @@ export const RegistroPage = () => {
                 {...register("password")}
               />
               <ErrorMessage errors={errors} name="password"></ErrorMessage>
+            </div>
+          </div>
+
+          <div>
+            <Label htmlFor="confirmPassword">Verificar Contraseña</Label>
+            <div className="mt-2">
+              <Input
+                id="confirmPassword"
+                type="password"
+                autoComplete="confirmPassword"
+                {...register("confirmPassword")}
+              />
+              <ErrorMessage errors={errors} name="confirmPassword"></ErrorMessage>
             </div>
           </div>
 

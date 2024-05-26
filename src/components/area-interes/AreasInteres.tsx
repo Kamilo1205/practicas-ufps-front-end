@@ -1,93 +1,145 @@
-import { useEffect, useState } from 'react';
-import { AreaInteres } from '../../interfaces/area-interes';
-import { fetchGetAreasDeInteresData } from '../../api/areasInteres.api';
+import { FC, Fragment, useEffect, useState } from 'react';
+import { Controller, useWatch } from 'react-hook-form';
 import { Label } from '../ui';
+import { HerramientaCheckbox } from './HerramientaCheckbox';
+import { AreaInteres } from '../../interfaces/area-interes';
 
-export const AreasInteres = () => {
-  const [areasInteres, setAreasInteres] = useState<AreaInteres[]>([]);
-  
+interface AreasInteresProps {
+  control: any;
+  areasInteres: AreaInteres[];
+}
+
+export const AreasInteres: FC<AreasInteresProps> = ({ control, areasInteres }) => {
+  const [selectedLevels, setSelectedLevels] = useState<Record<number, number>>({});
+
+  const handleLevelChange = (areaIndex: number, level: number) => {
+    setSelectedLevels(prevLevels => ({
+      ...prevLevels,
+      [areaIndex]: level,
+    }));
+  };
+
+  // Watch the levels for each area to determine if subareas should be shown
+  const watchedLevels = useWatch({ control, name: "areasInteres" });
+
   useEffect(() => {
-    const fetchData = async () => {
-      const areaInteres = await fetchGetAreasDeInteresData();
-      setAreasInteres(areaInteres);
-      console.log(areaInteres);
-    };
-    fetchData();
-    
-  }, []);
+    if (watchedLevels) {
+      const newSelectedLevels: Record<number, number> = {};
+      watchedLevels.forEach((area: any, index: number) => {
+        newSelectedLevels[index] = area.level;
+      });
+      setSelectedLevels(newSelectedLevels);
+    }
+  }, [watchedLevels]);
 
   return (
     <>
-      <div className="text-sm text-gray-900 leading-6 grid grid-cols-1 gap-x-6 gap-y-1 sm:grid-cols-12">
-        <div className="col-span-7">
-          <Label>Areas de Interes (Seleccione su nivel de interes de 1 a 5)</Label>
-        </div>
-        {
-          [1, 2, 3, 4, 5].map((level) => (
-            <div className="col-span-1 items-center font-medium">
-              {level}                
-            </div>
-          ))
-        }
-        <div className="col-span-full text-sm text-gray-600 -mt-1.5 mb-3">
-          <p>Seleccione su nivel de interes donde 1 es muy poco interesado y 5 es muy interesado</p>
-        </div>
-        {
-          areasInteres.map((areaInteres) => (
-            <>
-              <div className="col-span-7">
-                {areaInteres.nombre}
-              </div>
-              {
-                [1, 2, 3, 4, 5].map((level) => (
-                  <div className="col-span-1 items-center">
-                    <input
-                      type="radio"
-                      name={`area_interes_${areaInteres.id}`}
-                      className="cursor-pointer"
-                      value={level}
-                    />
-                  </div>
-                ))
-              }
-            </>
-          ))
-        }
-        <div className="col-span-full mt-4">
-          {
-            areasInteres.map((areaInteres) => (
-              <div>
-                <div className="font-medium">{ areaInteres.nombre }</div>
-                <div>
-                  {
-                    areaInteres?.areaSubArea?.map((areaSubArea) => (
-                      <div className="ml-6">
-                        <div className="text-gray-950">
-                          { areaSubArea.subAreasInteres.nombre }
-                        </div>
-                        <div className="ml-4 my-3 flex gap-4">
-                          {
-                            areaSubArea.herramientas.map((herramienta) => (
-                              <label key={herramienta.id} className="bg-red-500">
-                                <input
-                                  type="radio"
-                                  className=""
-                                  name={`herramienta-${herramienta.id}`}
-                                />
-                                {herramienta.nombre}
-                              </label>
-                            ))
-                          }
-                        </div>
-                      </div>
-                    ))
-                  }
+      <div className="overflow-x-auto">
+        <div className="min-w-max mb-6 text-sm text-gray-900 leading-6 grid gap-x-6 gap-y-1 grid-cols-12">
+          <div className="col-span-full mt-1 text-sm text-gray-600 mb-3">
+            <p>
+              Seleccione su nivel de interes donde 1 es muy poco interesado y 5
+              es muy interesado
+            </p>
+          </div>
+          <div className="col-span-7">
+            <Label>
+              Areas de Interes (Seleccione su nivel de interes de 1 a 5)
+            </Label>
+          </div>
+          {[1, 2, 3, 4, 5].map((level) => (
+            <div className="col-span-1 items-center font-medium">{level}</div>
+          ))}
+
+          {areasInteres.map((areaInteres, index) => (
+            <Fragment key={areaInteres.id}>
+              <div className="col-span-7">{areaInteres.nombre}</div>
+              {[1, 2, 3, 4, 5].map((level) => (
+                <div className="col-span-1 items-center" key={level}>
+                  <Controller
+                    name={`areasInteres.${index}.level`}
+                    control={control}
+                    defaultValue={1}
+                    render={({ field }) => (
+                      <>
+                        <input
+                          type="radio"
+                          {...field}
+                          value={level}
+                          checked={field.value == level}
+                          onChange={() => {
+                            field.onChange(level);
+                            handleLevelChange(index, level);
+                          }}
+                          className="cursor-pointer"
+                        />
+                      </>
+                    )}
+                  />
                 </div>
-              </div>
-            ))
-          }
+              ))}
+            </Fragment>
+          ))}
         </div>
       </div>
+
+      <div className="mt-4 text-sm text-gray-900 leading-6">
+        <div className="col-span-full mt-1 text-sm text-gray-600 mb-3">
+          <p>
+            Seleccione las herramientas y/o conocimientos que maneja de las siguientes subcategorias (solo si aplica).
+          </p>
+        </div>
+        {areasInteres.map((areaInteres, index) => (
+          selectedLevels[index] >= 3 && areaInteres.areaSubArea?.length != 0 && (
+            <div key={areaInteres.id}>
+              <div className="font-medium">{areaInteres.nombre}</div>
+              <div>
+                {
+                  areaInteres?.areaSubArea?.map((areaSubArea, indexAreaSubArea) => (
+                    <div className="sm:ml-6" key={areaSubArea.id}>
+                      <div className="text-gray-950">
+                        {areaSubArea.subAreasInteres.nombre}
+                      </div>
+                      <div className="sm:ml-4 my-3 flex gap-4">
+                        {areaSubArea.herramientas.map((herramienta, indexHerramienta) => (
+                          <Controller 
+                            name={`areasInteres.${index}.areaSubArea.${indexAreaSubArea}.herramientas.${indexHerramienta}.selected`}
+                            control={control}
+                            defaultValue={true}
+                            render={({ field }) => (
+                              <>
+                                <HerramientaCheckbox
+                                  key={herramienta.id}
+                                  value={field.value}
+                                  onChange={field.onChange}
+                                  {...herramienta}
+                                />
+                              </>
+                            )}
+                          />
+                        ))}
+                      </div>
+                    </div>
+                  ))
+                }
+              </div>
+            </div>
+          )
+        ))}
+      </div>
     </>
-  )
-}
+  );
+};
+
+// {
+//   areaSubArea.herramientas.map((herramienta) => (
+//     <label key={herramienta.id} className="rounded-sm cursor-pointer bg-gray-100 px-3 py-1.5">
+//       <input
+//         type="checkbox"
+//         className="hidden"
+//         name={`herramienta-${herramienta.id}`}
+//       />
+//       {herramienta.nombre}
+//     </label>
+//   ))
+// }

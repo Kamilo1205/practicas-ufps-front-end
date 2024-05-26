@@ -1,12 +1,42 @@
+import { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
-import { Button, ErrorMessage, FileUpload, Input, Label } from '../../components/ui';
+import { zodResolver } from '@hookform/resolvers/zod';
+
 import { GeneroListbox } from '../../components/genero';
+import { Button, ErrorMessage, Input, Label } from '../../components/ui';
+import { AreaInteres } from '../../interfaces/area-interes';
 import { TipoDocumentoListbox } from '../../components/documento-identidad';
 import { EpsCombobox, TipoAfiliacionListbox } from '../../components/eps';
 import { AreasInteres } from '../../components/area-interes/AreasInteres';
+import { estudianteSchema } from '../../schemas/estudianteSchema';
+import { fetchGetAreasDeInteresData } from '../../api/areasInteres.api';
 
 export const RegistroPage = () => {
-  const { register, handleSubmit, control, setValue, trigger, formState: { errors } } = useForm();
+  const [areasInteres, setAreasInteres] = useState<AreaInteres[]>([]);
+  const { register, handleSubmit, control, formState: { errors } } = useForm({
+    resolver: zodResolver(estudianteSchema),
+    values: {
+      areasInteres: areasInteres.map(area => ({ 
+        ...area, 
+        level: 1,
+        areaSubArea: area?.areaSubArea?.map(subArea => ({
+          ...subArea,
+          herramientas: subArea.herramientas.map(herramienta => ({
+            ...herramienta,
+            selected: false,
+          })),
+        }))
+      })),
+    },
+  });
+  
+  useEffect(() => {
+    const fetchData = async () => {
+      const areaInteres = await fetchGetAreasDeInteresData();
+      setAreasInteres(areaInteres);
+    };
+    fetchData();
+  }, []);
 
   const onSubmit = async (data: any) => {
     try {
@@ -17,6 +47,8 @@ export const RegistroPage = () => {
       alert("Ocurrio un error:" + error);
     }
   };
+
+  console.log(errors);
 
   return (
     <div className="py-20 px-12 sm:py-24 sm:px-24">
@@ -32,11 +64,13 @@ export const RegistroPage = () => {
             </p>
 
             <div className="mt-10 grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6">
+              {/* Primer Nombre */}
               <div className="sm:col-span-3">
                 <Label htmlFor="primerNombre">Primer Nombre</Label>
                 <div className="mt-2">
                   <Input
                     id="primerNombre"
+                    className="capitalize"
                     autoComplete="primerNombre"
                     {...register("primerNombre")}
                   />
@@ -44,11 +78,13 @@ export const RegistroPage = () => {
                 </div>
               </div>
 
+              {/* Segundo Nombre */}
               <div className="sm:col-span-3">
                 <Label htmlFor="segundoNombre">Segundo Nombre</Label>
                 <div className="mt-2">
                   <Input
                     id="segundoNombre"
+                    className="capitalize"
                     autoComplete="segundoNombre"
                     {...register("segundoNombre")}
                   />
@@ -56,11 +92,13 @@ export const RegistroPage = () => {
                 </div>
               </div>
 
+              {/* Primer Apellido */}
               <div className="sm:col-span-3">
                 <Label htmlFor="primerApellido">Primer Apellido</Label>
                 <div className="mt-2">
                   <Input
                     id="primerApellido"
+                    className="capitalize"
                     autoComplete="primerApellido"
                     {...register("primerApellido")}
                   />
@@ -68,11 +106,13 @@ export const RegistroPage = () => {
                 </div>
               </div>
 
+              {/* Segundo Nombre */}
               <div className="sm:col-span-3">
                 <Label htmlFor="segundoApellido">Segundo Apellido</Label>
                 <div className="mt-2">
                   <Input
                     id="segundoApellido"
+                    className="capitalize"
                     autoComplete="segundoApellido"
                     {...register("segundoApellido")}
                   />
@@ -80,20 +120,8 @@ export const RegistroPage = () => {
                 </div>
               </div>
 
-              <div className="sm:col-span-2">
-                <Label htmlFor="codigo">Codigo</Label>
-                <div className="mt-2">
-                  <Input
-                    id="codigo"
-                    type="number"
-                    autoComplete="codigo"
-                    {...register("codigo")}
-                  />
-                  <ErrorMessage errors={errors} name="codigo"></ErrorMessage>
-                </div>
-              </div>
-
-              <div className="sm:col-span-3">
+              {/* Fecha de Nacimiento */}
+              <div className="sm:col-span-3 lg:col-span-2">
                 <Label htmlFor="fechaNacimiento">Fecha de Nacimiento</Label>
                 <div className="mt-2">
                   <Input
@@ -109,11 +137,30 @@ export const RegistroPage = () => {
                 </div>
               </div>
 
-              <div className="sm:col-span-3">
+              {/* Genero */}
+              <div className="sm:col-span-3 lg:col-span-2">
                 <GeneroListbox control={control} name="genero" />
+                <ErrorMessage
+                  errors={errors}
+                  name="genero"
+                ></ErrorMessage>
               </div>
 
-              <div className="sm:col-span-2">
+              {/* Numero Movil */}
+              <div className="sm:col-span-3 lg:col-span-2">
+                <Label htmlFor="telefono">Numero móvil</Label>
+                <div className="mt-2">
+                  <Input
+                    id="telefono"
+                    autoComplete="telefono"
+                    {...register("telefono")}
+                  />
+                  <ErrorMessage errors={errors} name="telefono"></ErrorMessage>
+                </div>
+              </div>
+
+              {/* Departamento de Residencia */}
+              <div className="sm:col-span-3 lg:col-span-2">
                 <Label htmlFor="departamentoResidencia">Departamento de Residencia</Label>
                 <div className="mt-2">
                   <Input
@@ -128,7 +175,8 @@ export const RegistroPage = () => {
                 </div>
               </div>
 
-              <div className="sm:col-span-2">
+              {/* Municipio de Residencia */}
+              <div className="sm:col-span-3 lg:col-span-2">
                 <Label htmlFor="municipioResidencia">Municipio de Residencia</Label>
                 <div className="mt-2">
                   <Input
@@ -143,7 +191,8 @@ export const RegistroPage = () => {
                 </div>
               </div>
 
-              <div className="sm:col-span-2">
+              {/* Direccion */}
+              <div className="sm:col-span-3 lg:col-span-2">
                 <Label htmlFor="direccion">Dirección</Label>
                 <div className="mt-2">
                   <Input
@@ -155,19 +204,8 @@ export const RegistroPage = () => {
                 </div>
               </div>
 
-              <div className="sm:col-span-2">
-                <Label htmlFor="telefono">Numero móvil</Label>
-                <div className="mt-2">
-                  <Input
-                    id="telefono"
-                    autoComplete="telefono"
-                    {...register("telefono")}
-                  />
-                  <ErrorMessage errors={errors} name="telefono"></ErrorMessage>
-                </div>
-              </div>
-
-              <div className="sm:col-span-2">
+              {/* Telefono Hogar */}
+              <div className="sm:col-span-3 lg:col-span-2">
                 <Label htmlFor="telefonoHogar">Telefono Hogar (Opcional)</Label>
                 <div className="mt-2">
                   <Input
@@ -183,7 +221,16 @@ export const RegistroPage = () => {
               </div>
             </div>
 
-            <div className="mt-12 grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6">
+            <div className="mt-10 grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6">
+              <div className="col-span-full">
+                <p className="text-sm leading-6 text-gray-600">
+                 Para hacer más eficiente el proceso de registro, le solicitamos que 
+                 revise minuciosamente la información que planea proporcionar, asegurándose 
+                 de que sea precisa y válida, con el objetivo de evitar errores
+                </p>
+              </div>
+
+              {/* Numero Documento */}
               <div className="sm:col-span-3">
                 <Label htmlFor="numeroDocumento">Numero Documento</Label>
                 <div className="mt-2">
@@ -200,23 +247,30 @@ export const RegistroPage = () => {
                 </div>
               </div>
 
+              {/* Tipo Documento */}
               <div className="sm:col-span-3">
                 <TipoDocumentoListbox control={control} name="tipoDocumento" />
+                <ErrorMessage
+                  errors={errors}
+                  name="tipoDocumento"
+                ></ErrorMessage>
               </div>
 
-              <div className="sm:col-span-2">
-                <Label htmlFor="lugarExpedicion">Lugar Expedición</Label>
+              {/* Lugar Expedicion */}
+              <div className="sm:col-span-3 lg:col-span-2">
+                <Label htmlFor="lugarExpedicionDocumento">Lugar Expedición</Label>
                 <div className="mt-2">
                   <Input
-                    id="lugarExpedicion"
-                    autoComplete="lugarExpedicion"
-                    {...register("lugarExpedicion")}
+                    id="lugarExpedicionDocumento"
+                    autoComplete="lugarExpedicionDocumento"
+                    {...register("lugarExpedicionDocumento")}
                   />
-                  <ErrorMessage errors={errors} name="lugarExpedicion"></ErrorMessage>
+                  <ErrorMessage errors={errors} name="lugarExpedicionDocumento"></ErrorMessage>
                 </div>
               </div>
 
-              <div className="sm:col-span-3">
+              {/* Fecha Expedicion */}
+              <div className="sm:col-span-3 lg:col-span-2">
                 <Label htmlFor="fechaExpedicionDocumento">Fecha de Expedicion</Label>
                 <div className="mt-2">
                   <Input
@@ -228,20 +282,11 @@ export const RegistroPage = () => {
                   <ErrorMessage errors={errors} name="fechaExpedicionDocumento"></ErrorMessage>
                 </div>
               </div>
-
-              <div className="col-span-full">
-                <Label htmlFor="documentoIdentidad">Documento de Identidad</Label>
-                <FileUpload
-                  id="documentoIdentidad"
-                  onFileChange={(file) => onFileChange("documentoIdentidad", file)}
-                />
-                <ErrorMessage errors={errors} name="documentoIdentidad"></ErrorMessage>
-              </div>
             </div>
 
             <div className="mt-12 grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6">
               <div className="col-span-full">
-                <p className="mt-1 text-sm leading-6 text-gray-600">
+                <p className="text-sm leading-6 text-gray-600">
                   Para obtener la información sobre la fecha de afiliación a su empresa prestadora de salud y obtener el certificado de afiliación, 
                   por favor consulte el siguiente enlace:
                     <a href="https://www.adres.gov.co/consulte-su-eps" className="ml-1 text-gray-900 font-medium" target="_blank" rel="noopener noreferrer">
@@ -251,11 +296,20 @@ export const RegistroPage = () => {
                 </p>
               </div>
 
+              {/* Empresa Prestadora de Salud */}
               <div className="sm:col-span-3">
                 <EpsCombobox control={control} name="eps" />
+                <ErrorMessage errors={errors} name="eps" />
               </div>
 
+              {/* Tipo Afiliacion */}
               <div className="sm:col-span-3">
+                <TipoAfiliacionListbox control={control} name="tipoAfiliacionEps"/>
+                <ErrorMessage errors={errors} name="tipoAfiliacionEps" />
+              </div>
+
+              {/* Fecha Afiliacion */}
+              <div className="sm:col-span-3 lg:col-span-2">
                 <Label htmlFor="fechaAfiliacionEps">Fecha de Afiliacion</Label>
                 <div className="mt-2">
                   <Input
@@ -271,10 +325,7 @@ export const RegistroPage = () => {
                 </div>
               </div>
 
-              <div className="sm:col-span-3">
-                <TipoAfiliacionListbox control={control} name="tipoAfiliacionEps"/>
-              </div>
-
+              {/* Nit de fondo de pension */}
               <div className="sm:col-span-3">
                 <Label htmlFor="nitFondoPension">NIT de fondo de pension (Opcional)</Label>
                 <div className="mt-2">
@@ -289,18 +340,17 @@ export const RegistroPage = () => {
                   ></ErrorMessage>
                 </div>
               </div>
-
-              <div className="col-span-full">
-                <Label htmlFor="certificadoAfiliacionEps">Certificado de Afiliación</Label>
-                <FileUpload
-                  id="certificadoAfiliacionEps"
-                  onFileChange={(file) => onFileChange("certificadoAfiliacionEps", file)}
-                />
-                <ErrorMessage errors={errors} name="certificadoAfiliacionEps"></ErrorMessage>
-              </div>
             </div>
 
-            <div className="mt-12 grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6">
+            <div className="mt-10 grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6">
+              <div className="col-span-full">
+                <p className="text-sm leading-6 text-gray-600">
+                  A continuación registra su información academica asi como sus areas de interes
+                  y los conocimientos/herramienstas que manejan adecuadamente.
+                </p>
+              </div>
+
+              {/* Semestre Matriculado */}
               <div className="sm:col-span-3">
                 <Label htmlFor="semestreMatriculado">Semestre Matriculado</Label>
                 <div className="mt-2">
@@ -314,7 +364,22 @@ export const RegistroPage = () => {
                 </div>
               </div>
 
-              <div className="sm:col-span-3">
+              {/* Codigo */}
+              <div className="sm:col-span-3 lg:col-span-2">
+                <Label htmlFor="codigo">Codigo</Label>
+                <div className="mt-2">
+                  <Input
+                    id="codigo"
+                    type="number"
+                    autoComplete="codigo"
+                    {...register("codigo")}
+                  />
+                  <ErrorMessage errors={errors} name="codigo"></ErrorMessage>
+                </div>
+              </div>
+
+              {/* Grupo de Practicas */}
+              <div className="sm:col-span-full">
                 <Label htmlFor="grupoMatriculado">Grupo de Practicas Matriculado</Label>
                 <div className="mt-3.5 sm:flex sm:gap-x-16 sm:items-center">
                   <div className="flex items-center">
@@ -334,11 +399,11 @@ export const RegistroPage = () => {
               </div>
             </div>
 
-            <div className="mt-12 grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6">
-              <div className="sm:col-span-full">
-                <AreasInteres />
-              </div>
+            <div className="mt-8">
+              <AreasInteres control={control} areasInteres={areasInteres} />
             </div>
+
+
           </div>
         </div>
 
