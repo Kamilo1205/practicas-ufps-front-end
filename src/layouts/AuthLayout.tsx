@@ -1,21 +1,11 @@
-import { Link, Outlet } from 'react-router-dom';
-import logoUfps from '/logo-vertical.svg';
+import { Outlet } from 'react-router-dom';
+import { Logo } from '../components/logo';
 
 export const AuthLayout = () => {
   return (
     <div className="h-screen">
       <div className="flex p-6">
-        <Link className="flex" to="/auth/login">
-          <img src={logoUfps} className="size-8 rounded-sm" />
-          <div className="flex justify-center flex-col ml-2">
-            <div className="text-lg text-gray-900 font-bold leading-4 tracking-tight">
-              Practicas
-            </div>
-            <span className="text-sm font-normal text-gray-400">
-              Ingieneria de Sistemas
-            </span>
-          </div>
-        </Link>
+        <Logo to="/auth/login" />
       </div>
       <div className="flex flex-1 flex-col justify-center px-6 py-12 lg:px-8">
         <Outlet />

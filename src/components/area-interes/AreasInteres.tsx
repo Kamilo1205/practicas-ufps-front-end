@@ -1,19 +1,25 @@
-import { FC, Fragment, useEffect, useState } from 'react';
-import { Controller, useWatch } from 'react-hook-form';
-import { Label } from '../ui';
-import { HerramientaCheckbox } from './HerramientaCheckbox';
-import { AreaInteres } from '../../interfaces/area-interes';
+import { FC, Fragment, useEffect, useState } from "react";
+import { Controller, useWatch } from "react-hook-form";
+import { Label } from "../ui";
+import { HerramientaCheckbox } from "./HerramientaCheckbox";
+import { AreaInteres } from "../../interfaces/area-interes";
+import { Transition } from "@headlessui/react";
 
 interface AreasInteresProps {
   control: any;
   areasInteres: AreaInteres[];
 }
 
-export const AreasInteres: FC<AreasInteresProps> = ({ control, areasInteres }) => {
-  const [selectedLevels, setSelectedLevels] = useState<Record<number, number>>({});
+export const AreasInteres: FC<AreasInteresProps> = ({
+  control,
+  areasInteres,
+}) => {
+  const [selectedLevels, setSelectedLevels] = useState<Record<number, number>>(
+    {}
+  );
 
   const handleLevelChange = (areaIndex: number, level: number) => {
-    setSelectedLevels(prevLevels => ({
+    setSelectedLevels((prevLevels) => ({
       ...prevLevels,
       [areaIndex]: level,
     }));
@@ -86,46 +92,61 @@ export const AreasInteres: FC<AreasInteresProps> = ({ control, areasInteres }) =
       <div className="mt-4 text-sm text-gray-900 leading-6">
         <div className="col-span-full mt-1 text-sm text-gray-600 mb-3">
           <p>
-            Seleccione las herramientas y/o conocimientos que maneja de las siguientes subcategorias (solo si aplica).
+            Seleccione las herramientas y/o conocimientos que maneja de las
+            siguientes subcategorias (solo si aplica).
           </p>
         </div>
-        {areasInteres.map((areaInteres, index) => (
-          selectedLevels[index] >= 3 && areaInteres.areaSubArea?.length != 0 && (
-            <div key={areaInteres.id}>
-              <div className="font-medium">{areaInteres.nombre}</div>
-              <div>
-                {
-                  areaInteres?.areaSubArea?.map((areaSubArea, indexAreaSubArea) => (
-                    <div className="sm:ml-6" key={areaSubArea.id}>
-                      <div className="text-gray-950">
-                        {areaSubArea.subAreasInteres.nombre}
-                      </div>
-                      <div className="sm:ml-4 my-3 flex gap-4">
-                        {areaSubArea.herramientas.map((herramienta, indexHerramienta) => (
-                          <Controller 
-                            name={`areasInteres.${index}.areaSubArea.${indexAreaSubArea}.herramientas.${indexHerramienta}.selected`}
-                            control={control}
-                            defaultValue={true}
-                            render={({ field }) => (
-                              <>
-                                <HerramientaCheckbox
-                                  key={herramienta.id}
-                                  value={field.value}
-                                  onChange={field.onChange}
-                                  {...herramienta}
+        {areasInteres.map(
+          (areaInteres, index) =>
+            (
+              <Transition
+                as={Fragment}
+                show={selectedLevels[index] >= 3 && areaInteres.areaSubArea?.length != 0}
+                enter="transform ease-in-out duration-[800ms]"
+                enterFrom="transform opacity-0"
+                enterTo="transform opacity-100"
+                leave="transition ease-in-out duration-[400ms]"
+                leaveFrom="transform opacity-100"
+                leaveTo="transform opacity-0"
+              >
+                <div key={areaInteres.id}>
+                  <div className="font-medium">{areaInteres.nombre}</div>
+                  <div>
+                    {areaInteres?.areaSubArea?.map(
+                      (areaSubArea, indexAreaSubArea) => (
+                        <div className="sm:ml-6" key={areaSubArea.id}>
+                          <div className="text-gray-950">
+                            {areaSubArea.subAreasInteres.nombre}
+                          </div>
+                          <div className="sm:ml-4 my-3 flex gap-4">
+                            {areaSubArea.herramientas.map(
+                              (herramienta, indexHerramienta) => (
+                                <Controller
+                                  name={`areasInteres.${index}.areaSubArea.${indexAreaSubArea}.herramientas.${indexHerramienta}.selected`}
+                                  control={control}
+                                  defaultValue={true}
+                                  render={({ field }) => (
+                                    <>
+                                      <HerramientaCheckbox
+                                        key={herramienta.id}
+                                        value={field.value}
+                                        onChange={field.onChange}
+                                        {...herramienta}
+                                      />
+                                    </>
+                                  )}
                                 />
-                              </>
+                              )
                             )}
-                          />
-                        ))}
-                      </div>
-                    </div>
-                  ))
-                }
-              </div>
-            </div>
-          )
-        ))}
+                          </div>
+                        </div>
+                      )
+                    )}
+                  </div>
+                </div>
+              </Transition>
+            )
+        )}
       </div>
     </>
   );

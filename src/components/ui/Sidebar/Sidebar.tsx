@@ -3,10 +3,12 @@ import { Link } from 'react-router-dom';
 import { Menu, MenuButton, MenuItem, MenuItems, Transition } from '@headlessui/react';
 import { CgProfile } from 'react-icons/cg';
 import { BiLogOut } from 'react-icons/bi';
+
 import { MenuList } from './MenuList';
 import { Avatar } from '../Avatar';
 import { useAuth } from '../../../contexts';
 import { fetchPostUsuarioLogout } from '../../../api/auth.api';
+import { Logo } from '../../logo';
 
 interface SidebarProps extends HTMLAttributes<HTMLDivElement> {}
 
@@ -27,7 +29,9 @@ export const Sidebar: React.FC<SidebarProps> = () => {
   return (
     <div className="hidden lg:flex lg:flex-col lg:w-72 lg:z-10 lg:fixed lg:inset-y-0">
       <div className="flex flex-col flex-grow gap-y-5 px-6 border-r border-gray-200 overflow-y-auto">
-        <div className="flex flex-col py-4 items-start text-base font-semibold flex-shrink-0"></div>
+        <div className="flex flex-col py-4 items-start text-base font-semibold flex-shrink-0">
+          <Logo to="/"/>
+        </div>
 
         <nav className="flex flex-column flex-1">
           <ul className="flex flex-col flex-1 gap-y-7">
