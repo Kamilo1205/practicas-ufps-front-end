@@ -4,7 +4,7 @@ import { Label } from "../ui";
 import { HerramientaCheckbox } from "./HerramientaCheckbox";
 import { AreaInteres } from "../../interfaces/area-interes";
 import { Transition, Disclosure, DisclosureButton, DisclosurePanel } from "@headlessui/react";
-import { IoChevronDown, IoChevronDownCircleOutline } from "react-icons/io5";
+import { IoChevronDown, } from "react-icons/io5";
 
 interface AreasInteresProps {
   control: any;
@@ -108,7 +108,8 @@ export const AreasInteres: FC<AreasInteresProps> = ({
                 enterTo="transform opacity-100"
                 leave="transition ease-in-out duration-[400ms]"
                 leaveFrom="transform opacity-100"
-                leaveTo="transform opacity-0"
+              leaveTo="transform opacity-0"
+              key={`Tansition-${areaInteres.id}`}
               >
                 <div key={areaInteres.id}>
                   <div className="font-medium">{areaInteres.nombre}</div>
