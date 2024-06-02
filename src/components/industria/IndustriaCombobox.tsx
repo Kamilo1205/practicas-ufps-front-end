@@ -5,46 +5,38 @@ import clsx from 'clsx';
 import { HiMiniChevronDown } from 'react-icons/hi2';
 
 import { Label } from '../ui';
-import { Eps } from '../../interfaces/eps.interface';
-import { fetchGetEps } from '../../api/eps.api';
+import { Industria } from '../../interfaces';
+import useIndustrias from '../../hooks/useIndustrias';
 
-interface EpsComboboxProps {
+
+interface IndustriaComboboxProps {
   control: any;
   name: string;
 }
 
-export const EpsCombobox: FC<EpsComboboxProps> = ({ control, name }) => {
+export const IndustriaCombobox: FC<IndustriaComboboxProps> = ({ control, name }) => {
   const [query, setQuery] = useState<string>('');
-  const [eps, setEps] = useState<Eps[]>([]);
-  const comboboxId = `${name}-combobox`;
-
-  useEffect(() => {
-    const fetchData = async () => {
-      const eps = await fetchGetEps();
-      setEps(eps);
-    };
-    fetchData();
-  }, []);
+  const { industrias } = useIndustrias();
   
-  const filteredEps = query === '' ? eps : eps.filter((item) => item.nombre.toLowerCase().includes(query.toLowerCase()) || item.nit.includes(query))
+  const filteredIndustrias = query === '' ? industrias : industrias.filter((item) => item.nombre.toLowerCase().includes(query.toLowerCase()))
 
   return (
     <>
-      <Label htmlFor={comboboxId}>Empresa Prestadora de Salud</Label>
+      <Label>Industria</Label>
       <div className="mt-2">
         <Controller
           control={control}
           name={name}
           defaultValue={null}
           render={({ field }) => (
-            <Combobox value={field.value} onChange={field.onChange}>
+            <Combobox immediate value={field.value} onChange={field.onChange}>
               <div className="relative">
                 <ComboboxInput
                   className={clsx(
                     "w-full rounded-md py-1.5 text-gray-900 pr-8 pl-3 shadow-sm ring-1 ring-inset ring-gray-300 border-none text-sm leading-6",
                     "focus:outline-none data-[focus]:outline-2 data-[focus]:-outline-offset-2 data-[focus]:outline-white/25"
                   )}
-                  displayValue={(eps: Eps) => eps ? `${eps?.nombre} - ${eps?.nit}`: ''}
+                  displayValue={(industria: Industria) => industria ? `${industria?.nombre}`: ''}
                   onChange={(event) => setQuery(event.target.value)}
                   autoComplete="off"
                 />
@@ -58,20 +50,20 @@ export const EpsCombobox: FC<EpsComboboxProps> = ({ control, name }) => {
                 leaveFrom="opacity-100"
                 leaveTo="opacity-0"
                 afterLeave={() => setQuery("")}
-              >
+              > 
                 <ComboboxOptions
                   anchor="bottom"
-                  className="w-[var(--input-width)] rounded-md border border-gray-200 bg-white p-1 [--anchor-gap:4px] empty:hidden"
+                  className="w-[var(--input-width)] absolute bg-white rounded-md border border-gray-200 p-1 [--anchor-gap:4px] empty:hidden"
                 >
                   {
-                    filteredEps.map((eps) => (
+                    filteredIndustrias.map((industria) => (
                       <ComboboxOption
-                        key={eps.id}
-                        value={eps}
+                        key={industria.id}
+                        value={industria}
                         className="group flex cursor-pointer items-center gap-2 rounded-md py-1.5 px-3 select-none data-[focus]:bg-gray-200 data-[selected]:bg-gray-300/90"
                       >
                         {/* <CheckIcon className="invisible size-4 fill-white group-data-[selected]:visible" /> */}
-                        <div className="text-sm/6 text-gray-900">{eps.nombre} - {eps.nit}</div>
+                        <div className="text-sm/6 text-gray-900">{industria.nombre}</div>
                       </ComboboxOption>
                     ))
                   }

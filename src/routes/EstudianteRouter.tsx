@@ -13,7 +13,7 @@ export const EstudianteRouter = () => {
             (
               <>
                 <Route path='/' element={<Layout />}>
-                  <Route path='/usuarios' element={<UsuariosPage />} />
+                  <Route path='usuarios' element={<UsuariosPage />} />
                   <Route path="*" element={<Navigate to="/estudiante" replace />} />
                 </Route>
               </>

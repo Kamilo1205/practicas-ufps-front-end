@@ -21,7 +21,6 @@ export const Pagination: FC<PaginationProps> = ({ currentPage = 1, itemsPerPage 
       }
     } else {
       const sidePages = Math.floor((maxVisiblePages - 3) / 2); // Pages around current page
-      console.log(sidePages);
       if (currentPage <= sidePages + 3) {
         for (let i = 1; i <= sidePages + 3; i++) {
           pages.push(i);

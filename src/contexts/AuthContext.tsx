@@ -1,7 +1,7 @@
 import { ReactNode, createContext, useContext, useEffect, useState } from 'react';
-import { fetchGetUsuarioPerfil } from '../api/auth.api';
+import { fetchGetUsuarioPerfil, fetchPostUsuarioLogin, fetchPostUsuarioLogout } from '../api/auth.api';
 import { Usuario } from '../interfaces';
-import { useNavigate } from 'react-router-dom';
+import { LoginSchema } from '../schemas';
 
 interface AuthContextType {
   isAuthenticated: boolean;
@@ -30,14 +30,25 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const [user, setUser] = useState<Usuario | null>(null);
   const [isLoading, setLoading] = useState<boolean>(true);
 
-  const login = async(usuario: Usuario) => {
-    setUser(usuario);
+  const login = async(credentials: LoginSchema) => {
+    try {
+      const response = await fetchPostUsuarioLogin(credentials)
+      setUser(response.usuario);
+    } catch (error) {
+      throw error; // Lanza el error para que el componente que llama pueda manejarlo
+    }
   };
 
   const logout = async() => {
-    setLoading(true);
-    setUser(null);
-    setLoading(false);
+    try {
+      setLoading(true);
+      await fetchPostUsuarioLogout();
+      setUser(null);
+    } catch (error) {
+      throw error; // Lanza el error para que el componente que llama pueda manejarlo
+    } finally {
+      setLoading(false);
+    }
   };
 
   const signup = async(usuario: Usuario) => {

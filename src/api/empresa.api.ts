@@ -1,3 +1,4 @@
+import { objectToFormData } from '../utils';
 import axios from './axios';
 
 const formDataConfig = {
@@ -17,27 +18,7 @@ export async function fetchGetEmpresas(page: number = 1, limit: number = 10) {
 }
 
 export async function fetchPostEmpresa(data: any) {
-  const formData = empresaFormData(data);
+  const formData = objectToFormData(data);
   const response = await axios.post('empresas/registro', formData, formDataConfig);
   return response.data;
-}
-
-export async function fetchPatchEmpresa(data: any) {
-  const response = await axios.patch(`empresas/registro/informacion-basica`, data, formDataConfig);
-  return response.data;
-}
-
-const empresaFormData = (data: any) => {
-  const formData = new FormData(); 
-  for (let campo in data) {
-    if (data[campo] instanceof FileList) {
-      const files = data[campo] as FileList;
-      for (let i = 0; i < files.length; i++) {
-        formData.append(campo, files[i]);
-      }
-    } else {
-      formData.append(campo, data[campo] as string);
-    }
-  }
-  return formData;
 }

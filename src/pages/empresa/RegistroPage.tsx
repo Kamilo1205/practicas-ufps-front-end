@@ -1,313 +1,475 @@
-import { useForm } from 'react-hook-form';
+import { Controller, useForm } from 'react-hook-form';
 import { toast } from 'sonner';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { TfiDownload } from 'react-icons/tfi';
 import { z } from 'zod';
 
 import { empresaSchema } from '../../schemas';
-import { ErrorMessage, FileUpload, Input, Label, TextArea } from '../../components/ui';
+import { ErrorMessage, Input, TextArea } from '../../components/ui';
 import { fetchPostEmpresa } from '../../api/empresa.api';
-import { TipoDocumentos } from '../../components/documento-identidad';
+import { TipoDocumentoListbox } from '../../components/documento-identidad';
 import { fetchGetDocumentoConvenio } from '../../api/documento.api';
-import { useAuth } from '../../contexts';
+import { IndustriaCombobox } from '../../components/industria/IndustriaCombobox';
+import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from '../../components/ui/Input/Form';
 
 export const RegistroPage = () => {
-  const { login } = useAuth();
-  const { register, handleSubmit, setValue, trigger, formState: { errors } } = useForm<z.infer<typeof empresaSchema>>({
+  const form: any  = useForm<z.infer<typeof empresaSchema>>({
     resolver: zodResolver(empresaSchema),
+
+    defaultValues: {
+      nombre: '',
+    }
   });
+  const {
+    register,
+    handleSubmit,
+    control,
+    formState: { errors },
+  } = form;
 
   const onSubmit = async (data: z.infer<typeof empresaSchema>) => {
     try {
       const response = await fetchPostEmpresa(data);
-      login(response.usuario);
+      // login(response.usuario);
     } catch (error) {
-      toast.error('Ocurrio un error');
+      console.log(error);
+      toast.error("Ocurrio un error");
     }
   };
 
-  const downloadDocumento = async() => {
+  console.log(errors);
+
+  const downloadDocumento = async () => {
     const response = await fetchGetDocumentoConvenio();
     const url = window.URL.createObjectURL(new Blob([response]));
-    const link = document.createElement('a');
+    const link = document.createElement("a");
     link.href = url;
-    link.setAttribute('download', `convenio.docx`);
+    link.setAttribute("download", `convenio.docx`);
 
     document.body.appendChild(link);
     link.click();
     link.parentNode?.removeChild(link);
-  }
-
-  const onFileChange = (campo: 'documentoIdentidad' | 'camara' | 'rut' | 'convenio', files: FileList) => {
-    setValue(campo, files);
-    trigger(campo);
   };
 
   return (
-    <div className="py-20 px-12 sm:py-24 sm:px-24">
-      <form onSubmit={handleSubmit(onSubmit)}>
+    <>
+      <Form {...form}>
+        <form onSubmit={handleSubmit(onSubmit)}>
+          <div className="space-y-12">
+            <div className="border-b border-gray-900/10 pb-12">
+              <h2 className="text-base font-semibold leading-7 text-gray-900">
+                Informacion de la empresa
+              </h2>
+              <p className="mt-1 text-sm leading-6 text-gray-600">
+                Esta información es indispensable para conocer la empresa.
+              </p>
 
-        <div className="space-y-12">
-          <div className="border-b border-gray-900/10 pb-12">
-            <h2 className="text-base font-semibold leading-7 text-gray-900">
-              Informacion de la empresa
-            </h2>
-            <p className="mt-1 text-sm leading-6 text-gray-600">
-              Esta información es indispensable para conocer la empresa.
-            </p>
-
-            <div className="mt-10 grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6">
-              <div className="sm:col-span-4">
-                <Label htmlFor="nombre">Nombre</Label>
-                <div className="mt-2">
-                  <Input
-                    id="nombre"
-                    autoComplete="nombre"
-                    {...register("nombre")}
+              <div className="mt-10 grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6">
+                {/* Nombre */}
+                <div className="col-span-full">
+                  <FormField 
+                    name="nombre" 
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Nombre</FormLabel>
+                        <FormControl>
+                          <Input {...field} />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )} 
                   />
-                  <ErrorMessage errors={errors} name="nombre"></ErrorMessage>
                 </div>
-              </div>
 
-              <div className="sm:col-span-2">
-                <Label htmlFor="nit">Nit</Label>
-                <div className="mt-2">
-                  <Input id="nit" autoComplete="nit" {...register("nit")} />
-                  <ErrorMessage errors={errors} name="nit"></ErrorMessage>
-                </div>
-              </div>
-
-              <div className="sm:col-span-full">
-                <Label htmlFor="industria">Industria</Label>
-                <div className="mt-2">
-                  <Input
-                    id="industria"
-                    autoComplete="industria"
-                    {...register("industria")}
+                {/* Industria */}
+                <div className="sm:col-span-4">
+                  <FormField 
+                    name="industria" 
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Industria</FormLabel>
+                        <FormControl>
+                          <Input {...field} />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )} 
                   />
+                  <IndustriaCombobox control={control} name="industria" />
                   <ErrorMessage errors={errors} name="industria"></ErrorMessage>
                 </div>
-              </div>
 
-              <div className="sm:col-span-2">
-                <Label htmlFor="pais">Pais</Label>
-                <div className="mt-2">
-                  <Input id="pais" autoComplete="pais" {...register("pais")} />
-                  <ErrorMessage errors={errors} name="pais"></ErrorMessage>
+                {/* Nit */}
+                <div className="sm:col-span-2">
+                  <FormField 
+                    name="nit" 
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Nit</FormLabel>
+                        <FormControl>
+                          <Input {...field} />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )} 
+                  />
+                </div>
+
+                {/* Pais */}
+                <div className="sm:col-span-2">
+                  <FormField 
+                    name="pais" 
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Pais</FormLabel>
+                        <FormControl>
+                          <Input {...field} />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )} 
+                  />
+                </div>
+
+                {/* Departamento */}
+                <div className="sm:col-span-2">
+                  <FormField 
+                    name="departamento" 
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Departamento</FormLabel>
+                        <FormControl>
+                          <Input {...field} />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )} 
+                  />
+                </div>
+
+                {/* Ciudad */}
+                <div className="sm:col-span-2">
+                 <FormField 
+                    name="ciudad" 
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Ciudad</FormLabel>
+                        <FormControl>
+                          <Input {...field} />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )} 
+                  />
+                </div>
+
+                {/* Dirección */}
+                <div className="sm:col-span-3">
+                  <FormField 
+                    name="direccion" 
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Dirección</FormLabel>
+                        <FormControl>
+                          <Input {...field} />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )} 
+                  />
+                </div>
+
+                {/* Telefono */}
+                <div className="sm:col-span-3">
+                  <FormField 
+                    name="telefono" 
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Telefono</FormLabel>
+                        <FormControl>
+                          <Input {...field} />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )} 
+                  />
+                </div>
+
+                {/* Descripción */}
+                <div className="col-span-full">
+                  <FormField 
+                    name="descripcion" 
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Descripción (Opcional)</FormLabel>
+                        <FormControl>
+                          <TextArea rows={3} {...field}/>
+                        </FormControl>
+                        <FormDescription>Escribe una breve descripción de la empresa.</FormDescription>
+                        <FormMessage />
+                      </FormItem>
+                    )} 
+                  />
                 </div>
               </div>
+            </div>
 
-              <div className="sm:col-span-2">
-                <Label htmlFor="departamento">Departamento</Label>
-                <div className="mt-2">
-                  <Input
-                    id="departamento"
-                    autoComplete="departamento"
-                    {...register("departamento")}
+            <div className="border-b border-gray-900/10 pb-12">
+              <h2 className="text-base font-semibold leading-7 text-gray-900">
+                Representante legal
+              </h2>
+              <p className="mt-1 text-sm leading-6 text-gray-600">
+                Utilice una dirección permanente donde pueda recibir correo.
+              </p>
+
+              <div className="mt-10 grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6">
+                {/* Nombre */}
+                <div className="col-span-full">
+                  <FormField 
+                    name="representante.nombre" 
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Nombre</FormLabel>
+                        <FormControl>
+                          <Input {...field} />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )} 
+                  />
+                </div>
+
+                {/* Correo electronico */}
+                <div className="sm:col-span-4">
+                  <FormField 
+                    name="representante.email" 
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Correo eléctronico</FormLabel>
+                        <FormControl>
+                          <Input {...field} />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )} 
+                  />
+                </div>
+
+                {/* Telefono */}
+                <div className="sm:col-span-2">
+                  <FormField 
+                    name="representante.telefono" 
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Telefono</FormLabel>
+                        <FormControl>
+                          <Input {...field} />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )} 
+                  />
+                </div>
+
+                {/* Número de documento de identidad */}
+                <div className="sm:col-span-3">
+                  <FormField 
+                    name="representante.numeroDocumento" 
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Número de documento de identidad</FormLabel>
+                        <FormControl>
+                          <Input {...field} />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )} 
+                  />
+                </div>
+
+                {/* Tipo de documento */}
+                <div className="sm:col-span-3">
+                  <TipoDocumentoListbox
+                    control={control}
+                    name="representanteTipoDocumento"
                   />
                   <ErrorMessage
                     errors={errors}
-                    name="departamento"
+                    name="representanteTipoDocumento"
                   ></ErrorMessage>
                 </div>
-              </div>
 
-              <div className="sm:col-span-2">
-                <Label htmlFor="ciudad">Ciudad</Label>
-                <div className="mt-2">
-                  <Input
-                    id="ciudad"
-                    autoComplete="ciudad"
-                    {...register("ciudad")}
-                  />
-                  <ErrorMessage errors={errors} name="ciudad"></ErrorMessage>
-                </div>
-              </div>
-
-              <div className="sm:col-span-3">
-                <Label htmlFor="direccion">Dirección</Label>
-                <div className="mt-2">
-                  <Input
-                    id="direccion"
-                    autoComplete="direccion"
-                    {...register("direccion")}
-                  />
-                  <ErrorMessage errors={errors} name="direccion"></ErrorMessage>
-                </div>
-              </div>
-
-              <div className="sm:col-span-3">
-                <Label htmlFor="telefono">Telefono</Label>
-                <div className="mt-2">
-                  <Input
-                    id="telefono"
-                    autoComplete="telefono"
-                    {...register("telefono")}
-                  />
-                  <ErrorMessage errors={errors} name="telefono"></ErrorMessage>
-                </div>
-              </div>
-
-              <div className="col-span-full">
-                <Label htmlFor="descripcion">Descripcion (Opcional)</Label>
-                <div className="mt-2">
-                  <TextArea
-                    id="descripcion"
-                    rows={3}
-                    {...register("descripcion")}
+                {/* Fecha de expedición */}
+                <div className="sm:col-span-3">
+                  <FormField 
+                    name="representante.fechaExpedicionDocumento" 
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Fecha Expedición Documento</FormLabel>
+                        <FormControl>
+                          <Input type="date" {...field} />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )} 
                   />
                 </div>
-                <p className="mt-3 text-sm leading-6 text-gray-600">
-                  Escribe una breve descripción de la empresa.
-                </p>
-                <ErrorMessage errors={errors} name="descripcion"></ErrorMessage>
-              </div>
 
-              <div className="col-span-full">
-                <Label htmlFor="rut">Rut</Label>
-                <FileUpload
-                  id="rut"
-                  onFileChange={(file) => onFileChange("rut", file)}
-                />
-                <ErrorMessage errors={errors} name="rut"></ErrorMessage>
+                {/* Lugar de expedición */}
+                <div className="sm:col-span-3">
+                  <FormField 
+                    name="representante.lugarExpedicionDocumento" 
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Lugar Expedición Documento</FormLabel>
+                        <FormControl>
+                          <Input {...field} />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )} 
+                  />
+                </div>
               </div>
+            </div>
 
-              <div className="col-span-full">
-                <Label htmlFor="camara">Camara de comercio</Label>
-                <FileUpload
-                  id="camara"
-                  onFileChange={(file) => onFileChange("camara", file)}
-                />
-                <ErrorMessage errors={errors} name="camara"></ErrorMessage>
+            <div className="pb-10">
+              <div className="font-medium">Documentos</div>
+              <div className="my-4">
+                <div
+                  onClick={downloadDocumento}
+                  className="flex items-center gap-3 bg-gray-100/80 text-gray-950 border text-sm border-gray-200 p-4 rounded-md cursor-pointer"
+                >
+                  <TfiDownload />
+                  Descargar documento de convenio
+                </div>
+              </div>
+              <div className="text-sm">
+                <div className="overflow-x-auto">
+                  <table className="min-w-full border-gray-300">
+                    <thead>
+                      <tr>
+                        <th className="min-w-72 text-gray-900 font-semibold text-sm text-left pl-0 pr-3 py-3.5">
+                          Nombre del Archivo a Subir
+                        </th>
+                        <th className="min-w-72 text-gray-900 font-semibold text-sm text-left pl-0 pr-3 py-3.5">
+                          Subir
+                        </th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr>
+                        <td className="py-2 text-sm">Cámara de Comercio</td>
+                        <td className="py-2 text-sm">
+                          <Controller
+                            control={control}
+                            name="camara"
+                            render={({ field }) => (
+                              <input
+                                type="file"
+                                accept="application/pdf"
+                                onChange={(e) => {
+                                  const file =
+                                    e.target.files && e.target.files[0];
+                                  if (file) field.onChange(file);
+                                }}
+                              />
+                            )}
+                          />
+                          <ErrorMessage
+                            errors={errors}
+                            name="camara"
+                          ></ErrorMessage>
+                        </td>
+                      </tr>
+                      <tr>
+                        <td className="py-2 text-sm">Rut</td>
+                        <td className="py-2 text-sm">
+                          <Controller
+                            control={control}
+                            name="rut"
+                            render={({ field }) => (
+                              <input
+                                type="file"
+                                accept="application/pdf"
+                                onChange={(e) => {
+                                  const file =
+                                    e.target.files && e.target.files[0];
+                                  if (file) field.onChange(file);
+                                }}
+                              />
+                            )}
+                          />
+                          <ErrorMessage errors={errors} name="rut"></ErrorMessage>
+                        </td>
+                      </tr>
+                      <tr>
+                        <td className="py-2 text-sm">
+                          Documento de identidad del representante legal
+                        </td>
+                        <td className="py-2 text-sm">
+                          <Controller
+                            control={control}
+                            name="documentoIdentidad"
+                            render={({ field }) => (
+                              <input
+                                type="file"
+                                accept="application/pdf"
+                                onChange={(e) => {
+                                  const file =
+                                    e.target.files && e.target.files[0];
+                                  if (file) field.onChange(file);
+                                }}
+                              />
+                            )}
+                          />
+                          <ErrorMessage
+                            errors={errors}
+                            name="documentoIdentidad"
+                          ></ErrorMessage>
+                        </td>
+                      </tr>
+                      <tr>
+                        <td className="py-2 text-sm">Solicitud de convenio</td>
+                        <td className="py-2 text-sm">
+                          <Controller
+                            control={control}
+                            name="convenio"
+                            render={({ field }) => (
+                              <input
+                                type="file"
+                                accept="application/pdf"
+                                onChange={(e) => {
+                                  const file =
+                                    e.target.files && e.target.files[0];
+                                  if (file) field.onChange(file);
+                                }}
+                              />
+                            )}
+                          />
+                          <ErrorMessage
+                            errors={errors}
+                            name="convenio"
+                          ></ErrorMessage>
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
               </div>
             </div>
           </div>
-          <div className="border-b border-gray-900/10 pb-12">
-            <h2 className="text-base font-semibold leading-7 text-gray-900">
-              Representante legal
-            </h2>
-            <p className="mt-1 text-sm leading-6 text-gray-600">
-              Utilice una dirección permanente donde pueda recibir correo.
-            </p>
 
-            <div className="mt-10 grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6">
-              <div className="col-span-full">
-                <Label htmlFor="representanteNombre">Nombre</Label>
-                <div className="mt-2">
-                  <Input
-                    id="representanteNombre"
-                    autoComplete="representanteNombre"
-                    {...register("representanteNombre")}
-                  />
-                  <ErrorMessage errors={errors} name="representanteNombre"></ErrorMessage>
-                </div>
-              </div>
-
-              <div className="sm:col-span-4">
-                <Label htmlFor="representanteEmail">Correo electronico</Label>
-                <div className="mt-2">
-                  <Input
-                    id="representanteEmail"
-                    autoComplete="representanteEmail"
-                    {...register("representanteEmail")}
-                  />
-                  <ErrorMessage errors={errors} name="representanteEmail"></ErrorMessage>
-                </div>
-              </div>
-
-              <div className="sm:col-span-2">
-                <Label htmlFor="representanteTelefono">Telefono</Label>
-                <div className="mt-2">
-                  <Input
-                    id="representanteTelefono"
-                    autoComplete="representanteTelefono"
-                    {...register("representanteTelefono")}
-                  />
-                  <ErrorMessage errors={errors} name="representanteTelefono"></ErrorMessage>
-                </div>
-              </div>
-
-              <div className="sm:col-span-3">
-                <Label htmlFor="representanteNumeroIdentidad">Numero documento de identidad</Label>
-                <div className="mt-2">
-                  <Input
-                    id="representanteNumeroIdentidad"
-                    autoComplete="representanteNumeroIdentidad"
-                    {...register("representanteNumeroIdentidad")}
-                  />
-                  <ErrorMessage errors={errors} name="representanteNumeroIdentidad"></ErrorMessage>
-                </div>
-              </div>
-
-              <div className="sm:col-span-3">
-                <TipoDocumentos id="representanteTipoDocumentoId" {...register("representanteTipoDocumentoId")} />
-                <ErrorMessage errors={errors} name="representanteTipoDocumentoId"></ErrorMessage>
-              </div>
-
-              <div className="sm:col-span-3">
-                <Label htmlFor="representanteFechaExpedicion">Fecha de expedición</Label>
-                <div className="mt-2">
-                  <Input
-                    id="representanteFechaExpedicion"
-                    type="date"
-                    autoComplete="representanteFechaExpedicion"
-                    {...register("representanteFechaExpedicion")}
-                  />
-                  <ErrorMessage errors={errors} name="representanteFechaExpedicion"></ErrorMessage>
-                </div>
-              </div>
-
-              <div className="sm:col-span-3">
-                <Label htmlFor="representanteLugarExpedicion">Lugar expedición</Label>
-                <div className="mt-2">
-                  <Input
-                    id="representanteLugarExpedicion"
-                    autoComplete="representanteLugarExpedicion"
-                    {...register("representanteLugarExpedicion")}
-                  />
-                  <ErrorMessage errors={errors} name="representanteLugarExpedicion"></ErrorMessage>
-                </div>
-              </div>
-
-              <div className="col-span-full">
-                <Label htmlFor="documentoIdentidad">Documento de Identidad</Label>
-                <FileUpload
-                  id="documentoIdentidad"
-                  onFileChange={(file) => onFileChange("documentoIdentidad", file)}
-                />
-                <ErrorMessage errors={errors} name="documentoIdentidad"></ErrorMessage>
-              </div>
-            </div>
+          <div className="mt-6 flex items-center justify-end gap-x-6">
+            <button
+              type="submit"
+              className="rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+            >
+              Guardar
+            </button>
           </div>
-          <div className="pb-10">
-            <div className="col-span-full mb-4">
-              <div
-                onClick={downloadDocumento}
-                className="flex items-center gap-3 bg-gray-100/80 text-gray-950 border text-sm border-gray-200 p-4 rounded-md cursor-pointer">
-                <TfiDownload /> 
-                Descargar documento de convenio
-              </div>
-            </div>
-            <div className="col-span-full">
-                <Label htmlFor="convenio">Convenio</Label>
-                <FileUpload
-                  id="convenio"
-                  onFileChange={(file) => onFileChange("convenio", file)}
-                />
-                <ErrorMessage errors={errors} name="convenio"></ErrorMessage>
-              </div>
-          </div>
-        </div>
-
-        <div className="mt-6 flex items-center justify-end gap-x-6">
-          <button
-            type="submit"
-            className="rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
-          >
-            Guardar
-          </button>
-        </div>
-      </form>
-    </div>
+        </form>
+      </Form>
+    </>
   );
 };
