@@ -54,7 +54,7 @@ export const CiudadCombobox: FC<CiudadComboboxProps> = ({ departamentoId, value 
       >
         <ComboboxOptions
           anchor="bottom"
-          className="w-[var(--input-width)] absolute bg-white rounded-md border border-gray-200 p-1 [--anchor-gap:4px] empty:hidden"
+          className="w-[var(--input-width)] [--anchor-max-height:14rem] absolute bg-white rounded-md border border-gray-200 p-1 [--anchor-gap:4px] empty:hidden"
         >
           {
             filteredCiudades.map((ciudad) => (

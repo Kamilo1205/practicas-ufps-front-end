@@ -24,6 +24,7 @@ export const IndustriaCombobox: FC<IndustriaComboboxProps> = ({ value = null, on
                 "w-full rounded-md py-1.5 text-gray-900 pr-8 pl-3 shadow-sm ring-1 ring-inset ring-gray-300 border-none text-sm leading-6",
                 "focus:outline-none data-[focus]:outline-2 data-[focus]:-outline-offset-2 data-[focus]:outline-white/25"
               )}
+              
               displayValue={(industriaId) => {
                 const selectInsutria = industrias.find((i) => i.id == industriaId);
                 return selectInsutria ? `${selectInsutria?.nombre}`: ''
@@ -45,7 +46,7 @@ export const IndustriaCombobox: FC<IndustriaComboboxProps> = ({ value = null, on
           > 
             <ComboboxOptions
               anchor="bottom"
-              className="w-[var(--input-width)] absolute bg-white rounded-md border border-gray-200 p-1 [--anchor-gap:4px] empty:hidden"
+              className="w-[var(--input-width)] [--anchor-max-height:14rem] absolute bg-white rounded-md border border-gray-200 p-1 [--anchor-gap:4px] empty:hidden"
             >
               {
                 filteredIndustrias.map((industria) => (

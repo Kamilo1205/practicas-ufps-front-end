@@ -1,24 +1,43 @@
-import { Controller, UseFormReturn, useForm } from 'react-hook-form';
-import { toast } from 'sonner';
-import { zodResolver } from '@hookform/resolvers/zod';
-import { TfiDownload } from 'react-icons/tfi';
+import { Controller, UseFormReturn, useForm } from "react-hook-form";
+import { toast } from "sonner";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { TfiDownload } from "react-icons/tfi";
 
-import { EmpresaSchema, empresaSchema } from '../../schemas';
-import { ErrorMessage, Input, TextArea } from '../../components/ui';
-import { fetchPostEmpresa } from '../../api/empresa.api';
-import { TipoDocumentoListbox } from '../../components/documento-identidad';
-import { fetchGetDocumentoConvenio } from '../../api/documento.api';
-import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from '../../components/ui/Input/Form';
-import { CiudadCombobox, DepartamentoCombobox, IndustriaCombobox, PaisCombobox } from '../../components/form';
-import { PhoneInput } from '../../components/ui/PhoneInput';
+import { EmpresaSchema, empresaSchema } from "../../schemas";
+import { ErrorMessage, Input, TextArea } from "../../components/ui";
+import { fetchPostEmpresa } from "../../api/empresa.api";
+import { fetchGetDocumentoConvenio } from "../../api/documento.api";
+import {
+  Form,
+  FormControl,
+  FormDescription,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "../../components/ui/Input/Form";
+import {
+  CiudadCombobox,
+  DepartamentoCombobox,
+  IndustriaCombobox,
+  PaisCombobox,
+  TipoDocumentoListbox,
+} from "../../components/form";
+import { PhoneInput } from "../../components/ui/PhoneInput";
 
 export const RegistroPage = () => {
   const form: UseFormReturn<EmpresaSchema> = useForm<EmpresaSchema>({
-    resolver: zodResolver(empresaSchema)
+    resolver: zodResolver(empresaSchema),
   });
-  const { handleSubmit, control, watch, setValue, formState: { errors } } = form;
-  const selectedPais = watch('paisId');
-  const selectedDepartamento = watch('departamentoId');
+  const {
+    handleSubmit,
+    control,
+    watch,
+    setValue,
+    formState: { errors },
+  } = form;
+  const selectedPais = watch("paisId");
+  const selectedDepartamento = watch("departamentoId");
 
   const onSubmit = async (data: EmpresaSchema) => {
     try {
@@ -62,8 +81,8 @@ export const RegistroPage = () => {
               <div className="mt-10 grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6">
                 {/* Nombre */}
                 <div className="col-span-full">
-                  <FormField 
-                    name="nombre" 
+                  <FormField
+                    name="nombre"
                     render={({ field }) => (
                       <FormItem>
                         <FormLabel>Nombre</FormLabel>
@@ -72,14 +91,14 @@ export const RegistroPage = () => {
                         </FormControl>
                         <FormMessage />
                       </FormItem>
-                    )} 
+                    )}
                   />
                 </div>
 
                 {/* Industria */}
                 <div className="sm:col-span-4">
-                  <FormField 
-                    name="industriaId" 
+                  <FormField
+                    name="industriaId"
                     render={({ field }) => (
                       <FormItem>
                         <FormLabel>Industria</FormLabel>
@@ -88,14 +107,14 @@ export const RegistroPage = () => {
                         </FormControl>
                         <FormMessage />
                       </FormItem>
-                    )} 
+                    )}
                   />
                 </div>
 
                 {/* Nit */}
                 <div className="sm:col-span-2">
-                  <FormField 
-                    name="nit" 
+                  <FormField
+                    name="nit"
                     render={({ field }) => (
                       <FormItem>
                         <FormLabel>Nit</FormLabel>
@@ -104,76 +123,79 @@ export const RegistroPage = () => {
                         </FormControl>
                         <FormMessage />
                       </FormItem>
-                    )} 
+                    )}
                   />
                 </div>
 
                 {/* Pais */}
                 <div className="sm:col-span-2">
-                  <FormField 
-                    name="paisId" 
+                  <FormField
+                    name="paisId"
                     render={({ field }) => (
                       <FormItem>
                         <FormLabel>Pais</FormLabel>
                         <FormControl>
-                          <PaisCombobox 
-                            {...field} 
+                          <PaisCombobox
+                            {...field}
                             onChange={(value) => {
                               field.onChange(value);
-                              form.setValue('departamentoId', '');
-                              form.setValue('ciudadId', '');
+                              form.setValue("departamentoId", "");
+                              form.setValue("ciudadId", "");
                             }}
                           />
                         </FormControl>
                         <FormMessage />
                       </FormItem>
-                    )} 
+                    )}
                   />
                 </div>
 
                 {/* Departamento */}
                 <div className="sm:col-span-2">
-                  <FormField 
-                    name="departamentoId" 
+                  <FormField
+                    name="departamentoId"
                     render={({ field }) => (
                       <FormItem>
                         <FormLabel>Departamento</FormLabel>
                         <FormControl>
-                          <DepartamentoCombobox 
-                            paisId={selectedPais} 
-                            {...field} 
+                          <DepartamentoCombobox
+                            paisId={selectedPais}
+                            {...field}
                             onChange={(value) => {
                               field.onChange(value);
-                              form.setValue('ciudadId', '');
+                              form.setValue("ciudadId", "");
                             }}
                           />
                         </FormControl>
                         <FormMessage />
                       </FormItem>
-                    )} 
+                    )}
                   />
                 </div>
 
                 {/* Ciudad */}
                 <div className="sm:col-span-2">
-                 <FormField 
-                    name="ciudadId" 
+                  <FormField
+                    name="ciudadId"
                     render={({ field }) => (
                       <FormItem>
                         <FormLabel>Ciudad</FormLabel>
                         <FormControl>
-                          <CiudadCombobox departamentoId={selectedDepartamento} {...field} />
+                          <CiudadCombobox
+                            departamentoId={selectedDepartamento}
+                            {...field}
+                          />
                         </FormControl>
                         <FormMessage />
                       </FormItem>
-                    )} 
+                    )}
                   />
                 </div>
 
                 {/* Dirección */}
                 <div className="sm:col-span-3">
-                  <FormField 
-                    name="direccion" 
+                  <FormField
+                    name="direccion"
                     render={({ field }) => (
                       <FormItem>
                         <FormLabel>Dirección</FormLabel>
@@ -182,14 +204,14 @@ export const RegistroPage = () => {
                         </FormControl>
                         <FormMessage />
                       </FormItem>
-                    )} 
+                    )}
                   />
                 </div>
 
                 {/* Telefono */}
                 <div className="sm:col-span-3">
-                  <FormField 
-                    name="telefono" 
+                  <FormField
+                    name="telefono"
                     render={({ field }) => (
                       <FormItem>
                         <FormLabel>Telefono</FormLabel>
@@ -198,24 +220,26 @@ export const RegistroPage = () => {
                         </FormControl>
                         <FormMessage />
                       </FormItem>
-                    )} 
+                    )}
                   />
                 </div>
 
                 {/* Descripción */}
                 <div className="col-span-full">
-                  <FormField 
-                    name="descripcion" 
+                  <FormField
+                    name="descripcion"
                     render={({ field }) => (
                       <FormItem>
                         <FormLabel>Descripción (Opcional)</FormLabel>
                         <FormControl>
-                          <TextArea rows={3} {...field}/>
+                          <TextArea rows={3} {...field} />
                         </FormControl>
-                        <FormDescription>Escribe una breve descripción de la empresa.</FormDescription>
+                        <FormDescription>
+                          Escribe una breve descripción de la empresa.
+                        </FormDescription>
                         <FormMessage />
                       </FormItem>
-                    )} 
+                    )}
                   />
                 </div>
               </div>
@@ -232,8 +256,8 @@ export const RegistroPage = () => {
               <div className="mt-10 grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6">
                 {/* Nombre */}
                 <div className="col-span-full">
-                  <FormField 
-                    name="representante.nombre" 
+                  <FormField
+                    name="representante.nombre"
                     render={({ field }) => (
                       <FormItem>
                         <FormLabel>Nombre</FormLabel>
@@ -242,14 +266,14 @@ export const RegistroPage = () => {
                         </FormControl>
                         <FormMessage />
                       </FormItem>
-                    )} 
+                    )}
                   />
                 </div>
 
                 {/* Correo electronico */}
                 <div className="sm:col-span-4">
-                  <FormField 
-                    name="representante.email" 
+                  <FormField
+                    name="representante.email"
                     render={({ field }) => (
                       <FormItem>
                         <FormLabel>Correo eléctronico</FormLabel>
@@ -258,30 +282,30 @@ export const RegistroPage = () => {
                         </FormControl>
                         <FormMessage />
                       </FormItem>
-                    )} 
+                    )}
                   />
                 </div>
 
                 {/* Telefono */}
                 <div className="sm:col-span-2">
-                  <FormField 
-                    name="representante.telefono" 
+                  <FormField
+                    name="representante.telefono"
                     render={({ field }) => (
                       <FormItem>
                         <FormLabel>Telefono</FormLabel>
                         <FormControl>
-                          <Input {...field} />
+                          <PhoneInput {...field} />
                         </FormControl>
                         <FormMessage />
                       </FormItem>
-                    )} 
+                    )}
                   />
                 </div>
 
                 {/* Número de documento de identidad */}
                 <div className="sm:col-span-3">
-                  <FormField 
-                    name="representante.numeroDocumento" 
+                  <FormField
+                    name="representante.numeroDocumento"
                     render={({ field }) => (
                       <FormItem>
                         <FormLabel>Número de documento de identidad</FormLabel>
@@ -290,26 +314,30 @@ export const RegistroPage = () => {
                         </FormControl>
                         <FormMessage />
                       </FormItem>
-                    )} 
+                    )}
                   />
                 </div>
 
                 {/* Tipo de documento */}
                 <div className="sm:col-span-3">
-                  <TipoDocumentoListbox
-                    control={control}
-                    name="representanteTipoDocumento"
+                  <FormField
+                    name="representante.tipoDocumentoId"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Tipo de documento de identidad</FormLabel>
+                        <FormControl>
+                          <TipoDocumentoListbox {...field} />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
                   />
-                  <ErrorMessage
-                    errors={errors}
-                    name="representanteTipoDocumento"
-                  ></ErrorMessage>
                 </div>
 
                 {/* Fecha de expedición */}
                 <div className="sm:col-span-3">
-                  <FormField 
-                    name="representante.fechaExpedicionDocumento" 
+                  <FormField
+                    name="representante.fechaExpedicionDocumento"
                     render={({ field }) => (
                       <FormItem>
                         <FormLabel>Fecha Expedición Documento</FormLabel>
@@ -318,14 +346,14 @@ export const RegistroPage = () => {
                         </FormControl>
                         <FormMessage />
                       </FormItem>
-                    )} 
+                    )}
                   />
                 </div>
 
                 {/* Lugar de expedición */}
                 <div className="sm:col-span-3">
-                  <FormField 
-                    name="representante.lugarExpedicionDocumento" 
+                  <FormField
+                    name="representante.lugarExpedicionDocumento"
                     render={({ field }) => (
                       <FormItem>
                         <FormLabel>Lugar Expedición Documento</FormLabel>
@@ -334,7 +362,7 @@ export const RegistroPage = () => {
                         </FormControl>
                         <FormMessage />
                       </FormItem>
-                    )} 
+                    )}
                   />
                 </div>
               </div>
@@ -407,7 +435,10 @@ export const RegistroPage = () => {
                               />
                             )}
                           />
-                          <ErrorMessage errors={errors} name="rut"></ErrorMessage>
+                          <ErrorMessage
+                            errors={errors}
+                            name="rut"
+                          ></ErrorMessage>
                         </td>
                       </tr>
                       <tr>

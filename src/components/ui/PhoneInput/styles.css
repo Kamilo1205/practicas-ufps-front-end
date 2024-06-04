@@ -8,10 +8,6 @@
   @apply !bg-inherit;
 }
 
-.react-tel-input .flag-dropdown {
-  @apply !w-full;
-}
-
 .react-tel-input .flag-dropdown .country-list {
   @apply !bg-white !rounded-md !border !border-gray-200 !p-1 !shadow-none !min-w-full;
 }

@@ -1,17 +1,9 @@
-import { FC, useEffect, useState } from "react";
-import { Controller } from "react-hook-form";
-import {
-  Listbox,
-  ListboxButton,
-  ListboxOption,
-  ListboxOptions,
-  Transition,
-} from "@headlessui/react";
-import clsx from "clsx";
-import { HiMiniChevronDown } from "react-icons/hi2";
-import { Label } from "../ui";
-import { TipoDocumento } from "../../interfaces";
-import { fetchGetTipoDocumentosData } from "../../api/tipoDocumento.api";
+import { FC, useEffect, useState } from 'react';
+import { Listbox, ListboxButton, ListboxOption, ListboxOptions, Transition } from '@headlessui/react';
+import clsx from 'clsx';
+import { HiMiniChevronDown } from 'react-icons/hi2';
+import { TipoDocumento } from '../../interfaces';
+import { fetchGetTipoDocumentosData } from '../../api/tipoDocumento.api';
 
 interface TipoDocumentoListboxProps {
   value: string;
@@ -20,6 +12,7 @@ interface TipoDocumentoListboxProps {
 
 export const TipoDocumentoListbox: FC<TipoDocumentoListboxProps> = ({ value, onChange }) => {
   const [tipoDocumentos, setTipoDocumentos] = useState<TipoDocumento[]>([]);
+  const [selectedDocumento, setSelectedDocumento] = useState<TipoDocumento | null>(null);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -29,6 +22,11 @@ export const TipoDocumentoListbox: FC<TipoDocumentoListboxProps> = ({ value, onC
     fetchData();
   }, []);
 
+  useEffect(() => {
+    const selected = tipoDocumentos.find(doc => doc.id === value);
+    setSelectedDocumento(selected || null);
+  }, [value, tipoDocumentos]);
+
   return (
     <Listbox value={value} onChange={onChange}>
       <ListboxButton
@@ -37,7 +35,7 @@ export const TipoDocumentoListbox: FC<TipoDocumentoListboxProps> = ({ value, onC
           "focus:outline-none data-[focus]:ring-2  data-[focus]:ring-inset data-[focus]:ring-indigo-600 truncate"
         )}
       >
-        { value ? value.nombre : "Seleccione un tipo de documento" }
+        {selectedDocumento ? selectedDocumento.nombre : "Seleccione un tipo de documento"}
         <HiMiniChevronDown
           className="group pointer-events-none absolute top-2.5 right-2.5"
           aria-hidden="true"
@@ -56,7 +54,7 @@ export const TipoDocumentoListbox: FC<TipoDocumentoListboxProps> = ({ value, onC
             tipoDocumentos.map((tipoDocumento) => (
               <ListboxOption
                 key={tipoDocumento.id}
-                value={tipoDocumento}
+                value={tipoDocumento.id}
                 className="group flex cursor-pointer items-center gap-2 rounded-lg py-1.5 px-3 select-none data-[focus]:bg-gray-200 data-[selected]:bg-gray-300/90"
               >
                 <div className="text-sm capitalize">{tipoDocumento.nombre}</div>
