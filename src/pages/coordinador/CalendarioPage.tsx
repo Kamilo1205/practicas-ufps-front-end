@@ -1,5 +1,7 @@
 import { useEffect, useState } from "react"
 import Swal from 'sweetalert2'
+import dayjs from 'dayjs'
+dayjs().format()
 
 interface TimelineItem {
   date: string;
@@ -108,7 +110,7 @@ export const CalendarioPage = () => {
   }
 
   const saveChanges = async () => {
-    console.log('Guardando cambios')
+    //console.log('Guardando cambios')
     try {
       const response = await guardarCambios(items)
       if (!response.ok) throw new Error(response.message)
@@ -166,6 +168,7 @@ export const CalendarioPage = () => {
               <table className="min-w-full border-gray-300">
                 <thead>
                   <tr>
+                    <th className="text-gray-900 font-semibold text-sm text-left pl-0 pr-3 py-3.5"></th>
                     <th className="text-gray-900 font-semibold text-sm text-left pl-0 pr-3 py-3.5">Evento</th>
                     <th className="text-gray-900 font-semibold text-sm text-left pl-0 pr-3 py-3.5">Fecha</th>
                   </tr>
@@ -174,6 +177,21 @@ export const CalendarioPage = () => {
                   {
                     items.map((item,index) => (
                       <tr key={item.title} className="">
+                        <td className="p-4 cursor-help">
+                          {
+                            dayjs(item.date, 'YYYY-MM-DD').isAfter(dayjs()) ? <svg xmlns="http://www.w3.org/2000/svg"
+                              className="h-5 w-5 text-orange-500" viewBox="0 0 20 20" fill="currentColor"
+                            >
+                              <title>Fecha aún por ocurrir</title>
+                              <path fillRule="evenodd" d="M10 2a8 8 0 0 0-8 8c0 4.42 3.58 8 8 8s8-3.58 8-8a8 8 0 0 0-8-8Zm0 14a6 6 0 1 1 0-12 6 6 0 0 1 0 12Zm0-10a1 1 0 0 1 1 1v5a1 1 0 0 1-2 0V7a1 1 0 0 1 1-1Z"></path>
+                            </svg>
+                              : 
+                              <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-green-500" viewBox="0 0 20 20" fill="currentColor">
+                                <title>Esta fecha ya pasó</title>
+                                <path fillRule="evenodd" d="M16.707 5.293a1 1 0 011.414 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L9 12.586l7.293-7.293a1 1 0 010 1.414z" clipRule="evenodd" />
+                              </svg>
+                          }
+                        </td> 
                         <td className="text-sm whitespace-normal text-gray-500">
                           <span className="max-w-5">{item.title}</span></td>
                         <td className="text-sm whitespace-nowrap capitalize text-gray-500">
