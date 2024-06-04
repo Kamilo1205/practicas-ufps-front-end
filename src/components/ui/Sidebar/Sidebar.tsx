@@ -5,7 +5,7 @@ import { HiArrowLeftStartOnRectangle } from 'react-icons/hi2';
 import { CgProfile } from 'react-icons/cg';
 
 import { MenuList } from './MenuList';
-import { Avatar } from '../Avatar';
+import { Avatar } from '../Avatar/Avatar';
 import { useAuth } from '../../../contexts';
 import { Logo } from '../../logo';
 

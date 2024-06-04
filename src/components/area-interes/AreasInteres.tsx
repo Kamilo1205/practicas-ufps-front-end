@@ -2,8 +2,9 @@ import { FC, Fragment, useEffect, useState } from "react";
 import { Controller, useWatch } from "react-hook-form";
 import { Label } from "../ui";
 import { HerramientaCheckbox } from "./HerramientaCheckbox";
-import { AreaInteres } from "../../interfaces/area-interes";
-import { Transition } from "@headlessui/react";
+import { AreaInteres } from "../../interfaces/area-interes.interface";
+import { Transition, Disclosure, DisclosureButton, DisclosurePanel } from "@headlessui/react";
+import { IoChevronDown, } from "react-icons/io5";
 
 interface AreasInteresProps {
   control: any;
@@ -54,7 +55,7 @@ export const AreasInteres: FC<AreasInteresProps> = ({
             </Label>
           </div>
           {[1, 2, 3, 4, 5].map((level) => (
-            <div className="col-span-1 items-center font-medium">{level}</div>
+            <div key={`level-${level}`} className="col-span-1 items-center font-medium">{level}</div>
           ))}
 
           {areasInteres.map((areaInteres, index) => (
@@ -107,38 +108,46 @@ export const AreasInteres: FC<AreasInteresProps> = ({
                 enterTo="transform opacity-100"
                 leave="transition ease-in-out duration-[400ms]"
                 leaveFrom="transform opacity-100"
-                leaveTo="transform opacity-0"
+              leaveTo="transform opacity-0"
+              key={`Tansition-${areaInteres.id}`}
               >
                 <div key={areaInteres.id}>
                   <div className="font-medium">{areaInteres.nombre}</div>
                   <div>
                     {areaInteres?.areaSubArea?.map(
                       (areaSubArea, indexAreaSubArea) => (
-                        <div className="sm:ml-6" key={areaSubArea.id}>
-                          <div className="text-gray-950">
-                            {areaSubArea.subAreasInteres.nombre}
-                          </div>
-                          <div className="sm:ml-4 my-3 flex gap-4">
-                            {areaSubArea.herramientas.map(
-                              (herramienta, indexHerramienta) => (
-                                <Controller
-                                  name={`areasInteres.${index}.areaSubArea.${indexAreaSubArea}.herramientas.${indexHerramienta}.selected`}
-                                  control={control}
-                                  defaultValue={true}
-                                  render={({ field }) => (
-                                    <>
-                                      <HerramientaCheckbox
-                                        key={herramienta.id}
-                                        value={field.value}
-                                        onChange={field.onChange}
-                                        {...herramienta}
-                                      />
-                                    </>
-                                  )}
-                                />
-                              )
-                            )}
-                          </div>
+                        <div className="sm:ml-1 mx-auto w-full max-w-lg divide-y divide-black/5 rounded-xl bg-white/5" key={areaSubArea.id}>
+                          <Disclosure as="div" className="p-3" defaultOpen={indexAreaSubArea === 0}>
+                            <DisclosureButton className="group flex w-full items-center justify-between">
+                              {areaSubArea.subAreasInteres.nombre}
+                              <IoChevronDown className="size-5 fill-white/60 group-data-[hover]:fill-white/50 group-data-[open]:rotate-180" />
+                            </DisclosureButton>
+                            <DisclosurePanel>
+                              <div className="sm:ml-4 my-3 flex gap-4">
+                                {areaSubArea.herramientas.map(
+                                  (herramienta, indexHerramienta) => (
+                                    <Controller
+                                      name={`areasInteres.${index}.areaSubArea.${indexAreaSubArea}.herramientas.${indexHerramienta}.selected`}
+                                      control={control}
+                                      defaultValue={true}
+                                      render={({ field }) => (
+                                        <>
+                                          <HerramientaCheckbox
+                                            key={herramienta.id}
+                                            value={field.value}
+                                            onChange={field.onChange}
+                                            {...herramienta}
+                                          />
+                                        </>
+                                      )}
+                                    />
+                                  )
+                                )}
+                              </div>
+                              </DisclosurePanel>
+                          </Disclosure>
+                          
+                          
                         </div>
                       )
                     )}

@@ -1,6 +1,6 @@
 import { ButtonHTMLAttributes } from 'react';
 import { cva } from 'class-variance-authority';
-import { cn } from '../../utils';
+import { cn } from '../../../utils';
 
 const buttonStyles = cva(
   ["flex", "w-full", "text-sm", "rounded-md", "leading-6", "px-3", "shadow-sm", "py-1.5 ", "items-center", "justify-center", "font-semibold", "focus-visible:outline", "focus-visible:outline-2", "focus-visible:outline-offset-2"],

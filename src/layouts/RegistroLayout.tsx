@@ -25,7 +25,7 @@ export const RegistroLayout = () => {
   
   return (
     <div className="min-h-screen">
-      <div className="flex bg-white border-b border-gray-100 sticky top-0 z-10 justify-between p-6">
+      <div className="flex bg-white justify-between p-6">
         <Logo />
         <div>
           <Button className="gap-x-2" onClick={logout} variant='outline'>

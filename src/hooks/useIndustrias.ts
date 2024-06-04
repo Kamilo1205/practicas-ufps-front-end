@@ -1,6 +1,5 @@
 import { useState, useEffect, useCallback } from 'react';
 import { AxiosError } from 'axios';
-
 import { fetchIndustrias as fetchIndustriasAPI, fetchIndustriaById as fetchIndustriaByIdAPI, createIndustria as createIndustriaAPI, updateIndustria as updateIndustriaAPI, deleteIndustria as deleteIndustriaAPI } from '../api/industria.api';
 import { Industria } from '../interfaces';
 

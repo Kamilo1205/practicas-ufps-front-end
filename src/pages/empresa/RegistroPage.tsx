@@ -1,36 +1,31 @@
-import { Controller, useForm } from 'react-hook-form';
+import { Controller, UseFormReturn, useForm } from 'react-hook-form';
 import { toast } from 'sonner';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { TfiDownload } from 'react-icons/tfi';
-import { z } from 'zod';
 
-import { empresaSchema } from '../../schemas';
+import { EmpresaSchema, empresaSchema } from '../../schemas';
 import { ErrorMessage, Input, TextArea } from '../../components/ui';
 import { fetchPostEmpresa } from '../../api/empresa.api';
 import { TipoDocumentoListbox } from '../../components/documento-identidad';
 import { fetchGetDocumentoConvenio } from '../../api/documento.api';
-import { IndustriaCombobox } from '../../components/industria/IndustriaCombobox';
 import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from '../../components/ui/Input/Form';
+import { CiudadCombobox, DepartamentoCombobox, IndustriaCombobox, PaisCombobox } from '../../components/form';
+import { PhoneInput } from '../../components/ui/PhoneInput';
 
 export const RegistroPage = () => {
-  const form: any  = useForm<z.infer<typeof empresaSchema>>({
-    resolver: zodResolver(empresaSchema),
-
-    defaultValues: {
-      nombre: '',
-    }
+  const form: UseFormReturn<EmpresaSchema> = useForm<EmpresaSchema>({
+    resolver: zodResolver(empresaSchema)
   });
-  const {
-    register,
-    handleSubmit,
-    control,
-    formState: { errors },
-  } = form;
+  const { handleSubmit, control, watch, setValue, formState: { errors } } = form;
+  const selectedPais = watch('paisId');
+  const selectedDepartamento = watch('departamentoId');
 
-  const onSubmit = async (data: z.infer<typeof empresaSchema>) => {
+  const onSubmit = async (data: EmpresaSchema) => {
     try {
       const response = await fetchPostEmpresa(data);
       // login(response.usuario);
+      console.log(data);
+      console.log(response);
     } catch (error) {
       console.log(error);
       toast.error("Ocurrio un error");
@@ -84,19 +79,17 @@ export const RegistroPage = () => {
                 {/* Industria */}
                 <div className="sm:col-span-4">
                   <FormField 
-                    name="industria" 
+                    name="industriaId" 
                     render={({ field }) => (
                       <FormItem>
                         <FormLabel>Industria</FormLabel>
                         <FormControl>
-                          <Input {...field} />
+                          <IndustriaCombobox {...field} />
                         </FormControl>
                         <FormMessage />
                       </FormItem>
                     )} 
                   />
-                  <IndustriaCombobox control={control} name="industria" />
-                  <ErrorMessage errors={errors} name="industria"></ErrorMessage>
                 </div>
 
                 {/* Nit */}
@@ -118,12 +111,19 @@ export const RegistroPage = () => {
                 {/* Pais */}
                 <div className="sm:col-span-2">
                   <FormField 
-                    name="pais" 
+                    name="paisId" 
                     render={({ field }) => (
                       <FormItem>
                         <FormLabel>Pais</FormLabel>
                         <FormControl>
-                          <Input {...field} />
+                          <PaisCombobox 
+                            {...field} 
+                            onChange={(value) => {
+                              field.onChange(value);
+                              form.setValue('departamentoId', '');
+                              form.setValue('ciudadId', '');
+                            }}
+                          />
                         </FormControl>
                         <FormMessage />
                       </FormItem>
@@ -134,12 +134,19 @@ export const RegistroPage = () => {
                 {/* Departamento */}
                 <div className="sm:col-span-2">
                   <FormField 
-                    name="departamento" 
+                    name="departamentoId" 
                     render={({ field }) => (
                       <FormItem>
                         <FormLabel>Departamento</FormLabel>
                         <FormControl>
-                          <Input {...field} />
+                          <DepartamentoCombobox 
+                            paisId={selectedPais} 
+                            {...field} 
+                            onChange={(value) => {
+                              field.onChange(value);
+                              form.setValue('ciudadId', '');
+                            }}
+                          />
                         </FormControl>
                         <FormMessage />
                       </FormItem>
@@ -150,12 +157,12 @@ export const RegistroPage = () => {
                 {/* Ciudad */}
                 <div className="sm:col-span-2">
                  <FormField 
-                    name="ciudad" 
+                    name="ciudadId" 
                     render={({ field }) => (
                       <FormItem>
                         <FormLabel>Ciudad</FormLabel>
                         <FormControl>
-                          <Input {...field} />
+                          <CiudadCombobox departamentoId={selectedDepartamento} {...field} />
                         </FormControl>
                         <FormMessage />
                       </FormItem>
@@ -187,7 +194,7 @@ export const RegistroPage = () => {
                       <FormItem>
                         <FormLabel>Telefono</FormLabel>
                         <FormControl>
-                          <Input {...field} />
+                          <PhoneInput {...field} />
                         </FormControl>
                         <FormMessage />
                       </FormItem>

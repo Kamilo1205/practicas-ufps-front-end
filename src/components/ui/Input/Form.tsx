@@ -1,7 +1,7 @@
 import { Children, cloneElement, createContext, forwardRef, isValidElement, useContext, useId } from 'react';
 import { Controller, ControllerProps, FieldPath, FieldValues, FormProvider, useFormContext } from 'react-hook-form';
 import { cn } from '../../../utils';
-import { Label } from '../Label';
+import { Label } from '../Label/Label';
 
 const Form = FormProvider;
 
@@ -40,7 +40,6 @@ const useFormField = () => {
   }
 
   const { id } = itemContext;
-  console.log(fieldState);
 
   return {
     id,

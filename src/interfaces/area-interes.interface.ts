@@ -1,4 +1,4 @@
-import { AreaSubArea } from './area-sub-area';
+import { AreaSubArea } from './area-sub-area.interface';
 
 export interface AreaInteres {
   id:                 string;

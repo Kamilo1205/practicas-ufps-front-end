@@ -4,7 +4,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 
 import { GeneroListbox } from '../../components/genero';
 import { Button, ErrorMessage, Input, Label } from '../../components/ui';
-import { AreaInteres } from '../../interfaces/area-interes';
+import { AreaInteres } from '../../interfaces/area-interes.interface';
 import { TipoDocumentoListbox } from '../../components/documento-identidad';
 import { EpsCombobox, TipoAfiliacionListbox } from '../../components/eps';
 import { AreasInteres } from '../../components/area-interes/AreasInteres';
@@ -17,6 +17,28 @@ export const RegistroPage = () => {
   const { register, handleSubmit, control, formState: { errors } } = useForm({
     resolver: zodResolver(estudianteSchema),
     values: {
+      primerNombre: '',
+      segundoNombre: '',
+      primerApellido: '',
+      segundoApellido: '',
+      fechaNacimiento: '',
+      genero: '',
+      telefono: '',
+      departamentoResidencia: '',
+      municipioResidencia: '',
+      direccion: '',
+      telefonoHogar: '',
+      numeroDocumento: '',
+      tipoDocumento: '',
+      lugarExpedicionDocumento: '',
+      fechaExpedicionDocumento: '',
+      eps: '',
+      tipoAfiliacionEps: '',
+      fechaAfiliacionEps: '',
+      nitFondoPension: '',
+      semestreMatriculado: '',
+      codigo: '',
+      grupoMatriculado: 'grupoA',
       areasInteres: areasInteres.map(area => ({ 
         ...area, 
         level: 1,
@@ -41,9 +63,9 @@ export const RegistroPage = () => {
 
   const onSubmit = async (data: any) => {
     try {
-      const response = await fetchPostEstudiante(data);
-      console.log(data);
-      console.log(response);
+      // const response = await fetchPostEmpresa(data);
+      // login(response.usuario);
+      console.log('data',data);
     } catch (error) {
       console.log(error);
       alert("Ocurrio un error:" + error);
@@ -409,7 +431,7 @@ export const RegistroPage = () => {
           </div>
         </div>
 
-        <Button type="submit">Submit</Button>
+        <Button type="submit">Enviar</Button>
       </form>
     </div>
   );
