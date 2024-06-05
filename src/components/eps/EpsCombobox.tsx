@@ -1,11 +1,12 @@
 import { FC, useEffect, useState } from 'react';
 import { Combobox, ComboboxButton, ComboboxInput, ComboboxOption, ComboboxOptions, Transition } from '@headlessui/react';
 import { Controller } from 'react-hook-form';
-import { Label } from '../ui';
 import clsx from 'clsx';
+import { HiMiniChevronDown } from 'react-icons/hi2';
+
+import { Label } from '../ui';
 import { Eps } from '../../interfaces/eps.interface';
 import { fetchGetEps } from '../../api/eps.api';
-import { HiMiniChevronDown } from 'react-icons/hi2';
 
 interface EpsComboboxProps {
   control: any;

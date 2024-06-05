@@ -8,7 +8,7 @@ export const UsuariosPage = () => {
   const [usuarios, setUsuarios] = useState<Usuario[]>([]);
   const [totalItems, setTotalItems] = useState<number>(0); // Número total de ítems
   const [currentPage, setCurrentPage] = useState<number>(1);
-  const [itemsPerPage] = useState<number>(10); // Suponiendo que el backend maneja 10 ítems por página
+  const [itemsPerPage] = useState<number>(5); // Suponiendo que el backend maneja 10 ítems por página
   const navigate = useNavigate();
   const location = useLocation();
   
@@ -52,11 +52,11 @@ export const UsuariosPage = () => {
         <table className="min-w-full border-gray-300">
           <thead>
             <tr>
-              <th className="text-gray-900 font-semibold text-sm text-left pl-0 pr-3 py-3.5">Nombre</th>
-              <th className="text-gray-900 font-semibold text-sm text-left pl-0 pr-3 py-3.5">Fecha creación</th>
-              <th className="text-gray-900 font-semibold text-sm text-left pl-0 pr-3 py-3.5">Estado</th>
-              <th className="text-gray-900 font-semibold text-sm text-left pl-0 pr-3 py-3.5">Email</th>
-              <th className="text-gray-900 font-semibold text-sm text-left pl-0 pr-3 py-3.5">Roles</th>
+              <th className="min-w-[28rem] text-gray-900 font-semibold text-sm text-left pl-0 pr-3 py-3.5">Nombre</th>
+              <th className="min-w-36 text-gray-900 font-semibold text-sm text-left pl-0 pr-3 py-3.5">Fecha creación</th>
+              <th className="min-w-24 text-gray-900 font-semibold text-sm text-left pl-0 pr-3 py-3.5">Estado</th>
+              <th className="min-w-32 text-gray-900 font-semibold text-sm text-left pl-0 pr-3 py-3.5">Email</th>
+              <th className="w-36 text-gray-900 font-semibold text-sm text-left pl-0 pr-3 py-3.5">Roles</th>
             </tr>
           </thead>
           <tbody className="border-gray-300 divide-y border-y">

@@ -2,7 +2,7 @@ import { FC, Fragment, useEffect, useState } from "react";
 import { Controller, useWatch } from "react-hook-form";
 import { Label } from "../ui";
 import { HerramientaCheckbox } from "./HerramientaCheckbox";
-import { AreaInteres } from "../../interfaces/area-interes";
+import { AreaInteres } from "../../interfaces/area-interes.interface";
 import { Transition, Disclosure, DisclosureButton, DisclosurePanel } from "@headlessui/react";
 import { IoChevronDown, } from "react-icons/io5";
 

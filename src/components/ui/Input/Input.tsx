@@ -1,7 +1,7 @@
 import { forwardRef, InputHTMLAttributes, useState } from 'react';
 import { HiOutlineEye, HiOutlineEyeSlash } from 'react-icons/hi2';
 import { cva } from 'class-variance-authority';
-import { cn } from '../../utils';
+import { cn } from '../../../utils';
 
 const inputStyles = cva(
     [
@@ -22,11 +22,9 @@ const inputStyles = cva(
     }
   );
 
-interface InputProps extends InputHTMLAttributes<HTMLInputElement> {
-    
-}
+interface InputProps extends InputHTMLAttributes<HTMLInputElement> {}
 
-export const Input = forwardRef<HTMLInputElement, InputProps>(({ type = "text", className, ...props }, ref) => {
+export const Input = forwardRef<HTMLInputElement, InputProps>(({ type = "text", className, value = "", ...props }, ref) => {
   const [showPassword, setShowPassword] = useState<boolean>(false);
   const togglePasswordVisibility = () => {
       setShowPassword(!showPassword);

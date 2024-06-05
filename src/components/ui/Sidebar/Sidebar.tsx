@@ -1,35 +1,23 @@
-import React, { HTMLAttributes } from 'react';
+import { FC, HTMLAttributes } from 'react';
 import { Link } from 'react-router-dom';
 import { Menu, MenuButton, MenuItem, MenuItems, Transition } from '@headlessui/react';
+import { HiArrowLeftStartOnRectangle } from 'react-icons/hi2';
 import { CgProfile } from 'react-icons/cg';
-import { BiLogOut } from 'react-icons/bi';
 
 import { MenuList } from './MenuList';
-import { Avatar } from '../Avatar';
+import { Avatar } from '../Avatar/Avatar';
 import { useAuth } from '../../../contexts';
-import { fetchPostUsuarioLogout } from '../../../api/auth.api';
 import { Logo } from '../../logo';
 
 interface SidebarProps extends HTMLAttributes<HTMLDivElement> {}
 
-export const Sidebar: React.FC<SidebarProps> = () => {
-  const { user, logout: logoutAuth } = useAuth();
-
-  const logout = async() => {
-    try {
-      const response = await fetchPostUsuarioLogout();
-      window.history.pushState(null, '', '/login');
-      logoutAuth();
-      console.log(response);
-    } catch (error) {
-      console.error(error);
-    }
-  }
+export const Sidebar: FC<SidebarProps> = () => {
+  const { user, logout } = useAuth();
 
   return (
     <div className="hidden lg:flex lg:flex-col lg:w-72 lg:z-10 lg:fixed lg:inset-y-0">
       <div className="flex flex-col flex-grow gap-y-5 px-6 border-r border-gray-200 overflow-y-auto">
-        <div className="flex flex-col py-4 items-start text-base font-semibold flex-shrink-0">
+        <div className="flex flex-col pt-6 pb-4 items-start text-base font-semibold flex-shrink-0">
           <Logo to="/"/>
         </div>
 
@@ -69,7 +57,7 @@ export const Sidebar: React.FC<SidebarProps> = () => {
                         className="group flex w-full items-center gap-2 rounded-lg py-1.5 px-3"
                         onClick={logout} 
                       >
-                        <BiLogOut className="w-5 h-5 text-gray-400/90"/>
+                        <HiArrowLeftStartOnRectangle className="w-5 h-5 text-gray-400/90"/>
                         Cerrar sesión
                       </button>
                     </MenuItem>

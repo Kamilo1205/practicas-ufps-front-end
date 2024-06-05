@@ -4,12 +4,13 @@ import { zodResolver } from '@hookform/resolvers/zod';
 
 import { GeneroListbox } from '../../components/genero';
 import { Button, ErrorMessage, Input, Label } from '../../components/ui';
-import { AreaInteres } from '../../interfaces/area-interes';
+import { AreaInteres } from '../../interfaces/area-interes.interface';
 import { TipoDocumentoListbox } from '../../components/documento-identidad';
 import { EpsCombobox, TipoAfiliacionListbox } from '../../components/eps';
 import { AreasInteres } from '../../components/area-interes/AreasInteres';
 import { estudianteSchema } from '../../schemas/estudianteSchema';
 import { fetchGetAreasDeInteresData } from '../../api/areasInteres.api';
+import { fetchPostEstudiante } from '../../api/estudiante.api';
 
 export const RegistroPage = () => {
   const [areasInteres, setAreasInteres] = useState<AreaInteres[]>([]);
@@ -66,6 +67,7 @@ export const RegistroPage = () => {
       // login(response.usuario);
       console.log('data',data);
     } catch (error) {
+      console.log(error);
       alert("Ocurrio un error:" + error);
     }
   };
@@ -170,7 +172,7 @@ export const RegistroPage = () => {
 
               {/* Numero Movil */}
               <div className="sm:col-span-3 lg:col-span-2">
-                <Label htmlFor="telefono">Numero móvil</Label>
+                <Label htmlFor="telefono">Número móvil</Label>
                 <div className="mt-2">
                   <Input
                     id="telefono"
@@ -228,7 +230,7 @@ export const RegistroPage = () => {
 
               {/* Telefono Hogar */}
               <div className="sm:col-span-3 lg:col-span-2">
-                <Label htmlFor="telefonoHogar">Telefono Hogar (Opcional)</Label>
+                <Label htmlFor="telefonoHogar">Teléfono Hogar (Opcional)</Label>
                 <div className="mt-2">
                   <Input
                     id="telefonoHogar"
@@ -254,7 +256,7 @@ export const RegistroPage = () => {
 
               {/* Numero Documento */}
               <div className="sm:col-span-3">
-                <Label htmlFor="numeroDocumento">Numero Documento</Label>
+                <Label htmlFor="numeroDocumento">Número Documento</Label>
                 <div className="mt-2">
                   <Input
                     id="numeroDocumento"
@@ -293,7 +295,7 @@ export const RegistroPage = () => {
 
               {/* Fecha Expedicion */}
               <div className="sm:col-span-3 lg:col-span-2">
-                <Label htmlFor="fechaExpedicionDocumento">Fecha de Expedicion</Label>
+                <Label htmlFor="fechaExpedicionDocumento">Fecha de Expedición</Label>
                 <div className="mt-2">
                   <Input
                     id="fechaExpedicionDocumento"
@@ -332,7 +334,7 @@ export const RegistroPage = () => {
 
               {/* Fecha Afiliacion */}
               <div className="sm:col-span-3 lg:col-span-2">
-                <Label htmlFor="fechaAfiliacionEps">Fecha de Afiliacion</Label>
+                <Label htmlFor="fechaAfiliacionEps">Fecha de Afiliación</Label>
                 <div className="mt-2">
                   <Input
                     id="fechaAfiliacionEps"
@@ -349,7 +351,7 @@ export const RegistroPage = () => {
 
               {/* Nit de fondo de pension */}
               <div className="sm:col-span-3">
-                <Label htmlFor="nitFondoPension">NIT de fondo de pension (Opcional)</Label>
+                <Label htmlFor="nitFondoPension">NIT de fondo de pensión (Opcional)</Label>
                 <div className="mt-2">
                   <Input
                     id="nitFondoPension"
@@ -367,7 +369,7 @@ export const RegistroPage = () => {
             <div className="mt-10 grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6">
               <div className="col-span-full">
                 <p className="text-sm leading-6 text-gray-600">
-                  A continuación registra su información academica asi como sus areas de interes
+                  A continuación registre su información académica, así como sus áreas de interés
                   y los conocimientos/herramienstas que manejan adecuadamente.
                 </p>
               </div>
@@ -388,7 +390,7 @@ export const RegistroPage = () => {
 
               {/* Codigo */}
               <div className="sm:col-span-3 lg:col-span-2">
-                <Label htmlFor="codigo">Codigo</Label>
+                <Label htmlFor="codigo">Código</Label>
                 <div className="mt-2">
                   <Input
                     id="codigo"
@@ -402,7 +404,7 @@ export const RegistroPage = () => {
 
               {/* Grupo de Practicas */}
               <div className="sm:col-span-full">
-                <Label htmlFor="grupoMatriculado">Grupo de Practicas Matriculado</Label>
+                <Label htmlFor="grupoMatriculado">Grupo de Prácticas Matriculado</Label>
                 <div className="mt-3.5 sm:flex sm:gap-x-16 sm:items-center">
                   <div className="flex items-center">
                     <input id="grupoA" className="cursor-pointer" type="radio" {...register("grupoMatriculado")} value="grupoA" defaultChecked/>

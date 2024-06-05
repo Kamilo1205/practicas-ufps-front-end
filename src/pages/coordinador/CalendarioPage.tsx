@@ -114,7 +114,7 @@ export const CalendarioPage = () => {
     try {
       const response = await guardarCambios(items)
       if (!response.ok) throw new Error(response.message)
-      const Toast = Swal.mixin({
+      /* const Toast = Swal.mixin({
         toast: true,
         position: "top-end",
         showConfirmButton: false,
@@ -128,16 +128,16 @@ export const CalendarioPage = () => {
       Toast.fire({
         icon: "success",
         title: "Los cambios se guardaron correctamente"
-      });
+      }); */
     }
     catch (error) { 
       console.error(error)
-      Swal.fire({
+      /* Swal.fire({
         title: 'Error',
         text: 'No se pudieron guardar los cambios',
         icon: 'error',
         confirmButtonText: 'Ok'
-      })
+      }) */
     }
    }
 

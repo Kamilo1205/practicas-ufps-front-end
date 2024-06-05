@@ -1,5 +1,5 @@
 import { SubAreaInteres } from './sub-area-interes';
-import { Herramienta } from './herramienta';
+import { Herramienta } from './herramienta.interface';
 
 export interface AreaSubArea {
   id: string;

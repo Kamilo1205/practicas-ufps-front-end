@@ -21,7 +21,7 @@ const areaInteresSchema = z.object({
   id: z.string(),
   nombre: z.string(),
   level: z.number().min(1).max(5),
-  areaSubArea: z.array(areaSubAreaSchema),
+  //areaSubArea: z.array(areaSubAreaSchema),
 });
 
 export const estudianteSchema = z.object({

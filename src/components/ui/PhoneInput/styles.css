@@ -1,0 +1,25 @@
+/* styles.css */
+/* Sobrescribir el fondo y otros estilos cuando el dropdown está abierto */
+.react-tel-input .flag-dropdown.open .selected-flag {
+  @apply !bg-inherit;
+}
+/* Estilo para el flag dropdown cuando está en hover */
+.react-tel-input .flag-dropdown .selected-flag:hover {
+  @apply !bg-inherit;
+}
+
+.react-tel-input .flag-dropdown .country-list {
+  @apply !bg-white !rounded-md !border !border-gray-200 !p-1 !shadow-none !min-w-full;
+}
+
+.react-tel-input .flag-dropdown .country-list .country  {
+  @apply !rounded-md !py-1.5 !px-3;
+}
+
+.react-tel-input .flag-dropdown .country-list .country:hover  {
+  @apply !bg-gray-200;
+}
+
+.react-tel-input .flag-dropdown .country-list .country .highlight {
+  @apply !bg-gray-300/90;
+}

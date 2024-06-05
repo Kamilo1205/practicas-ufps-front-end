@@ -36,9 +36,9 @@ export const LoginPage = () => {
 
   const onSubmit = async (credentials: LoginSchema) => {
     try {
-      const response = await fetchPostUsuarioLogin(credentials);
-      login(response.usuario);
+      await login(credentials);
     } catch (error) {
+      console.log(error);
       handleAxiosError(error, setError);
     }
   };
@@ -85,7 +85,7 @@ export const LoginPage = () => {
               <Input
                 id="password"
                 type="password"
-                autoComplete="password"
+                autoComplete="off"
                 {...register("password")}
               />
               <ErrorMessage errors={errors} name="password"></ErrorMessage>
