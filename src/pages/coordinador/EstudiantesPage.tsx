@@ -1,17 +1,19 @@
 import { useEffect, useState } from "react";
 import { fetchGetEstudiantes } from "../../api/estudiante.api";
-import { Avatar, Pagination } from "../../components/ui";
+import { Avatar, Button, Pagination } from "../../components/ui";
 import { EmptyStateMessage } from "../../components/estudiantes/EmptyStateMessage";
-import { useLocation, useNavigate } from "react-router-dom";
+//import { useLocation, useNavigate } from "react-router-dom";
 import { Estudiante } from "../../interfaces/estudiante.interface";
+import { HiOutlineUserPlus } from "react-icons/hi2";
+import { TabComponent } from "../../components/ui/Tab/TabComponent";
 
 export const EstudiantesPage = () => {
   const [estudiantes, setEstudiantes] = useState<Estudiante[]>([]);
   const [totalItems, setTotalItems] = useState<number>(0); // Número total de ítems
   const [currentPage, setCurrentPage] = useState<number>(1);
   const [itemsPerPage] = useState<number>(5); // Suponiendo que el backend maneja 10 ítems por página
-  const navigate = useNavigate();
-  const location = useLocation();
+  //const navigate = useNavigate();
+  //const location = useLocation();
 
   useEffect(() => {
     const fetchData = async () => {
@@ -27,12 +29,63 @@ export const EstudiantesPage = () => {
       <div className="mb-10">
         <div className="text-gray-600 font-bold text-2xl">Estudiantes</div>
       </div>
+      <div className="overflow-x-auto">
+        <ul role="list" className="divide-y divide-gray-100">
+          <li className="flex justify-between gap-x-6 py-2">
+            <div className="flex min-w-0 gap-x-4">
+                <div className="min-w-0 flex-auto">
+                  <p className="text-sm font-semibold leading-6 text-gray-900">Grupo A</p>
+                  <p className="mt-1 truncate text-xs leading-5 text-gray-500">leslie.alexander@example.com</p>
+                </div>
+            </div>
+            <div className="hidden shrink-0 sm:flex sm:flex-col sm:items-end">
+              <Button >
+                <HiOutlineUserPlus className="size-5 mr-2" />
+                Agregar estudiantes
+              </Button>
+            </div>
+          </li>
+          <li className="flex justify-between gap-x-6 py-2">
+            <div className="flex min-w-0 gap-x-4">
+              <div className="min-w-0 flex-auto">
+                <p className="text-sm font-semibold leading-6 text-gray-900">Grupo B</p>
+                <p className="mt-1 truncate text-xs leading-5 text-gray-500">leslie.alexander@example.com</p>
+              </div>
+            </div>
+            <div className="hidden shrink-0 sm:flex sm:flex-col sm:items-end">
+              <Button >
+                <HiOutlineUserPlus className="size-5 mr-2" />
+                Agregar estudiantes
+              </Button>
+            </div>
+          </li>
+          <li className="flex justify-between gap-x-6 py-2">
+            <div className="flex min-w-0 gap-x-4">
+              <div className="min-w-0 flex-auto">
+                <p className="text-sm font-semibold leading-6 text-gray-900">Grupo C</p>
+                <p className="mt-1 truncate text-xs leading-5 text-gray-500">leslie.alexander@example.com</p>
+              </div>
+            </div>
+            <div className="hidden shrink-0 sm:flex sm:flex-col sm:items-end">
+              <Button >
+                <HiOutlineUserPlus className="size-5 mr-2" />
+                Agregar estudiantes
+              </Button>
+            </div>
+          </li>
+          </ul>
+      </div> 
+      <div className="mt-5">
+        <TabComponent />
 
+      </div>
       {estudiantes.length == 0 ? (
         <EmptyStateMessage />
       ) : (
-        <div>
-          <div className="overflow-x-auto">
+          <div>
+            <TabComponent/>
+            <div className="overflow-x-auto">
+              
             <table className="min-w-full border-gray-300">
               <thead>
                 <tr>
