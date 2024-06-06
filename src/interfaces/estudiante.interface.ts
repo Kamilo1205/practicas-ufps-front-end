@@ -20,6 +20,7 @@ export interface Estudiante {
   codigo:                   number;
   fechaCreacion:            Date;
   fechaActualizacion:       Date;
-  fechaEliminacion:         null;
+  fechaEliminacion: null;
+  grupo:                    string;
   usuario:                  Usuario;
 }

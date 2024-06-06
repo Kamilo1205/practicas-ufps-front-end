@@ -11,8 +11,15 @@ export async function fetchGetEstudiante() {
   return response.data;
 }
 
-export async function fetchGetEstudiantes(page: number = 1, limit: number = 10) {
-  const response = await axios.get(`/estudiantes?page=${page}&limit=${limit}`);
+
+interface FetchGetEstudiantesParams {
+  page?: number;
+  limit?: number;
+  grupo?: string;
+}
+
+export async function fetchGetEstudiantes({ page = 1, limit = 10, grupo = '' }: FetchGetEstudiantesParams={}) {
+  const response = await axios.get(`/estudiantes?page=${page}&limit=${limit}&grupo=${grupo}`);
   return response.data;
 }
 
