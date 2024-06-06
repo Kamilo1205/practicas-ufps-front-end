@@ -16,7 +16,7 @@ export const TabComponent = ({ tabListI,activeTab = 0, setTab }:TabComponentProp
   
   return (
     <>
-      <div className="border-b border-gray-300 border-opacity-100 mb-5">
+      <div className="border-b border-gray-300 border-opacity-100 mb-5 min-w-80">
         <nav className="flex justify-end -mb-px">
           {tabListI.map((tab, index) => (
             <button

@@ -16,10 +16,11 @@ interface FetchGetEstudiantesParams {
   page?: number;
   limit?: number;
   grupo?: string;
+  search?: string;
 }
 
-export async function fetchGetEstudiantes({ page = 1, limit = 10, grupo = '' }: FetchGetEstudiantesParams={}) {
-  const response = await axios.get(`/estudiantes?page=${page}&limit=${limit}&grupo=${grupo}`);
+export async function fetchGetEstudiantes({ page = 1, limit = 10, grupo = '',search='' }: FetchGetEstudiantesParams={}) {
+  const response = await axios.get(`/estudiantes?page=${page}&limit=${limit}&grupo=${grupo}&search=${search}`);
   return response.data;
 }
 

@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { fetchGetEstudiantes } from "../../api/estudiante.api";
-import { Avatar, Button, Pagination } from "../../components/ui";
+import { Avatar, Button,  } from "../../components/ui";
 import { EmptyStateMessage } from "../../components/estudiantes/EmptyStateMessage";
 //import { useLocation, useNavigate } from "react-router-dom";
 import { Estudiante } from "../../interfaces/estudiante.interface";
@@ -63,20 +63,21 @@ export const EstudiantesPage = () => {
   const [agregarEstudiante, setAgregarEstudiante] = useState<boolean>(false);
   const [tab, setTab] = useState<number>(0);
   const [mostrarPerfil, setMostrarPerfil] = useState<boolean>(false);
-
+  const [estudianteSeleccionado, setEstudianteSeleccionado] = useState<Estudiante | null>(null);
+  const [filtro, setFiltro] = useState<string>("");
   //const navigate = useNavigate();
   //const location = useLocation();
 
-  
+  console.log(mostrarPerfil)
 
   useEffect(() => {
     const fetchData = async () => {
-      const response = await fetchGetEstudiantes({grupo:Tabs[tab].grupo});
+      const response = await fetchGetEstudiantes({grupo:Tabs[tab].grupo, search:filtro, page: currentPage, limit: itemsPerPage});
       setEstudiantes(response);
       console.log(response);
     };
     fetchData();
-  }, [tab]);
+  }, [tab,filtro]);
 
   return (
     <>
@@ -91,7 +92,17 @@ export const EstudiantesPage = () => {
         }
         title="Agregar estudiantes"
       />
-      
+      <DialogComponent
+        isOpen={mostrarPerfil}
+        onClose={() => setMostrarPerfil(false)}
+        content={
+          <EstudiantePerfilComponent
+            estudiante={estudianteSeleccionado}
+          />
+        }
+        title=""
+        size="2xl"
+      />
       <div className="overflow-x-auto mb-4">
         <ul role="list" className="divide-y divide-gray-100">
           <li className="flex justify-between gap-x-6 py-2">
@@ -123,26 +134,22 @@ export const EstudiantesPage = () => {
             
             <>
               <TablaPaginadaComponent
-                encabezados={["Nombre", "Semestre", "Codigo", "Dirección", "Telefono", "Grupo", "Estado"]}
+                filtro={filtro}
+                setFiltro={setFiltro}
+                encabezados={["Nombre", "Codigo", "Dirección", "Telefono", "Grupo", "Estado"]}
                 filas={
                   estudiantes.map((estudiante) => [
                     <div className="flex items-center">
                       <div className="shrink-0 w-11 h-11">
                         <Avatar url={estudiante?.usuario?.imagenUrl} />
                       </div>
-                      <div className="ml-4 cursor-pointer" onClick={() => {
-                        setMostrarPerfil(true)
+                      <div className="ml-4 cursor-pointer"
+                        onClick={() => {
+                          setEstudianteSeleccionado(estudiante)
 
+                        setMostrarPerfil(true)
                       }}>
-                        <DialogComponent
-                          isOpen={mostrarPerfil}
-                          onClose={() => setMostrarPerfil(false)}
-                          content={
-                            <EstudiantePerfilComponent estudiante={estudiante} />
-                          }
-                          title=""
-                          size="2xl"
-                        />
+                        
                         <div className="text-gray-900 font-medium">
                           {
                             `${estudiante.primerNombre } ${estudiante.segundoNombre} ${estudiante.primerApellido} ${estudiante.segundoApellido}` 
@@ -154,7 +161,6 @@ export const EstudiantesPage = () => {
                         </div>
                       </div>
                     </div>,
-                    estudiante.semestreMatriculado,
                     estudiante.codigo,
                     <div>
                       <div>{estudiante.direccion}</div>
