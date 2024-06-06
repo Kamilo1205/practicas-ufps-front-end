@@ -40,7 +40,7 @@ export const TablaPaginadaComponent = ({
               <tr key={index} className="">
                 {
                   fila.map((item, index) => (
-                    <td key={index} className="text-sm whitespace-nowrap pl-0 pr-3 py-5 capitalize text-gray-500">
+                    <td key={index} className="text-sm whitespace-nowrap pl-0 pr-3 py-5 text-gray-500">
                       {item}
                     </td>
                   ))

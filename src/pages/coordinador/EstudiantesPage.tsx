@@ -9,6 +9,7 @@ import { TabComponent } from "../../components/ui/Tab/TabComponent";
 import { DialogComponent } from "../../components/ui/Dialog/DialogComponent";
 import { AgregarEstudianteForm } from "../../components/estudiantes/AgregarEstudianteForm";
 import { TablaPaginadaComponent } from "../../components/ui/Table/TablaPaginadaComponent";
+import { EstudiantePerfilComponent } from "../../components/usuarios/perfil/EstudiantePerfilComponent";
 
 export const grupos = [
   {
@@ -60,7 +61,8 @@ export const EstudiantesPage = () => {
   const [currentPage, setCurrentPage] = useState<number>(1);
   const [itemsPerPage] = useState<number>(5); // Suponiendo que el backend maneja 10 ítems por página
   const [agregarEstudiante, setAgregarEstudiante] = useState<boolean>(false);
-  const [tab, setTab] = useState<number>(0); 
+  const [tab, setTab] = useState<number>(0);
+  const [mostrarPerfil, setMostrarPerfil] = useState<boolean>(false);
 
   //const navigate = useNavigate();
   //const location = useLocation();
@@ -89,6 +91,7 @@ export const EstudiantesPage = () => {
         }
         title="Agregar estudiantes"
       />
+      
       <div className="overflow-x-auto mb-4">
         <ul role="list" className="divide-y divide-gray-100">
           <li className="flex justify-between gap-x-6 py-2">
@@ -112,7 +115,9 @@ export const EstudiantesPage = () => {
         setTab={setTab}
       />
       {estudiantes.length == 0 ? (
-        <EmptyStateMessage />
+        <EmptyStateMessage
+          setOpen={setAgregarEstudiante}
+        />
       ) : (
           <div>
             
@@ -125,7 +130,19 @@ export const EstudiantesPage = () => {
                       <div className="shrink-0 w-11 h-11">
                         <Avatar url={estudiante?.usuario?.imagenUrl} />
                       </div>
-                      <div className="ml-4">
+                      <div className="ml-4 cursor-pointer" onClick={() => {
+                        setMostrarPerfil(true)
+
+                      }}>
+                        <DialogComponent
+                          isOpen={mostrarPerfil}
+                          onClose={() => setMostrarPerfil(false)}
+                          content={
+                            <EstudiantePerfilComponent estudiante={estudiante} />
+                          }
+                          title=""
+                          size="2xl"
+                        />
                         <div className="text-gray-900 font-medium">
                           {
                             `${estudiante.primerNombre } ${estudiante.segundoNombre} ${estudiante.primerApellido} ${estudiante.segundoApellido}` 

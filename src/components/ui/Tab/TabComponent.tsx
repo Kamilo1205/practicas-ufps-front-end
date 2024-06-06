@@ -13,7 +13,7 @@ interface TabComponentProps {
 }
 
 export const TabComponent = ({ tabListI,activeTab = 0, setTab }:TabComponentProps) => {
-
+  
   return (
     <>
       <div className="border-b border-gray-300 border-opacity-100 mb-5">
@@ -22,7 +22,7 @@ export const TabComponent = ({ tabListI,activeTab = 0, setTab }:TabComponentProp
             <button
               onClick={() => setTab(index)}
               key={index}
-              className={`no-underline text-gray-600 text-sm font-semibold py-4 px-6 block border-b-2 border-transparent ${activeTab === index ? 'border-blue-600':''} hover:border-gray-500 ${index === 0 ? 'border-blue-500' : ''}`}
+              className={`no-underline text-gray-600 text-sm font-semibold py-4 px-6 block border-b-2 border-transparent ${activeTab === index ? 'border-indigo-600':''} hover:border-gray-500 ${index === 0 ? 'border-blue-500' : ''}`}
             >
               {tab.name}
             </button>
