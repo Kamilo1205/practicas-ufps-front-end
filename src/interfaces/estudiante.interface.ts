@@ -1,5 +1,20 @@
 import { Usuario } from './usuario.interface';
 
+interface CiudadResidencia { 
+  
+  id: string;
+    nombre: string;
+      fechaCreacion: string;
+        fechaActualizacion: string;
+          departamento: {
+            id: string;
+      nombre: string;
+        fechaCreacion: string;
+          fechaActualizacion: string;
+  }
+
+}
+
 export interface Estudiante {
   id:                       string;
   primerNombre:             string;
@@ -20,6 +35,8 @@ export interface Estudiante {
   codigo:                   number;
   fechaCreacion:            Date;
   fechaActualizacion:       Date;
-  fechaEliminacion:         null;
+  fechaEliminacion: null;
+  grupo: string;
+  ciudadResidencia: CiudadResidencia;
   usuario:                  Usuario;
 }

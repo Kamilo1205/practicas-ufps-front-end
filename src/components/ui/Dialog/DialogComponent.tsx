@@ -1,15 +1,15 @@
 
 import { Dialog, DialogPanel, DialogTitle, Transition, TransitionChild } from '@headlessui/react';
-import { Button } from '../Button/Button';
 
 interface DialogComponentProps {
   isOpen: boolean
   onClose: () => void
   title: string
   content: JSX.Element
+  size?: 'sm' | 'md' | 'lg' | 'xl' | '2xl' | '3xl' | '4xl' | '5xl'
 }
 
-export const DialogComponent = ({ isOpen, onClose,title,content }:DialogComponentProps) => {
+export const DialogComponent = ({ isOpen, onClose,title,content ,size = 'md'}:DialogComponentProps) => {
   return (
     <Transition appear show={isOpen}>
       <Dialog
@@ -28,7 +28,7 @@ export const DialogComponent = ({ isOpen, onClose,title,content }:DialogComponen
               leaveFrom="opacity-100 transform-[scale(100%)]"
               leaveTo="opacity-0 transform-[scale(95%)]"
             >
-              <DialogPanel className="w-full max-w-md rounded-xl bg-white p-6 ">
+              <DialogPanel className={`w-full max-w-${size} rounded-xl bg-white p-6 `}>
                 <DialogTitle
                   as="h3"
                   className="text-base/7 font-medium text-grat-400"

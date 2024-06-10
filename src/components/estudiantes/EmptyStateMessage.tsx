@@ -1,14 +1,14 @@
-import { useState } from 'react';
 import { HiOutlineFolderPlus, HiOutlineUserPlus } from 'react-icons/hi2';
-import { DialogBox } from './DialogoBox';
 import { Button } from '../../components/ui';
 
-export const EmptyStateMessage = () => {
-  const [isOpen, setIsOpen] = useState<boolean>(false);
+interface EmptyStateMessageProps { 
+  setOpen: (open: boolean) => void;
 
-  const openDialog = () => setIsOpen(true);
-  const closeDialog = () => setIsOpen(false);
+}
 
+export const EmptyStateMessage = ({setOpen}:EmptyStateMessageProps) => {
+
+  
   return (
     <>
       <div className="flex flex-col min-h-96 justify-center items-center">
@@ -22,14 +22,15 @@ export const EmptyStateMessage = () => {
           </p>
 
           <input className="hidden" type="file" />
-          <Button className="mt-9 items-center" onClick={openDialog}>
+          <Button className="mt-9 items-center" onClick={()=>setOpen(true)}>
             <HiOutlineUserPlus className="size-5 mr-2" />
             Agregar estudiantes
           </Button>
         </div>
       </div>
 
-      <DialogBox isOpen={isOpen} onClose={closeDialog} />
     </>
   );
 };
+//<DialogBox isOpen={isOpen} onClose={closeDialog} />
+//
