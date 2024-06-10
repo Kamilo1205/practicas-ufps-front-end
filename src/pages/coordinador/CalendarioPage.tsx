@@ -3,6 +3,7 @@ import Swal from 'sweetalert2'
 import dayjs from 'dayjs'
 import { Disclosure, DisclosureButton, DisclosurePanel } from "@headlessui/react";
 import { IoChevronDown } from "react-icons/io5";
+import { BiCheck } from "react-icons/bi";
 dayjs().format()
 
 interface TimelineItem {
@@ -89,8 +90,16 @@ const LoadingItemsComponent = () => {
 
 export const CalendarioPage = () => {
   const [items, setItems] = useState<TimelineItem[]>([])
+  const [edicion, setEdicion] = useState(items.map(() => {
+    return {
+      editar: false,
+      fechaInicial: false,
+      fechaFinal: false,
+      valorEditadoFechaInicial: '',
+      valorEditadoFechaFinal: ''
+  }})) 
   const [loading, setLoading] = useState(true)
-
+  
   const onFechaInicialChange = (date: string,index:number) => {
     //YYYY-MM-DD
     const nuevoEstado = [...items]
@@ -128,11 +137,52 @@ export const CalendarioPage = () => {
         confirmButtonText: 'Ok'
       }) 
     }
-   }
+  }
+  
+  const onChangeEditarFechaInicial = (index: number) => { 
+    const nuevoEstado = [...edicion]
+    nuevoEstado[index].fechaInicial = !nuevoEstado[index].fechaInicial
+    if (!nuevoEstado[index].fechaInicial) { 
+      nuevoEstado[index].valorEditadoFechaInicial = items[index].fechaInicial
+    }
+    setEdicion(nuevoEstado)
+  }
+  console.log(items,edicion)
+  const onChangeEditarFechaFinal = (index: number) => {
+    const nuevoEstado = [...edicion]
+    nuevoEstado[index].fechaFinal = !nuevoEstado[index].fechaFinal
+    if (!nuevoEstado[index].fechaFinal) { 
+      nuevoEstado[index].valorEditadoFechaFinal = items[index].fechaFinal
+    }
+    setEdicion(nuevoEstado)
+  }
+  const onChangeValorEditadoFechaInicial = (index: number, valor: string) => { 
+    //YYYY-MM-DD
+    const nuevoEstado = [...edicion]
+    nuevoEstado[index].valorEditadoFechaInicial = valor
+    setEdicion(nuevoEstado)
+  
+  }
+
+  const onChangeValorEditadoFechaFinal = (index: number, valor: string) => {
+    //YYYY-MM-DD
+    const nuevoEstado = [...edicion]
+    nuevoEstado[index].valorEditadoFechaFinal = valor
+    setEdicion(nuevoEstado)
+  }
 
   useEffect(() => {
     getCalendario().then((items) => {
       setItems(items)
+      setEdicion(items.map((item) => { 
+        return {
+          editar: false,
+          fechaInicial: false,
+          fechaFinal: false,
+          valorEditadoFechaInicial: item.fechaInicial,
+          valorEditadoFechaFinal: item.fechaFinal
+        }
+      }))
       setLoading(false)
     })
    }, [])
@@ -154,11 +204,11 @@ export const CalendarioPage = () => {
 
             </div>
             <div className="overflow-x-auto">
-              
+              <ul role="list" className="divide-y divide-gray-100">
+
                   {
                 items.map((item, index) => (
-                  <ul role="list" className="divide-y divide-gray-100">
-                    <li className="flex justify-between gap-x-6 py-2">
+                    <li key={`item-${index}-${item}`} className="flex justify-between gap-x-6 py-2">
 
                       <Disclosure as="div" className="p-3 w-full" defaultOpen={index === 0}>
 
@@ -184,35 +234,89 @@ export const CalendarioPage = () => {
                           <div className="px-8 py-3">
                           
                               <div className="mt-3">
-                              <dl className="border-b border-gray-100">
+                              <dl className="divide-y divide-gray-100">
                                   <div className="px-4 py-2 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
                                   <dt className="text-sm font-medium leading-6 text-gray-900">
                                     <span className="text-gray-600 font-medium">Fecha inicial</span>
                                   </dt>
-                                  <dd className="mt-1 text-sm leading-6 text-gray-700 sm:col-span-2 sm:mt-0">
+                                  <dd className="mt-1 text-sm leading-6 text-gray-700 sm:col-span-2 sm:mt-0 flex content-center">
+                                    <div className="relative flex gap-x-3 items-center">
+                                      <div className="text-sm leading-6">
+                                        <label htmlFor="comments" className="font-medium text-gray-900">Editar</label>
+                                      </div>
+                                      <div className="flex h-6 items-center">
+                                        <input
+                                          id="comments"
+                                          name="comments"
+                                          type="checkbox"
+                                          checked={edicion[index].fechaInicial}
+                                          onChange={() => onChangeEditarFechaInicial(index)}
+                                          className="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-600" />
+                                      </div>
+
+                                    </div>
                                     <input
+                                      
                                       type="date"
-                                      className="cursor-pointer border-0"
-                                      defaultValue={item.fechaInicial}
-                                      onChange={(e) => onFechaInicialChange(e.target.value, index)}
+                                      disabled={!edicion[index].fechaInicial}
+                                      className={`cursor-pointer border-0 ${!edicion[index].fechaInicial ? 'text-gray-500' : ''}`}
+                                      value={edicion[index].valorEditadoFechaInicial}
+                                      onChange={(e) => onChangeValorEditadoFechaInicial(index, e.target.value)}
                                     />
+                                    {
+                                      edicion[index].fechaInicial &&
+                                      <button type="button"
+                                        className="rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">
+                                        <BiCheck className="size-5 fill-white" />
+                                      </button>
+                                    }
                                     </dd>
                                 </div>
-                                </dl>
                                 <div className="px-4 py-2 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
                                   <dt className="text-sm font-medium leading-6 text-gray-900">
                                     <span className="text-gray-600 font-medium">Fecha de cierre</span>
                                   </dt>
-                                  <dd className="mt-1 text-sm leading-6 text-gray-700 sm:col-span-2 sm:mt-0">
+                                  <dd className="mt-1 text-sm leading-6 text-gray-700 sm:col-span-2 sm:mt-0 flex content-center">
+                                    <div className="relative flex gap-x-3 items-center">
+                                      <div className="text-sm leading-6">
+                                        <label htmlFor="comments" className="font-medium text-gray-900">Editar</label>
+                                      </div>
+                                      <div className="flex h-6 items-center">
+                                        <input
+                                          id="comments"
+                                          name="comments"
+                                          type="checkbox"
+                                          checked={edicion[index].fechaFinal}
+                                          onChange={ () => onChangeEditarFechaFinal(index)}
+                                          className="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-600" />
+                                      </div>
+                                      
+                                    </div>
                                     <input
                                       type="date"
-                                      className="cursor-pointer border-0"
-                                      defaultValue={item.fechaFinal}
-                                      onChange={(e) => onFechaInicialChange(e.target.value, index)}
+                                      disabled={!edicion[index].fechaFinal}
+                                      className={`cursor-pointer border-0 ${!edicion[index].fechaInicial ? 'text-gray-500' : ''}`}
+                                      value={edicion[index].valorEditadoFechaFinal}
+                                      onChange={(e) => onChangeValorEditadoFechaFinal(index, e.target.value)}
                                     />
-                                  </dd>
+                                    {
+                                      edicion[index].fechaFinal &&
+                                      <button type="button"
+                                        className="rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">
+                                        <BiCheck className="size-5 fill-white" />
+                                      </button>
+                                    }
+                                </dd>
+                                
                                 </div>
-                              
+                                <div className="px-4 py-2 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
+                                  <dt className="text-sm font-medium leading-6 text-gray-900">
+                                    
+                                  </dt>
+                                  
+                                </div>
+                              </dl>
+
                               
                             </div>
                           
@@ -223,10 +327,10 @@ export const CalendarioPage = () => {
                       </Disclosure>
                     </li>
 
-                          </ul>
+                          
                     ))
                   }
-
+              </ul>
             </div>
           </>
       }
