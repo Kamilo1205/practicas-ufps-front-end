@@ -101,15 +101,15 @@ export const AreasInteres: FC<AreasInteresProps> = ({
           (areaInteres, index) =>
             (
               <Transition
+                enter="duration-200 ease-out"
+                enterFrom="opacity-0 -translate-y-6"
+                enterTo="opacity-100 translate-y-0"
+                leave="duration-300 ease-out"
+                leaveFrom="opacity-100 translate-y-0"
+                leaveTo="opacity-0 -translate-y-6"
                 as={Fragment}
-                show={selectedLevels[index] >= 3 && areaInteres.areaSubArea?.length != 0}
-                enter="transform ease-in-out duration-[800ms]"
-                enterFrom="transform opacity-0"
-                enterTo="transform opacity-100"
-                leave="transition ease-in-out duration-[400ms]"
-                leaveFrom="transform opacity-100"
-              leaveTo="transform opacity-0"
-              key={`Tansition-${areaInteres.id}`}
+                show={areaInteres.areaSubArea?.length != 0}//selectedLevels[index] >= 3 && 
+                key={`Tansition-${areaInteres.id}`}
               >
                 <div key={areaInteres.id}>
                   <div className="font-medium">{areaInteres.nombre}</div>

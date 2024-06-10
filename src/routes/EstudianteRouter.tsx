@@ -3,6 +3,7 @@ import { RegistroPage } from '../pages/estudiante';
 import { useAuth } from '../contexts';
 import { Layout } from '../layouts/Layout';
 import { UsuariosPage } from '../pages/coordinador/UsuariosPage';
+import { RegistroLayout } from '../layouts/RegistroLayout';
 
 export const EstudianteRouter = () => {
   const { user } = useAuth();
@@ -20,10 +21,10 @@ export const EstudianteRouter = () => {
             )
             :
             (
-              <>
+              <Route element={<RegistroLayout />}>
                 <Route index path='/' element={<RegistroPage />} />
                 <Route path="*" element={<Navigate to="/estudiante" replace />} />
-              </>
+              </Route> 
             )   
         }
     </Routes>

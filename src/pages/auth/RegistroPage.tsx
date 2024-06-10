@@ -6,7 +6,7 @@ import { useAuth } from "../../contexts";
 import { Button, ErrorMessage, Input, Label } from "../../components/ui";
 import { RegistroSchema, registroSchema } from "../../schemas";
 import { handleAxiosError } from "../../utils";
-import { fetchPostRegistroUsuario } from "../../api/usuario.api";
+import { fetchPostRegistroUsuario } from "../../api/auth.api";
 
 export const RegistroPage = () => {
   const { signup } = useAuth();

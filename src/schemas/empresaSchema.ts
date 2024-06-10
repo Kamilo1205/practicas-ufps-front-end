@@ -1,10 +1,11 @@
 import { z } from 'zod';
 
 export const empresaSchema = z.object({
-  nombre: z.string().min(1, 'El nombre es obligatorio').default(''),
+  nombreLegal: z.string().min(1, 'El nombre legal es obligatorio').default(''),
+  nombreComercial: z.string().default(''),
   direccion: z.string().min(1, 'La dirección es obligatoria').default(''),
-  nit: z.string().min(1, 'El NIT de la empresa es obligatorio').regex(/^\d{9,10}-\d{1}$/, 'El NIT debe tener entre 9 y 10 dígitos seguidos de un dígito de verificación').default(''),
-  telefono: z.string().min(1, 'El teléfono es obligatorio').regex(/^\+\d{1,3}\s\d{7,14}$/, 'El teléfono debe tener el formato +[código de país] seguido del número local').default(''),
+  nit: z.string().min(1, 'El NIT de la empresa es obligatorio').regex(/(^\d{9,10}-\d$|^\d{10}$)/, 'El NIT debe tener entre 9 y 10 dígitos seguidos de un dígito de verificación o ser exactamente 10 dígitos numéricos').default(''),
+  telefono: z.string().min(1, 'El teléfono es obligatorio').default(''),
   paisId: z.string().min(1, 'El país es obligatorio').default(''),
   departamentoId: z.string().min(1, 'El departamento es obligatorio').default(''),
   ciudadId: z.string().min(1, 'La ciudad es obligatoria').default(''),
@@ -18,12 +19,13 @@ export const empresaSchema = z.object({
   
   representante: z.object({
     nombre: z.string().min(1, 'El nombre es obligatorio').default(''),
+    apellido: z.string().min(1, 'El apellido es obligatorio').default(''),
     email: z.string().min(1, 'El correo electrónico es obligatorio').email('El correo electrónico no es válido').default(''),
-    telefono: z.string().min(1, 'El teléfono es obligatorio').regex(/^\+\d{1,3}\s\d{7,14}$/, 'El teléfono debe tener el formato +[código de país] seguido del número local').default(''),
+    telefono: z.string().min(1, 'El teléfono es obligatorio').default(''),
     numeroDocumento: z.string().min(1, 'El número de documento es obligatorio').default(''),
     fechaExpedicionDocumento: z.string().min(1, 'La fecha de expedición del documento es obligatoria').default(''),
-    lugarExpedicionDocumento: z.string().min(1, 'El lugar de expedición del documento es obligatorio').default(''),
-    tipoDocumentoId: z.string().min(1, 'El tipo de documento es obligatorio').default('2fc56f67-1b69-4d93-af0d-7dd0a80258a4'),
+    lugarExpedicionDocumentoId: z.string().min(1, 'El lugar de expedición del documento es obligatorio').default(''),
+    tipoDocumentoId: z.string().min(1, 'El tipo de documento es obligatorio').default(''),
   }),
 });
 

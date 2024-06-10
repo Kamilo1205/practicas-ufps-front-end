@@ -7,16 +7,21 @@ import useDepartamentos from '../../hooks/useDepartamento';
 interface DepartamentoComboboxProps {
   value: string;
   onChange: (value: string) => void;
-  paisId: string;
+  paisId?: string;
+  paisNombre?: string;
 }
 
-export const DepartamentoCombobox: FC<DepartamentoComboboxProps> = ({ paisId, value = "", onChange }) => {
+export const DepartamentoCombobox: FC<DepartamentoComboboxProps> = ({ paisId, paisNombre, value = null, onChange }) => {
   const [query, setQuery] = useState<string>("");
-  const { departamentos, fetchDepartamentos } = useDepartamentos();
+  const { departamentos, fetchDepartamentos, fetchDepartamentosByPaisNombre } = useDepartamentos();
 
   useEffect(() => {
     if(paisId) fetchDepartamentos(paisId);
-  }, [paisId, fetchDepartamentos])
+  }, [paisId, fetchDepartamentos]);
+
+  useEffect(() => {
+    if(paisNombre) fetchDepartamentosByPaisNombre(paisNombre || 'Colombia');
+  }, [paisNombre, fetchDepartamentosByPaisNombre]);
 
   const filteredDepartamentos =
     query === ""
@@ -38,7 +43,7 @@ export const DepartamentoCombobox: FC<DepartamentoComboboxProps> = ({ paisId, va
             return selectDepartamento ? `${selectDepartamento?.nombre}` : "";
           }}
           onChange={(event) => setQuery(event.target.value)}
-          placeholder="Seleccione un departamento"
+          placeholder="Buscar departamento por nombre"
           autoComplete="off"
         />
         <ComboboxButton className="group absolute inset-y-0 right-0 px-2.5">

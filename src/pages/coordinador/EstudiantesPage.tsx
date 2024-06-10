@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { fetchGetEstudiantes } from "../../api/estudiante.api";
+import { fetchEstudiantes as fetchGetEstudiantes } from "../../api/estudiante.api";
 import { Avatar, Button, Pagination } from "../../components/ui";
 import { EmptyStateMessage } from "../../components/estudiantes/EmptyStateMessage";
 //import { useLocation, useNavigate } from "react-router-dom";
@@ -231,8 +231,8 @@ export const EstudiantesPage = () => {
                     <td className="text-sm whitespace-nowrap capitalize text-gray-500">
                       <div>{estudiante.direccion}</div>
                       <div>
-                        {estudiante.departamentoResidencia},{" "}
-                        {estudiante.municipioResidencia }
+                        {estudiante?.ciudadResidencia?.departamento?.nombre},{" "}
+                        {estudiante?.ciudadResidencia?.nombre }
                       </div>
                     </td>
                     <td className="text-sm whitespace-nowrap capitalize text-gray-500">

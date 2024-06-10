@@ -7,16 +7,16 @@ import useCiudades from '../../hooks/useCiudades';
 interface CiudadComboboxProps {
   value: string;
   onChange: (value: string) => void;
-  departamentoId: string;
+  departamentoId?: string;
 }
 
-export const CiudadCombobox: FC<CiudadComboboxProps> = ({ departamentoId, value = "", onChange }) => {
+export const CiudadCombobox: FC<CiudadComboboxProps> = ({ departamentoId, value = null, onChange }) => {
   const [query, setQuery] = useState<string>("");
   const { ciudades, fetchCiudades } = useCiudades();
 
   useEffect(() => {
-    if(departamentoId) fetchCiudades(departamentoId);
-  }, [departamentoId, fetchCiudades])
+    fetchCiudades(departamentoId);
+  }, [departamentoId, fetchCiudades]);
 
   const filteredCiudades =
     query === ""
@@ -24,6 +24,11 @@ export const CiudadCombobox: FC<CiudadComboboxProps> = ({ departamentoId, value 
       : ciudades.filter((item) =>
           item.nombre.toLowerCase().includes(query.toLowerCase())
         );
+
+  const displayValue = (ciudadId: string) => {
+    const selectCiudad = ciudades.find((i) => i.id == ciudadId);
+    return selectCiudad ? (!departamentoId ? `${selectCiudad?.departamento?.pais?.nombre}, ${selectCiudad?.departamento?.nombre}, ${selectCiudad?.nombre}`: `${selectCiudad?.nombre}`) : "";
+  };      
 
   return (
     <Combobox immediate value={value} onChange={onChange}>
@@ -33,12 +38,9 @@ export const CiudadCombobox: FC<CiudadComboboxProps> = ({ departamentoId, value 
             "w-full rounded-md py-1.5 text-gray-900 pr-8 pl-3 shadow-sm ring-1 ring-inset ring-gray-300 border-none text-sm leading-6",
             "focus:outline-none data-[focus]:outline-2 data-[focus]:-outline-offset-2 data-[focus]:outline-white/25"
           )}
-          displayValue={(ciudadId) => {
-            const selectCiudad = ciudades.find((i) => i.id == ciudadId);
-            return selectCiudad ? `${selectCiudad?.nombre}` : "";
-          }}
+          displayValue={displayValue}
           onChange={(event) => setQuery(event.target.value)}
-          placeholder="Seleccione una ciudad"
+          placeholder="Buscar ciudad por nombre"
           autoComplete="off"
         />
         <ComboboxButton className="group absolute inset-y-0 right-0 px-2.5">
@@ -63,7 +65,17 @@ export const CiudadCombobox: FC<CiudadComboboxProps> = ({ departamentoId, value 
                   value={ciudad.id}
                   className="group flex cursor-pointer items-center gap-2 rounded-md py-1.5 px-3 select-none data-[focus]:bg-gray-200 data-[selected]:bg-gray-300/90"
                 >
-                  <div className="text-sm/6 text-gray-900">{ciudad.nombre}</div>
+                  {
+                    departamentoId 
+                      ? <div className="text-sm/6 text-gray-900">{ciudad.nombre}</div> 
+                      : <div className="flex flex-col text-gray-900">
+                          <div className="text-sm/6">{ ciudad.nombre }</div>
+                          <div className="flex gap-x-1 text-xs">
+                            <div>{ ciudad.departamento?.pais?.nombre },</div>
+                            <div>{ ciudad.departamento?.nombre }</div>
+                          </div>
+                        </div>
+                  }                  
                 </ComboboxOption>
             ))
           }

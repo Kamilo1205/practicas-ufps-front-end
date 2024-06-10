@@ -1,6 +1,6 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useCallback } from 'react';
 import { AxiosError } from 'axios';
-import { fetchDepartamentosByPais as fetchDepartamentosPorPaisAPI, fetchDepartamentoById as fetchDepartamentoByIdAPI, createDepartamento as createDepartamentoAPI, updateDepartamento as updateDepartamentoAPI, deleteDepartamento as deleteDepartamentoAPI } from '../api/departamentos.api';
+import { fetchDepartamentosByPais as fetchDepartamentosPorPaisAPI, fetchDepartamentosByPaisNombre as fetchDepartamentosPorPaisNombreAPI, fetchDepartamentoById as fetchDepartamentoByIdAPI, createDepartamento as createDepartamentoAPI, updateDepartamento as updateDepartamentoAPI, deleteDepartamento as deleteDepartamentoAPI } from '../api/departamentos.api';
 import { Departamento } from '../interfaces';
 
 type UseDepartamentosReturn = {
@@ -8,6 +8,7 @@ type UseDepartamentosReturn = {
   cargando: boolean;
   error: AxiosError | null;
   fetchDepartamentos: (paisId: string) => Promise<void>;
+  fetchDepartamentosByPaisNombre: (paisNombre: string) => Promise<void>;
   fetchDepartamentoById: (id: string) => Promise<Departamento | null>;
   createDepartamento: (nuevoDepartamento: Omit<Departamento, 'id'>) => Promise<void>;
   updateDepartamento: (id: string, departamentoActualizado: Omit<Departamento, 'id'>) => Promise<void>;
@@ -23,6 +24,19 @@ const useDepartamentos = (): UseDepartamentosReturn => {
     setCargando(true);
     try {
       const data = await fetchDepartamentosPorPaisAPI(paisId);
+      setDepartamentos(data);
+      setError(null);
+    } catch (err) {
+      setError(err as AxiosError);
+    } finally {
+      setCargando(false);
+    }
+  }, []);
+
+  const fetchDepartamentosByPaisNombre = useCallback(async (paisNombre: string) => {
+    setCargando(true);
+    try {
+      const data = await fetchDepartamentosPorPaisNombreAPI(paisNombre);
       setDepartamentos(data);
       setError(null);
     } catch (err) {
@@ -87,7 +101,7 @@ const useDepartamentos = (): UseDepartamentosReturn => {
     }
   };
 
-  return { departamentos, cargando, error, fetchDepartamentos, fetchDepartamentoById, createDepartamento, updateDepartamento, deleteDepartamento };
+  return { departamentos, cargando, error, fetchDepartamentos, fetchDepartamentosByPaisNombre, fetchDepartamentoById, createDepartamento, updateDepartamento, deleteDepartamento };
 };
 
 export default useDepartamentos;

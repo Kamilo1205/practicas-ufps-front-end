@@ -2,12 +2,17 @@ import axios from './axios';
 import { Departamento } from '../interfaces';
 
 export const fetchDepartamentos = async (): Promise<Departamento[]> => {
-  const response = await axios.get("/departamentos");
+  const response = await axios.get('/departamentos');
   return response.data;
 };
 
 export const fetchDepartamentoById = async (id: string): Promise<Departamento> => {
   const response = await axios.get(`/departamentos/${id}`);
+  return response.data;
+};
+
+export const fetchDepartamentosByPaisNombre = async (paisNombre: string): Promise<Departamento[]> => {
+  const response = await axios.get(`/departamentos/pais/nombre/${paisNombre}`);
   return response.data;
 };
 
@@ -17,7 +22,7 @@ export const fetchDepartamentosByPais = async (paisId: string): Promise<Departam
 };
 
 export const createDepartamento = async (newDepartamento: Omit<Departamento, 'id'>): Promise<Departamento> => {
-  const response = await axios.post("/departamentos", newDepartamento);
+  const response = await axios.post('/departamentos', newDepartamento);
   return response.data;
 };
 

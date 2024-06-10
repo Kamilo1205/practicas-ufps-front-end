@@ -1,43 +1,24 @@
-import { Controller, UseFormReturn, useForm } from "react-hook-form";
-import { toast } from "sonner";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { TfiDownload } from "react-icons/tfi";
+import { UseFormReturn, useForm } from 'react-hook-form';
+import { toast } from 'sonner';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { TfiDownload } from 'react-icons/tfi';
 
-import { EmpresaSchema, empresaSchema } from "../../schemas";
-import { ErrorMessage, Input, TextArea } from "../../components/ui";
-import { fetchPostEmpresa } from "../../api/empresa.api";
-import { fetchGetDocumentoConvenio } from "../../api/documento.api";
-import {
-  Form,
-  FormControl,
-  FormDescription,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from "../../components/ui/Input/Form";
-import {
-  CiudadCombobox,
-  DepartamentoCombobox,
-  IndustriaCombobox,
-  PaisCombobox,
-  TipoDocumentoListbox,
-} from "../../components/form";
-import { PhoneInput } from "../../components/ui/PhoneInput";
+import { EmpresaSchema, empresaSchema } from '../../schemas';
+import { Button, Input, TextArea } from '../../components/ui';
+import { fetchPostEmpresa } from '../../api/empresa.api';
+import { fetchGetDocumentoConvenio } from '../../api/documento.api';
+import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from '../../components/ui/Input/Form';
+import { CiudadCombobox, DepartamentoCombobox, IndustriaCombobox, PaisCombobox, TipoDocumentoListbox } from '../../components/form';
+import { PhoneInput } from '../../components/ui/PhoneInput';
+import { FileInput } from '../../components/ui/Input/FileInput';
 
 export const RegistroPage = () => {
   const form: UseFormReturn<EmpresaSchema> = useForm<EmpresaSchema>({
     resolver: zodResolver(empresaSchema),
   });
-  const {
-    handleSubmit,
-    control,
-    watch,
-    setValue,
-    formState: { errors },
-  } = form;
-  const selectedPais = watch("paisId");
-  const selectedDepartamento = watch("departamentoId");
+  const selectedPais = form.watch("paisId");
+  const selectedDepartamento = form.watch("departamentoId");
+  const watch = form.watch() as Record<string, any>;
 
   const onSubmit = async (data: EmpresaSchema) => {
     try {
@@ -50,8 +31,6 @@ export const RegistroPage = () => {
       toast.error("Ocurrio un error");
     }
   };
-
-  console.log(errors);
 
   const downloadDocumento = async () => {
     const response = await fetchGetDocumentoConvenio();
@@ -68,7 +47,7 @@ export const RegistroPage = () => {
   return (
     <>
       <Form {...form}>
-        <form onSubmit={handleSubmit(onSubmit)}>
+        <form onSubmit={form.handleSubmit(onSubmit)}>
           <div className="space-y-12">
             <div className="border-b border-gray-900/10 pb-12">
               <h2 className="text-base font-semibold leading-7 text-gray-900">
@@ -79,13 +58,29 @@ export const RegistroPage = () => {
               </p>
 
               <div className="mt-10 grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6">
-                {/* Nombre */}
-                <div className="col-span-full">
+                {/* Nombre Legal */}
+                <div className="sm:col-span-3">
                   <FormField
-                    name="nombre"
+                    name="nombreLegal"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel>Nombre</FormLabel>
+                        <FormLabel>Nombre Legal</FormLabel>
+                        <FormControl>
+                          <Input {...field} />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                </div>
+
+                {/* Nombre Comercial */}
+                <div className="sm:col-span-3">
+                  <FormField
+                    name="nombreComercial"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Nombre Comercial (Opcional)</FormLabel>
                         <FormControl>
                           <Input {...field} />
                         </FormControl>
@@ -164,8 +159,7 @@ export const RegistroPage = () => {
                             onChange={(value) => {
                               field.onChange(value);
                               form.setValue("ciudadId", "");
-                            }}
-                          />
+                            } }                          />
                         </FormControl>
                         <FormMessage />
                       </FormItem>
@@ -193,7 +187,7 @@ export const RegistroPage = () => {
                 </div>
 
                 {/* Dirección */}
-                <div className="sm:col-span-3">
+                <div className="sm:col-span-4">
                   <FormField
                     name="direccion"
                     render={({ field }) => (
@@ -209,7 +203,7 @@ export const RegistroPage = () => {
                 </div>
 
                 {/* Telefono */}
-                <div className="sm:col-span-3">
+                <div className="sm:col-span-2">
                   <FormField
                     name="telefono"
                     render={({ field }) => (
@@ -255,12 +249,28 @@ export const RegistroPage = () => {
 
               <div className="mt-10 grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6">
                 {/* Nombre */}
-                <div className="col-span-full">
+                <div className="sm:col-span-3">
                   <FormField
                     name="representante.nombre"
                     render={({ field }) => (
                       <FormItem>
                         <FormLabel>Nombre</FormLabel>
+                        <FormControl>
+                          <Input {...field} />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                </div>
+
+                {/* Nombre */}
+                <div className="sm:col-span-3">
+                  <FormField
+                    name="representante.apellido"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Apellidos</FormLabel>
                         <FormControl>
                           <Input {...field} />
                         </FormControl>
@@ -353,12 +363,12 @@ export const RegistroPage = () => {
                 {/* Lugar de expedición */}
                 <div className="sm:col-span-3">
                   <FormField
-                    name="representante.lugarExpedicionDocumento"
+                    name="representante.lugarExpedicionDocumentoId"
                     render={({ field }) => (
                       <FormItem>
                         <FormLabel>Lugar Expedición Documento</FormLabel>
                         <FormControl>
-                          <Input {...field} />
+                          <CiudadCombobox {...field} />
                         </FormControl>
                         <FormMessage />
                       </FormItem>
@@ -379,132 +389,72 @@ export const RegistroPage = () => {
                   Descargar documento de convenio
                 </div>
               </div>
-              <div className="text-sm">
-                <div className="overflow-x-auto">
-                  <table className="min-w-full border-gray-300">
-                    <thead>
-                      <tr>
-                        <th className="min-w-72 text-gray-900 font-semibold text-sm text-left pl-0 pr-3 py-3.5">
-                          Nombre del Archivo a Subir
-                        </th>
-                        <th className="min-w-72 text-gray-900 font-semibold text-sm text-left pl-0 pr-3 py-3.5">
-                          Subir
-                        </th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      <tr>
-                        <td className="py-2 text-sm">Cámara de Comercio</td>
-                        <td className="py-2 text-sm">
-                          <Controller
-                            control={control}
-                            name="camara"
+              <div className="sm:rounded-lg ring-1 ring-gray-300 overflow-x-auto sm:mx-0 -mx-12">
+                <table className="relative min-w-full">
+                  <thead>
+                    <tr>
+                      <th scope="col" className="min-w-72 py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-gray-900 sm:pl-6">
+                        Nombre del Archivo a Subir
+                      </th>
+                      <th scope="col" className="min-w-72 py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-gray-900 table-cell sm:pl-6">
+                        Archivo Subido
+                      </th>
+                      <th scope="col" className="py-3.5 pl-4 pr-3 sm:pr-6">
+                        <span className="sr-only">Seleccionar</span>
+                      </th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {[
+                      { name: "camara", label: "Cámara de Comercio" },
+                      { name: "rut", label: "Rut" },
+                      { name: "documentoIdentidad", label: "Documento de identidad del representante legal" },
+                      { name: "convenio", label: "Solicitud de convenio" },
+                    ].map((input) => (
+                      <tr key={input.name}>
+                        <td className="py-2 border-t border-gray-200 pl-4 pr-3 text-sm sm:pl-6">
+                          {input.label}
+                        </td>
+                        <td className="py-2 border-t border-gray-200 pl-4 pr-3 text-sm sm:pl-6">
+                          {watch[input.name]?.name || "Ningún archivo seleccionado"}
+                        </td>
+                        <td className="py-2 border-t border-gray-200 pl-4 pr-3 text-sm sm:pl-6">
+                          <FormField
+                            name={input.name}
                             render={({ field }) => (
-                              <input
-                                type="file"
-                                accept="application/pdf"
-                                onChange={(e) => {
-                                  const file =
-                                    e.target.files && e.target.files[0];
-                                  if (file) field.onChange(file);
-                                }}
-                              />
+                              <FormItem>
+                                <FormControl>
+                                  <>
+                                    <FileInput 
+                                      variant="button"
+                                      accept="application/pdf"
+                                      buttonClassName="w-32"
+                                      onFileChange={(files) => {
+                                        const file = files[0];
+                                        if (file) field.onChange(file);
+                                      }}
+                                    >
+                                      Seleccionar
+                                    </FileInput>
+                                  </>
+                                </FormControl>
+                                <FormMessage />
+                              </FormItem>
                             )}
                           />
-                          <ErrorMessage
-                            errors={errors}
-                            name="camara"
-                          ></ErrorMessage>
                         </td>
                       </tr>
-                      <tr>
-                        <td className="py-2 text-sm">Rut</td>
-                        <td className="py-2 text-sm">
-                          <Controller
-                            control={control}
-                            name="rut"
-                            render={({ field }) => (
-                              <input
-                                type="file"
-                                accept="application/pdf"
-                                onChange={(e) => {
-                                  const file =
-                                    e.target.files && e.target.files[0];
-                                  if (file) field.onChange(file);
-                                }}
-                              />
-                            )}
-                          />
-                          <ErrorMessage
-                            errors={errors}
-                            name="rut"
-                          ></ErrorMessage>
-                        </td>
-                      </tr>
-                      <tr>
-                        <td className="py-2 text-sm">
-                          Documento de identidad del representante legal
-                        </td>
-                        <td className="py-2 text-sm">
-                          <Controller
-                            control={control}
-                            name="documentoIdentidad"
-                            render={({ field }) => (
-                              <input
-                                type="file"
-                                accept="application/pdf"
-                                onChange={(e) => {
-                                  const file =
-                                    e.target.files && e.target.files[0];
-                                  if (file) field.onChange(file);
-                                }}
-                              />
-                            )}
-                          />
-                          <ErrorMessage
-                            errors={errors}
-                            name="documentoIdentidad"
-                          ></ErrorMessage>
-                        </td>
-                      </tr>
-                      <tr>
-                        <td className="py-2 text-sm">Solicitud de convenio</td>
-                        <td className="py-2 text-sm">
-                          <Controller
-                            control={control}
-                            name="convenio"
-                            render={({ field }) => (
-                              <input
-                                type="file"
-                                accept="application/pdf"
-                                onChange={(e) => {
-                                  const file =
-                                    e.target.files && e.target.files[0];
-                                  if (file) field.onChange(file);
-                                }}
-                              />
-                            )}
-                          />
-                          <ErrorMessage
-                            errors={errors}
-                            name="convenio"
-                          ></ErrorMessage>
-                        </td>
-                      </tr>
-                    </tbody>
-                  </table>
-                </div>
+                    ))}
+                  </tbody>
+                </table>
               </div>
             </div>
           </div>
 
           <div className="mt-6 flex items-center justify-end gap-x-6">
-            <button
-              type="submit"
-              className="rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
-            >
+            <Button type="submit">
               Guardar
-            </button>
+            </Button>
           </div>
         </form>
       </Form>

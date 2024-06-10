@@ -5,6 +5,11 @@ export async function fetchPostUsuarioLogin(usuarioLogin: any) {
   return response.data;
 }
 
+export async function fetchPostRegistroUsuario(usuarioRegistro: any) {
+  const response = await axios.post('/auth/register', usuarioRegistro);
+  return response.data;
+}
+
 export async function fetchPostUsuarioLogout() {
   const response = await axios.post('/auth/logout');
   return response.data;

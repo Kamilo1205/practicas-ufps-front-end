@@ -2,7 +2,7 @@ import axios from './axios';
 import { Ciudad } from '../interfaces';
 
 export const fetchCiudades = async (): Promise<Ciudad[]> => {
-  const response = await axios.get("/ciudades");
+  const response = await axios.get('/ciudades');
   return response.data;
 };
 
@@ -17,7 +17,7 @@ export const fetchCiudadById = async (id: string): Promise<Ciudad> => {
 };
 
 export const createCiudad = async (newIndustria: Omit<Ciudad, 'id'>): Promise<Ciudad> => {
-  const response = await axios.post("/ciudades", newIndustria);
+  const response = await axios.post('/ciudades', newIndustria);
   return response.data;
 };
 

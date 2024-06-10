@@ -1,10 +1,9 @@
 import { FC } from 'react';
 import { Checkbox } from '@headlessui/react';
 import { HiCheck } from 'react-icons/hi2';
+import { Herramienta } from '../../interfaces/herramienta.interface';
 
-interface HerramientaCheckboxProps {
-  id: string;
-  nombre: string;
+interface HerramientaCheckboxProps extends Herramienta {
   value?: boolean | undefined
   onChange?: ((checked: boolean) => void) | undefined
 }
@@ -12,7 +11,7 @@ interface HerramientaCheckboxProps {
 export const HerramientaCheckbox: FC<HerramientaCheckboxProps> = ({ nombre, value, onChange }) => {
   return (
     <Checkbox 
-      className="group flex items-center gap-x-2 px-2 py-1 rounded-md cursor-pointer select-none p-1 ring-1 ring-gray-300 ring-inset focus:ring-2 focus:ring-indigo-600 focus-visible:outline-0 data-[checked]:ring-indigo-500 data-[checked]:bg-indigo-50/50"
+      className="group flex items-center gap-x-2 pl-2 pr-4 py-1.5 rounded-md cursor-pointer select-none p-1 ring-1 ring-gray-300 ring-inset focus:ring-2 focus:ring-indigo-600 focus-visible:outline-0 data-[checked]:ring-indigo-500 data-[checked]:bg-indigo-50/50"
       checked={value}
       onChange={onChange}
     >

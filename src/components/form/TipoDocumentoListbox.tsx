@@ -10,7 +10,7 @@ interface TipoDocumentoListboxProps {
   onChange: (value: string) => void;
 }
 
-export const TipoDocumentoListbox: FC<TipoDocumentoListboxProps> = ({ value, onChange }) => {
+export const TipoDocumentoListbox: FC<TipoDocumentoListboxProps> = ({ value = '', onChange }) => {
   const [tipoDocumentos, setTipoDocumentos] = useState<TipoDocumento[]>([]);
   const [selectedDocumento, setSelectedDocumento] = useState<TipoDocumento | null>(null);
 

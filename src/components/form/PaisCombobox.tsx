@@ -9,7 +9,7 @@ interface PaisComboboxProps {
   onChange: (value: string) => void;
 }
 
-export const PaisCombobox: FC<PaisComboboxProps> = ({ value = "", onChange }) => {
+export const PaisCombobox: FC<PaisComboboxProps> = ({ value = null, onChange }) => {
   const [query, setQuery] = useState<string>("");
   const { paises } = usePaises();
 

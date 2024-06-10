@@ -1,7 +1,7 @@
 import { useState } from "react";
 
 const Tab1 = () => { 
-  return (<></>)
+  return (<></>);
 }
 
 interface TabMenuProps { 

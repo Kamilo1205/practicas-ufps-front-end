@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
-import { fetchGetUsuarios } from '../../api/usuario.api';
+// import { fetchGetUsuarios } from '../../api/usuario.api';
 import { Usuario } from '../../interfaces';
 import { Avatar, Pagination } from '../../components/ui';
 
@@ -17,7 +17,7 @@ export const UsuariosPage = () => {
     const page = parseInt(query.get('page') || '1', 10);
 
     const fetchData = async (pageToFetch: number) => {
-      const response = await fetchGetUsuarios(pageToFetch, itemsPerPage);
+      const response = {data: [], total: 0} // await fetchGetUsuarios(pageToFetch, itemsPerPage);
       setUsuarios(response.data);
       setTotalItems(response.total);
       const totalPages = Math.ceil(response.total / itemsPerPage);

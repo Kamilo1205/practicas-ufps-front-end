@@ -1,438 +1,552 @@
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 
-import { GeneroListbox } from '../../components/genero';
-import { Button, ErrorMessage, Input, Label } from '../../components/ui';
-import { AreaInteres } from '../../interfaces/area-interes.interface';
-import { TipoDocumentoListbox } from '../../components/documento-identidad';
-import { EpsCombobox, TipoAfiliacionListbox } from '../../components/eps';
-import { AreasInteres } from '../../components/area-interes/AreasInteres';
 import { estudianteSchema } from '../../schemas/estudianteSchema';
-import { fetchGetAreasDeInteresData } from '../../api/areasInteres.api';
-import { fetchPostEstudiante } from '../../api/estudiante.api';
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from '../../components/ui/Input/Form';
+import { Button, Input } from '../../components/ui';
+import { PhoneInput } from '../../components/ui/PhoneInput';
+import {
+  CiudadCombobox,
+  DepartamentoCombobox,
+  EpsCombobox,
+  GeneroListbox,
+  TipoAfiliacionListbox,
+  TipoDocumentoListbox,
+} from '../../components/form';
+import useEstudiantes from '../../hooks/useEstudiantes';
+import { FileInput } from '../../components/ui/Input/FileInput';
+import { AreasDeInteresForm, HerramientasForm } from '../../components/area-interes';
 
 export const RegistroPage = () => {
-  const [areasInteres, setAreasInteres] = useState<AreaInteres[]>([]);
-  const { register, handleSubmit, control, formState: { errors } } = useForm({
-    resolver: zodResolver(estudianteSchema),
-    values: {
-      primerNombre: '',
-      segundoNombre: '',
-      primerApellido: '',
-      segundoApellido: '',
-      fechaNacimiento: '',
-      genero: '',
-      telefono: '',
-      departamentoResidencia: '',
-      municipioResidencia: '',
-      direccion: '',
-      telefonoHogar: '',
-      numeroDocumento: '',
-      tipoDocumento: '',
-      lugarExpedicionDocumento: '',
-      fechaExpedicionDocumento: '',
-      eps: '',
-      tipoAfiliacionEps: '',
-      fechaAfiliacionEps: '',
-      nitFondoPension: '',
-      semestreMatriculado: '',
-      codigo: '',
-      grupoMatriculado: 'grupoA',
-      areasInteres: areasInteres.map(area => ({ 
-        ...area, 
-        level: 1,
-        areaSubArea: area?.areaSubArea?.map(subArea => ({
-          ...subArea,
-          herramientas: subArea.herramientas.map(herramienta => ({
-            ...herramienta,
-            selected: false,
-          })),
-        }))
-      })),
-    },
+  const form = useForm({ 
+    resolver: zodResolver(estudianteSchema) 
   });
-  
+
+  const selectedDepartamento = form.watch("departamentoResidenciaId");
+  const watch = form.watch() as Record<string, any>;
+  const { createEstudiante, cargando, error } = useEstudiantes();
+
   useEffect(() => {
     const fetchData = async () => {
-      const areaInteres = await fetchGetAreasDeInteresData();
-      setAreasInteres(areaInteres);
+      //const areaInteres = await fetchGetAreasDeInteresData();
+      //setAreasInteres(areaInteres);
     };
     fetchData();
   }, []);
+
+  console.log(form.formState.errors);
+  if (error) console.log(error);
 
   const onSubmit = async (data: any) => {
     try {
       // const response = await fetchPostEmpresa(data);
       // login(response.usuario);
-      console.log('data',data);
+      const response = await createEstudiante(data);
+      console.log(response);
+      console.log("data", data);
     } catch (error) {
       console.log(error);
       alert("Ocurrio un error:" + error);
     }
   };
 
-  console.log(errors);
-
   return (
-    <div className="py-20 px-12 sm:py-24 sm:px-24">
-      <form onSubmit={handleSubmit(onSubmit)}>
-        <div className="space-y-12">
-          <div className="border-b border-gray-900/10 pb-12">
-            <h2 className="text-base font-semibold leading-7 text-gray-900">
-              Informacion del estudiante
-            </h2>
-            <p className="mt-1 text-sm leading-6 text-gray-600">
-              Por favor, completa la siguiente información esencial para conocer
-              mejor al estudiante.
-            </p>
+    <>
+      <Form {...form}>
+        <form onSubmit={form.handleSubmit(onSubmit)}>
+          <div className="space-y-12 relative">
+            <div className="border-b border-gray-900/10 pb-12">
+              <h2 className="text-base font-semibold leading-7 text-gray-900">
+                Informacion del estudiante
+              </h2>
+              <p className="mt-1 text-sm leading-6 text-gray-600">
+                Por favor, completa la siguiente información esencial para
+                conocer mejor al estudiante.
+              </p>
 
-            <div className="mt-10 grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6">
-              {/* Primer Nombre */}
-              <div className="sm:col-span-3">
-                <Label htmlFor="primerNombre">Primer Nombre</Label>
-                <div className="mt-2">
-                  <Input
-                    id="primerNombre"
-                    className="capitalize"
-                    autoComplete="primerNombre"
-                    {...register("primerNombre")}
+              <div className="mt-10 grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6">
+                {/* Nombres */}
+                <div className="sm:col-span-3">
+                  <FormField
+                    name="nombre"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Nombre/s</FormLabel>
+                        <FormControl>
+                          <Input {...field} />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
                   />
-                  <ErrorMessage errors={errors} name="primerNombre"></ErrorMessage>
                 </div>
-              </div>
 
-              {/* Segundo Nombre */}
-              <div className="sm:col-span-3">
-                <Label htmlFor="segundoNombre">Segundo Nombre</Label>
-                <div className="mt-2">
-                  <Input
-                    id="segundoNombre"
-                    className="capitalize"
-                    autoComplete="segundoNombre"
-                    {...register("segundoNombre")}
+                {/* Apellidos */}
+                <div className="sm:col-span-3">
+                  <FormField
+                    name="apellidos"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Apellidos</FormLabel>
+                        <FormControl>
+                          <Input {...field} />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
                   />
-                  <ErrorMessage errors={errors} name="segundoNombre"></ErrorMessage>
                 </div>
-              </div>
 
-              {/* Primer Apellido */}
-              <div className="sm:col-span-3">
-                <Label htmlFor="primerApellido">Primer Apellido</Label>
-                <div className="mt-2">
-                  <Input
-                    id="primerApellido"
-                    className="capitalize"
-                    autoComplete="primerApellido"
-                    {...register("primerApellido")}
-                  />
-                  <ErrorMessage errors={errors} name="primerApellido"></ErrorMessage>
-                </div>
-              </div>
-
-              {/* Segundo Nombre */}
-              <div className="sm:col-span-3">
-                <Label htmlFor="segundoApellido">Segundo Apellido</Label>
-                <div className="mt-2">
-                  <Input
-                    id="segundoApellido"
-                    className="capitalize"
-                    autoComplete="segundoApellido"
-                    {...register("segundoApellido")}
-                  />
-                  <ErrorMessage errors={errors} name="segundoApellido"></ErrorMessage>
-                </div>
-              </div>
-
-              {/* Fecha de Nacimiento */}
-              <div className="sm:col-span-3 lg:col-span-2">
-                <Label htmlFor="fechaNacimiento">Fecha de Nacimiento</Label>
-                <div className="mt-2">
-                  <Input
-                    id="fechaNacimiento"
-                    type="date"
-                    autoComplete="fechaNacimiento"
-                    {...register("fechaNacimiento")}
-                  />
-                  <ErrorMessage
-                    errors={errors}
+                {/* Fecha de Nacimiento */}
+                <div className="lg:col-span-2 sm:col-span-3">
+                  <FormField
                     name="fechaNacimiento"
-                  ></ErrorMessage>
-                </div>
-              </div>
-
-              {/* Genero */}
-              <div className="sm:col-span-3 lg:col-span-2">
-                <GeneroListbox control={control} name="genero" />
-                <ErrorMessage
-                  errors={errors}
-                  name="genero"
-                ></ErrorMessage>
-              </div>
-
-              {/* Numero Movil */}
-              <div className="sm:col-span-3 lg:col-span-2">
-                <Label htmlFor="telefono">Número móvil</Label>
-                <div className="mt-2">
-                  <Input
-                    id="telefono"
-                    autoComplete="telefono"
-                    {...register("telefono")}
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Fecha de Nacimiento</FormLabel>
+                        <FormControl>
+                          <Input type="date" {...field} />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
                   />
-                  <ErrorMessage errors={errors} name="telefono"></ErrorMessage>
                 </div>
-              </div>
 
-              {/* Departamento de Residencia */}
-              <div className="sm:col-span-3 lg:col-span-2">
-                <Label htmlFor="departamentoResidencia">Departamento de Residencia</Label>
-                <div className="mt-2">
-                  <Input
-                    id="departamentoResidencia"
-                    autoComplete="departamentoResidencia"
-                    {...register("departamentoResidencia")}
+                {/* Genero */}
+                <div className="lg:col-span-2 sm:col-span-3">
+                  <FormField
+                    name="genero"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Genero</FormLabel>
+                        <FormControl>
+                          <GeneroListbox {...field} />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
                   />
-                  <ErrorMessage
-                    errors={errors}
-                    name="departamentoResidencia"
-                  ></ErrorMessage>
                 </div>
-              </div>
 
-              {/* Municipio de Residencia */}
-              <div className="sm:col-span-3 lg:col-span-2">
-                <Label htmlFor="municipioResidencia">Municipio de Residencia</Label>
-                <div className="mt-2">
-                  <Input
-                    id="municipioResidencia"
-                    autoComplete="municipioResidencia"
-                    {...register("municipioResidencia")}
+                {/* Telefono */}
+                <div className="lg:col-span-2 sm:col-span-3">
+                  <FormField
+                    name="telefono"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Telefono</FormLabel>
+                        <FormControl>
+                          <PhoneInput {...field} />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
                   />
-                  <ErrorMessage
-                    errors={errors}
-                    name="municipioResidencia"
-                  ></ErrorMessage>
                 </div>
-              </div>
 
-              {/* Direccion */}
-              <div className="sm:col-span-3 lg:col-span-2">
-                <Label htmlFor="direccion">Dirección</Label>
-                <div className="mt-2">
-                  <Input
-                    id="direccion"
-                    autoComplete="direccion"
-                    {...register("direccion")}
+                {/* Departamento Residencia */}
+                <div className="lg:col-span-2 sm:col-span-3">
+                  <FormField
+                    name="departamentoResidenciaId"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Departamento de Residencia</FormLabel>
+                        <FormControl>
+                          <DepartamentoCombobox
+                            paisNombre="Colombia"
+                            {...field}
+                            onChange={(value) => {
+                              field.onChange(value);
+                              form.setValue("ciudadResidenciaId", "");
+                            }}
+                          />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
                   />
-                  <ErrorMessage errors={errors} name="direccion"></ErrorMessage>
                 </div>
-              </div>
 
-              {/* Telefono Hogar */}
-              <div className="sm:col-span-3 lg:col-span-2">
-                <Label htmlFor="telefonoHogar">Teléfono Hogar (Opcional)</Label>
-                <div className="mt-2">
-                  <Input
-                    id="telefonoHogar"
-                    autoComplete="telefonoHogar"
-                    {...register("telefonoHogar")}
+                {/* Ciudad */}
+                <div className="lg:col-span-2 sm:col-span-3">
+                  <FormField
+                    name="ciudadResidenciaId"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Ciudad de Residencia</FormLabel>
+                        <FormControl>
+                          <CiudadCombobox
+                            departamentoId={selectedDepartamento}
+                            {...field}
+                          />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
                   />
-                  <ErrorMessage
-                    errors={errors}
+                </div>
+
+                {/* Dirección */}
+                <div className="sm:col-span-4">
+                  <FormField
+                    name="direccionResidencia"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Dirección</FormLabel>
+                        <FormControl>
+                          <Input {...field} />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                </div>
+
+                {/* Telefono Hogar */}
+                <div className="sm:col-span-2">
+                  <FormField
                     name="telefonoHogar"
-                  ></ErrorMessage>
-                </div>
-              </div>
-            </div>
-
-            <div className="mt-10 grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6">
-              <div className="col-span-full">
-                <p className="text-sm leading-6 text-gray-600">
-                 Para hacer más eficiente el proceso de registro, le solicitamos que 
-                 revise minuciosamente la información que planea proporcionar, asegurándose 
-                 de que sea precisa y válida, con el objetivo de evitar errores
-                </p>
-              </div>
-
-              {/* Numero Documento */}
-              <div className="sm:col-span-3">
-                <Label htmlFor="numeroDocumento">Número Documento</Label>
-                <div className="mt-2">
-                  <Input
-                    id="numeroDocumento"
-                    type="number"
-                    autoComplete="numeroDocumento"
-                    {...register("numeroDocumento")}
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Telefono Hogar (Opcional)</FormLabel>
+                        <FormControl>
+                          <PhoneInput {...field} />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
                   />
-                  <ErrorMessage
-                    errors={errors}
+                </div>
+
+                <div className="col-span-full">
+                  <p className="text-sm leading-6 text-gray-600">
+                    Para hacer más eficiente el proceso de registro, le
+                    solicitamos que revise minuciosamente la información que
+                    planea proporcionar, asegurándose de que sea precisa y
+                    válida, con el objetivo de evitar errores
+                  </p>
+                </div>
+
+                {/* Número de documento de identidad */}
+                <div className="sm:col-span-3">
+                  <FormField
                     name="numeroDocumento"
-                  ></ErrorMessage>
-                </div>
-              </div>
-
-              {/* Tipo Documento */}
-              <div className="sm:col-span-3">
-                <TipoDocumentoListbox control={control} name="tipoDocumento" />
-                <ErrorMessage
-                  errors={errors}
-                  name="tipoDocumento"
-                ></ErrorMessage>
-              </div>
-
-              {/* Lugar Expedicion */}
-              <div className="sm:col-span-3 lg:col-span-2">
-                <Label htmlFor="lugarExpedicionDocumento">Lugar Expedición</Label>
-                <div className="mt-2">
-                  <Input
-                    id="lugarExpedicionDocumento"
-                    autoComplete="lugarExpedicionDocumento"
-                    {...register("lugarExpedicionDocumento")}
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Número de documento de identidad</FormLabel>
+                        <FormControl>
+                          <Input {...field} />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
                   />
-                  <ErrorMessage errors={errors} name="lugarExpedicionDocumento"></ErrorMessage>
                 </div>
-              </div>
 
-              {/* Fecha Expedicion */}
-              <div className="sm:col-span-3 lg:col-span-2">
-                <Label htmlFor="fechaExpedicionDocumento">Fecha de Expedición</Label>
-                <div className="mt-2">
-                  <Input
-                    id="fechaExpedicionDocumento"
-                    type="date"
-                    autoComplete="fechaExpedicionDocumento"
-                    {...register("fechaExpedicionDocumento")}
+                {/* Tipo de documento */}
+                <div className="sm:col-span-3">
+                  <FormField
+                    name="tipoDocumentoId"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Tipo de documento de identidad</FormLabel>
+                        <FormControl>
+                          <TipoDocumentoListbox {...field} />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
                   />
-                  <ErrorMessage errors={errors} name="fechaExpedicionDocumento"></ErrorMessage>
                 </div>
-              </div>
-            </div>
 
-            <div className="mt-12 grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6">
-              <div className="col-span-full">
-                <p className="text-sm leading-6 text-gray-600">
-                  Para obtener la información sobre la fecha de afiliación a su empresa prestadora de salud y obtener el certificado de afiliación, 
-                  por favor consulte el siguiente enlace:
-                    <a href="https://www.adres.gov.co/consulte-su-eps" className="ml-1 text-gray-900 font-medium" target="_blank" rel="noopener noreferrer">
+                {/* Fecha de expedición */}
+                <div className="sm:col-span-3">
+                  <FormField
+                    name="fechaExpedicionDocumento"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Fecha Expedición Documento</FormLabel>
+                        <FormControl>
+                          <Input type="date" {...field} />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                </div>
+
+                {/* Lugar de expedición */}
+                <div className="sm:col-span-3">
+                  <FormField
+                    name="lugarExpedicionDocumentoId"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Lugar Expedición Documento</FormLabel>
+                        <FormControl>
+                          <CiudadCombobox {...field} />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                </div>
+
+                <div className="col-span-full">
+                  <p className="text-sm leading-6 text-gray-600">
+                    Para obtener la información sobre la fecha de afiliación a
+                    su empresa prestadora de salud y obtener el certificado de
+                    afiliación, por favor consulte el siguiente enlace:
+                    <a
+                      href="https://www.adres.gov.co/consulte-su-eps"
+                      className="ml-1 text-gray-900 font-medium"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    >
                       Consulta sobre tu Afiliación
-                    </a>.
-                  Asegúrese de tener a mano la información necesaria para completar la consulta en línea.
-                </p>
-              </div>
+                    </a>
+                    . Asegúrese de tener a mano la información necesaria para
+                    completar la consulta en línea.
+                  </p>
+                </div>
 
-              {/* Empresa Prestadora de Salud */}
-              <div className="sm:col-span-3">
-                <EpsCombobox control={control} name="eps" />
-                <ErrorMessage errors={errors} name="eps" />
-              </div>
-
-              {/* Tipo Afiliacion */}
-              <div className="sm:col-span-3">
-                <TipoAfiliacionListbox control={control} name="tipoAfiliacionEps"/>
-                <ErrorMessage errors={errors} name="tipoAfiliacionEps" />
-              </div>
-
-              {/* Fecha Afiliacion */}
-              <div className="sm:col-span-3 lg:col-span-2">
-                <Label htmlFor="fechaAfiliacionEps">Fecha de Afiliación</Label>
-                <div className="mt-2">
-                  <Input
-                    id="fechaAfiliacionEps"
-                    type="date"
-                    autoComplete="fechaAfiliacionEps"
-                    {...register("fechaAfiliacionEps")}
+                {/* Empresa Prestadora de Salud */}
+                <div className="sm:col-span-3">
+                  <FormField
+                    name="epsId"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Empresa Prestadora de Salud</FormLabel>
+                        <FormControl>
+                          <EpsCombobox {...field} />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
                   />
-                  <ErrorMessage
-                    errors={errors}
+                </div>
+
+                {/* Tipo de afiliacion */}
+                <div className="sm:col-span-3">
+                  <FormField
+                    name="tipoAfiliacionEpsId"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Tipo de Afiliación</FormLabel>
+                        <FormControl>
+                          <TipoAfiliacionListbox {...field} />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                </div>
+
+                {/* Fecha de Afiliación */}
+                <div className="sm:col-span-3">
+                  <FormField
                     name="fechaAfiliacionEps"
-                  ></ErrorMessage>
-                </div>
-              </div>
-
-              {/* Nit de fondo de pension */}
-              <div className="sm:col-span-3">
-                <Label htmlFor="nitFondoPension">NIT de fondo de pensión (Opcional)</Label>
-                <div className="mt-2">
-                  <Input
-                    id="nitFondoPension"
-                    autoComplete="nitFondoPension"
-                    {...register("nitFondoPension")}
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Fecha de Afiliación</FormLabel>
+                        <FormControl>
+                          <Input type="date" {...field} />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
                   />
-                  <ErrorMessage
-                    errors={errors}
+                </div>
+
+                {/* Nit de fondo de pensión */}
+                <div className="sm:col-span-3">
+                  <FormField
                     name="nitFondoPension"
-                  ></ErrorMessage>
-                </div>
-              </div>
-            </div>
-
-            <div className="mt-10 grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6">
-              <div className="col-span-full">
-                <p className="text-sm leading-6 text-gray-600">
-                  A continuación registre su información académica, así como sus áreas de interés
-                  y los conocimientos/herramienstas que manejan adecuadamente.
-                </p>
-              </div>
-
-              {/* Semestre Matriculado */}
-              <div className="sm:col-span-3">
-                <Label htmlFor="semestreMatriculado">Semestre Matriculado</Label>
-                <div className="mt-2">
-                  <Input
-                    id="semestreMatriculado"
-                    type="number"
-                    autoComplete="semestreMatriculado"
-                    {...register("semestreMatriculado")}
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>
+                          Nit de Fondo de Pensión (Opcional)
+                        </FormLabel>
+                        <FormControl>
+                          <Input {...field} />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
                   />
-                  <ErrorMessage errors={errors} name="semestreMatriculado"></ErrorMessage>
                 </div>
-              </div>
 
-              {/* Codigo */}
-              <div className="sm:col-span-3 lg:col-span-2">
-                <Label htmlFor="codigo">Código</Label>
-                <div className="mt-2">
-                  <Input
-                    id="codigo"
-                    type="number"
-                    autoComplete="codigo"
-                    {...register("codigo")}
+                <div className="col-span-full">
+                  <p className="text-sm leading-6 text-gray-600">
+                    A continuación registre su información académica, así como
+                    sus áreas de interés y los conocimientos/herramienstas que
+                    manejan adecuadamente.
+                  </p>
+                </div>
+
+                {/* Semestre Matriculado */}
+                <div className="sm:col-span-3">
+                  <FormField
+                    name="semestreMatriculado"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Semestre Matriculado</FormLabel>
+                        <FormControl>
+                          <Input type="number" {...field} />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
                   />
-                  <ErrorMessage errors={errors} name="codigo"></ErrorMessage>
+                </div>
+
+                {/* Codigo */}
+                <div className="sm:col-span-3">
+                  <FormField
+                    name="codigo"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Codigo</FormLabel>
+                        <FormControl>
+                          <Input type="number" {...field} />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                </div>
+
+                {/* Grupo de práctica matriculado */}
+                <div className="sm:col-span-3">
+                  <FormField
+                    name="grupoMatriculado"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Grupo de Prácticas Matriculado</FormLabel>
+                        <FormControl>
+                          <div className="flex flex-col space-y-2 sm:flex-row sm:space-y-0 sm:space-x-6 text-sm">
+                            <label className="flex items-center">
+                              <input type="radio" {...field} value="grupoA" />
+                              <span className="ml-2">Grupo A</span>
+                            </label>
+                            <label className="flex items-center">
+                              <input type="radio" {...field} value="grupoB" />
+                              <span className="ml-2">Grupo B</span>
+                            </label>
+                            <label className="flex items-center">
+                              <input type="radio" {...field} value="grupoC" />
+                              <span className="ml-2">Grupo C</span>
+                            </label>
+                          </div>
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
                 </div>
               </div>
 
-              {/* Grupo de Practicas */}
-              <div className="sm:col-span-full">
-                <Label htmlFor="grupoMatriculado">Grupo de Prácticas Matriculado</Label>
-                <div className="mt-3.5 sm:flex sm:gap-x-16 sm:items-center">
-                  <div className="flex items-center">
-                    <input id="grupoA" className="cursor-pointer" type="radio" {...register("grupoMatriculado")} value="grupoA" defaultChecked/>
-                    <Label htmlFor="grupoA" className="ml-3">Grupo A</Label>
-                  </div>
-                  <div className="flex items-center">
-                    <input id="grupoB" className="cursor-pointer" type="radio" {...register("grupoMatriculado")} value="grupoB"/>
-                    <Label htmlFor="grupoB" className="ml-3">Grupo B</Label>
-                  </div>
-                  <div className="flex items-center">
-                    <input id="grupoC" className="cursor-pointer" type="radio" {...register("grupoMatriculado")} value="grupoC"/>
-                    <Label htmlFor="grupoC" className="ml-3">Grupo C</Label>
-                  </div>
-                  <ErrorMessage errors={errors} name="grupoMatriculado"></ErrorMessage>
+              <div className="mt-10">
+                <AreasDeInteresForm />
+              </div>
+
+              <div className="mt-10">
+                <div className="text-sm text-gray-900 mb-2">
+                  Seleccione las herramientas y/o conocimientos que maneja de las
+                  siguientes subcategorias (solo si aplica).
+                </div>
+                <HerramientasForm />
+              </div>
+
+              <div className="mt-10 space-y-4">
+                <div className="font-medium">Documentos</div>
+                <div className="sm:rounded-lg ring-1 ring-gray-300 overflow-x-auto sm:mx-0 -mx-12">
+                  <table className="relative min-w-full">
+                    <thead>
+                      <tr>
+                        <th
+                          scope="col"
+                          className="min-w-72 py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-gray-900 sm:pl-6"
+                        >
+                          Nombre del Archivo a Subir
+                        </th>
+                        <th
+                          scope="col"
+                          className="min-w-72 py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-gray-900 table-cell sm:pl-6"
+                        >
+                          Archivo Subido
+                        </th>
+                        <th scope="col" className="py-3.5 pl-4 pr-3 sm:pr-6">
+                          <span className="sr-only">Seleccionar</span>
+                        </th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {[
+                        {
+                          name: "documentoIdentidad",
+                          label: "Documento de identidad",
+                        },
+                        {
+                          name: "certificadoAfiliacionEps",
+                          label: "Certificado de afiliación EPS",
+                        },
+                        { name: "horarioClase", label: "Horario de clase" },
+                        { name: "hojaDeVida", label: "Hoja de vida" },
+                      ].map((input) => (
+                        <tr key={input.name}>
+                          <td className="py-2 border-t border-gray-200 pl-4 pr-3 text-sm sm:pl-6">
+                            {input.label}
+                          </td>
+                          <td className="py-2 border-t border-gray-200 pl-4 pr-3 text-sm sm:pl-6">
+                            {watch[input.name]?.name ||
+                              "Ningún archivo seleccionado"}
+                          </td>
+                          <td className="py-2 border-t border-gray-200 pl-4 pr-3 text-sm sm:pl-6">
+                            <FormField
+                              name={input.name}
+                              render={({ field }) => (
+                                <FormItem>
+                                  <FormControl>
+                                    <>
+                                      <FileInput
+                                        variant="button"
+                                        accept="application/pdf"
+                                        buttonClassName="w-32"
+                                        onFileChange={(files) => {
+                                          const file = files[0];
+                                          if (file) field.onChange(file);
+                                        }}
+                                      >
+                                        Seleccionar
+                                      </FileInput>
+                                    </>
+                                  </FormControl>
+                                  <FormMessage />
+                                </FormItem>
+                              )}
+                            />
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
                 </div>
               </div>
             </div>
-
-            <div className="mt-8">
-              <AreasInteres control={control} areasInteres={areasInteres} />
-            </div>
-
-
           </div>
-        </div>
 
-        <Button type="submit">Enviar</Button>
-      </form>
-    </div>
+          <Button type="submit">Enviar</Button>
+        </form>
+      </Form>
+    </>
   );
 };

@@ -1,13 +1,13 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useCallback } from 'react';
 import { AxiosError } from 'axios';
-import { fetchCiudadesByDepartamento as fetchCiudadesPorDepartamentoAPI, fetchCiudadById as fetchCiudadByIdAPI, createCiudad as createCiudadAPI, updateCiudad as updateCiudadAPI, deleteCiudad as deleteCiudadAPI } from '../api/ciudades.api';
+import { fetchCiudades as fetchCiudadesAPI,  fetchCiudadesByDepartamento as fetchCiudadesPorDepartamentoAPI, fetchCiudadById as fetchCiudadByIdAPI, createCiudad as createCiudadAPI, updateCiudad as updateCiudadAPI, deleteCiudad as deleteCiudadAPI } from '../api/ciudades.api';
 import { Ciudad } from '../interfaces';
 
 type UseCiudadesReturn = {
   ciudades: Ciudad[];
   cargando: boolean;
   error: AxiosError | null;
-  fetchCiudades: (departamentoId: string) => Promise<void>;
+  fetchCiudades: (departamentoId?: string) => Promise<void>;
   fetchCiudadById: (id: string) => Promise<Ciudad | null>;
   createCiudad: (nuevaCiudad: Omit<Ciudad, 'id'>) => Promise<void>;
   updateCiudad: (id: string, ciudadActualizada: Omit<Ciudad, 'id'>) => Promise<void>;
@@ -19,11 +19,16 @@ const useCiudades = (): UseCiudadesReturn => {
   const [cargando, setCargando] = useState<boolean>(false);
   const [error, setError] = useState<AxiosError | null>(null);
 
-  const fetchCiudades = useCallback(async (departamentoId: string) => {
+  const fetchCiudades = useCallback(async (departamentoId?: string) => {
     setCargando(true);
     try {
-      const data = await fetchCiudadesPorDepartamentoAPI(departamentoId);
-      setCiudades(data);
+      if (departamentoId) {
+        const ciudadesData = await fetchCiudadesPorDepartamentoAPI(departamentoId);
+        setCiudades(ciudadesData);
+      } else {
+        const todasLasCiudadesData = await fetchCiudadesAPI();
+        setCiudades(todasLasCiudadesData);
+      }
       setError(null);
     } catch (err) {
       setError(err as AxiosError);
