@@ -242,12 +242,12 @@ export const CalendarioPage = () => {
                                   <dd className="mt-1 text-sm leading-6 text-gray-700 sm:col-span-2 sm:mt-0 flex content-center">
                                     <div className="relative flex gap-x-3 items-center">
                                       <div className="text-sm leading-6">
-                                        <label htmlFor="comments" className="font-medium text-gray-900">Editar</label>
+                                      <label htmlFor={`${index}-fechaInicialEdit`} className="font-medium text-gray-900">Editar</label>
                                       </div>
                                       <div className="flex h-6 items-center">
                                         <input
-                                          id="comments"
-                                          name="comments"
+                                          id={`${index}-fechaInicialEdit`}
+                                          name={`${index}-fechaInicialEdit`}
                                           type="checkbox"
                                           checked={edicion[index].fechaInicial}
                                           onChange={() => onChangeEditarFechaInicial(index)}
@@ -279,12 +279,12 @@ export const CalendarioPage = () => {
                                   <dd className="mt-1 text-sm leading-6 text-gray-700 sm:col-span-2 sm:mt-0 flex content-center">
                                     <div className="relative flex gap-x-3 items-center">
                                       <div className="text-sm leading-6">
-                                        <label htmlFor="comments" className="font-medium text-gray-900">Editar</label>
+                                        <label htmlFor={`${index}-fechaFinalEdit`} className="font-medium text-gray-900">Editar</label>
                                       </div>
                                       <div className="flex h-6 items-center">
                                         <input
-                                          id="comments"
-                                          name="comments"
+                                          id={`${index}-fechaFinalEdit`}
+                                          name={`${index}-fechaFinalEdit`}
                                           type="checkbox"
                                           checked={edicion[index].fechaFinal}
                                           onChange={ () => onChangeEditarFechaFinal(index)}
