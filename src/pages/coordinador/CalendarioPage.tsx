@@ -99,13 +99,13 @@ export const CalendarioPage = () => {
       valorEditadoFechaFinal: ''
   }})) 
   const [loading, setLoading] = useState(true)
-  
+  /*
   const onFechaInicialChange = (date: string,index:number) => {
     //YYYY-MM-DD
     const nuevoEstado = [...items]
     nuevoEstado[index].fechaInicial = date
     setItems(nuevoEstado)
-  }
+  }*/
 
   const saveChanges = async () => {
     //console.log('Guardando cambios')
@@ -147,7 +147,7 @@ export const CalendarioPage = () => {
     }
     setEdicion(nuevoEstado)
   }
-  console.log(items,edicion)
+ 
   const onChangeEditarFechaFinal = (index: number) => {
     const nuevoEstado = [...edicion]
     nuevoEstado[index].fechaFinal = !nuevoEstado[index].fechaFinal
