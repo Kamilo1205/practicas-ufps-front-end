@@ -1,6 +1,11 @@
 import { useEffect, useState } from "react";
+<<<<<<< HEAD
 import { fetchEstudiante as fetchGetEstudiantes } from "../../api/estudiante.api";
 import { Avatar, Button,  } from "../../components/ui";
+=======
+import { fetchEstudiantes as fetchGetEstudiantes } from "../../api/estudiante.api";
+import { Avatar, Button, Pagination } from "../../components/ui";
+>>>>>>> 822fe39d973f4a515a2a11ede60665366b4772e8
 import { EmptyStateMessage } from "../../components/estudiantes/EmptyStateMessage";
 //import { useLocation, useNavigate } from "react-router-dom";
 import { Estudiante } from "../../interfaces/estudiante.interface";
@@ -56,7 +61,12 @@ const Tabs = [
 ]
 
 export const EstudiantesPage = () => {
-  const [estudiantes, setEstudiantes] = useState<Estudiante[]>([]);
+  const [estudiantes, setEstudiantes] = useState<{ estudiantes: Estudiante[], total: number }>({
+    estudiantes: [],
+    total: 0,
+  
+  });
+  console.log(estudiantes)
   const [totalItems, setTotalItems] = useState<number>(0); // Número total de ítems
   const [currentPage, setCurrentPage] = useState<number>(1);
   const [itemsPerPage] = useState<number>(5); // Suponiendo que el backend maneja 10 ítems por página
@@ -72,9 +82,13 @@ export const EstudiantesPage = () => {
 
   useEffect(() => {
     const fetchData = async () => {
-      //const response = await fetchGetEstudiantes({grupo:Tabs[tab].grupo, search:filtro, page: currentPage, limit: itemsPerPage});
-      //setEstudiantes(response);
-      //console.log(response);
+      const {data,total} = await fetchGetEstudiantes(currentPage,itemsPerPage,Tabs[tab].grupo, filtro);
+      setEstudiantes({
+        estudiantes: data || [],
+        total: total
+      
+      });
+      console.log(data);
     };
     fetchData();
   }, [tab,filtro]);
@@ -125,7 +139,7 @@ export const EstudiantesPage = () => {
         activeTab={tab}
         setTab={setTab}
       />
-      {estudiantes.length == 0 ? (
+      {estudiantes.estudiantes.length == 0 ? (
         <EmptyStateMessage
           setOpen={setAgregarEstudiante}
         />
@@ -138,7 +152,7 @@ export const EstudiantesPage = () => {
                 setFiltro={setFiltro}
                 encabezados={["Nombre", "Codigo", "Dirección", "Telefono", "Grupo", "Estado"]}
                 filas={
-                  estudiantes.map((estudiante) => [
+                  estudiantes.estudiantes.map((estudiante) => [
                     <div className="flex items-center">
                       <div className="shrink-0 w-11 h-11">
                         <Avatar url={estudiante?.usuario?.imagenUrl} />
