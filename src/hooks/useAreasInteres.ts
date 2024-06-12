@@ -1,7 +1,7 @@
 import { useState, useCallback, useEffect } from 'react';
 import { AxiosError } from 'axios';
 import { fetchAreasDeInteres as fetchAreasDeInteresAPI, fetchSubareasByArea as fetchSubareasPorAreaAPI, fetchAreaDeInteresById as fetchAreaDeInteresByIdAPI, createAreaDeInteres as createAreaDeInteresAPI, updateAreaDeInteres as updateAreaDeInteresAPI, deleteAreaDeInteres as deleteAreaDeInteresAPI } from '../api/areasInteres.api';
-import { AreaInteres } from '../interfaces/area-interes.interface';
+import { AreaInteres } from '../interfaces';
 
 type UseAreasDeInteresReturn = {
   areas: AreaInteres[];
