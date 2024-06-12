@@ -1,5 +1,5 @@
 import axios from './axios';
-import { AreaInteres } from '../interfaces/area-interes.interface';
+import { AreaInteres } from '../interfaces';
 
 export const fetchAreasDeInteres = async (): Promise<AreaInteres[]> => {
   const response = await axios.get('/areas-interes');
