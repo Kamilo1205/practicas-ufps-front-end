@@ -1,9 +1,18 @@
-import { AreaSubArea } from './area-sub-area.interface';
+import { Herramienta } from './herramienta.interface';
 
 export interface AreaInteres {
-  id:                 string;
-  nombre:             string;
-  areaSubArea?:       AreaSubArea[];
-  fechaCreacion:      Date;
-  fechaActualizacion: Date;
+  id:                      string;
+  nombre:                  string;
+  fechaCreacion:           Date;
+  fechaActualizacion:      Date;
+  areaPadre?:              AreaInteres; 
+  subAreas:               AreaInteres[];
+  areaInteresHerramientas: areaInteresHerramientas[];
+}
+
+export interface areaInteresHerramientas {
+  id: string;
+  herramienta: Herramienta;
+  fechaCreacion:           Date;
+  fechaActualizacion:      Date;
 }

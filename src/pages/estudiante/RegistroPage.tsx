@@ -34,22 +34,22 @@ export const RegistroPage = () => {
   const watch = form.watch() as Record<string, any>;
   const { createEstudiante, cargando, error } = useEstudiantes();
 
-  useEffect(() => {
-    const fetchData = async () => {
-      //const areaInteres = await fetchGetAreasDeInteresData();
-      //setAreasInteres(areaInteres);
-    };
-    fetchData();
-  }, []);
-
+  console.log(error);
   console.log(form.formState.errors);
-  if (error) console.log(error);
-
   const onSubmit = async (data: any) => {
     try {
-      // const response = await fetchPostEmpresa(data);
-      // login(response.usuario);
-      const response = await createEstudiante(data);
+      const formattedData = {
+        ...data,
+        areasInteres: Object.entries(data.areasInteres).map(([areaInteresId, nivelInteres]) => ({
+          areaInteresId,
+          nivelInteres: parseInt(nivelInteres as string, 10),
+        })),
+        herramientas: Object.entries(data.herramientas)
+          .filter(([, value]) => value)
+          .map(([herramientaId]) => herramientaId),
+      };
+
+      const response = await createEstudiante(formattedData);
       console.log(response);
       console.log("data", data);
     } catch (error) {

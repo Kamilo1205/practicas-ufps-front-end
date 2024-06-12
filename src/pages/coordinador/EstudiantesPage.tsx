@@ -1,11 +1,6 @@
 import { useEffect, useState } from "react";
-<<<<<<< HEAD
-import { fetchEstudiantes as fetchGetEstudiantes } from "../../api/estudiante.api";
-import { Avatar, Button, Pagination } from "../../components/ui";
-=======
-import { fetchGetEstudiantes } from "../../api/estudiante.api";
+import { fetchEstudiante as fetchGetEstudiantes } from "../../api/estudiante.api";
 import { Avatar, Button,  } from "../../components/ui";
->>>>>>> 0873d30cd0e461364d9b3fd64cb00f0e257da88a
 import { EmptyStateMessage } from "../../components/estudiantes/EmptyStateMessage";
 //import { useLocation, useNavigate } from "react-router-dom";
 import { Estudiante } from "../../interfaces/estudiante.interface";
@@ -77,9 +72,9 @@ export const EstudiantesPage = () => {
 
   useEffect(() => {
     const fetchData = async () => {
-      const response = await fetchGetEstudiantes({grupo:Tabs[tab].grupo, search:filtro, page: currentPage, limit: itemsPerPage});
-      setEstudiantes(response);
-      console.log(response);
+      //const response = await fetchGetEstudiantes({grupo:Tabs[tab].grupo, search:filtro, page: currentPage, limit: itemsPerPage});
+      //setEstudiantes(response);
+      //console.log(response);
     };
     fetchData();
   }, [tab,filtro]);
