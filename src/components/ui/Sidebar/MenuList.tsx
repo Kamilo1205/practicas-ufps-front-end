@@ -5,15 +5,17 @@ export const MenuList = () => {
 
   const navLinks = [
     { to: '/coordinador/usuarios', text: 'Usuarios', icon: HiOutlineUsers, roles: ['administrador'] },
-    { to: '/coordinador/empresas', text: 'Empresas', icon: HiOutlineBuildingOffice2, roles: ['administrador', 'director-programa'] },
+    { to: '/coordinador/empresas', text: 'Empresas', icon: HiOutlineBuildingOffice2, roles: ['administrador','coordinador', 'director-programa'] },
     { to: '/coordinador/estudiantes', text: 'Estudiantes', icon: HiOutlineUser, roles: ['administrador', 'director-programa', 'coordinador'] },
     { to: '/coordinador/tutores', text: 'Tutores', icon: HiOutlineUsers, roles: ['administrador', 'director-programa', 'coordinador'] },
     { to: '/coordinador/projectos', text: 'Projectos', icon: HiOutlineFolder, roles: ['administrador', 'director-programa', 'coordinador'] },
     { to: '/coordinador/documentos', text: 'Documentos', icon: HiOutlineDocumentDuplicate, roles: ['administrador', 'director-programa', 'coordinador'] },
-    { to: '/coordinador/documentos', text: 'Calendario', icon: HiOutlineCalendar, roles: ['administrador', 'coordinador'] },
+    { to: '/coordinador/calendario', text: 'Calendario', icon: HiOutlineCalendar, roles: ['administrador', 'coordinador'] },
     { to: '/coordinador/reportes', text: 'Reportes', icon: HiOutlineChartPie, roles: ['administrador', 'coordinador'] },
     { to: '/empresa/tutores', text: 'Tutores', icon: HiOutlineUsers, roles: ['empresa'] },
     { to: '/empresa/practicantes', text: 'Practicantes', icon: HiOutlineUsers, roles: ['empresa'] },
+    { to: '/empresa/solicitudes', text: 'Administración de solicitudes', icon: HiOutlineUsers, roles: ['empresa'] },
+
   ];       
 
   return (
