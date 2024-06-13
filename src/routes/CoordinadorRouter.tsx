@@ -22,6 +22,7 @@ export const CoordinadorRouter = () => {
         <Route path='documentos' element={<DocumentosPage />} /> 
         <Route path='calendario' element={<CalendarioPage />} />
         <Route path='configuracion/*' element={<ConfiguracionRouter />} />
+        <Route path='practicas' element={<PracticasPage />} />
         <Route path="*" element={<Navigate to="/coordinador" replace />} />
       </Route>
     </Routes>
