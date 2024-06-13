@@ -8,7 +8,7 @@ export const MenuList = () => {
     { to: '/coordinador/empresas', text: 'Empresas', icon: HiOutlineBuildingOffice2, roles: ['administrador','coordinador', 'director-programa'] },
     { to: '/coordinador/estudiantes', text: 'Estudiantes', icon: HiOutlineUser, roles: ['administrador', 'director-programa', 'coordinador'] },
     { to: '/coordinador/tutores', text: 'Tutores', icon: HiOutlineUsers, roles: ['administrador', 'director-programa', 'coordinador'] },
-    { to: '/coordinador/projectos', text: 'Projectos', icon: HiOutlineFolder, roles: ['administrador', 'director-programa', 'coordinador'] },
+    { to: '/coordinador/practicas', text: 'Practicas', icon: HiOutlineFolder, roles: ['administrador', 'director-programa', 'coordinador'] },
     { to: '/coordinador/documentos', text: 'Documentos', icon: HiOutlineDocumentDuplicate, roles: ['administrador', 'director-programa', 'coordinador'] },
     { to: '/coordinador/calendario', text: 'Calendario', icon: HiOutlineCalendar, roles: ['administrador', 'coordinador'] },
     { to: '/coordinador/reportes', text: 'Reportes', icon: HiOutlineChartPie, roles: ['administrador', 'coordinador'] },

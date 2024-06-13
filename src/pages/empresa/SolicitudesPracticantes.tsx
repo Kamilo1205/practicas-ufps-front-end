@@ -6,11 +6,9 @@ import { estudianteSchema } from "../../schemas/estudianteSchema";
 import { Form } from "../../components/ui/Input/Form";
 import { TabComponent } from "../../components/ui/Tab/TabComponent";
 import { BiArrowToRight, BiCheckCircle } from "react-icons/bi";
-import { MdCancel, MdDelete } from "react-icons/md";
+import { MdCancel } from "react-icons/md";
 import { DialogComponent } from "../../components/ui/Dialog/DialogComponent";
 import { SolicitudComponent } from "../../components/solicitudes/SolicitudComponent";
-import { set } from "zod";
-import { TiCancel, TiCancelOutline } from "react-icons/ti";
 import { BsXLg } from "react-icons/bs";
 import Swal from "sweetalert2";
 
