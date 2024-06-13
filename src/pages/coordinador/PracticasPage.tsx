@@ -4,6 +4,7 @@ import { IoChevronForward } from "react-icons/io5"
 import { BiSearch } from "react-icons/bi"
 import { Button } from "../../components/ui"
 import { DialogComponent } from "../../components/ui/Dialog/DialogComponent"
+import Swal from "sweetalert2"
 
 
 
@@ -188,7 +189,26 @@ export const PracticasPage = () => {
       setLoading(false)
     })
   }, [])
-  
+
+  const onAsignarPracticante = (nombrePracticante:string) => { 
+    Swal.fire({
+      title: 'Asignar practicante',
+      text: `¿Estás seguro de asignar a ${nombrePracticante} a esta solicitud?`,	
+      icon: 'question',
+      showCancelButton: true,
+      confirmButtonText: 'Sí',
+      cancelButtonText: 'No',
+      
+    }).then(() => {
+      Swal.fire({
+        title: 'Practicante asignado',
+        text: `El practicante ${nombrePracticante} ha sido asignado a la solicitud`,
+        icon: 'success',
+        confirmButtonText: 'Aceptar',
+      })
+      setMostrarPerfil(false)
+     })
+  }
 
   const [tab, setTab] = useState(0)
 
@@ -210,9 +230,9 @@ export const PracticasPage = () => {
             </div>
           </div>
           <div className="flex divide-x space-x-5">
-            <div className="list p-5">
+            <div className="list py-5 pl-5">
               <h2 className="text-gray-500 font-semibold text-sm text-opacity-100">Estudiantes encontrados</h2>
-              <ul className="mt-2 overflow-y-scroll max-h-60">
+              <ul className="mt-2 overflow-y-scroll max-h-full">
                 {
                   <li
 
@@ -368,7 +388,7 @@ export const PracticasPage = () => {
 
                 </div>
                 <div className="mt-3">
-                  <Button>Asignar practicante</Button>
+                  <Button onClick={()=>onAsignarPracticante('1152004 - Jeison Omar Ferrer Ortega')}>Asignar practicante</Button>
                 </div>
               </div>
             </div>
@@ -394,8 +414,8 @@ export const PracticasPage = () => {
             {
               solicitudes.map((solicitud) => (
                 <li
-                  onClick={() => setMostrarPerfil(true)}
-                  className="flex justify-between gap-x-6 py-5 cursor-pointer">
+                 
+                  className="flex justify-between gap-x-6 py-5">
                   <div className="flex min-w-0 gap-x-4">
                     <div className="min-w-0 flex-auto">
                       <div className="flex space-x-3">
@@ -423,8 +443,17 @@ export const PracticasPage = () => {
                   </div>
                   <div className=" shrink-0 sm:flex sm:flex-col sm:items-end self-center">
                     <p className="text-sm text-gray-900 self-center">
-                      <div className="">
-                        <IoChevronForward className="text-gray-500" />
+                      <div className="flex space-x-1 text-blue-500">
+                        <span>Ver solicitud</span>
+                        <IoChevronForward className="self-center" />
+                      </div>
+                    </p>
+                    <p
+                      onClick={()=>setMostrarPerfil(true)}
+                      className="text-sm text-gray-900 self-center cursor-pointer">
+                      <div className="flex space-x-1 text-blue-500">
+                        <span>Asignar practicante</span>
+                        <IoChevronForward className="self-center" />
                       </div>
                     </p>
                   </div>
