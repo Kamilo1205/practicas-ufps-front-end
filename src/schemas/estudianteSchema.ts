@@ -1,29 +1,5 @@
 import { z } from 'zod';
 
-const herramientaSchema = z.object({
-  id: z.string(),
-  nombre: z.string(),
-  selected: z.boolean()
-});
-
-const subAreaInteresSchema = z.object({
-  id: z.string(),
-  nombre: z.string(),
-});
-
-const areaSubAreaSchema = z.object({
-  id: z.string(),
-  subAreasInteres: subAreaInteresSchema,
-  herramientas: z.array(herramientaSchema),
-});
-
-const areaInteresSchema = z.object({
-  id: z.string(),
-  //nombre: z.string(),
-  level: z.number().min(1).max(5),
-  //areaSubArea: z.array(areaSubAreaSchema),
-});
-
 export const estudianteSchema = z.object({
   nombre: z.string().min(1, 'El nombre es obligatorio').default(''),
   apellidos: z.string().min(1, 'El apellido es obligatorio').default(''),
@@ -49,6 +25,7 @@ export const estudianteSchema = z.object({
   codigo: z.coerce.number().min(1, 'El codigo de estudiante es requerido').positive('El codigo de estudiante debe ser un numero positivo').default(0),
 
   areasInteres: z.record(z.string(), z.coerce.number().min(1, 'El nivel de interes deber ser igual o mayor a 1').max(5, 'El nivel de interes debe ser menor de 5')).default({}),
+  herramientas: z.record(z.string(), z.boolean()).optional(),
 
   documentoIdentidad: z.any().refine(val => val instanceof File, { message: 'El PDF del documento de identidad es obligatorio' }).default(null),
   certificadoAfiliacionEps: z.any().refine(val => val instanceof File, { message: 'El PDF del certificado de afiliación es obligatorio' }).default(null),

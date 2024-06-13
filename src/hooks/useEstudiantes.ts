@@ -75,8 +75,6 @@ const useEstudiantes = (): UseEstudiantesReturn => {
   const createEstudiante = async (nuevoEstudiante: Omit<Estudiante, 'id'>) => {
     setCargando(true);
     try {
-      console.log('Create Estudiante Hook');
-      console.log(nuevoEstudiante);
       const data = await createEstudianteAPI(nuevoEstudiante);
       setEstudiantes((prev) => [...prev, data]);
       setEstudiante(data);

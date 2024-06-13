@@ -23,29 +23,31 @@ export const AreasDeInteresForm = () => {
             </thead>
             <tbody>
               {areas.map((area, index) => (
-                <Fragment key={index}>
-                  <tr>
-                    <td className="border-b px-4 py-2.5">{area.nombre}</td>
-                    {Array.from({ length: 5 }, (_, i) => (
-                      <td key={i + 1} className="border-b align-middle px-4 py-2.5 text-center">
-                        <input
-                          type="radio"
-                          className="cursor-pointer"
-                          {...register(`areasInteres.${area.id}`)}
-                          value={i + 1}
-                        />
-                      </td>
-                    ))}
-                  </tr>
-                  {/* Mensaje de error específico para el área */}
-                  {
-                    /*areasInteresErrors?.[area.id] && (
-                      <tr>
-                        <td colSpan={6} className="text-red-500 px-4 py-2">{areasInteresErrors[area.id].message}</td>
-                      </tr>
-                    )*/
-                  }
-                </Fragment>
+                !area.areaPadre && (
+                  <Fragment key={index}>
+                    <tr>
+                      <td className="border-b px-4 py-2.5">{area.nombre}</td>
+                      {Array.from({ length: 5 }, (_, i) => (
+                        <td key={i + 1} className="border-b align-middle px-4 py-2.5 text-center">
+                          <input
+                            type="radio"
+                            className="cursor-pointer"
+                            {...register(`areasInteres.${area.id}`, { required: true })}
+                            value={i + 1}
+                          />
+                        </td>
+                      ))}
+                    </tr>
+                    {/* Mensaje de error específico para el área */}
+                    {
+                      /*areasInteresErrors?.[area.id] && (
+                        <tr>
+                          <td colSpan={6} className="text-red-500 px-4 py-2">{areasInteresErrors[area.id].message}</td>
+                        </tr>
+                      )*/
+                    }
+                  </Fragment> 
+                )
               ))}
             </tbody>
           </table>

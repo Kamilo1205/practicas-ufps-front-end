@@ -2,7 +2,7 @@ import { FC, useEffect, useState } from 'react';
 import { Combobox, ComboboxButton, ComboboxInput, ComboboxOption, ComboboxOptions, Transition } from '@headlessui/react';
 import clsx from 'clsx';
 import { HiMiniChevronDown } from 'react-icons/hi2';
-import useDepartamentos from '../../hooks/useDepartamento';
+import useDepartamentos from '../../hooks/useDepartamentos';
 
 interface DepartamentoComboboxProps {
   value: string;

@@ -4,6 +4,7 @@ import { useAuth } from '../contexts';
 import { Layout } from '../layouts/Layout';
 import { UsuariosPage } from '../pages/coordinador/UsuariosPage';
 import { RegistroLayout } from '../layouts/RegistroLayout';
+import { PerfilPage } from '../pages/estudiante/PerfilPage';
 
 export const EstudianteRouter = () => {
   const { user } = useAuth();
@@ -14,6 +15,7 @@ export const EstudianteRouter = () => {
             (
               <>
                 <Route path='/' element={<Layout />}>
+                  <Route index path='' element={<PerfilPage />} />
                   <Route path='usuarios' element={<UsuariosPage />} />
                   <Route path="*" element={<Navigate to="/estudiante" replace />} />
                 </Route>

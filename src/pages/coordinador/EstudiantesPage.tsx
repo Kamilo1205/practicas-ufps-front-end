@@ -1,6 +1,11 @@
 import { useEffect, useState } from "react";
+<<<<<<< HEAD
+import { fetchEstudiante as fetchGetEstudiantes } from "../../api/estudiante.api";
+import { Avatar, Button,  } from "../../components/ui";
+=======
 import { fetchEstudiantes as fetchGetEstudiantes } from "../../api/estudiante.api";
 import { Avatar, Button, Pagination } from "../../components/ui";
+>>>>>>> 822fe39d973f4a515a2a11ede60665366b4772e8
 import { EmptyStateMessage } from "../../components/estudiantes/EmptyStateMessage";
 //import { useLocation, useNavigate } from "react-router-dom";
 import { Estudiante } from "../../interfaces/estudiante.interface";

@@ -1,9 +1,11 @@
 import axios from './axios';
-import { Usuario } from '../interfaces/usuario.interface';
+import { buildQueryParams } from '../utils/buildQueryParams';
+import { FetchParams, Usuario } from '../interfaces';
 
 // Obtener una lista paginada de usuarios
-export const fetchUsuarios = async (page: number = 1, limit: number = 10): Promise<{ data: Usuario[], total: number }> => {
-  const response = await axios.get(`/usuarios?page=${page}&limit=${limit}`);
+export const fetchUsuarios = async (params: FetchParams = {}): Promise<{ data: Usuario[], total: number }> => {
+  const queryParams = buildQueryParams(params);
+  const response = await axios.get(`/usuarios?${queryParams}`);
   return response.data;
 };
 

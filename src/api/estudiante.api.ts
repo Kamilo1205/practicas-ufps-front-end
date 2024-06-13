@@ -1,5 +1,6 @@
 import axios from './axios';
 import { Estudiante } from '../interfaces/estudiante.interface';
+import { objectToFormData } from '../utils';
 
 // Configuración para enviar datos en formato multipart/form-data
 const formDataConfig = {
@@ -22,7 +23,9 @@ export const fetchEstudiantes = async (page: number = 1, limit: number = 10, gru
 
 // Registrar un nuevo estudiante
 export const createEstudiante = async (nuevoEstudiante: Omit<Estudiante, 'id'>): Promise<Estudiante> => {
-  const response = await axios.post('/estudiantes/registro', nuevoEstudiante);
+  console.log(nuevoEstudiante);
+  const formData = objectToFormData(nuevoEstudiante);
+  const response = await axios.post('/estudiantes/registro', formData, formDataConfig);
   return response.data;
 };
 

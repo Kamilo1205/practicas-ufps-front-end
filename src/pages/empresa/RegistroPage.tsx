@@ -21,15 +21,7 @@ export const RegistroPage = () => {
   const watch = form.watch() as Record<string, any>;
 
   const onSubmit = async (data: EmpresaSchema) => {
-    try {
-      const response = await fetchPostEmpresa(data);
-      // login(response.usuario);
-      console.log(data);
-      console.log(response);
-    } catch (error) {
-      console.log(error);
-      toast.error("Ocurrio un error");
-    }
+    const response = await fetchPostEmpresa(data);
   };
 
   const downloadDocumento = async () => {
