@@ -1,70 +1,10 @@
 import { useEffect, useState } from "react"
 import { TabComponent } from "../../components/ui/Tab/TabComponent"
-import { IoChevronForward } from "react-icons/io5"
-import { BiSearch } from "react-icons/bi"
-import { Button } from "../../components/ui"
+import { IoChevronForward,  } from "react-icons/io5"
 import { DialogComponent } from "../../components/ui/Dialog/DialogComponent"
-import Swal from "sweetalert2"
-
-
-
-
-interface AvatarScoreProps { 
-  score: number
-  size?: 'small' | 'medium' | 'large'
-
-}
-
-const AvatarScore: React.FC<AvatarScoreProps> = ({ score, size='small' }:AvatarScoreProps) => {
-  const sizeClass = size === 'small' ? 'w-12 h-12' : size === 'medium' ? 'w-24 h-24' : 'w-32 h-32'
-  const sizeN = size === 'small' ?  35: size === 'medium' ? 50 : 45
-  const radius = (sizeN / 2) - 2; // Ajustar el radio basado en el tamaño
-  const strokeDasharray = 2 * Math.PI * radius;  // Circunferencia del círculo (2 * PI * radio) donde radio es 45
-  const strokeDashoffset = ((100 - score) / 100) * strokeDasharray;
-
-  const getColor = (score: number) => {
-    const red = Math.min(255, 2 * (100 - score));
-    const green = Math.min(255, 2 * score);
-    return `rgb(${red},${green},0)`;
-  };
-
-  const strokeColor = getColor(score);
-
-  return (
-    <div className={`relative flex items-center justify-center ${sizeClass}`}>
-      <div className={`${sizeClass} rounded-full overflow-hidden flex items-center justify-center`}>
-        {/* Contenedor de la imagen o del puntaje */}
-        <span style={{ color: strokeColor }}  className="text-sm font-bold">{score}</span>
-      </div>
-      {/* Círculo del borde */}
-      <svg className={`absolute top-0 left-0 ${sizeClass} transform -rotate-90`}>
-        <circle
-          cx="50%"
-          cy="50%"
-          r={radius}
-          stroke="currentColor"
-          strokeWidth="4"
-          fill="transparent"
-          className="text-gray-300"
-        />
-        <circle
-          cx="50%"
-          cy="50%"
-          r={radius}
-          stroke={strokeColor}
-          strokeWidth="4"
-          fill="transparent"
-          className="transition-all duration-300"
-          strokeDasharray={strokeDasharray}
-          strokeDashoffset={strokeDashoffset}
-          strokeLinecap="round"
-        />
-      </svg>
-    </div>
-  );
-};
-
-export default AvatarScore;
+import { SolicitudComponent } from "../../components/solicitudes/SolicitudComponent"
+import { AsignacionPracticasComponent } from "../../components/asignacion/AsignacionPracticasComponent"
+import { EstudianteAspirante, SolicitudPracticante } from "../../schemas/solicitudSchema"
 
 
 const Tabs = [
@@ -73,76 +13,59 @@ const Tabs = [
   }
 ]
 
-interface SolicitudPracticante { 
-  id: number
-  empresa: {
-    id: string
-    nombre: string
-  }
-  perfil: {
-    areaConocimiento: string[]
-    habilidades: string[]
-    herramientas: string[]
-  }
-  numeroPracticantes: number
-  remunerado: boolean,
-  estado: string
 
-}
-
-interface EstudiantePerfil { 
-  id: string
-  nombre: string
-  codigo: string
-  puntaje: string
-  perfilesSeleccionados: {
-    puntaje: number
-    perfil: {
-      areaConocimiento: string[]
-      habilidades: string[]
-      herramientas: string[]
-    }
-  }[]
-  coincidencias: {
-    nombre: string
-    puntaje?: number
-  }[]
-
-}
-
-const getEstudiantesPorSolicitud = () => { 
+const getAspirantesPorSolicitud = (idSolicitud: string): Promise<EstudianteAspirante[]> => { 
+  console.log('getAspirantesPorSolicitud',idSolicitud)
   return Promise.resolve([
+    
     {
-      id: '1',
+      id: '2',
       nombre: 'Jeison Omar Ferrer Ortega',
       codigo: '1152004',
       puntaje: '75',
-      perfilesSeleccionados: [{
-        puntaje: 4,
-        perfil: {
-          areaConocimiento: ['Desarrollo de software'],
-          habilidades: ['Conocimiento en React', 'Node.js', 'MongoDB'],
-          herramientas: ['Visual Studio Code', 'Git', 'GitHub','React'],
-        }
+      perfil: [{
+        puntaje: 75,
+        nombre: 'Desarrollo de software',
+        habilidades: ['Conocimiento en React', 'Node.js', 'MongoDB'],
+        herramientas: ['Visual Studio Code', 'Git', 'GitHub']
+
       }],
-      coincidencias: [
-        {
-          nombre: 'React',
-        },
-        {
-          nombre: 'Desarrollo de software',
-          puntaje: 4
-        }
-      ]
-    }
+    },
+    {
+      id: '3',
+      nombre: 'Jeison Omar Ferrer Ortega',
+      codigo: '1152004',
+      puntaje: '30',
+      perfil: [{
+        puntaje: 75,
+        nombre: 'Desarrollo de software',
+        habilidades: ['Conocimiento en React', 'Node.js', 'MongoDB'],
+        herramientas: ['Visual Studio Code', 'Git', 'GitHub']
+
+      }],
+    },
+    {
+      id: '4',
+      nombre: 'Jeison Omar Ferrer Ortega',
+      codigo: '1152004',
+      puntaje: '45',
+      perfil: [{
+        puntaje: 75,
+        nombre: 'Desarrollo de software',
+        habilidades: ['Conocimiento en React', 'Node.js', 'MongoDB'],
+        herramientas: ['Visual Studio Code', 'Git', 'GitHub']
+
+      }],
+    },
+    
   ])
 }
 
 
-const getSolicitudesPracticantes = () => { 
+const getSolicitudesPracticantes = (): Promise<SolicitudPracticante[]> => { 
   return Promise.resolve([
     {
-      id: 1,
+      id: '1',
       empresa: {
         id: '1',
         nombre: 'Empresa 1',
@@ -150,14 +73,30 @@ const getSolicitudesPracticantes = () => {
       perfil: {
         areaConocimiento: ['Desarrollo de software'],
         habilidades: ['Conocimiento en React', 'Node.js', 'MongoDB'],
-        herramientas: ['Visual Studio Code', 'Git', 'GitHub'],
+        herramientas: ['Visual Studio Code', 'Git', 'GitHub','Tailwind'],
       },
       numeroPracticantes: 2,
       remunerado: true,
-      estado: 'Pendiente'
+      estado: 'Pendiente',
+      estudiantesAsignados: [
+        {
+          id: '1',
+          nombre: 'Jeison Omar Ferrer Ortega',
+          codigo: '1152004',
+          puntaje: '90',
+          perfil: [{
+            puntaje: 75,
+            nombre: 'Desarrollo de software',
+            habilidades: ['Conocimiento en React', 'Node.js', 'MongoDB'],
+            herramientas: ['Visual Studio Code', 'Git', 'GitHub']
+
+
+          }],
+        },
+      ]
     },
     {
-      id: 2,
+      id: '2',
       empresa: {
         id: '2',
         nombre: 'Empresa 2',
@@ -169,7 +108,8 @@ const getSolicitudesPracticantes = () => {
       },
       numeroPracticantes: 1,
       remunerado: false,
-      estado: 'Pendiente'
+      estado: 'Asignada',
+      estudiantesAsignados:[]
     }
 
   ])
@@ -178,226 +118,68 @@ const getSolicitudesPracticantes = () => {
 export const PracticasPage = () => { 
 
   const [solicitudes, setSolicitudes] = useState<SolicitudPracticante[]>([])
-  const [loading, setLoading] = useState(false)
+  //const [loading, setLoading] = useState(false)
   const [solicitudSeleccionada, setSolicitudSeleccionada] = useState<SolicitudPracticante | null>(null)
-  const [perfilSeleccionado, setPerfilSeleccionado] = useState<EstudiantePerfil | null>(null)
+  //const [perfilSeleccionado, setPerfilSeleccionado] = useState<EstudianteAspirante | null>(null)
   const [mostrarPerfil, setMostrarPerfil] = useState(false)
+  const [mostrarSolicitud, setMostrarSolicitud] = useState(false)
+  const [cargarAspirantes, setCargarAspirantes] = useState(false)
+
+  const onAsignarPracticantes = (solicitud: SolicitudPracticante) => {
+    setSolicitudSeleccionada(solicitud)
+    setCargarAspirantes(true)
+
+   }
+
   useEffect(() => {
-    setLoading(true)
+    //setLoading(true)
     getSolicitudesPracticantes().then((data) => {
       setSolicitudes(data)
-      setLoading(false)
+      //setLoading(false)
     })
   }, [])
 
-  const onAsignarPracticante = (nombrePracticante:string) => { 
-    Swal.fire({
-      title: 'Asignar practicante',
-      text: `¿Estás seguro de asignar a ${nombrePracticante} a esta solicitud?`,	
-      icon: 'question',
-      showCancelButton: true,
-      confirmButtonText: 'Sí',
-      cancelButtonText: 'No',
-      
-    }).then(() => {
-      Swal.fire({
-        title: 'Practicante asignado',
-        text: `El practicante ${nombrePracticante} ha sido asignado a la solicitud`,
-        icon: 'success',
-        confirmButtonText: 'Aceptar',
+  useEffect(() => { 
+    if(solicitudSeleccionada && cargarAspirantes) { 
+      getAspirantesPorSolicitud(solicitudSeleccionada.id).then((data) => { 
+        setSolicitudSeleccionada({
+          ...solicitudSeleccionada,
+          aspirantes:data
+        })
+        setCargarAspirantes(false)
+        setMostrarPerfil(true)
       })
-      setMostrarPerfil(false)
-     })
-  }
+    }
+  }, [cargarAspirantes, solicitudSeleccionada])
 
   const [tab, setTab] = useState(0)
 
   return (<>
     <DialogComponent
-      isOpen={mostrarPerfil}
-      onClose={() => setMostrarPerfil(false)}
+      isOpen={mostrarSolicitud}
+      onClose={() => setMostrarSolicitud(false)}
       content={
-        <div className="flex flex-col divide-y rounded-md">
-          <div className="search">
-            <div className="relative">
-              <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
-                <span className="text-gray-500 sm:text-sm">
-                  <BiSearch className="text-gray-500" />
-                </span>
-              </div>
-              <input type="text" name="price" id="price" className="block w-full border-0 py-1.5 pl-7  text-gray-900 ring-0 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-inset focus:ring-0 sm:text-sm sm:leading-6" placeholder="Busqueda por nombre o código del estudiante" />
-
-            </div>
-          </div>
-          <div className="flex divide-x space-x-5">
-            <div className="list py-5 pl-5">
-              <h2 className="text-gray-500 font-semibold text-sm text-opacity-100">Estudiantes encontrados</h2>
-              <ul className="mt-2 overflow-y-scroll max-h-full">
-                {
-                  <li
-
-                    className="flex justify-between rounded-md w-72 pr-5 hover:bg-slate-100">
-                    <div className="flex space-x-1">
-                      <div>
-                        <AvatarScore score={80} />
-                      </div>
-                      <span className="font-normal text-sm text-gray-600 self-center">Jeison Omar Ferrer Ortega</span>
-                    </div>
-
-                    <div className="self-center">
-                      <IoChevronForward className="text-gray-500" />
-                    </div>
-                  </li>
-
-                }
-                <li
-
-                  className="flex justify-between rounded-md w-72 pr-5 hover:bg-slate-100">
-                  <div className="flex space-x-1">
-                    <div>
-                      <AvatarScore score={70} />
-                    </div>
-                    <span className="font-normal text-sm text-gray-600 self-center">Jose Arturo</span>
-                  </div>
-
-                  <div className="self-center">
-                    <IoChevronForward className="text-gray-500" />
-                  </div>
-                </li>
-                <li
-
-                  className="flex justify-between rounded-md w-72 pr-5 hover:bg-slate-100">
-                  <div className="flex space-x-1">
-                    <div>
-                      <AvatarScore score={67} />
-                    </div>
-                    <span className="font-normal text-sm text-gray-600 self-center">Marco Ibarra</span>
-                  </div>
-
-                  <div className="self-center">
-                    <IoChevronForward className="text-gray-500" />
-                  </div>
-                </li>
-                <li
-
-                  className="flex justify-between rounded-md w-72 pr-5 hover:bg-slate-100">
-                  <div className="flex space-x-1">
-                    <div>
-                      <AvatarScore score={60} />
-                    </div>
-                    <span className="font-normal text-sm text-gray-600 self-center">Jairo Gil</span>
-                  </div>
-
-                  <div className="self-center">
-                    <IoChevronForward className="text-gray-500" />
-                  </div>
-                </li>
-                <li
-
-                  className="flex justify-between rounded-md w-72 pr-5 hover:bg-slate-100">
-                  <div className="flex space-x-1">
-                    <div>
-                      <AvatarScore score={54} />
-                    </div>
-                    <span className="font-normal text-sm text-gray-600 self-center">Cristian Alejandro</span>
-                  </div>
-
-                  <div className="self-center">
-                    <IoChevronForward className="text-gray-500" />
-                  </div>
-                </li>
-                <li
-
-                  className="flex justify-between rounded-md w-72 pr-5 hover:bg-slate-100">
-                  <div className="flex space-x-1">
-                    <div>
-                      <AvatarScore score={30} />
-                    </div>
-                    <span className="font-normal text-sm text-gray-600 self-center">Jose Camilo</span>
-                  </div>
-
-                  <div className="self-center">
-                    <IoChevronForward className="text-gray-500" />
-                  </div>
-                </li>
-
-              </ul>
-            </div>
-            <div className="perfil w-80 flex flex-col divide-y">
-              <div className="flex flex-col text-center mb-3">
-                <div className="w-full flex justify-center">
-                  <AvatarScore score={79} size="medium" />
-                </div>
-
-                <span className="text-gray-600 font-semibold text-lg">Jeison Omar Ferrer Ortega</span>
-                <span className="text-gray-500 font-normal text-sm">1152003</span>
-              </div>
-              <div className="p-2 text-gray-500">
-
-                <div className="pr-1">
-                  <span className="font-semibold text-sm">Perfiles y puntajes</span>
-                  <dl className="divide-y divide-gray-100">
-                    <div className="px-2 py-2 sm:grid sm:grid-cols-5 sm:gap-4 ">
-
-                      {
-                        [
-                          {
-                            nombre: 'Desarrollo de software (web, movil)',
-                            puntaje: 4
-                          },
-
-                        ].map((perfil) => (
-                          <>
-                            <dt className="text-sm font-medium leading-6 text-gray-900 col-span-4">{perfil.nombre}</dt>
-                            <dd className="mt-1 text-sm leading-6 text-gray-700 sm:col-span-1 sm:mt-0 justify-end">
-                              <span>{perfil.puntaje}</span>
-                            </dd>
-                          </>
-
-
-                        ))
-                      }
-
-                    </div>
-                  </dl>
-                </div>
-                <div className="pr-1 flex flex-col">
-                  <span className="font-semibold text-sm">Herramientas</span>
-                  <div className="flex flex-wrap space-x-1 space-y-1 justify-center align-middle">
-                    {
-                      [
-                        'Visual Studio Code',
-                        'Git',
-                        'React',
-
-                      ].map((herramienta) => (
-                        <span className="text-sm bg-green-100 text-gray-600 px-1 py-0.5 rounded-md">{herramienta}</span>
-                      ))
-                    }
-                    {
-                      [
-                        'GitHub',
-                        'Node.js',
-                        'MongoDB',
-
-                      ].map((herramienta) => (
-                        <span className="text-sm bg-red-100 text-gray-600 px-1 py-0.5 rounded-md">{herramienta}</span>
-                      ))
-                    }
-                  </div>
-
-                </div>
-                <div className="mt-3">
-                  <Button onClick={()=>onAsignarPracticante('1152004 - Jeison Omar Ferrer Ortega')}>Asignar practicante</Button>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
+        <SolicitudComponent
+          solicitud={solicitudSeleccionada}
+        />
       }
       title=""
       size="2xl"
     />
+    {
+      solicitudSeleccionada &&
+      <DialogComponent
+      isOpen={mostrarPerfil}
+      onClose={() => setMostrarPerfil(false)}
+      content={
+        <AsignacionPracticasComponent
+          solicitud={solicitudSeleccionada}
+          setMostrarPerfil={setMostrarPerfil}
+        />
+      }
+      title=""
+      size="2xl"
+    />}
     <div className="mb-10">
       <div className="text-gray-600 font-bold text-2xl">Gestión de practicas</div>
     </div>
@@ -414,7 +196,7 @@ export const PracticasPage = () => {
             {
               solicitudes.map((solicitud) => (
                 <li
-                 
+                  key={solicitud.id}
                   className="flex justify-between gap-x-6 py-5">
                   <div className="flex min-w-0 gap-x-4">
                     <div className="min-w-0 flex-auto">
@@ -442,20 +224,22 @@ export const PracticasPage = () => {
                     </div>
                   </div>
                   <div className=" shrink-0 sm:flex sm:flex-col sm:items-end self-center">
-                    <p className="text-sm text-gray-900 self-center">
+                    <div
+                      onClick={()=>setMostrarSolicitud(true)}
+                      className="text-sm text-gray-900 self-center cursor-pointer">
                       <div className="flex space-x-1 text-blue-500">
                         <span>Ver solicitud</span>
                         <IoChevronForward className="self-center" />
                       </div>
-                    </p>
-                    <p
-                      onClick={()=>setMostrarPerfil(true)}
+                    </div>
+                    <div
+                      onClick={()=>onAsignarPracticantes(solicitud)}
                       className="text-sm text-gray-900 self-center cursor-pointer">
                       <div className="flex space-x-1 text-blue-500">
                         <span>Asignar practicante</span>
                         <IoChevronForward className="self-center" />
                       </div>
-                    </p>
+                    </div>
                   </div>
                 </li>
               ))
@@ -475,7 +259,7 @@ export const PracticasPage = () => {
         isOpen={mostrarPerfil}
         onClose={() => setMostrarPerfil(false)}
         content={
-          <EstudiantePerfilComponent
+          <EstudianteAspiranteComponent
             estudiante={estudianteSeleccionado}
           />
         }
