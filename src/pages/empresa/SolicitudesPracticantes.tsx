@@ -14,17 +14,26 @@ import useAreasDeInteres from "../../hooks/useAreasInteres";
 import { z } from "zod";
 import { HerramientaCheckbox } from "../../components/area-interes/HerramientaCheckbox";
 import { Disclosure, DisclosureButton, DisclosurePanel } from "@headlessui/react";
+import { useAuth } from "../../contexts";
 
 
 const getSolicitudesPracticantes = async () => {
   return Promise.resolve([
     {
       id: 1,
+      estado: true,
+      empresa: {
+        nombre: 'Empresa 1',
+        nit: '123456789',
+
+      },
       perfil: {
         areaConocimiento: 'Desarrollo de software',
         habilidades: 'Conocimiento en React, Node.js, MongoDB',
         herramientas: 'Visual Studio Code, Git, GitHub',
-      }
+      },
+      numeroPracticantes: 1,
+      remunerado: true,
     },
   ])
 }
@@ -63,18 +72,28 @@ export const SolicitudesPracticantes = () => {
   const [mostrarSolicitud, setMostrarSolicitud] = useState(false)
   const [solicitudSeleccionada, setSolicitudSeleccionada] = useState<any>(null)
 
+
   const {areas} = useAreasDeInteres()
- 
+  const {user} = useAuth()
+  //console.log(user)
+
+  console.log(areas)
+  
   const form = useForm({
     defaultValues: {
       areasInteres: [],
       numeroPracticantes: 1,
       remuneracion: false,
+      herramientas: [],
+      id: user?.id
     },
     resolver: zodResolver(z.object({
-      areaConocimiento: z.string(),
-      habilidades: z.string(),
-      herramientas: z.string(),
+    
+      areaConocimiento: z.string().optional(),
+      herramientas: z.array(z.object({
+        id: z.string(),
+        nombre: z.string()
+      })),
       numeroPracticantes: z.number().min(1,{message:'Debe solicitar minimo 1 practicante.'}).max(3, { message: 'Solo puede solicitar un maximo de 3 practicantes.' }),
       remuneracion: z.boolean(),
       areasInteres: z.array(z.string())
@@ -84,14 +103,15 @@ export const SolicitudesPracticantes = () => {
   });
 
   console.log(form.formState.errors)
-  console.log(form.getValues())
+  //console.log(form.getValues())
   //const selectedDepartamento = form.watch("departamentoResidenciaId");
  // const watch = form.watch() as Record<string, any>;
 //  const { createEstudiante, cargando, error } = useEstudiantes();
 
   const onSubmit = (data: any) => { 
-    console.log(data)
-  
+    console.log('data',data)
+   
+    //console.log('solicitudRequest',solicitudRequest)
   }
 
   const onCancelarSolictud = () => { 

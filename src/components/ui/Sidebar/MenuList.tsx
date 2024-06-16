@@ -15,6 +15,7 @@ export const MenuList = () => {
     { to: '/empresa/tutores', text: 'Tutores', icon: HiOutlineUsers, roles: ['empresa'] },
     { to: '/empresa/practicantes', text: 'Practicantes', icon: HiOutlineUsers, roles: ['empresa'] },
     { to: '/empresa/solicitudes', text: 'Administración de solicitudes', icon: HiOutlineUsers, roles: ['empresa'] },
+    { to: '/estudiante/plantrabajo', text: 'Plan de trabajo', icon: HiOutlineUsers, roles: ['estudiante'] },
 
   ];       
 
