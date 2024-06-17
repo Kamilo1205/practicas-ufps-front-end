@@ -1,5 +1,11 @@
 import { useState } from "react"
 import { SolicitudPracticante } from "../../schemas/solicitudSchema"
+import { DialogComponent } from "../ui/Dialog/DialogComponent"
+import { EstudiantePerfilComponent } from "../usuarios/perfil/EstudiantePerfilComponent"
+import { Estudiante } from "../../interfaces/estudiante.interface"
+import useEstudiantes from "../../hooks/useEstudiantes"
+import { BiError } from "react-icons/bi"
+
 
 const SolicitudPendiente = () => { 
   return (
@@ -35,10 +41,42 @@ interface SolicitudComponentProps {
 
 export const SolicitudComponent = ({ solicitud }: SolicitudComponentProps) => {
   
-
+  //const [estudianteId, setEstudianteId] = useState<string>("")
+  const [mostrarPerfil, setMostrarPerfil] = useState(false)
+  const [estudianteSeleccionado, setEstudianteSeleccionado] = useState<Estudiante | null>(null)
   const [solicitudSeleccionada, ] = useState<SolicitudPracticante | null>(solicitud)
   console.log(solicitudSeleccionada)
+
+  const { fetchEstudianteById } = useEstudiantes()
+  
+  const onEstudianteClick = (idEstudiante: string) => { 
+    setMostrarPerfil(true)
+    fetchEstudianteById(idEstudiante).then((estudiante) => { 
+      console.log('aa',estudiante)
+      setEstudianteSeleccionado(estudiante)
+    
+    })
+  }
+  
   return (<>
+    <DialogComponent
+      isOpen={mostrarPerfil}
+      onClose={() => setMostrarPerfil(false)}
+      content={
+        estudianteSeleccionado ? <EstudiantePerfilComponent
+          estudiante={estudianteSeleccionado}
+        />
+          :
+          <div className="flex flex-col justify-center space-y-2">
+            <div className="self-center">
+             <BiError className="text-red-500 w-10 h-10"/>
+            </div>
+            <span className="self-center">¡Ha ocurrido un error! No se pudo encontrar el estudiante seleccionado.</span>
+          </div>
+      }
+      title=""
+      size="2xl"
+    />
     <div>
       <div className="px-4 sm:px-0">
         <h3 className="text-base font-semibold leading-7 text-gray-900">Solicitud de practicante</h3>
@@ -110,7 +148,7 @@ export const SolicitudComponent = ({ solicitud }: SolicitudComponentProps) => {
               {
                 solicitudSeleccionada?.estudiantesAsignados.map((estudiante) => (
                   <div key={estudiante.id}
-                    onClick={() => console.log(estudiante)}
+                    onClick={() => onEstudianteClick(estudiante.id)}
                     className="flex space-x-2 cursor-pointer text-blue-500">
                     <span>{estudiante.codigo}</span>
                     <span>- {estudiante.nombre}</span>

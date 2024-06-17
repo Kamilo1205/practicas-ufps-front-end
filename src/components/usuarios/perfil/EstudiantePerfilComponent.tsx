@@ -4,7 +4,7 @@ import { Avatar } from "../../ui";
 import { TabComponent } from "../../ui/Tab/TabComponent";
 
 interface EstudiantePerfilProps { 
-  estudiante: Estudiante;
+  estudiante: Estudiante ;
 
 }
 
@@ -24,6 +24,8 @@ const Tabs = [
 ]
 
 export const EstudiantePerfilComponent = ({estudiante}:EstudiantePerfilProps) => { 
+
+
 
   const [tab,setTab] = useState(0)
   return (<>
@@ -46,12 +48,12 @@ export const EstudiantePerfilComponent = ({estudiante}:EstudiantePerfilProps) =>
                 <dt className="text-sm font-medium leading-6 text-gray-900">Nombre completo</dt>
                 <dd className="mt-1 text-sm leading-6 text-gray-700 sm:col-span-2 sm:mt-0 flex content-center">
                   <div className="shrink-0 w-11 h-11">
-                    <Avatar url={estudiante?.usuario?.imagenUrl} />
+                    <Avatar url={estudiante?.usuario?.imagenUrl || ''} />
                   </div>
                   <span className="ml-2 self-center">
                     {
-                      `${estudiante.primerNombre} ${estudiante.segundoNombre} ${estudiante.primerApellido} ${estudiante.segundoApellido}`
-                      || "Nombre aun no registrado"
+                      estudiante ? `${estudiante?.primerNombre || ''} ${estudiante?.segundoNombre || ''} ${estudiante?.primerApellido || ''} ${estudiante?.segundoApellido || ''}`
+                     : 'Dato no registrado'
                     }
                   </span>
                   {
@@ -69,24 +71,24 @@ export const EstudiantePerfilComponent = ({estudiante}:EstudiantePerfilProps) =>
               </div>
               <div className="px-4 py-3 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
                 <dt className="text-sm font-medium leading-6 text-gray-900">Código</dt>
-                <dd className="mt-1 text-sm leading-6 text-gray-700 sm:col-span-2 sm:mt-0">{estudiante.codigo}</dd>
+                <dd className="mt-1 text-sm leading-6 text-gray-700 sm:col-span-2 sm:mt-0">{estudiante ? estudiante?.codigo : 'Dato no registrado' || '' }</dd>
               </div>
               <div className="px-4 py-3 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
                 <dt className="text-sm font-medium leading-6 text-gray-900">Correo</dt>
-                <dd className="mt-1 text-sm leading-6 text-gray-700 sm:col-span-2 sm:mt-0">{estudiante.usuario.email}</dd>
+                <dd className="mt-1 text-sm leading-6 text-gray-700 sm:col-span-2 sm:mt-0">{estudiante ? estudiante?.usuario.email : 'Dato no registrado' || ''}</dd>
               </div>
               
               <div className="px-4 py-3 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
                 <dt className="text-sm font-medium leading-6 text-gray-900">Genero</dt>
-                <dd className="mt-1 text-sm leading-6 text-gray-700 sm:col-span-2 sm:mt-0 capitalize">{estudiante.genero}</dd>
+                <dd className="mt-1 text-sm leading-6 text-gray-700 sm:col-span-2 sm:mt-0 capitalize">{estudiante ? estudiante?.genero : 'Dato no registrado' || ''}</dd>
               </div>
               <div className="px-4 py-3 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
                 <dt className="text-sm font-medium leading-6 text-gray-900">Telefono</dt>
-                <dd className="mt-1 text-sm leading-6 text-gray-700 sm:col-span-2 sm:mt-0 capitalize">{estudiante.telefono}</dd>
+                <dd className="mt-1 text-sm leading-6 text-gray-700 sm:col-span-2 sm:mt-0 capitalize">{estudiante ? estudiante?.telefono : 'Dato no registrado' || ''}</dd>
               </div>
               <div className="px-4 py-3 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
                 <dt className="text-sm font-medium leading-6 text-gray-900">Dirección</dt>
-                <dd className="mt-1 text-sm leading-6 text-gray-700 sm:col-span-2 sm:mt-0 capitalize">{`${estudiante.direccion}, ${estudiante.ciudadResidencia.nombre}, ${estudiante.ciudadResidencia.departamento.nombre}`}</dd>
+                <dd className="mt-1 text-sm leading-6 text-gray-700 sm:col-span-2 sm:mt-0 capitalize">{`${estudiante ? estudiante?.direccion : 'Dato no registrado' || ''}, ${estudiante?.ciudadResidencia.nombre || ''}, ${estudiante?.ciudadResidencia.departamento?.nombre || ''}`}</dd>
               </div>
               
               
