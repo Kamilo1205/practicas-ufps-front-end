@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { MdCleaningServices } from "react-icons/md";
+import { TfiSave } from "react-icons/tfi";
 
 const IntensidadHorariaTable: React.FC = () => {
   const days = ["Lunes", "Martes", "Miércoles", "Jueves", "Viernes", "Sábado"];
@@ -59,8 +60,7 @@ const IntensidadHorariaTable: React.FC = () => {
         </div>
         <div className="ml-1 flex justify-end">
           <button
-            onClick={resetTable}
-            className="bg-red-500 text-white px-4 py-4 rounded-lg 
+            className="bg-blue-500 text-white px-3 py-2 rounded-lg mr-2 flex
              cursor-pointer 
              hover:scale-105 
              active:scale-95 
@@ -68,7 +68,22 @@ const IntensidadHorariaTable: React.FC = () => {
              duration-150 
              ease-in-out"
           >
-            <MdCleaningServices />
+            {" "}
+            <TfiSave className="mt-1 mr-1" />
+            Guardar
+          </button>
+          <button
+            onClick={resetTable}
+            className="bg-red-500 text-white px-3 py-2 rounded-lg flex
+             cursor-pointer 
+             hover:scale-105 
+             active:scale-95 
+             transition-transform 
+             duration-150 
+             ease-in-out"
+          >
+            <MdCleaningServices className="mt-1 mr-1" />
+            Limpiar
           </button>
         </div>
       </div>
