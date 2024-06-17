@@ -129,7 +129,12 @@ export const PracticasPage = () => {
     setSolicitudSeleccionada(solicitud)
     setCargarAspirantes(true)
 
-   }
+  }
+  
+  const onVerSolicitud = (solicitud: SolicitudPracticante) => { 
+    setSolicitudSeleccionada(solicitud)
+    setMostrarSolicitud(true)
+  }
 
   useEffect(() => {
     //setLoading(true)
@@ -225,7 +230,7 @@ export const PracticasPage = () => {
                   </div>
                   <div className=" shrink-0 sm:flex sm:flex-col sm:items-end self-center">
                     <div
-                      onClick={()=>setMostrarSolicitud(true)}
+                      onClick={()=>onVerSolicitud(solicitud)}
                       className="text-sm text-gray-900 self-center cursor-pointer">
                       <div className="flex space-x-1 text-blue-500">
                         <span>Ver solicitud</span>

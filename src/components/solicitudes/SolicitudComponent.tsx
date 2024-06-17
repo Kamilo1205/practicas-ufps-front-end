@@ -1,3 +1,5 @@
+import { useState } from "react"
+import { SolicitudPracticante } from "../../schemas/solicitudSchema"
 
 const SolicitudPendiente = () => { 
   return (
@@ -12,8 +14,30 @@ const SolicitudPendiente = () => {
   )
 }
 
-export const SolicitudComponent = ({ solicitud }: any) => {
+const SolicitudAsignada = () => { 
+  return (
+    <div className="flex">
+      <span className="text-green-400 text-sm font-semibold self-center">Solicitud asignada</span>
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true"
+        className="h-10 w-10 text-green-400 self-center">
+        <title>Solicitud asignada</title>
+        <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm0-2a6 6 0 100-12 6 6 0 000 12zm-1-5a1 1 0 011-1h2a1 1 0 010 2h-2a1 1 0 01-1-1zm1-7a.75.75 0 01.75.75v3.5a.75.75 0 01-1.5 0v-3.5A.75.75 0 0110 4z" clipRule="evenodd"></path>
+      </svg>
+    </div>
+  )
+
+}
+
+interface SolicitudComponentProps { 
+  solicitud: SolicitudPracticante | null
+
+}
+
+export const SolicitudComponent = ({ solicitud }: SolicitudComponentProps) => {
   
+
+  const [solicitudSeleccionada, ] = useState<SolicitudPracticante | null>(solicitud)
+  console.log(solicitudSeleccionada)
   return (<>
     <div>
       <div className="px-4 sm:px-0">
@@ -25,21 +49,27 @@ export const SolicitudComponent = ({ solicitud }: any) => {
           <div className="px-4 py-4 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
             <dt className="text-sm font-medium leading-6 text-gray-900">Estado</dt>
             <dd className="mt-1 text-sm leading-6 text-gray-700 sm:col-span-2 sm:mt-0">
-              <SolicitudPendiente />
+              {
+                solicitudSeleccionada?.estado === 'Asignada' ? <SolicitudAsignada /> : <SolicitudPendiente />
+              }
+            
             </dd>
           </div>
           <div className="px-4 py-4 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
             <dt className="text-sm font-medium leading-6 text-gray-900">Número de practicantes</dt>
             <dd className="mt-1 text-sm leading-6 text-gray-700 sm:col-span-2 sm:mt-0">
-              1
+              {solicitudSeleccionada?.numeroPracticantes}
             </dd>
           </div>
           <div className="px-4 py-4 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
             <dt className="text-sm font-medium leading-6 text-gray-900">Perfiles solicitados</dt>
             <dd className="mt-1 text-sm leading-6 text-gray-700 sm:col-span-2 sm:mt-0">
               <ul>
-                <li>Desarrollo de sofware (escritorio, movil, web).</li>
-                <li>Servidores y computacion en la nube.</li>
+                {
+                  solicitudSeleccionada?.perfil.areaConocimiento.map((area:string) => (
+                    <li key={area}>{area}</li>
+                  ))
+               }
               
              </ul>
             </dd>
@@ -48,9 +78,11 @@ export const SolicitudComponent = ({ solicitud }: any) => {
             <dt className="text-sm font-medium leading-6 text-gray-900">Habilidades solicitadas</dt>
             <dd className="mt-1 text-sm leading-6 text-gray-700 sm:col-span-2 sm:mt-0">
               <ul>
-                <li>Frontend</li>
-                <li>Backend</li>
-                <li>AWS</li>
+                {
+                  solicitudSeleccionada?.perfil.habilidades.map((habilidad:string) => (
+                    <li key={habilidad}>{habilidad}</li>
+                  ))
+                }
               </ul>
             </dd>
           </div>
@@ -58,19 +90,35 @@ export const SolicitudComponent = ({ solicitud }: any) => {
             <dt className="text-sm font-medium leading-6 text-gray-900">Herramientas solicitadas</dt>
             <dd className="mt-1 text-sm leading-6 text-gray-700 sm:col-span-2 sm:mt-0">
               <ul className="flex space-x-2">
-                <li>React</li>
-                <li>Node.js</li>
-                <li>Express</li>
-                <li>AWS</li>
+                {
+                  solicitudSeleccionada?.perfil.herramientas.map((herramienta:string) => (
+                    <li key={herramienta}>{herramienta}</li>
+                  ))
+                }
               </ul>
             </dd>
           </div>
           <div className="px-4 py-4 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
             <dt className="text-sm font-medium leading-6 text-gray-900">Remuneración economica</dt>
-            <dd className="mt-1 text-sm leading-6 text-gray-700 sm:col-span-2 sm:mt-0">NO</dd>
+            <dd className="mt-1 text-sm leading-6 text-gray-700 sm:col-span-2 sm:mt-0">
+              {solicitudSeleccionada?.remunerado ? 'Si' : 'No'}
+            </dd>
           </div>
-          
-          
+          <div className="px-4 py-4 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
+            <dt className="text-sm font-medium leading-6 text-gray-900">Estudiantes asignados</dt>
+            <dd className="mt-1 text-sm leading-6 text-gray-700 sm:col-span-2 sm:mt-0">
+              {
+                solicitudSeleccionada?.estudiantesAsignados.map((estudiante) => (
+                  <div key={estudiante.id}
+                    onClick={() => console.log(estudiante)}
+                    className="flex space-x-2 cursor-pointer text-blue-500">
+                    <span>{estudiante.codigo}</span>
+                    <span>- {estudiante.nombre}</span>
+                  </div>
+                ))
+              }
+            </dd>
+          </div>
         </dl>
       </div>
     </div>
