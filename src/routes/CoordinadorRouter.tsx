@@ -10,6 +10,7 @@ import { EstudiantesPage } from '../pages/coordinador/EstudiantesPage';
 import { DocumentosPage } from '../pages/coordinador/DocumentosPage';
 import { CalendarioPage } from '../pages/coordinador/CalendarioPage';
 import { PracticasPage } from '../pages/coordinador/PracticasPage';
+import { GestionTutoresPage } from '../pages/coordinador/GestionTutoresPage';
 
 export const CoordinadorRouter = () => {
   return (
@@ -23,6 +24,7 @@ export const CoordinadorRouter = () => {
         <Route path='calendario' element={<CalendarioPage />} />
         <Route path='configuracion/*' element={<ConfiguracionRouter />} />
         <Route path='practicas' element={<PracticasPage />} />
+        <Route path='tutores' element={<GestionTutoresPage />} />
         <Route path="*" element={<Navigate to="/coordinador" replace />} />
       </Route>
     </Routes>

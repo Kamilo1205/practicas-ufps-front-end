@@ -11,11 +11,7 @@ const SolicitudPendiente = () => {
   return (
     <div className="flex">
       <span className="text-yellow-400 text-sm font-semibold self-center">Solicitud pendiente de asignación</span>
-      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true"
-        className="h-10 w-10 text-yellow-400 self-center">
-        <title>Solicitud pendiente</title>
-        <path fillRule="evenodd" d="M8.485 2.495c.673-1.167 2.357-1.167 3.03 0l6.28 10.875c.673 1.167-.17 2.625-1.516 2.625H3.72c-1.347 0-2.189-1.458-1.515-2.625L8.485 2.495zM10 5a.75.75 0 01.75.75v3.5a.75.75 0 01-1.5 0v-3.5A.75.75 0 0110 5zm0 9a1 1 0 100-2 1 1 0 000 2z" clipRule="evenodd"></path>
-      </svg>
+      
     </div>
   )
 }
@@ -24,11 +20,7 @@ const SolicitudAsignada = () => {
   return (
     <div className="flex">
       <span className="text-green-400 text-sm font-semibold self-center">Solicitud asignada</span>
-      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true"
-        className="h-10 w-10 text-green-400 self-center">
-        <title>Solicitud asignada</title>
-        <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm0-2a6 6 0 100-12 6 6 0 000 12zm-1-5a1 1 0 011-1h2a1 1 0 010 2h-2a1 1 0 01-1-1zm1-7a.75.75 0 01.75.75v3.5a.75.75 0 01-1.5 0v-3.5A.75.75 0 0110 4z" clipRule="evenodd"></path>
-      </svg>
+      
     </div>
   )
 

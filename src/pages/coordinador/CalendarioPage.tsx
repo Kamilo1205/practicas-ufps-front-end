@@ -93,10 +93,12 @@ export const CalendarioPage = () => {
   const [edicion, setEdicion] = useState(items.map(() => {
     return {
       editar: false,
+      fechaPrimerEncuentro: false,
       fechaInicial: false,
       fechaFinal: false,
       valorEditadoFechaInicial: '',
-      valorEditadoFechaFinal: ''
+      valorEditadoFechaFinal: '',
+      valorEditadoPrimerEncuentro: ''
   }})) 
   const [loading, setLoading] = useState(true)
   /*
@@ -171,6 +173,13 @@ export const CalendarioPage = () => {
     setEdicion(nuevoEstado)
   }
 
+  const onChangePrimerEncuentro = (index: number, valor: string) => { 
+    //YYYY-MM-DD
+    const nuevoEstado = [...edicion]
+    nuevoEstado[index].valorEditadoPrimerEncuentro = valor
+    setEdicion(nuevoEstado)
+  }
+
   useEffect(() => {
     getCalendario().then((items) => {
       setItems(items)
@@ -217,7 +226,10 @@ export const CalendarioPage = () => {
                           <div>
                             <span className="">{item.title}</span>
                             {
-                              item.fechaInicial === '' || item.fechaInicial === null ?
+                            (item.fechaInicial === '' || item.fechaInicial === null)
+                              ||
+                              (item.fechaFinal === '' || item.fechaFinal === null)
+                              ?
                                 <span className="ml-4 h-fit self-center text-red-700 font-medium text-xs py-1 px-2 ring-1 ring-red-600/20 bg-red-100 rounded-md items-center inline-flex border-green-600 ring-inset">
                                   Fechas aún sin configurar
                                 </span> :
@@ -307,8 +319,48 @@ export const CalendarioPage = () => {
                                       </button>
                                     }
                                 </dd>
+                              </div>
+                                {
+                                  item.title === 'Inscripción de datos por parte del estudiante' &&
+                                  <div className="px-4 py-2 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
+                                    <dt className="text-sm font-medium leading-6 text-gray-900">
+                                      <span className="text-gray-600 font-medium">Fecha del primer encuentro</span>
+                                    </dt>
+                                    <dd className="mt-1 text-sm leading-6 text-gray-700 sm:col-span-2 sm:mt-0 flex content-center">
+                                      <div className="relative flex gap-x-3 items-center">
+                                        <div className="text-sm leading-6">
+                                          <label htmlFor={`${index}-fechaEncuentroEdit`} className="font-medium text-gray-900">Editar</label>
+                                        </div>
+                                        <div className="flex h-6 items-center">
+                                          <input
+                                            id={`${index}-fechaEncuentroEdit`}
+                                            name={`${index}-fechaEncuentroEdit`}
+                                            type="checkbox"
+                                            checked={edicion[index].fechaFinal}
+                                            onChange={() => onChangeEditarFechaFinal(index)}
+                                            className="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-600" />
+                                        </div>
+
+                                      </div>
+                                      <input
+                                        type="date"
+                                        disabled={!edicion[index].fechaFinal}
+                                        className={`cursor-pointer border-0 ${!edicion[index].fechaInicial ? 'text-gray-500' : ''}`}
+                                        value={edicion[index].valorEditadoFechaFinal}
+                                        onChange={(e) => onChangeValorEditadoFechaFinal(index, e.target.value)}
+                                      />
+                                      {
+                                        edicion[index].fechaFinal &&
+                                        <button type="button"
+                                          className="rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">
+                                          <BiCheck className="size-5 fill-white" />
+                                        </button>
+                                      }
+                                    </dd>
+
+                                  </div>
+                                }
                                 
-                                </div>
                                 <div className="px-4 py-2 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
                                   <dt className="text-sm font-medium leading-6 text-gray-900">
                                     

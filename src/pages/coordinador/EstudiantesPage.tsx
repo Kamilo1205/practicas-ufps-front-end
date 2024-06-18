@@ -10,6 +10,8 @@ import { DialogComponent } from "../../components/ui/Dialog/DialogComponent";
 import { AgregarEstudianteForm } from "../../components/estudiantes/AgregarEstudianteForm";
 import { TablaPaginadaComponent } from "../../components/ui/Table/TablaPaginadaComponent";
 import { EstudiantePerfilComponent } from "../../components/usuarios/perfil/EstudiantePerfilComponent";
+import { BiArrowToRight, BiCheck, BiX } from "react-icons/bi";
+import { IoAlertCircle } from "react-icons/io5";
 
 export const grupos = [
   {
@@ -74,6 +76,10 @@ export const EstudiantesPage = () => {
   //const location = useLocation();
 
   useEffect(() => {
+    setCurrentPage(1);
+  }, [filtro]);
+
+  useEffect(() => {
     const fetchData = async () => {
       //TODO: Ajustar cuando se hagan los cambios en el backend.
       //const {data,total} = await fetchGetEstudiantes(currentPage,itemsPerPage,Tabs[tab].grupo, filtro);
@@ -105,9 +111,10 @@ export const EstudiantesPage = () => {
         isOpen={mostrarPerfil}
         onClose={() => setMostrarPerfil(false)}
         content={
+          estudianteSeleccionado &&
           <EstudiantePerfilComponent
             estudiante={estudianteSeleccionado}
-          />
+          />|| <div>No hay información del estudiante seleccionado.</div>
         }
         title=""
         size="2xl"
@@ -145,7 +152,7 @@ export const EstudiantesPage = () => {
               <TablaPaginadaComponent
                 filtro={filtro}
                 setFiltro={setFiltro}
-                encabezados={["Nombre", "Codigo", "Dirección", "Telefono", "Grupo", "Estado"]}
+                encabezados={["Nombre", "Codigo", "Plan de trabajo", "Primer informe", "Segundo informe", "Estado"]}
                 filas={
                   estudiantes.estudiantes.map((estudiante) => [
                     <div className="flex items-center">
@@ -171,15 +178,24 @@ export const EstudiantesPage = () => {
                       </div>
                     </div>,
                     estudiante.codigo,
-                    <div>
-                      <div>{estudiante.direccion}</div>
+                    <div className="flex justify-center cursor-pointer w-full pr-6">
+                      {
+                        //TODO: Diferenciar cuando el plan está completo o no.
+                        //TODO: Implementar vizualización del plan de trabajo.
+                      }
                       <div>
-                        {estudiante.ciudadResidencia.nombre},{" "}
-                        {estudiante.ciudadResidencia.departamento?.nombre}
+                        <BiCheck className="text-green-500 w-5 h-5" />
                       </div>
+                      <span className="text-blue-400 flex">Ver <span className="self-center"><BiArrowToRight/></span></span>
                     </div>,
-                    estudiante.telefono,
-                    estudiante.grupo,
+                    <div className="flex justify-center pr-6">
+                      <IoAlertCircle className="text-yellow-500 w-5 h-5" />
+                      <span>Pendiente</span>
+                    </div>,
+                    <div className="flex justify-center pr-6">
+                      <IoAlertCircle className="text-yellow-500 w-5 h-5" />
+                      <span>Pendiente</span>
+                    </div>,
                     estudiante?.usuario?.estaActivo ? (
                       <span className="text-green-700 font-medium text-xs py-1 px-2 ring-1 ring-green-600/20 bg-green-100 rounded-md items-center inline-flex border-green-600 ring-inset">
                         Activo

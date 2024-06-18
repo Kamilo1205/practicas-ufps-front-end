@@ -84,3 +84,9 @@ export const fetchGetEmpresaById = async (id: string): Promise<Empresa> => {
   const response = await axios.get(`/empresas/${id}`);
   return response.data;
 };
+
+export const getTodosLosTutores = async (): Promise<Tutor[]> => {
+  const response = await axios.get(`/tutores`);
+  console.log(response.data);
+  return response.data;
+ }

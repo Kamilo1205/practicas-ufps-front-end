@@ -14,6 +14,7 @@ import {
 } from '../api/empresa.api';
 import { Empresa, Tutor } from '../interfaces';
 
+
 interface DatosFormularioTutor {
   nombre: string;
   apellidos: string;
@@ -39,6 +40,7 @@ type UseEmpresasReturn = {
   addTutorToEmpresaById: (empresaId: string, tutor: Omit<Tutor, 'id'>) => Promise<void>;
   addTutorToEmpresaActual: (tutor: DatosFormularioTutor) => Promise<void>;
   getTutoresDeEmpresaActual: () => Promise<void>;
+  getTodosLosTutores: () => Promise<Tutor[]>;
 };
 
 const useEmpresas = (): UseEmpresasReturn => {
@@ -193,6 +195,21 @@ const useEmpresas = (): UseEmpresasReturn => {
     }
   };
 
+  const getTodosLosTutores = async (): Promise<Tutor[]> => { 
+    setCargando(true);
+    try {
+      const data = await getTodosLosTutores();
+      setTutores(data);
+      setError(null);
+      return data;
+    } catch (err) {
+      setError(err as AxiosError);
+      return [];
+    } finally {
+      setCargando(false);
+    }
+  }
+
   return { 
     empresas, 
     empresa, 
@@ -208,7 +225,8 @@ const useEmpresas = (): UseEmpresasReturn => {
     fetchTutoresByEmpresaId, 
     addTutorToEmpresaById,
     getTutoresDeEmpresaActual,
-    addTutorToEmpresaActual
+    addTutorToEmpresaActual,
+    getTodosLosTutores
   };
 };
 

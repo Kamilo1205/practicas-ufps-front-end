@@ -139,7 +139,8 @@ export const PracticasPage = () => {
   useEffect(() => {
     //setLoading(true)
     getSolicitudesPracticantes().then((data) => {
-      setSolicitudes(data)
+      const solicitudesOrdenadasPorEstado = data.sort((a, ) => a.estado === 'Asignada' ? 1 : -1)
+      setSolicitudes(solicitudesOrdenadasPorEstado)
       //setLoading(false)
     })
   }, [])
