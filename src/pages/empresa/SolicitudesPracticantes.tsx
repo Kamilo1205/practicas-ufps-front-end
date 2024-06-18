@@ -1,29 +1,39 @@
 import { useEffect, useState } from "react";
-import { AreasDeInteresForm, HerramientasForm } from "../../components/area-interes";
+import {  HerramientasForm } from "../../components/area-interes";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { estudianteSchema } from "../../schemas/estudianteSchema";
 import { Form } from "../../components/ui/Input/Form";
 import { TabComponent } from "../../components/ui/Tab/TabComponent";
-import { BiArrowToRight, BiCheckCircle } from "react-icons/bi";
-import { MdCancel, MdDelete } from "react-icons/md";
+import { BiArrowToRight, BiCheckCircle, BiChevronDown } from "react-icons/bi";
+import { MdCancel } from "react-icons/md";
 import { DialogComponent } from "../../components/ui/Dialog/DialogComponent";
 import { SolicitudComponent } from "../../components/solicitudes/SolicitudComponent";
-import { set } from "zod";
-import { TiCancel, TiCancelOutline } from "react-icons/ti";
 import { BsXLg } from "react-icons/bs";
 import Swal from "sweetalert2";
+import useAreasDeInteres from "../../hooks/useAreasInteres";
+import { z } from "zod";
+import { HerramientaCheckbox } from "../../components/area-interes/HerramientaCheckbox";
+import { Disclosure, DisclosureButton, DisclosurePanel } from "@headlessui/react";
+import { useAuth } from "../../contexts";
 
 
 const getSolicitudesPracticantes = async () => {
   return Promise.resolve([
     {
       id: 1,
+      estado: true,
+      empresa: {
+        nombre: 'Empresa 1',
+        nit: '123456789',
+
+      },
       perfil: {
         areaConocimiento: 'Desarrollo de software',
         habilidades: 'Conocimiento en React, Node.js, MongoDB',
         herramientas: 'Visual Studio Code, Git, GitHub',
-      }
+      },
+      numeroPracticantes: 1,
+      remunerado: true,
     },
   ])
 }
@@ -61,17 +71,47 @@ export const SolicitudesPracticantes = () => {
   const [tab, setTab] = useState(0)
   const [mostrarSolicitud, setMostrarSolicitud] = useState(false)
   const [solicitudSeleccionada, setSolicitudSeleccionada] = useState<any>(null)
+
+
+  const {areas} = useAreasDeInteres()
+  const {user} = useAuth()
+  //console.log(user)
+
+  console.log(areas)
+  
   const form = useForm({
-    resolver: zodResolver(estudianteSchema)
+    defaultValues: {
+      areasInteres: [],
+      numeroPracticantes: 1,
+      remuneracion: false,
+      herramientas: [],
+      id: user?.id
+    },
+    resolver: zodResolver(z.object({
+    
+      areaConocimiento: z.string().optional(),
+      herramientas: z.array(z.object({
+        id: z.string(),
+        nombre: z.string()
+      })),
+      numeroPracticantes: z.number().min(1,{message:'Debe solicitar minimo 1 practicante.'}).max(3, { message: 'Solo puede solicitar un maximo de 3 practicantes.' }),
+      remuneracion: z.boolean(),
+      areasInteres: z.array(z.string())
+        .min(1,{ message: 'Debe seleccionar al menos una área de interes.' })
+        .max(3, { message: 'Solo puede seleccionar un maximo de 3 áreas de interes.' }),
+    }))
   });
 
+  console.log(form.formState.errors)
+  //console.log(form.getValues())
   //const selectedDepartamento = form.watch("departamentoResidenciaId");
  // const watch = form.watch() as Record<string, any>;
 //  const { createEstudiante, cargando, error } = useEstudiantes();
 
   const onSubmit = (data: any) => { 
-    console.log(data)
-  
+    console.log('data',data)
+   
+    //console.log('solicitudRequest',solicitudRequest)
   }
 
   const onCancelarSolictud = () => { 
@@ -231,17 +271,105 @@ export const SolicitudesPracticantes = () => {
 
             <form onSubmit={form.handleSubmit(onSubmit)}>
               <div className="mt-3">
-                <AreasDeInteresForm />
+                <fieldset>
+                  <legend className="text-sm font-semibold leading-6 text-gray-900">
+                    Seleccione las áreas de interés de los practicantes que necesita.
+                  </legend>
+                  <div className="mt-6 space-y-2">
+                    {
+                      areas.map((area) =>
+                        <div className="relative flex gap-x-3">
+                          <div className="flex h-6 items-center">
+                            <input id={area.id} name={area.id} type="checkbox"
+                              value={area.id}
+                              checked={form.watch("areasInteres").includes(area.id)}
+                              onChange={(e) => {
+                                const checked = e.target.checked;
+                                if (checked) {
+                                  form.setValue("areasInteres", [...form.watch("areasInteres"), area.id])
+                                } else {
+                                  form.setValue("areasInteres", form.watch("areasInteres").filter((id: string) => id !== area.id))
+                                }
+                              }}
+                              className="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-600" />
+                            
+                          </div>
+                          <div className="text-sm leading-6">
+                            <label htmlFor={area.id} className="font-normal text-gray-900">{ area.nombre}</label>
+                           
+                          </div>
+                          <div>
+                            
+                          </div>
+                        </div>
+                      )
+                    }
+                    <div>
+                      <label htmlFor="">
+                        {
+                          form.formState.errors.areasInteres ? (
+                            <span className="text-red-500 text-sm">
+                              {
+                              form.formState.errors.areasInteres.message 
+                            
+                            }</span>
+                          ) : null
+                        }
+                      </label>
+                    </div>
+                    
+                  </div>
+                </fieldset>
 
               </div>
               <div>
 
-                <div className="mt-10">
+                <div className="mt-10 mb-3">
                   <div className="text-sm text-gray-900 mb-2">
                     Seleccione las herramientas y/o conocimientos que maneja de las
                     siguientes subcategorias (solo si aplica).
                   </div>
                   <HerramientasForm />
+                  <div className="divide-y mt-3">
+                   
+                   
+                      <Disclosure>
+                      <DisclosureButton
+                        className="text-sm font-semibold leading-6 text-gray-900 flex w-full justify-between p-3">
+                        <span>Frontend</span>       
+                        <BiChevronDown className="h-5 w-5 text-gray-400" />
+                      </DisclosureButton>
+                      <DisclosurePanel>
+                        <div className="flex space-x-1 p-3">
+                          <HerramientaCheckbox nombre="HTML" />
+                          <HerramientaCheckbox nombre="CSS" />
+                          <HerramientaCheckbox nombre="React" />
+                          <HerramientaCheckbox nombre="Angular" />
+                          <HerramientaCheckbox nombre="Vue" />
+                        </div>
+                      </DisclosurePanel>
+                      
+                      </Disclosure>
+                      
+                    <Disclosure>
+                      <DisclosureButton
+                        className="text-sm font-semibold leading-6 text-gray-900 flex w-full justify-between p-3">
+                        <span>Backend</span>
+                        <BiChevronDown className="h-5 w-5 text-gray-400" />
+                      </DisclosureButton>
+                      <DisclosurePanel>
+                        <div className="flex space-x-1 p-3">
+                          <HerramientaCheckbox nombre="Node js" />
+                          <HerramientaCheckbox nombre="Spring" />
+                          <HerramientaCheckbox nombre="Nest" />
+                          <HerramientaCheckbox nombre="C#" />
+                          <HerramientaCheckbox nombre="GO" />
+                        </div>
+                      </DisclosurePanel>
+
+                    </Disclosure>
+                    
+                  </div>
                 </div>
               </div>
               <div>
@@ -267,11 +395,17 @@ export const SolicitudesPracticantes = () => {
                     <p className="mt-1 text-sm leading-6 text-gray-600">Incentivo monetario de cualquier tipo (salario, subsidio, comisión...).</p>
                     <div className="space-y-1">
                       <div className="flex items-center gap-x-3">
-                        <input id="push-everything" name="push-notifications" type="radio" className="h-4 w-4 border-gray-300 text-indigo-600 focus:ring-indigo-600"/>
+                        <input id="push-everything" name="push-notifications" type="radio"
+                          checked={form.watch("remuneracion")}
+                          onChange={() => form.setValue("remuneracion", true)}
+                          className="h-4 w-4 border-gray-300 text-indigo-600 focus:ring-indigo-600" />
                           <label htmlFor="push-everything" className="block text-sm font-medium leading-6 text-gray-900">Si</label>
                       </div>
                       <div className="flex items-center gap-x-3">
-                        <input id="push-email" name="push-notifications" type="radio" className="h-4 w-4 border-gray-300 text-indigo-600 focus:ring-indigo-600"/>
+                        <input id="push-email" name="push-notifications" type="radio"
+                          checked={!form.watch("remuneracion")}
+                          onChange={() => form.setValue("remuneracion", false)}
+                          className="h-4 w-4 border-gray-300 text-indigo-600 focus:ring-indigo-600" />
                           <label htmlFor="push-email" className="block text-sm font-medium leading-6 text-gray-900">No</label>
                       </div>
                       

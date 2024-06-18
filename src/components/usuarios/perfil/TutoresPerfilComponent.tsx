@@ -4,7 +4,7 @@ import { IoCheckmark } from "react-icons/io5"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { z } from "zod"
 import { FieldValues, SubmitHandler, useForm } from "react-hook-form"
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "../../ui/Input/Form"
+import { Form, FormControl, FormField, FormItem, FormMessage } from "../../ui/Input/Form"
 import { PhoneInput } from "../../ui/PhoneInput"
 
 interface Tutor {
@@ -182,7 +182,7 @@ const EditarDireccionTutorComponent = ({ direccion }: { direccion: string }) => 
 
 export const TutoresPerfilComponent = ({ tutor }: SolicitudPendienteProps) => {
 
-  const [tutorItem, setTutorItem] = useState<Tutor>(tutor)
+  //const [tutorItem, setTutorItem] = useState<Tutor>(tutor)
   
   const [isEditing, setIsEditing] = useState({
     nombre: false,

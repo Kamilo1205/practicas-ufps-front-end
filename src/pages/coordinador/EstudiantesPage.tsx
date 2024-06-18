@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { fetchEstudiantes as fetchGetEstudiantes } from "../../api/estudiante.api";
+import { Avatar, Button,  } from "../../components/ui";
 import { Avatar, Button, Pagination } from "../../components/ui";
 import { EmptyStateMessage } from "../../components/estudiantes/EmptyStateMessage";
 //import { useLocation, useNavigate } from "react-router-dom";
@@ -73,14 +74,14 @@ export const EstudiantesPage = () => {
   //const navigate = useNavigate();
   //const location = useLocation();
 
-  console.log(mostrarPerfil)
-
   useEffect(() => {
     const fetchData = async () => {
-      const {data,total} = await fetchGetEstudiantes(currentPage,itemsPerPage,Tabs[tab].grupo, filtro);
+      //TODO: Ajustar cuando se hagan los cambios en el backend.
+      //const {data,total} = await fetchGetEstudiantes(currentPage,itemsPerPage,Tabs[tab].grupo, filtro);
+      const data = await fetchGetEstudiantes(currentPage,itemsPerPage,Tabs[tab].grupo, filtro);
       setEstudiantes({
         estudiantes: data || [],
-        total: total
+        total: 100
       
       });
       console.log(data);
