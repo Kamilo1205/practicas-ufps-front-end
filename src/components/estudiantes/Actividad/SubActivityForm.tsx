@@ -38,35 +38,43 @@ export const SubActivityForm: React.FC<SubActivityFormProps> = ({
 
   return (
     <form onSubmit={handleSubmit} className="flex flex-col space-y-2 mb-4">
-      <input
-        type="text"
-        placeholder="Título de la SubActividad"
-        value={title}
-        onChange={(e) => setTitle(e.target.value)}
-        className="border rounded px-2 py-1"
-        required
-      />
-      <textarea
-        placeholder="Descripción de la SubActividad"
-        value={description}
-        onChange={(e) => setDescription(e.target.value)}
-        className="border rounded px-2 py-1"
-        required
-      />
-      <input
-        type="date"
-        value={startDate}
-        onChange={(e) => setStartDate(e.target.value)}
-        className="border rounded px-2 py-1"
-        required
-      />
-      <input
-        type="date"
-        value={endDate}
-        onChange={(e) => setEndDate(e.target.value)}
-        className="border rounded px-2 py-1"
-        required
-      />
+      <div className="flex">
+        <div>
+          <input
+            type="text"
+            placeholder="Título de la SubActividad"
+            value={title}
+            onChange={(e) => setTitle(e.target.value)}
+            className="border rounded px-2 py-1"
+            required
+          />
+        </div>
+        <div>
+          <input
+            type="date"
+            value={startDate}
+            onChange={(e) => setStartDate(e.target.value)}
+            className="border rounded px-2 py-1"
+            required
+          />
+          <input
+            type="date"
+            value={endDate}
+            onChange={(e) => setEndDate(e.target.value)}
+            className="border rounded px-2 py-1"
+            required
+          />
+        </div>
+      </div>
+      <div>
+        <textarea
+          placeholder="Descripción de la SubActividad"
+          value={description}
+          onChange={(e) => setDescription(e.target.value)}
+          className="border rounded px-2 py-1"
+          required
+        />
+      </div>
       <input
         type="number"
         placeholder="Horas"
