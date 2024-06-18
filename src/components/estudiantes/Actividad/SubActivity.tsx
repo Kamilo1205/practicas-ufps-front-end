@@ -46,22 +46,27 @@ export const SubActivity: React.FC<SubActivityProps> = ({
             onChange={(e) => setTitle(e.target.value)}
             className="border rounded px-2 py-1"
           />
-          <textarea
-            value={description}
-            onChange={(e) => setDescription(e.target.value)}
-            className="border rounded px-2 py-1 w-full"
-          />
           <input
             type="date"
             value={startDate}
+            style={{
+              border: "1px solid rgb(209 213 219 )",
+              borderRadius: "0.375rem", // Equivale a rounded
+              padding: "0.30rem 0.5rem", // Equivale a px-2 py-1
+            }}
             onChange={(e) => setStartDate(e.target.value)}
-            className="border rounded px-2 py-1"
+            className="px-2 py-1"
           />
           <input
             type="date"
             value={endDate}
+            style={{
+              border: "1px solid rgb(209 213 219 )",
+              borderRadius: "0.375rem", // Equivale a rounded
+              padding: "0.30rem 0.5rem", // Equivale a px-2 py-1
+            }}
             onChange={(e) => setEndDate(e.target.value)}
-            className="border rounded px-2 py-1"
+            className=" px-2 py-1"
           />
           <input
             type="number"

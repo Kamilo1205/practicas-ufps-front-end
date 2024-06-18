@@ -3,6 +3,8 @@ import React, { useState } from "react";
 import { ActivityForm } from "./ActivityForm";
 import { Activity } from "./Activity";
 import { Activity as ActivityType } from "../types";
+import { MdLibraryAddCheck } from "react-icons/md";
+import { VscChromeClose } from "react-icons/vsc";
 
 const initialActivities: ActivityType[] = [];
 
@@ -45,15 +47,33 @@ export const ActivityManager: React.FC = () => {
 
   return (
     <div className="p-4">
-      <h1 className="text-2xl mb-4 font-bold text-gray-700">
-        Gestión de Actividades
-      </h1>
-      <button
-        onClick={() => setIsFormVisible(!isFormVisible)}
-        className="bg-blue-500 text-white rounded px-4 py-2 mb-4"
-      >
-        {isFormVisible ? "Cerrar Formulario" : "Crear Nueva Actividad"}
-      </button>
+      <div className="p-0 flex w-full">
+        <h1 className="text-2xl mb-4 font-bold text-gray-700 w-full ">
+          Gestión de Actividades
+        </h1>
+        <div className="w-full flex justify-end ">
+          <button
+            onClick={() => setIsFormVisible(!isFormVisible)}
+            className="flex justify-end text-white px-2 py-2 mb-4"
+            style={{
+              backgroundColor: isFormVisible ? "Red" : "rgb(59 ,130 ,246)",
+              borderRadius: "10px",
+            }}
+          >
+            {isFormVisible ? (
+              <>
+                <VscChromeClose />
+              </>
+            ) : (
+              <>
+                <MdLibraryAddCheck className="mt-1 mr-1" />
+                Nueva Actividad
+              </>
+            )}
+          </button>
+        </div>
+      </div>
+
       {isFormVisible && <ActivityForm addActivity={addActivity} />}
       <div className="space-y-4">
         {activities.map((activity) => (
