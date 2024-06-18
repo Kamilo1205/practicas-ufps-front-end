@@ -1,14 +1,14 @@
 import { useEffect, useState } from "react"
 import { TabComponent } from "../../components/ui/Tab/TabComponent"
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "../../components/ui/Input/Form"
-import { useForm } from "react-hook-form"
+import { FieldValues, useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { tutorSchema } from "../../schemas/tutorSchema"
 import { PhoneInput } from "../../components/ui/PhoneInput"
 import { Avatar, Pagination } from "../../components/ui"
 import { DialogComponent } from "../../components/ui/Dialog/DialogComponent"
 import { TutoresPerfilComponent } from "../../components/usuarios/perfil/TutoresPerfilComponent"
-import { set } from "zod"
+import useEmpresas from "../../hooks/useEmpresas"
 
 
 const tabsList = [
@@ -70,11 +70,21 @@ export const TutoresPage = () => {
     resolver: zodResolver(tutorSchema)
   });
 
+  const {addTutorToEmpresaActual} = useEmpresas()
 
-  console.log(form.getValues())
+  //console.log(form.getValues())
 
-  const onSubmit = (data: any) => { 
-    console.log(data)
+  const onSubmit = (data: FieldValues) => { 
+    console.log('data', data)
+    const {nombre, apellido, email, telefono, direccion} = data
+    addTutorToEmpresaActual({
+      nombre,
+      apellidos: apellido,
+      email,
+      telefono,
+      direccionTrabajo: direccion
+    
+    })
   }
 
   const onEditTutor = (tutor:Tutor) => {
@@ -86,16 +96,19 @@ export const TutoresPage = () => {
     getTutores().then((data) => {
       setTutores(data)
     })
-  },[])
+  }, [])
+  
+
   return (
     <>
       <DialogComponent
         isOpen={mostrarSolicitud}
         onClose={() => setMostrarSolicitud(false)}
         content={
-          <TutoresPerfilComponent
+          tutorSeleccionado ? <TutoresPerfilComponent
             tutor={tutorSeleccionado}
-          />
+          />:
+          <div>Selecciona un tutor</div>
         }
         title=""
         size="lg"
@@ -246,7 +259,9 @@ export const TutoresPage = () => {
                       <div className="col-span-6">
                         <label htmlFor="street-address" className="block text-sm font-medium leading-6 text-gray-900">Dirección de trabajo</label>
                         <div className="mt-2">
-                          <input type="text" name="street-address" id="street-address" autoComplete="street-address" className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"/>
+                          <input
+                            {...form.register('direccion')}
+                            type="text" name="direccion" id="street-address" autoComplete="street-address" className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" />
                         </div>
                         {
                           form.formState.errors.direccion &&

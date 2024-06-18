@@ -61,7 +61,9 @@ export const AsignacionPracticasComponent = ({solicitud,setMostrarPerfil}:Asigna
       <div className="flex divide-x space-x-2">
         <div className="flex flex-col divide-y">
           <div className="asignados-list pl-5 pb-4">
-            <h2 className="text-gray-500 font-semibold text-sm text-opacity-100 pt-3">Estudiantes asignados</h2>
+            <h2 className="text-gray-500 font-semibold text-sm text-opacity-100 pt-3">
+              Estudiantes asignados - <span>{solicitudState.estudiantesAsignados.length}</span> de <span>{solicitudState.numeroPracticantes}</span>
+            </h2>
 
             <ul className="mt-2 max-h-20 overflow-y-scroll">
               {
@@ -175,7 +177,9 @@ export const AsignacionPracticasComponent = ({solicitud,setMostrarPerfil}:Asigna
 
                 </div>
                 <div className="mt-3">
-                  <Button onClick={() => onAsignarPracticante('1152004 - Jeison Omar Ferrer Ortega')}>Asignar practicante</Button>
+                  <Button
+                    disabled={ solicitudState.estado === 'Asignada' || solicitudState.estudiantesAsignados.length === solicitudState.numeroPracticantes}
+                    onClick={() => onAsignarPracticante('1152004 - Jeison Omar Ferrer Ortega')}>Asignar practicante</Button>
                 </div>
               </div>
             </div>

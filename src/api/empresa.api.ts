@@ -46,8 +46,16 @@ export const fetchTutoresByEmpresaId = async (empresaId: string): Promise<Tutor[
   return response.data;
 };
 
+interface DatosFormularioTutor {
+  nombre: string;
+  apellidos: string;
+  email: string;
+  telefono: string;
+  direccionTrabajo: string
+
+}
 // Agregar un tutor a una empresa
-export const addTutorEmpresa = async (createTutorDto: Partial<Omit<Tutor, 'id'>>): Promise<Tutor> => {
+export const addTutorEmpresa = async (createTutorDto: DatosFormularioTutor): Promise<Tutor> => {
   const response = await axios.post(`/empresas/tutores`, createTutorDto);
   return response.data;
 };
@@ -76,3 +84,9 @@ export const fetchGetEmpresaById = async (id: string): Promise<Empresa> => {
   const response = await axios.get(`/empresas/${id}`);
   return response.data;
 };
+
+export const getTodosLosTutores = async (): Promise<Tutor[]> => {
+  const response = await axios.get(`/tutores`);
+  console.log(response.data);
+  return response.data;
+ }

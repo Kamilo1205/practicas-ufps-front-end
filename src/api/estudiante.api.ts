@@ -18,6 +18,7 @@ export const fetchEstudiante = async (): Promise<Estudiante> => {
 // Obtener una lista paginada de estudiantes
 export const fetchEstudiantes = async (page: number = 1, limit: number = 10, grupo: string = '', search: string = ''): Promise<{ data: Estudiante[], total: number }> => {
   const response = await axios.get(`/estudiantes?page=${page}&limit=${limit}&grupo=${grupo}&search=${search}`);
+  //TODO: Tengo sospechas de que el search no está funcionando correctamente.
  console.log(response.data);
   return response.data;
 };

@@ -4,6 +4,7 @@ import { useLocation, useNavigate } from "react-router-dom";
 import { Empresa } from "../../interfaces";
 import { Avatar, Pagination } from "../../components/ui";
 import { fetchGetEmpresas } from "../../api/empresa.api";
+import { EmptyStateMessage } from "../../components/estudiantes";
 
 export const EmpresaPage = () => {
   const [empresas, setEmpresas] = useState<Empresa[]>([]);
@@ -47,7 +48,15 @@ export const EmpresaPage = () => {
       <div className="mb-10">
         <div className="text-gray-600 font-bold text-2xl">Empresas</div>
       </div>
-
+      {
+        empresas.length === 0 ? (
+          <EmptyStateMessage
+            message="No hay empresas registradas"
+            submesage="Puede registrar una nueva empresa"
+            buttonText="Agregar empresa"
+            setOpen={() => { }}
+          />
+        ):
       <div>
         <div className="overflow-x-auto">
           <table className="min-w-full border-gray-300">
@@ -122,8 +131,12 @@ export const EmpresaPage = () => {
             </tbody>
           </table>
         </div>
-        <Pagination currentPage={currentPage} itemsPerPage={itemsPerPage} totalItems={totalItems} paginate={paginate}/>
+        <Pagination currentPage={currentPage} itemsPerPage={itemsPerPage} totalItems={totalItems} paginate={paginate} />
       </div>
+      }
+      
+
+      
     </>
   );
 };

@@ -2,6 +2,8 @@ import React from "react";
 import Collapse from "../../components/ui/Button/Collapse";
 import Title from "../../components/ui/Tittle/Title";
 import IntensidadHorariaTable from "../../components/estudiantes/IntensidadHorariaTable";
+import Objetivos from "./../../components/estudiantes/Objetivos";
+import { ActivityManager } from "../../components/estudiantes/Actividad/ActivityManager";
 
 // Componente PlanDeTrabajo
 const PlanDeTrabajoPage: React.FC = () => {
@@ -18,10 +20,10 @@ const PlanDeTrabajoPage: React.FC = () => {
         <IntensidadHorariaTable />
       </Collapse>
       <Collapse title="Objetivos">
-        <p>Detalles de la tarea 3.</p>
+        <Objetivos />
       </Collapse>
       <Collapse title="Actividades">
-        <p>Detalles de la tarea 3.</p>
+        <ActivityManager />
       </Collapse>
       <Collapse title="Requerimientos/Resultados">
         <p>Detalles de la tarea 3.</p>
