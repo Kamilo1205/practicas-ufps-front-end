@@ -4,6 +4,7 @@ import { AuthRouter } from './AuthRouter';
 import { EmpresaRouter } from './EmpresaRouter';
 import { CoordinadorRouter } from './CoordinadorRouter';
 import { EstudianteRouter } from './EstudianteRouter';
+import { TutorRouter } from './TutorRouter';
 
 export const AppRouter = () => {
   const { user, isAuthenticated, isLoading } = useAuth();
@@ -41,7 +42,7 @@ export const AppRouter = () => {
       { 
         isAuthenticated && user && user.roles.some(rol => rol.nombre == 'tutor' ) && (
           <>
-            <Route path='/tutor/*' element={<CoordinadorRouter />} />
+            <Route path='/tutor/*' element={<TutorRouter />} />
             <Route path='*' element={<Navigate to="/tutor" />} /> 
           </>
         )

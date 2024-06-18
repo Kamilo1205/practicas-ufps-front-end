@@ -10,7 +10,7 @@ import { DialogComponent } from "../../components/ui/Dialog/DialogComponent";
 import { AgregarEstudianteForm } from "../../components/estudiantes/AgregarEstudianteForm";
 import { TablaPaginadaComponent } from "../../components/ui/Table/TablaPaginadaComponent";
 import { EstudiantePerfilComponent } from "../../components/usuarios/perfil/EstudiantePerfilComponent";
-import { BiArrowToRight, BiCheck, BiX } from "react-icons/bi";
+import { BiArrowToRight, BiCheck } from "react-icons/bi";
 import { IoAlertCircle } from "react-icons/io5";
 
 export const grupos = [
@@ -82,14 +82,16 @@ export const EstudiantesPage = () => {
   useEffect(() => {
     const fetchData = async () => {
       //TODO: Ajustar cuando se hagan los cambios en el backend.
+      //TODO: Implementar peti para que solo traiga inactivos.
       //const {data,total} = await fetchGetEstudiantes(currentPage,itemsPerPage,Tabs[tab].grupo, filtro);
-      const data = await fetchGetEstudiantes(currentPage,itemsPerPage,Tabs[tab].grupo, filtro);
+      const data = await fetchGetEstudiantes(currentPage, itemsPerPage, Tabs[tab].grupo ? Tabs[tab].grupo : '', filtro);
+      
       setEstudiantes({
         estudiantes: data || [],
         total: 100
       
       });
-      console.log(data);
+      //console.log(data);
     };
     fetchData();
   }, [tab,filtro,currentPage,itemsPerPage]);

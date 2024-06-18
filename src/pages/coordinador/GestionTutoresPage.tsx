@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { TabComponent } from "../../components/ui/Tab/TabComponent"
 import { TablaPaginadaComponent } from "../../components/ui/Table/TablaPaginadaComponent";
 import useEmpresas from "../../hooks/useEmpresas";
+import { EmptyStateMessage } from "../../components/estudiantes";
 
 const Tabs = [
   {
@@ -40,19 +41,31 @@ export const GestionTutoresPage = () => {
     {
       tab === 0 && (
         <>
-          <TablaPaginadaComponent
-            encabezados={["Nombre", "Empresa", "Email", "Estado"]}
-            currentPage={currentPage}
-            setCurrentPage={setCurrentPage}
-            totalItems={totalTutores}
-            filas={tutores.map((tutor) => [
-              `${tutor.nombre} ${tutor.apellidos}`,
-              tutor.empresa.nombre,
-              tutor.email,
-              tutor.activo ? "Activo" : "Inactivo"
-            
-            ])}
-          />
+          {
+            tutores.length === 0 ?  (
+              <EmptyStateMessage
+                message="No hay tutores registrados"
+                submesage="Puede registrar un nuevo tutor para una empresa"
+                buttonText="Agregar tutor"
+                setOpen={()=>{}}
+              />
+            )
+              : 
+              <TablaPaginadaComponent
+                encabezados={["Nombre", "Empresa", "Email", "Estado"]}
+                currentPage={currentPage}
+                setCurrentPage={setCurrentPage}
+                totalItems={totalTutores}
+                filas={tutores.map((tutor) => [
+                  `${tutor.nombre} ${tutor.apellidos}`,
+                  tutor.empresa.nombre,
+                  tutor.email,
+                  tutor.activo ? "Activo" : "Inactivo"
+
+                ])}
+              />
+          }
+          
         </>
       )
     }

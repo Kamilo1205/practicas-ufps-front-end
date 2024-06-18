@@ -2,11 +2,22 @@ import { HiOutlineFolderPlus, HiOutlineUserPlus } from 'react-icons/hi2';
 import { Button } from '../../components/ui';
 
 interface EmptyStateMessageProps { 
+  message?: string;
+  submesage?: string;
+  buttonText?: string;
+  showButton?:boolean
+
   setOpen: (open: boolean) => void;
 
 }
 
-export const EmptyStateMessage = ({setOpen}:EmptyStateMessageProps) => {
+export const EmptyStateMessage = ({
+  message = 'No hay estudiantes matriculados actualmente',
+  submesage = 'Comienza agregando los estudiantes al semestre',
+  buttonText = 'Agregar estudiantes',
+  showButton = true,
+  setOpen
+}: EmptyStateMessageProps) => {
 
   
   return (
@@ -15,17 +26,22 @@ export const EmptyStateMessage = ({setOpen}:EmptyStateMessageProps) => {
         <div className="text-center">
           <HiOutlineFolderPlus className="size-16 text-gray-400 mx-auto" />
           <h3 className="text-sm text-gray-900 font-semibold mt-2">
-            No hay estudiantes matriculados actualmente
+            {message}
           </h3>
           <p className="text-sm text-gray-500 mt-1">
-            Comienza agregando los estudiantes al semestre
+           {submesage}
           </p>
-
-          <input className="hidden" type="file" />
-          <Button className="mt-9 items-center" onClick={()=>setOpen(true)}>
-            <HiOutlineUserPlus className="size-5 mr-2" />
-            Agregar estudiantes
-          </Button>
+          {
+            showButton &&
+            <>
+              <input className="hidden" type="file" />
+              <Button className="mt-9 items-center" onClick={() => setOpen(true)}>
+                <HiOutlineUserPlus className="size-5 mr-2" />
+                {buttonText}
+              </Button>
+            </>
+}
+          
         </div>
       </div>
 

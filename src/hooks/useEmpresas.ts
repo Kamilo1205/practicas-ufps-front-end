@@ -1,5 +1,5 @@
 import { useState, useCallback } from 'react';
-import { AxiosError } from 'axios';
+import { Axios, AxiosError } from 'axios';
 import { 
     fetchGetEmpresa as fetchGetEmpresaAPI, 
     fetchGetEmpresas as fetchGetEmpresasAPI, 
@@ -41,6 +41,8 @@ type UseEmpresasReturn = {
   addTutorToEmpresaActual: (tutor: DatosFormularioTutor) => Promise<void>;
   getTutoresDeEmpresaActual: () => Promise<void>;
   getTodosLosTutores: () => Promise<Tutor[]>;
+  getTutorById: ({ empresaId, tutorId }: { empresaId: string, tutorId: string }) => Promise<any>
+  getPracticantesPorTutorId: (tutorId:string) => Promise<any>
 };
 
 const useEmpresas = (): UseEmpresasReturn => {
@@ -210,6 +212,58 @@ const useEmpresas = (): UseEmpresasReturn => {
     }
   }
 
+  const getTutorById = async ({empresaId, tutorId}:{empresaId:string,tutorId:string}) => {
+    setCargando(true)
+    try {
+      //TODO: Esperando al backend para conectar la API de tutor.
+      const data = {
+        id: '',
+        nombre: 'Juan',
+        apellidos: 'Perez',
+        telefono: '57322232323',
+        direccionTrabajo: "calle 20 # 2-211"
+      }
+      setError(null)
+      return data
+      
+    }
+    catch (err ) {
+      setError(err as AxiosError)
+      return {}
+    }
+    finally {
+      setCargando(false)
+    }
+  }
+
+  const getPracticantesPorTutorId = (tutorId: string) => {
+      setCargando(true)
+      try {
+        // TODO: Implement logic for getting practicantes by tutorId
+        const data = Promise.resolve([
+          {
+            id: '1',
+            nombre: 'Javier',
+            correo: 'javier@correo.com',
+            telefono: '573222222222',
+            planTrabajo: '',
+            primerInforme: '',
+            segundoInforme: ''
+          }
+        ])
+        setError(null)
+        return data
+      }
+      catch (err) {
+        // Handle error
+        setError(err as AxiosError)
+        return []
+      }
+      finally {
+        setCargando(false)
+      }
+  }
+
   return { 
     empresas, 
     empresa, 
@@ -226,7 +280,9 @@ const useEmpresas = (): UseEmpresasReturn => {
     addTutorToEmpresaById,
     getTutoresDeEmpresaActual,
     addTutorToEmpresaActual,
-    getTodosLosTutores
+    getTodosLosTutores,
+    getTutorById,
+    getPracticantesPorTutorId
   };
 };
 
