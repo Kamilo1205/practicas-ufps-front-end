@@ -1,9 +1,11 @@
 import axios from 'axios';
 
 const axiosInstance = axios.create({
-  baseURL: import.meta.env.VITE_APP_API_URL,
+  baseURL: import.meta.env.VITE_APP_API_URL || 'http://localhost:3000',
   withCredentials: true, // Importante para el envío de cookies en cada solicitud
 });
+
+console.log("ESO SI ?",import.meta.env.VITE_APP_API_URL);
 
 axiosInstance.interceptors.response.use(
   (response) => response,

@@ -12,7 +12,15 @@ interface AuthContextType {
   isLoading: boolean;
 }
 
-const AuthContext = createContext<AuthContextType | null>(null);
+const AuthContext = createContext<AuthContextType | null>({
+  isAuthenticated: false,
+  user: null,
+  login: () => {},
+  signup: () => {},
+  logout: () => {},
+  isLoading: true,
+
+});
 
 export const useAuth = () => {
   const context = useContext(AuthContext);
