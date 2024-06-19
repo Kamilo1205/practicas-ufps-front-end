@@ -12,9 +12,7 @@ export const PerfilPage = () => {
 
   return (
     <div>
-        {JSON.stringify(user, null, 2)}
-        <hr></hr>
-        {JSON.stringify(estudiante, null, 2)}
+      {JSON.stringify(estudiante, null, 2)}
     </div>
   )
 }
