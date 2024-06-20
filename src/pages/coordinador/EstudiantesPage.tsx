@@ -3,7 +3,7 @@ import { fetchEstudiantes as fetchGetEstudiantes } from "../../api/estudiante.ap
 import { Avatar, Button,  } from "../../components/ui";
 import { EmptyStateMessage } from "../../components/estudiantes/EmptyStateMessage";
 //import { useLocation, useNavigate } from "react-router-dom";
-import { Estudiante } from "../../interfaces/estudiante.interface";
+
 import { HiOutlineUserPlus } from "react-icons/hi2";
 import { TabComponent } from "../../components/ui/Tab/TabComponent";
 import { DialogComponent } from "../../components/ui/Dialog/DialogComponent";
@@ -12,6 +12,7 @@ import { TablaPaginadaComponent } from "../../components/ui/Table/TablaPaginadaC
 import { EstudiantePerfilComponent } from "../../components/usuarios/perfil/EstudiantePerfilComponent";
 import { BiArrowToRight, BiCheck } from "react-icons/bi";
 import { IoAlertCircle } from "react-icons/io5";
+import { EstudianteI } from "../../interfaces/responses.interface";
 
 export const grupos = [
   {
@@ -38,7 +39,7 @@ const Tabs = [
   {
     id: 1,
     name: "Grupo A",
-    grupo: "Grupo A"
+    grupo: "GrupoA"
   },
   {
     id: 2,
@@ -53,12 +54,13 @@ const Tabs = [
   {
     id: 4,
     name: "Inactivos",
+    grupo: 'inactivo'
   },
 
 ]
 
 export const EstudiantesPage = () => {
-  const [estudiantes, setEstudiantes] = useState<{ estudiantes: Estudiante[], total: number }>({
+  const [estudiantes, setEstudiantes] = useState<{ estudiantes: EstudianteI[], total: number }>({
     estudiantes: [],
     total: 0,
   
@@ -70,7 +72,7 @@ export const EstudiantesPage = () => {
   const [agregarEstudiante, setAgregarEstudiante] = useState<boolean>(false);
   const [tab, setTab] = useState<number>(0);
   const [mostrarPerfil, setMostrarPerfil] = useState<boolean>(false);
-  const [estudianteSeleccionado, setEstudianteSeleccionado] = useState<Estudiante | null>(null);
+  const [estudianteSeleccionado, setEstudianteSeleccionado] = useState<EstudianteI | null>(null);
   const [filtro, setFiltro] = useState<string>("");
   //const navigate = useNavigate();
   //const location = useLocation();
@@ -85,9 +87,10 @@ export const EstudiantesPage = () => {
       //TODO: Implementar peti para que solo traiga inactivos.
       //const {data,total} = await fetchGetEstudiantes(currentPage,itemsPerPage,Tabs[tab].grupo, filtro);
       const data = await fetchGetEstudiantes(currentPage, itemsPerPage, Tabs[tab].grupo ? Tabs[tab].grupo : '', filtro);
-      
+      console.log(data)
+      setTotalItems(data.meta.totalItems);
       setEstudiantes({
-        estudiantes: data || [],
+        estudiantes: data.data || [],
         total: 100
       
       });
@@ -143,7 +146,7 @@ export const EstudiantesPage = () => {
         activeTab={tab}
         setTab={setTab}
       />
-      {estudiantes.estudiantes.length == 0 ? (
+      {estudiantes.estudiantes.length == 0 && filtro && filtro === '' ? (
         <EmptyStateMessage
           setOpen={setAgregarEstudiante}
         />
@@ -152,6 +155,8 @@ export const EstudiantesPage = () => {
             
             <>
               <TablaPaginadaComponent
+                filtrar
+                setCurrentPage={setCurrentPage}
                 filtro={filtro}
                 setFiltro={setFiltro}
                 encabezados={["Nombre", "Codigo", "Plan de trabajo", "Primer informe", "Segundo informe", "Estado"]}

@@ -19,13 +19,13 @@ export const GestionTutoresPage = () => {
   const [totalTutores, setTotalTutores] = useState(0);
 
 
-  const {tutores,getTodosLosTutores} = useEmpresas()
+  const {tutores,} = useEmpresas()
   console.log(tutores)
 
   useEffect(() => {
-    getTodosLosTutores().then((data) => {
-      setTotalTutores(data.length)
-    })
+    //TODO: Verificar si se necesita hacer petición a la API o el hoock ya trae los datos.
+      setTotalTutores(tutores.length)
+  
   }, [])
 
   return (<>
@@ -52,6 +52,7 @@ export const GestionTutoresPage = () => {
             )
               : 
               <TablaPaginadaComponent
+                itemsPerPage={5}
                 encabezados={["Nombre", "Empresa", "Email", "Estado"]}
                 currentPage={currentPage}
                 setCurrentPage={setCurrentPage}

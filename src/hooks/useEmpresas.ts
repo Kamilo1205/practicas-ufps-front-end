@@ -1,5 +1,5 @@
 import { useState, useCallback } from 'react';
-import { Axios, AxiosError } from 'axios';
+import { AxiosError } from 'axios';
 import { 
     fetchGetEmpresa as fetchGetEmpresaAPI, 
     fetchGetEmpresas as fetchGetEmpresasAPI, 

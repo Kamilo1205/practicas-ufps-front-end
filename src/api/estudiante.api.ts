@@ -1,6 +1,7 @@
 import axios from './axios';
 import { Estudiante } from '../interfaces/estudiante.interface';
 import { objectToFormData } from '../utils';
+import { EstudiantesResponse } from '../interfaces/responses.interface';
 
 // Configuración para enviar datos en formato multipart/form-data
 const formDataConfig = {
@@ -16,10 +17,16 @@ export const fetchEstudiante = async (): Promise<Estudiante> => {
 };
 
 // Obtener una lista paginada de estudiantes
-export const fetchEstudiantes = async (page: number = 1, limit: number = 10, grupo: string = '', search: string = ''): Promise<{ data: Estudiante[], total: number }> => {
-  const response = await axios.get(`/estudiantes?page=${page}&limit=${limit}&grupo=${grupo}&search=${search}`);
+export const fetchEstudiantes = async (page: number = 1, limit: number = 10, grupo: string = '', search: string = ''): Promise<EstudiantesResponse> => {
+  console.log(page, limit, grupo, search)
+  const filtros = {
+    grupoFiltro: grupo && grupo !== '' && grupo !== 'inactivo' ? `&filter.grupoMatriculado=${grupo}&filter.usuario.estaActivo=$eq:true` : '',
+    estaInactivoFiltro: grupo === 'inactivo' ? `&filter.usuario.estaActivo=$eq:false` : '',
+
+  }
+  const response = await axios.get(`/estudiantes?page=${page}&limit=${limit}${filtros.grupoFiltro}${filtros.estaInactivoFiltro}&search=${search}`);
   //TODO: Tengo sospechas de que el search no está funcionando correctamente.
- console.log(response.data);
+ //console.log(response.data);
   return response.data;
 };
 

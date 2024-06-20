@@ -1,10 +1,10 @@
 import { useState } from "react";
-import { Estudiante } from "../../../interfaces/estudiante.interface";
 import { Avatar } from "../../ui";
 import { TabComponent } from "../../ui/Tab/TabComponent";
+import { EstudianteI } from "../../../interfaces/responses.interface";
 
 interface EstudiantePerfilProps { 
-  estudiante: Estudiante ;
+  estudiante: EstudianteI ;
 
 }
 
@@ -88,7 +88,7 @@ export const EstudiantePerfilComponent = ({estudiante}:EstudiantePerfilProps) =>
               </div>
               <div className="px-4 py-3 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
                 <dt className="text-sm font-medium leading-6 text-gray-900">Dirección</dt>
-                <dd className="mt-1 text-sm leading-6 text-gray-700 sm:col-span-2 sm:mt-0 capitalize">{`${estudiante ? estudiante?.direccion : 'Dato no registrado' || ''}, ${estudiante?.ciudadResidencia.nombre || ''}, ${estudiante?.ciudadResidencia.departamento?.nombre || ''}`}</dd>
+                <dd className="mt-1 text-sm leading-6 text-gray-700 sm:col-span-2 sm:mt-0 capitalize">{`${estudiante ? estudiante?.direccionResidencia : 'Dato no registrado' || ''}, ${estudiante?.ciudadResidencia.nombre || ''}`}</dd>
               </div>
               
               
