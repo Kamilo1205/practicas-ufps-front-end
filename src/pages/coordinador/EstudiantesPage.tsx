@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react";
 import { fetchEstudiantes as fetchGetEstudiantes } from "../../api/estudiante.api";
 import { Avatar, Button,  } from "../../components/ui";
-import { Avatar, Button, Pagination } from "../../components/ui";
 import { EmptyStateMessage } from "../../components/estudiantes/EmptyStateMessage";
 //import { useLocation, useNavigate } from "react-router-dom";
 import { Estudiante } from "../../interfaces/estudiante.interface";

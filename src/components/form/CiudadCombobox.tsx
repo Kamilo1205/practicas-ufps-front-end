@@ -13,20 +13,21 @@ interface CiudadComboboxProps {
 export const CiudadCombobox: FC<CiudadComboboxProps> = ({ departamentoId, value = null, onChange }) => {
   const [query, setQuery] = useState<string>("");
   const { ciudades, fetchCiudades } = useCiudades();
-
+  console.log('tal vex',ciudades);
   useEffect(() => {
-    fetchCiudades(departamentoId);
+    console.log('tal vez',departamentoId);
+    if(departamentoId) fetchCiudades(departamentoId);
   }, [departamentoId, fetchCiudades]);
 
   const filteredCiudades =
     query === ""
       ? ciudades
-      : ciudades.filter((item) =>
+      : ciudades?.filter((item) =>
           item.nombre.toLowerCase().includes(query.toLowerCase())
         );
 
   const displayValue = (ciudadId: string) => {
-    const selectCiudad = ciudades.find((i) => i.id == ciudadId);
+    const selectCiudad = ciudades?.find((i) => i.id == ciudadId);
     return selectCiudad ? (!departamentoId ? `${selectCiudad?.departamento?.pais?.nombre}, ${selectCiudad?.departamento?.nombre}, ${selectCiudad?.nombre}`: `${selectCiudad?.nombre}`) : "";
   };      
 

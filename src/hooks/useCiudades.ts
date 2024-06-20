@@ -24,6 +24,7 @@ const useCiudades = (): UseCiudadesReturn => {
     try {
       if (departamentoId) {
         const ciudadesData = await fetchCiudadesPorDepartamentoAPI(departamentoId);
+        console.log('ciudadesData',ciudadesData);
         setCiudades(ciudadesData);
       } else {
         const todasLasCiudadesData = await fetchCiudadesAPI();
