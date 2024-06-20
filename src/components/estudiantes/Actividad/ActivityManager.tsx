@@ -47,11 +47,11 @@ export const ActivityManager: React.FC = () => {
 
   return (
     <div className="p-4">
-      <div className="p-0 flex w-full">
-        <h1 className="text-2xl mb-4 font-bold text-gray-700 w-full ">
+      <div className="p-0 flex w-full" style={{alignItems:"center"}}>
+        <h1 className="text-2xl mb-4 font-bold text-gray-700 w-full">
           Gestión de Actividades
         </h1>
-        <div className="w-full flex justify-end ">
+        <div className="flex justify-end mt-1 ">
           <button
             onClick={() => setIsFormVisible(!isFormVisible)}
             className="flex justify-end text-white px-2 py-2 mb-4"
@@ -66,8 +66,7 @@ export const ActivityManager: React.FC = () => {
               </>
             ) : (
               <>
-                <MdLibraryAddCheck className="mt-1 mr-1" />
-                Nueva Actividad
+                <MdLibraryAddCheck style={{width:"25px" , height:"25px"}}/>
               </>
             )}
           </button>

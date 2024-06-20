@@ -10,7 +10,10 @@ import { MdExpandMore, MdExpandLess, MdEdit, MdDelete } from "react-icons/md";
 import { GoClock } from "react-icons/go";
 import { GiProgression } from "react-icons/gi";
 import { FaRegCalendar } from "react-icons/fa6";
-import { Input, Label } from "../../ui";
+import { Label } from "../../ui";
+import { TfiSave } from "react-icons/tfi";
+import { IoIosAdd } from "react-icons/io";
+import { VscChromeClose } from "react-icons/vsc";
 interface ActivityProps {
   activity: ActivityType;
   updateActivity: (activity: ActivityType) => void;
@@ -22,7 +25,7 @@ export const Activity: React.FC<ActivityProps> = ({
   updateActivity,
   deleteActivity,
 }) => {
-  const [isExpanded, setIsExpanded] = useState(true);
+  const [isExpanded, setIsExpanded] = useState(false);
   const [totalHours, setTotalHours] = useState(0);
   const [percentageComplete, setPercentageComplete] = useState(0);
   const [isEditing, setIsEditing] = useState(false);
@@ -53,6 +56,14 @@ export const Activity: React.FC<ActivityProps> = ({
   }).format(FinDateAdjusted);
 
   const toggleExpand = () => setIsExpanded(!isExpanded);
+  const toggleOpenEdit = () => {
+    if (isExpanded === true) {
+      setIsExpanded(!isExpanded);
+    } else {
+      setIsExpanded(isExpanded);
+    }
+    setIsEditing(!isEditing);
+  };
 
   const addSubActivity = (subActivity: SubActivityType) => {
     const updatedActivity = {
@@ -114,15 +125,14 @@ export const Activity: React.FC<ActivityProps> = ({
   return (
     <div className="border-b mb-2">
       <div className="flex justify-between items-center py-2">
-        <div className="flex items-center space-x-2">
-          <button onClick={toggleExpand}>
+        <div className="flex-1 items-center space-x-2 w-full mr-4">
+          <button className="cursor-pointer" onClick={toggleExpand}>
             {isExpanded ? <MdExpandLess /> : <MdExpandMore />}
           </button>
           {isEditing ? (
-            <div>
-              <Label>Titulo</Label>
-              <input
-                type="text"
+            <div className="w-full flex-1">
+              <Label>Título</Label>
+              <textarea
                 value={title}
                 style={{
                   border: "1px solid rgb(209 213 219 )",
@@ -130,78 +140,125 @@ export const Activity: React.FC<ActivityProps> = ({
                   padding: "0.30rem 0.5rem", // Equivale a px-2 py-1
                 }}
                 onChange={(e) => setTitle(e.target.value)}
-                className=" px-2 py-1"
+                className="px-2 py-1 w-full"
               />
             </div>
           ) : (
-            <span>{activity.title}</span>
+            <span
+              onClick={toggleExpand}
+              className="cursor-pointer flex-grow truncate"
+            >
+              {activity.title}
+            </span>
           )}
         </div>
         <div className="flex items-center space-x-2">
-          <div
-            className="flex px-2 py-1"
-            style={{ borderRadius: "15px", border: "1px solid gray" }}
-          >
-            <FaRegCalendar className="mt-1 mr-1" />
-            {`${formattedStartDate} - ${formattedEndDate}`}
+          <div className="hidden xl:flex">
+            <div
+              className="flex px-2 py-1"
+              style={{ borderRadius: "15px", border: "1px solid gray" }}
+            >
+              <FaRegCalendar className="mt-1 mr-1 " />
+              <span className="md:hidden">{formattedEndDate}</span>
+              <span className="hidden md:inline">
+                {formattedStartDate} - {formattedEndDate}
+              </span>
+            </div>
+            <div
+              className="flex px-2 py-1"
+              style={{ borderRadius: "15px", border: "1px solid gray" }}
+            >
+              <GoClock className="mt-1 mr-1" />
+              {totalHours}
+            </div>
+            <div
+              className="flex px-2 py-1"
+              style={{ borderRadius: "15px", border: "1px solid gray" }}
+            >
+              <GiProgression className="mt-1 mr-1" />
+              {`${percentageComplete.toFixed(2)}%`}
+            </div>
           </div>
-          <div
-            className="flex px-2 py-1"
-            style={{ borderRadius: "15px", border: "1px solid gray" }}
-          >
-            <GoClock className="mt-1 mr-1" />
-            {totalHours}
-          </div>
-          <div
-            className="flex px-2 py-1"
-            style={{ borderRadius: "15px", border: "1px solid gray" }}
-          >
-            <GiProgression className="mt-1 mr-1" />
-            {`${percentageComplete.toFixed(2)}%`}
-          </div>
+
           <button
-            onClick={() => {
-              setIsExpanded(false);
-              setIsEditing(true);
+            onClick={toggleOpenEdit}
+            className=" cursor-pointer
+              hover:scale-105
+              active:scale-95
+              transition-transform
+              duration-150
+              ease-in-out
+              rounded"
+            style={{
+              color: !isEditing ? "rgb(29,210,0)" : "white",
+              backgroundColor: !isEditing ? "white" : "red",
             }}
           >
-            <MdEdit />
+            {!isEditing ? (
+              <MdEdit style={{ width: 25, height: 25 }} />
+            ) : (
+              <VscChromeClose style={{ width: 20, height: 20 }} />
+            )}
           </button>
-          <button onClick={() => deleteActivity(activity.id)}>
-            <MdDelete />
+          <button
+            onClick={() => deleteActivity(activity.id)}
+            className=" cursor-pointer
+              hover:scale-105
+              active:scale-95
+              transition-transform
+              duration-150
+              ease-in-out"
+          >
+            <MdDelete style={{ color: "red", width: 25, height: 25 }} />
           </button>
         </div>
       </div>
       {isEditing && (
-        <div className="pl-6 space-y-2 mb-2">
-          <input
-            type="date"
-            value={startDate}
-            style={{
-              border: "1px solid rgb(209 213 219 )",
-              borderRadius: "0.375rem", // Equivale a rounded
-              padding: "0.30rem 0.5rem", // Equivale a px-2 py-1
-            }}
-            onChange={(e) => setStartDate(e.target.value)}
-            className="border rounded px-2 py-1 mr-2"
-          />
-          <input
-            type="date"
-            value={endDate}
-            style={{
-              border: "1px solid rgb(209 213 219 )",
-              borderRadius: "0.375rem", // Equivale a rounded
-              padding: "0.30rem 0.5rem", // Equivale a px-2 py-1
-            }}
-            onChange={(e) => setEndDate(e.target.value)}
-            className="border rounded px-2 py-1 mr-2"
-          />
-          <button
-            onClick={handleEdit}
-            className="bg-green-500 text-white rounded px-2 py-1"
-          >
-            Guardar
-          </button>
+        <div className="pl-6  mb-2 flex">
+          <div>
+            <Label>Inicio</Label>
+            <input
+              type="date"
+              value={startDate}
+              style={{
+                border: "1px solid rgb(209 213 219 )",
+                borderRadius: "0.375rem",
+                padding: "0.30rem 0.5rem",
+              }}
+              onChange={(e) => setStartDate(e.target.value)}
+              className="border rounded px-2 py-1 mr-2"
+            />
+          </div>
+          <div>
+            <Label>Fin</Label>
+            <input
+              type="date"
+              value={endDate}
+              style={{
+                border: "1px solid rgb(209 213 219 )",
+                borderRadius: "0.375rem",
+                padding: "0.30rem 0.5rem",
+              }}
+              onChange={(e) => setEndDate(e.target.value)}
+              className="border rounded px-2 py-1 mr-2"
+            />
+          </div>
+          <div>
+            <button
+              onClick={handleEdit}
+              className="bg-blue-500 text-white rounded px-2 py-1 flex  
+              cursor-pointer
+              hover:scale-105
+              active:scale-95
+              transition-transform
+              duration-150
+              ease-in-out
+              mt-6"
+            >
+              <TfiSave className="mt-1 mr-1" />
+              Guardar
+            </button>
+          </div>
         </div>
       )}
       {isExpanded && (
@@ -214,12 +271,41 @@ export const Activity: React.FC<ActivityProps> = ({
               deleteSubActivity={deleteSubActivity}
             />
           ))}
-          <button
-            onClick={() => setIsSubFormVisible(!isSubFormVisible)}
-            className="bg-blue-500 text-white rounded px-4 py-2 mb-2"
+          <div
+            style={{
+              width: "100%",
+              display: "flex",
+              justifyContent: isSubFormVisible ? "flex-end" : "flex-start",
+            }}
           >
-            {isSubFormVisible ? "Cerrar Formulario" : "Añadir SubActividad"}
-          </button>
+            <button
+              onClick={() => setIsSubFormVisible(!isSubFormVisible)}
+              className="rounded px-2 py-2 mb-2 flex
+              cursor-pointer
+              hover:scale-105
+              active:scale-95
+              transition-transform
+              duration-150
+              ease-in-out"
+              style={{
+                color: !isSubFormVisible ? "#008BFF" : "white",
+                backgroundColor: !isSubFormVisible ? "white" : "red",
+                borderRadius: !isSubFormVisible ? "0px" : "7px",
+              }}
+            >
+              {isSubFormVisible ? (
+                <>
+                  <VscChromeClose />
+                </>
+              ) : (
+                <>
+                  <IoIosAdd className="mt-1 mr-1" />
+                  Añadir SubActividad
+                </>
+              )}
+            </button>
+          </div>
+
           {isSubFormVisible && (
             <SubActivityForm addSubActivity={addSubActivity} />
           )}

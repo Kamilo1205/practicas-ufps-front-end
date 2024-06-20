@@ -28,50 +28,65 @@ export const ActivityForm: React.FC<ActivityFormProps> = ({ addActivity }) => {
   };
 
   return (
-    <form onSubmit={handleSubmit} className="flex w-full mb-4">
-      <div className="mr-3">
-        <Label>Titulo</Label>
-        <Input
-          type="text"
-          value={title}
-          onChange={(e) => setTitle(e.target.value)}
-          required
-        />
+    <form onSubmit={handleSubmit} className="flex flex-wrap w-full mb-4">
+      <div className="w-full md:w-auto flex md:mr-1 mb-3 md:mb-0">
+        <div className="w-full">
+          <Label>Titulo</Label>
+          <input
+            type="text"
+            value={title}
+            onChange={(e) => setTitle(e.target.value)}
+            required
+            style={{
+              border: "1px solid rgb(209 213 219)",
+              borderRadius: "0.375rem",
+              padding: "0.30rem 0.5rem",
+            }}
+            className="px-2 py-1 w-full rounded md:w-auto"
+          />
+        </div>
       </div>
-      <div>
-        <Label>Inicio</Label>
-        <input
-          type="date"
-          className="px-2 py-1"
-          style={{
-            border: "1px solid rgb(209 213 219 )",
-            borderRadius: "0.375rem", // Equivale a rounded
-            padding: "0.30rem 0.5rem", // Equivale a px-2 py-1
-          }}
-          value={startDate}
-          onChange={(e) => setStartDate(e.target.value)}
-          required
-        />
+      <div className="w-full md:w-auto flex md:mx-1 mb-3 md:mb-0">
+        <div className="w-full">
+          <Label>Inicio</Label>
+          <input
+            type="date"
+            className="px-2 py-1 w-full md:w-auto"
+            style={{
+              border: "1px solid rgb(209 213 219)",
+              borderRadius: "0.375rem",
+              padding: "0.30rem 0.5rem",
+            }}
+            value={startDate}
+            onChange={(e) => setStartDate(e.target.value)}
+            required
+          />
+        </div>
       </div>
-      <div className="ml-3">
-        <Label>Fin</Label>
-        <input
-          type="date"
-          className="px-2 py-1"
-          style={{
-            border: "1px solid rgb(209 213 219 )",
-            borderRadius: "0.375rem", // Equivale a rounded
-            padding: "0.30rem 0.5rem", // Equivale a px-2 py-1
-          }}
-          value={endDate}
-          onChange={(e) => setEndDate(e.target.value)}
-          required
-        />
+      <div className="w-full md:w-auto flex md:ml-1">
+        <div className="w-full">
+          <Label>Fin</Label>
+          <input
+            type="date"
+            className="px-2 py-1 w-full md:w-auto"
+            style={{
+              border: "1px solid rgb(209 213 219)",
+              borderRadius: "0.375rem",
+              padding: "0.30rem 0.5rem",
+            }}
+            value={endDate}
+            onChange={(e) => setEndDate(e.target.value)}
+            required
+          />
+        </div>
       </div>
-      <div className="flex justify-end">
+      <div
+        className="flex w-full md:ml-2 md:w-auto justify-end mt-3 md:mt-0"
+        style={{ height: "78px", alignItems:"center" }}
+      >
         <button
           type="submit"
-          className="bg-green-500 text-white rounded px-4 py-2 mt-6 ml-3"
+          className="bg-green-500 text-white rounded px-4 py-3 "
         >
           <MdFileDownloadDone />
         </button>

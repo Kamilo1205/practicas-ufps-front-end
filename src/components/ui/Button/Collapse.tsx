@@ -19,10 +19,10 @@ const Collapse: React.FC<CollapseProps> = ({
   };
 
   return (
-    <div>
+    <div className="border-b border-gray-300">
       <button
         onClick={toggleCollapse}
-        className={`w-full flex justify-between items-center p-3 text-left text-lg cursor-pointer transition-colors duration-700 border-b border-gray-300 ${
+        className={`w-full flex justify-between items-center p-3 text-left text-lg cursor-pointer transition-colors duration-700 ${
           isOpen ? "bg-gray-100" : "hover:bg-gray-100"
         }`}
       >
@@ -36,11 +36,12 @@ const Collapse: React.FC<CollapseProps> = ({
         </span>
       </button>
       <div
-        className={`px-4 transition-all duration-500 ease-in-out overflow-hidden mb-3 ${
-          isOpen ? "max-h-screen opacity-100" : "max-h-0 opacity-0"
+        className={`transition-max-height duration-500 ease-in-out overflow-hidden ${
+          isOpen ? "max-h-full opacity-100" : "max-h-0 opacity-0"
         }`}
+        style={{ maxHeight: isOpen ? "1000px" : "0px" }}
       >
-        <div className="mt-6 w-full"> {children}</div>
+        <div className="px-4 mt-6 w-full"> {children}</div>
       </div>
     </div>
   );
