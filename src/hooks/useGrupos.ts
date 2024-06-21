@@ -63,7 +63,7 @@ interface GrupoI {
 
 export const useGrupos = () => { 
   const [grupos, setGrupos] = useState<GrupoI[]>([])
-  const [error, setError] = useState(null)
+  const [error, setError] = useState<string | null>(null)
   const [docentes, setDocentes] = useState<DocenteI[]>([])
 
   useEffect(() => { 
@@ -82,16 +82,57 @@ export const useGrupos = () => {
         }
       ).catch((err) => setError(err))
     
-  }, [])
+  }, [grupos, docentes])
 
   const getDocentesDiponibles = () => { 
     return docentes.filter((docente) => !grupos.find((grupo) => grupo.docente && grupo.docente.nombre === docente.nombre))
   }
+  const obtenerSiguienteNombreGrupo = (): string => {
+    if (grupos.length === 0) {
+      return 'Grupo A';
+    }
+
+    const ultimoGrupo = grupos[grupos.length - 1];
+    const ultimaLetra = ultimoGrupo.nombre.charAt(ultimoGrupo.nombre.length - 1);
+    const nuevaLetra = String.fromCharCode(ultimaLetra.charCodeAt(0) + 1);
+
+    return `Grupo ${nuevaLetra}`;
+  };
+
+  const crearNuevoGrupo = () => {
+    const fetching = Promise.resolve({
+      id: String(grupos.length + 1),
+      nombre: obtenerSiguienteNombreGrupo(),
+      docente: null,
+    });
+
+    fetching.then((resp) => {
+      setGrupos([...grupos, resp]);
+    }).catch((err) => setError(err));
+  };
+
+
+  const eliminarGrupo = () => {
+    if (grupos.length === 0) {
+      setError('No hay grupos para eliminar');
+      return;
+    }
+
+    const fetching = Promise.resolve({ id: grupos[grupos.length - 1].id });
+
+    fetching.then(() => {
+      const nuevosGrupos = grupos.slice(0, -1);
+      setGrupos(nuevosGrupos);
+    }).catch((err) => setError(err));
+  };
 
   return {
     grupos,
     docentes,
     error,
-    getDocentesDiponibles
+    getDocentesDiponibles,
+    crearNuevoGrupo,
+    eliminarGrupo,
+    obtenerSiguienteNombreGrupo
   };
 }

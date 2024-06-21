@@ -1,12 +1,13 @@
 import { useEffect, useState } from "react";
 import { TabComponent } from "../../components/ui/Tab/TabComponent"
-import { TablaPaginadaComponent } from "../../components/ui/Table/TablaPaginadaComponent";
+
 import { useGrupos } from "../../hooks/useGrupos";
-import { Combobox, ComboboxButton, ComboboxInput, ComboboxOption, ComboboxOptions, Transition } from "@headlessui/react";
-import { HiMiniChevronDown } from "react-icons/hi2";
-import clsx from "clsx";
+import { Transition } from "@headlessui/react";
+
+
 import { Button } from "../../components/ui";
-import { BiCheck } from "react-icons/bi";
+import Swal from "sweetalert2";
+
 
 const Tabs = [
   {
@@ -46,7 +47,6 @@ const SelectInputC = ({selectedDefault,options}:SelectInputCProps) => {
       <div className="relative">
         <button
           onClick={() => setOpen(!open)}
-          onBlur={() => setOpen(false)}
           type="button" className="relative w-full cursor-default rounded-md bg-white py-1.5 pl-3 pr-10 text-left text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:outline-none focus:ring-2 focus:ring-indigo-500 sm:text-sm sm:leading-6" aria-haspopup="listbox" aria-expanded="true" aria-labelledby="listbox-label">
           <span className="flex items-center">
             {
@@ -72,7 +72,10 @@ const SelectInputC = ({selectedDefault,options}:SelectInputCProps) => {
           leaveFrom="opacity-100"
           leaveTo="opacity-0"
         >
-        <ul className="absolute z-10 mt-1 max-h-56 w-full overflow-auto rounded-md bg-white py-1 text-base shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none sm:text-sm" tabIndex="-1" role="listbox" aria-labelledby="listbox-label" aria-activedescendant="listbox-option-3">
+          <ul
+            onBlur={() => setOpen(false)}
+
+            className="absolute z-10 mt-1 max-h-56 w-full overflow-auto rounded-md bg-white py-1 text-base shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none sm:text-sm" tabIndex={-1} role="listbox" aria-labelledby="listbox-label" aria-activedescendant="listbox-option-3">
 
             {
               options.map((option, index) => (
@@ -116,18 +119,22 @@ interface DocenteI {
   id: string;
   nombre: string;
 }
-
+/*
 interface GrupoI {
   id: string;
   nombre: string;
   docente: DocenteI | null;
 
 }
-
+*/
 export const ConfiguracionesPage = () => { 
   const [tab, setTab] = useState(0);
   const [docentesDispobibles, setDocentesDispobibles] = useState<DocenteI[]>([]);
-  const { grupos,getDocentesDiponibles } = useGrupos();
+  const { grupos,
+    getDocentesDiponibles,
+    crearNuevoGrupo,
+    eliminarGrupo,
+    obtenerSiguienteNombreGrupo } = useGrupos();
  
   console.log(grupos)
 
@@ -141,12 +148,52 @@ export const ConfiguracionesPage = () => {
     if (!id || !nombre) return optiones
     return [{ id, name: nombre }, ...optiones]
   }
+
+  const onCrearNuevoGrupo = () => {
+    Swal.fire({
+      title: 'Crear un nuevo grupo',
+      text: `Se crera el ${obtenerSiguienteNombreGrupo()} de practicas.`,
+      icon: 'info',
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+    }).then((result) => { 
+      if (result.isConfirmed) {
+        crearNuevoGrupo()
+        Swal.fire(
+          'Creado!',
+          'El grupo ha sido creado.',
+          'success'
+        )
+      }
+    })
+   }
   
+  const onEliminarGrupo = () => { 
+    const grupoAElminar = grupos[grupos.length-1].nombre
+    Swal.fire({
+      title: `¡Esto eliminará el ${grupoAElminar}! ¿Estas seguro?`,
+      text: "No podras revertir esta accion!",
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      confirmButtonText: 'Si, eliminar!'
+    }).then((result) => { 
+      if (result.isConfirmed) {
+        eliminarGrupo()
+        Swal.fire(
+          'Eliminado!',
+          `El ${grupoAElminar} ha sido eliminado.`,
+          'success'
+        )
+      }
+    })
+  }
+
   useEffect(() => {
     setEdicion(grupos.map(() => ({ editar: false })))
-
     const docDisp = getDocentesDiponibles()
-    console.log(docDisp)
+    console.log(grupos)
     setDocentesDispobibles(docDisp )
   }, [grupos])
 
@@ -164,30 +211,43 @@ export const ConfiguracionesPage = () => {
       {
         tab === 0 && (
           <div>
-            <div className="text-gray-600 font-semibold text-lg">Grupos y docentes de practicas</div>
-
-            <table className="w-full border-collapse indent-0 border-inherit">
+            <div className="text-gray-600 font-semibold text-lg mb-10">
+              Grupos de practicas
+            </div>
+            <div className="flex w-full justify-end space-x-1">
+              <Button
+                className="bg-blue-500 hover:bg-blue-600 w-fit px-4"
+                onClick={onCrearNuevoGrupo}>
+                Crear un nuevo grupo
+              </Button>
+              <Button
+                className="bg-red-500 hover:bg-red-600 w-fit px-4"
+                onClick={onEliminarGrupo}>
+                Eliminar un grupo
+              </Button>
+          </div>
+            <table className="w-full border-collapse indent-0 border-inherit mt-5">
               <thead className="">
                 <tr className="mb-2">
-                  <th className="border-r border-gray-100 py-2">Nombre</th>
-                  <th className="border-r border-gray-100 py-2">Docente</th>
-                  <th className="border-r border-gray-100 py-2">Acciones</th>
+                  <th className="border-r border-gray-300 py-2">Nombre</th>
+                  <th className="border-r border-gray-300 py-2">Docente</th>
+                  <th className="border-r border-gray-300 py-2">Acciones</th>
                 </tr>
               </thead>
-              <tbody className="border-t border-gray-100">
+              <tbody className="border-t border-gray-300">
                 {
                   grupos.map((grupo, index) => (
-                    <tr key={grupo.id} className="border-t border-r border-gray-100">
-                      <td className="border-r border-gray-100 p-3">
+                    <tr key={grupo.id} className="border-t border-r border-gray-300">
+                      <td className="border-r border-gray-300 p-3">
                         {
                           
                             <span>{grupo.nombre}</span>
                           
                         }
                       </td>
-                      <td className="flex w-full self-center border-r border-gray-100 p-3">
+                      <td className="flex w-full self-center border-r border-gray-300 p-3">
                         {
-                          edicion.length > 0 && edicion[index].editar ? (
+                          edicion.length > 0 && edicion[index]?.editar ? (
                             <SelectInputC
                               selectedDefault={grupo.docente && { id: grupo.docente.id, name: grupo.docente.nombre } || undefined}
                               options={cargarOpcionesDispobibles({ id: grupo.docente?.id, nombre: grupo.docente?.nombre })}
@@ -197,9 +257,9 @@ export const ConfiguracionesPage = () => {
                           )
                         }
                       </td>
-                      <td className="px-3">
+                      <td className="px-3 max-w-20">
                         {
-                          edicion.length > 0 && edicion[index].editar ? (
+                          edicion.length > 0 && edicion[index]?.editar ? (
                             <div className="flex space-x-1">
                               <Button
                                 className="bg-green-500 hover:bg-green-600 w-fit px-4"
@@ -236,7 +296,91 @@ export const ConfiguracionesPage = () => {
                 }
               </tbody>
             </table>
-           
+            <div className="text-gray-600 font-semibold text-lg mb-10">
+              Grupos de practicas
+            </div>
+            <div className="flex w-full justify-end space-x-1">
+              <Button
+                className="bg-blue-500 hover:bg-blue-600 w-fit px-4"
+                onClick={onCrearNuevoGrupo}>
+                Crear un nuevo grupo
+              </Button>
+              <Button
+                className="bg-red-500 hover:bg-red-600 w-fit px-4"
+                onClick={onEliminarGrupo}>
+                Eliminar un grupo
+              </Button>
+            </div>
+            <table className="w-full border-collapse indent-0 border-inherit mt-5">
+              <thead className="">
+                <tr className="mb-2">
+                  <th className="border-r border-gray-300 py-2">Nombre</th>
+                  <th className="border-r border-gray-300 py-2">Docente</th>
+                  <th className="border-r border-gray-300 py-2">Acciones</th>
+                </tr>
+              </thead>
+              <tbody className="border-t border-gray-300">
+                {
+                  grupos.map((grupo, index) => (
+                    <tr key={grupo.id} className="border-t border-r border-gray-300">
+                      <td className="border-r border-gray-300 p-3">
+                        {
+
+                          <span>{grupo.nombre}</span>
+
+                        }
+                      </td>
+                      <td className="flex w-full self-center border-r border-gray-300 p-3">
+                        {
+                          edicion.length > 0 && edicion[index]?.editar ? (
+                            <SelectInputC
+                              selectedDefault={grupo.docente && { id: grupo.docente.id, name: grupo.docente.nombre } || undefined}
+                              options={cargarOpcionesDispobibles({ id: grupo.docente?.id, nombre: grupo.docente?.nombre })}
+                            />
+                          ) : (
+                            <span>{grupo.docente ? grupo.docente?.nombre : <span>Sin docente asignado</span>}</span>
+                          )
+                        }
+                      </td>
+                      <td className="px-3 max-w-20">
+                        {
+                          edicion.length > 0 && edicion[index]?.editar ? (
+                            <div className="flex space-x-1">
+                              <Button
+                                className="bg-green-500 hover:bg-green-600 w-fit px-4"
+                                onClick={() => {
+                                  const newEdicion = [...edicion]
+                                  newEdicion[index].editar = false
+                                  setEdicion(newEdicion)
+                                }}>Guardar</Button>
+                              <Button
+                                className="bg-red-500 hover:bg-red-200 w-fit px-4"
+                                variant="outline"
+                                onClick={() => {
+                                  const newEdicion = [...edicion]
+                                  newEdicion[index].editar = false
+                                  setEdicion(newEdicion)
+                                }}>Cancelar</Button>
+                            </div>
+                          ) : (
+                            <div className="flex space-x-1">
+                              <Button
+                                className="px-4 w-fit"
+                                onClick={() => {
+                                  const newEdicion = [...edicion]
+                                  newEdicion[index].editar = true
+                                  setEdicion(newEdicion)
+                                }}>Editar</Button>
+
+                            </div>
+                          )
+                        }
+                      </td>
+                    </tr>
+                  ))
+                }
+              </tbody>
+            </table>
           </div>
           
         )
@@ -251,20 +395,4 @@ export const ConfiguracionesPage = () => {
     </>
   </>)
 }
-/**
- * {
-                          edicion.length > 0 && edicion[index].editar ? (
-                            <button onClick={() => {
-                              const newEdicion = [...edicion]
-                              newEdicion[index].editar = false
-                              setEdicion(newEdicion)
-                            }}>Guardar</button>
-                          ) : (
-                            <button onClick={() => {
-                              const newEdicion = [...edicion]
-                              newEdicion[index].editar = true
-                              setEdicion(newEdicion)
-                            }}>Editar</button>
-                          )
-                        }
- */
+
