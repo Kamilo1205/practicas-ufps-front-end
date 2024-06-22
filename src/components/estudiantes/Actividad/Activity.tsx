@@ -14,6 +14,7 @@ import { Label } from "../../ui";
 import { TfiSave } from "react-icons/tfi";
 import { IoIosAdd } from "react-icons/io";
 import { VscChromeClose } from "react-icons/vsc";
+import NumberSlider from "../../ui/Input/NumberSlider";
 interface ActivityProps {
   activity: ActivityType;
   updateActivity: (activity: ActivityType) => void;
@@ -108,7 +109,9 @@ export const Activity: React.FC<ActivityProps> = ({
     updateActivity(updatedActivity);
     setIsEditing(false);
   };
-
+  {
+    console.log(activity.subActivities.length);
+  }
   useEffect(() => {
     const hours = activity.subActivities.reduce(
       (acc, sub) => acc + sub.hours,
@@ -147,20 +150,21 @@ export const Activity: React.FC<ActivityProps> = ({
             <span
               onClick={toggleExpand}
               className="cursor-pointer flex-grow truncate"
+              style={{ fontWeight: "bold" }}
             >
               {activity.title}
             </span>
           )}
         </div>
         <div className="flex items-center space-x-2">
-          <div className="hidden xl:flex">
+          <div className="hidden md:flex">
             <div
               className="flex px-2 py-1"
               style={{ borderRadius: "15px", border: "1px solid gray" }}
             >
               <FaRegCalendar className="mt-1 mr-1 " />
-              <span className="md:hidden">{formattedEndDate}</span>
-              <span className="hidden md:inline">
+              <span className="xl:hidden">{formattedEndDate}</span>
+              <span className="hidden xl:inline">
                 {formattedStartDate} - {formattedEndDate}
               </span>
             </div>
@@ -214,46 +218,77 @@ export const Activity: React.FC<ActivityProps> = ({
         </div>
       </div>
       {isEditing && (
-        <div className="pl-6  mb-2 flex">
-          <div>
+        <div className="pl-6 mb-2 flex flex-wrap md:flex-nowrap">
+          <div className="w-full md:w-auto mb-2 md:mb-0 md:mr-4">
             <Label>Inicio</Label>
             <input
               type="date"
               value={startDate}
               style={{
-                border: "1px solid rgb(209 213 219 )",
+                border: "1px solid rgb(209 213 219)",
                 borderRadius: "0.375rem",
                 padding: "0.30rem 0.5rem",
               }}
               onChange={(e) => setStartDate(e.target.value)}
-              className="border rounded px-2 py-1 mr-2"
+              className="border rounded px-2 py-1 w-full md:w-auto"
             />
           </div>
-          <div>
+          <div className="w-full md:w-auto mb-2 md:mb-0 md:mr-4">
             <Label>Fin</Label>
             <input
               type="date"
+              min={startDate}
               value={endDate}
               style={{
-                border: "1px solid rgb(209 213 219 )",
+                border: "1px solid rgb(209 213 219)",
                 borderRadius: "0.375rem",
                 padding: "0.30rem 0.5rem",
               }}
               onChange={(e) => setEndDate(e.target.value)}
-              className="border rounded px-2 py-1 mr-2"
+              className="border rounded px-2 py-1 w-full md:w-auto"
             />
           </div>
-          <div>
+          {activity.subActivities.length !== 0 ? (
+            <></>
+          ) : (
+            <div className="w-full flex flex-col md:flex-row mb-2 md:mb-0 md:mr-4">
+              <div className="mb-2 md:mb-0 md:mr-2">
+                <Label>Horas</Label>
+                <input
+                  id="hours"
+                  type="number"
+                  placeholder="Horas"
+                  value={totalHours}
+                  min={0}
+                  style={{
+                    border: "1px solid rgb(209 213 219)",
+                    borderRadius: "0.375rem",
+                    padding: "0.30rem 0.5rem",
+                  }}
+                  onChange={(e) => setTotalHours(Number(e.target.value))}
+                  className="border rounded py-1 w-full"
+                  required
+                />
+              </div>
+              <div className="w-full md:w-auto">
+                <NumberSlider
+                  progreso={percentageComplete}
+                  setProgreso={setPercentageComplete}
+                />
+              </div>
+            </div>
+          )}
+          <div className="w-full md:w-auto">
             <button
               onClick={handleEdit}
-              className="bg-blue-500 text-white rounded px-2 py-1 flex  
-              cursor-pointer
-              hover:scale-105
-              active:scale-95
-              transition-transform
-              duration-150
-              ease-in-out
-              mt-6"
+              className="bg-blue-500 text-white rounded px-2 py-1 flex
+      cursor-pointer
+      hover:scale-105
+      active:scale-95
+      transition-transform
+      duration-150
+      ease-in-out
+      mt-6"
             >
               <TfiSave className="mt-1 mr-1" />
               Guardar
@@ -262,7 +297,7 @@ export const Activity: React.FC<ActivityProps> = ({
         </div>
       )}
       {isExpanded && (
-        <div className="pl-6 space-y-2">
+        <div className="pl-6">
           {activity.subActivities.map((subActivity) => (
             <SubActivity
               key={subActivity.id}

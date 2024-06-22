@@ -4,6 +4,7 @@ import { TextArea } from "./../ui/Input/TextArea";
 import { MdEdit } from "react-icons/md";
 import Swal from "sweetalert2";
 import { TfiSave } from "react-icons/tfi";
+import { VscChromeClose } from "react-icons/vsc";
 
 const Objetivos = () => {
   const [isEditing, setIsEditing] = useState(false);
@@ -11,6 +12,9 @@ const Objetivos = () => {
   const handleEdit = () => {
     setIsEditing(true);
   };
+   const handleNoEdit = () => {
+     setIsEditing(false);
+   };
 
   const handleSave = () => {
     setIsEditing(false);
@@ -26,7 +30,7 @@ const Objetivos = () => {
     <div className="mb-3">
       <div className="flex w-full">
         <div className="flex w-full justify-end">
-          {!isEditing && (
+          {!isEditing ? (
             <button
               className="bg-green-500 text-white px-3 py-2 rounded-lg flex
                 cursor-pointer 
@@ -40,6 +44,19 @@ const Objetivos = () => {
               {" "}
               <MdEdit className="mt-1 mr-1" />
               Editar
+            </button>
+          ) : (
+            <button
+              className="bg-red-500 text-white px-3 py-2 rounded-lg flex
+                cursor-pointer 
+                hover:scale-105 
+                active:scale-95 
+                transition-transform 
+                duration-150 
+                ease-in-out"
+              onClick={handleNoEdit}
+            >
+              <VscChromeClose />
             </button>
           )}
         </div>

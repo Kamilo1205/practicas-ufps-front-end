@@ -67,6 +67,7 @@ export const ActivityForm: React.FC<ActivityFormProps> = ({ addActivity }) => {
         <div className="w-full">
           <Label>Fin</Label>
           <input
+            min={startDate}
             type="date"
             className="px-2 py-1 w-full md:w-auto"
             style={{
@@ -82,7 +83,7 @@ export const ActivityForm: React.FC<ActivityFormProps> = ({ addActivity }) => {
       </div>
       <div
         className="flex w-full md:ml-2 md:w-auto justify-end mt-3 md:mt-0"
-        style={{ height: "78px", alignItems:"center" }}
+        style={{ height: "78px", alignItems: "center" }}
       >
         <button
           type="submit"

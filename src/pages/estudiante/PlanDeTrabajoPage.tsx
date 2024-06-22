@@ -4,6 +4,7 @@ import Title from "../../components/ui/Tittle/Title";
 import IntensidadHorariaTable from "../../components/estudiantes/IntensidadHorariaTable";
 import Objetivos from "./../../components/estudiantes/Objetivos";
 import { ActivityManager } from "../../components/estudiantes/Actividad/ActivityManager";
+import RRForm from "./../../components/estudiantes/RRForm";
 
 // Componente PlanDeTrabajo
 const PlanDeTrabajoPage: React.FC = () => {
@@ -26,7 +27,7 @@ const PlanDeTrabajoPage: React.FC = () => {
         <ActivityManager />
       </Collapse>
       <Collapse title="Requerimientos/Resultados">
-        <p>Detalles de la tarea 3.</p>
+        <RRForm />
       </Collapse>
     </>
   );

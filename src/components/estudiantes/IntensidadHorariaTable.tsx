@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { MdCleaningServices } from "react-icons/md";
 import { TfiSave } from "react-icons/tfi";
+import Swal from "sweetalert2";
 
 const IntensidadHorariaTable: React.FC = () => {
   const days = ["Lunes", "Martes", "Miércoles", "Jueves", "Viernes", "Sábado"];
@@ -33,6 +34,15 @@ const IntensidadHorariaTable: React.FC = () => {
     const value = Number(event.target.value);
     setWeeks(value > 0 ? value : 0);
   };
+   const handleSave = () => {
+     
+     Swal.fire({
+       title: "Información guardada",
+       text: "Los datos han sido guardados correctamente.",
+       icon: "success",
+       confirmButtonText: "OK",
+     });
+   };
 
   const totalSelectedHours = selectedHours.flat().filter(Boolean).length;
   const totalHoursPerWeek = totalSelectedHours * weeks;
@@ -67,6 +77,7 @@ const IntensidadHorariaTable: React.FC = () => {
              transition-transform 
              duration-150 
              ease-in-out"
+            onClick={handleSave}
           >
             {" "}
             <TfiSave className="mt-1 mr-1" />

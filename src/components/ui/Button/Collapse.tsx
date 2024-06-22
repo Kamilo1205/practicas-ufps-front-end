@@ -39,9 +39,9 @@ const Collapse: React.FC<CollapseProps> = ({
         className={`transition-max-height duration-500 ease-in-out overflow-hidden ${
           isOpen ? "max-h-full opacity-100" : "max-h-0 opacity-0"
         }`}
-        style={{ maxHeight: isOpen ? "1000px" : "0px" }}
+        
       >
-        <div className="px-4 mt-6 w-full"> {children}</div>
+        <div className="px-4 mt-6 w-full mb-5" > {children}</div>
       </div>
     </div>
   );

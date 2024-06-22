@@ -2,6 +2,8 @@
 import React, { useState } from "react";
 import { SubActivity as SubActivityType } from "../types";
 import { Label } from "../../ui";
+import NumberSlider from "../../ui/Input/NumberSlider";
+import { IoMdAdd } from "react-icons/io";
 
 interface SubActivityFormProps {
   addSubActivity: (subActivity: SubActivityType) => void;
@@ -40,7 +42,7 @@ export const SubActivityForm: React.FC<SubActivityFormProps> = ({
   return (
     <form
       onSubmit={handleSubmit}
-      className="grid grid-cols-1 lg:grid-cols-12 gap-4 p-4 rounded-lg"
+      className="grid grid-cols-1 lg:grid-cols-12 gap-2 p-4 rounded-lg"
     >
       <div className="col-span-1 lg:col-span-6 flex flex-col">
         <Label>Título de Subactividad</Label>
@@ -71,6 +73,7 @@ export const SubActivityForm: React.FC<SubActivityFormProps> = ({
         <input
           id="end-date"
           type="date"
+          min={startDate}
           value={endDate}
           onChange={(e) => setEndDate(e.target.value)}
           className="border rounded px-3 py-2 w-full"
@@ -95,6 +98,7 @@ export const SubActivityForm: React.FC<SubActivityFormProps> = ({
           <Label>Horas</Label>
           <input
             id="hours"
+            min={0}
             type="number"
             placeholder="Horas"
             value={hours}
@@ -104,21 +108,14 @@ export const SubActivityForm: React.FC<SubActivityFormProps> = ({
           />
         </div>
         <div>
-          <Label>Avance (%)</Label>
-          <input
-            id="progress"
-            type="number"
-            placeholder="Progreso (%)"
-            value={progress}
-            onChange={(e) => setProgress(Number(e.target.value))}
-            className="border rounded px-3 py-2 w-full"
-            required
-          />
+          <NumberSlider progreso={progress} setProgreso={setProgress} />
         </div>
         <button
           type="submit"
-          className="bg-green-500 text-white rounded px-4 py-2 mt-4 hover:bg-green-600 focus:outline-none focus:ring focus:ring-green-300"
+          className="bg-green-500 text-white rounded px-4 py-2 mt-4 hover:bg-green-600 focus:outline-none focus:ring focus:ring-green-300 flex"
+          style={{ justifyContent: "center", alignItems: "center" }}
         >
+          <IoMdAdd style={{ width: "18px", height: "18px" }} />
           Añadir SubActividad
         </button>
       </div>
