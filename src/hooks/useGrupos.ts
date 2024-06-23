@@ -8,6 +8,8 @@ const fetchGruposAPI = async () => {
       docente: {
         id: '1',
         nombre: 'Docente A',
+        correo: 'docenteA@correo.com'
+
       },
     },
     {
@@ -16,6 +18,8 @@ const fetchGruposAPI = async () => {
       docente: {
         id: '2',
         nombre: 'Docente B',
+        correo: 'docenteB@correo.com'
+
       
       },
     
@@ -33,18 +37,22 @@ const fetchDocentes = async () => {
     {
       id: '1',
       nombre: 'Docente A',
+      correo: 'docenteA@correo.com'
     },
     {
       id: '2',
       nombre: 'Docente B',
+      correo: 'docenteB@correo.com'
     },
     {
       id: '3',
       nombre: 'Docente C',
+      correo: 'docenteC@correo.com'
     },
     {
       id: '4',
       nombre: 'Docente D',
+      correo: 'docenteD@correo.com'
     }
   ]);
  }
@@ -52,6 +60,7 @@ const fetchDocentes = async () => {
 interface DocenteI{
   id: string;
   nombre: string;
+  correo: string;
 }
 
 interface GrupoI { 

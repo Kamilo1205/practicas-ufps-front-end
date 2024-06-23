@@ -13,7 +13,7 @@ interface SidebarProps extends HTMLAttributes<HTMLDivElement> {}
 
 export const Sidebar: FC<SidebarProps> = () => {
   const { user, logout } = useAuth();
-
+ 
   return (
     <div className="hidden lg:flex lg:flex-col lg:w-72 lg:z-10 lg:fixed lg:inset-y-0">
       <div className="flex flex-col flex-grow gap-y-5 px-6 border-r border-gray-200 overflow-y-auto">
