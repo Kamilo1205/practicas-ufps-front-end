@@ -6,9 +6,11 @@ import { VscChromeClose } from "react-icons/vsc";
 import { FaRegCalendar } from "react-icons/fa6";
 import { GoClock } from "react-icons/go";
 import { GiProgression } from "react-icons/gi";
-import { Label } from "./../../ui/Label/Label";
-import NumberSlider from "../../ui/Input/NumberSlider";
+
 import { TfiSave } from "react-icons/tfi";
+import { Label } from "../../ui";
+import NumberSlider from "../../ui/Input/NumberSlider";
+
 
 interface SubActivityProps {
   subActivity: SubActivityType;
@@ -154,8 +156,8 @@ export const SubActivity: React.FC<SubActivityProps> = ({
           }}
         >
           <div className="flex w-full">
-            <div className="flex  w-full">
-              <div>
+            <div className="flex  w-full ">
+              <div style={{ fontWeight: 600 }} className="mt-2">
                 <span>{subActivity.title}</span>
               </div>
               <div
@@ -163,7 +165,7 @@ export const SubActivity: React.FC<SubActivityProps> = ({
                 style={{ alignItems: "center" }}
               >
                 <div
-                  className="flex px-2 py-1"
+                  className="flex px-2 py-1 hidden md:flex"
                   style={{ borderRadius: "15px", border: "1px solid gray" }}
                 >
                   <FaRegCalendar className="mt-1 mr-1 " />
@@ -173,14 +175,14 @@ export const SubActivity: React.FC<SubActivityProps> = ({
                   </span>
                 </div>
                 <div
-                  className="flex px-2 py-1"
+                  className="flex px-2 py-1 hidden md:flex"
                   style={{ borderRadius: "15px", border: "1px solid gray" }}
                 >
                   <GoClock className="mt-1 mr-1" />
                   {subActivity.hours}
                 </div>
                 <div
-                  className="flex px-2 py-1"
+                  className="flex px-2 py-1 hidden md:flex"
                   style={{ borderRadius: "15px", border: "1px solid gray" }}
                 >
                   <GiProgression className="mt-1 mr-1" />
@@ -221,7 +223,7 @@ export const SubActivity: React.FC<SubActivityProps> = ({
               </button>
             </div>
           </div>
-          <div>
+          <div className="mt-3">
             <span>{subActivity.description}</span>
           </div>
         </div>

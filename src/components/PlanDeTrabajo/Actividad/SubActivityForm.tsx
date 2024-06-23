@@ -1,9 +1,10 @@
 // src/components/SubActivityForm.tsx
 import React, { useState } from "react";
 import { SubActivity as SubActivityType } from "../types";
+import { IoMdAdd } from "react-icons/io";
 import { Label } from "../../ui";
 import NumberSlider from "../../ui/Input/NumberSlider";
-import { IoMdAdd } from "react-icons/io";
+
 
 interface SubActivityFormProps {
   addSubActivity: (subActivity: SubActivityType) => void;
