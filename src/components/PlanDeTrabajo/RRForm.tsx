@@ -1,19 +1,24 @@
-import { useState, useRef, useEffect } from "react";
-import { Label } from "../ui";
-import { TextArea } from "./../ui/Input/TextArea";
+import { useState, useRef, useEffect, FC } from "react";
 import { MdEdit } from "react-icons/md";
 import Swal from "sweetalert2";
 import { TfiSave } from "react-icons/tfi";
 import { VscChromeClose } from "react-icons/vsc";
 import { FaTrash } from "react-icons/fa";
 import { IoMdAdd } from "react-icons/io";
+import { Label, TextArea } from "../ui";
 
 interface TableRow {
   resultado: string;
   indicador: string;
 }
 
-const RRForm = () => {
+interface RRFormProps {
+  rol: boolean;
+  resultado: [{}];
+  requerimiento_tecnicos: "";
+}
+
+const RRForm: FC<RRFormProps> = ({ rol }) => {
   const [isEditing, setIsEditing] = useState(false);
 
   const handleEdit = () => {
@@ -95,36 +100,38 @@ const RRForm = () => {
   return (
     <div className="mb-10">
       <div className="flex w-full">
-        <div className="flex w-full justify-end">
-          {!isEditing ? (
-            <button
-              className="bg-green-500 text-white px-3 py-2 rounded-lg flex
+        {rol && (
+          <div className="flex w-full justify-end">
+            {!isEditing ? (
+              <button
+                className="bg-green-500 text-white px-3 py-2 rounded-lg flex
                 cursor-pointer 
                 hover:scale-105 
                 active:scale-95 
                 transition-transform 
                 duration-150 
                 ease-in-out"
-              onClick={handleEdit}
-            >
-              <MdEdit className="mt-1 mr-1" />
-              Editar
-            </button>
-          ) : (
-            <button
-              className="bg-red-500 text-white px-3 py-2 rounded-lg flex
+                onClick={handleEdit}
+              >
+                <MdEdit className="mt-1 mr-1" />
+                Editar
+              </button>
+            ) : (
+              <button
+                className="bg-red-500 text-white px-3 py-2 rounded-lg flex
                 cursor-pointer 
                 hover:scale-105 
                 active:scale-95 
                 transition-transform 
                 duration-150 
                 ease-in-out"
-              onClick={handleNoEdit}
-            >
-              <VscChromeClose />
-            </button>
-          )}
-        </div>
+                onClick={handleNoEdit}
+              >
+                <VscChromeClose />
+              </button>
+            )}
+          </div>
+        )}
       </div>
 
       <Label>Requerimiento Técnicos</Label>

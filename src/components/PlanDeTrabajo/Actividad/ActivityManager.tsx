@@ -7,8 +7,11 @@ import { MdLibraryAddCheck } from "react-icons/md";
 import { VscChromeClose } from "react-icons/vsc";
 
 const initialActivities: ActivityType[] = [];
-
-export const ActivityManager: React.FC = () => {
+interface ActivityProps {
+  rol: boolean;
+  estudiante: {};
+}
+export const ActivityManager: React.FC<ActivityProps> = ({ rol }) => {
   const [activities, setActivities] =
     useState<ActivityType[]>(initialActivities);
   const [isFormVisible, setIsFormVisible] = useState(false);
@@ -47,30 +50,34 @@ export const ActivityManager: React.FC = () => {
 
   return (
     <div className="p-4">
-      <div className="p-0 flex w-full" style={{alignItems:"center"}}>
+      <div className="p-0 flex w-full" style={{ alignItems: "center" }}>
         <h1 className="text-2xl mb-4 font-bold text-gray-700 w-full">
           Gestión de Actividades
         </h1>
-        <div className="flex justify-end mt-1 ">
-          <button
-            onClick={() => setIsFormVisible(!isFormVisible)}
-            className="flex justify-end text-white px-2 py-2 mb-4"
-            style={{
-              backgroundColor: isFormVisible ? "Red" : "rgb(59 ,130 ,246)",
-              borderRadius: "10px",
-            }}
-          >
-            {isFormVisible ? (
-              <>
-                <VscChromeClose />
-              </>
-            ) : (
-              <>
-                <MdLibraryAddCheck style={{width:"25px" , height:"25px"}}/>
-              </>
-            )}
-          </button>
-        </div>
+        {rol && (
+          <div className="flex justify-end mt-1 ">
+            <button
+              onClick={() => setIsFormVisible(!isFormVisible)}
+              className="flex justify-end text-white px-2 py-2 mb-4"
+              style={{
+                backgroundColor: isFormVisible ? "Red" : "rgb(59 ,130 ,246)",
+                borderRadius: "10px",
+              }}
+            >
+              {isFormVisible ? (
+                <>
+                  <VscChromeClose />
+                </>
+              ) : (
+                <>
+                  <MdLibraryAddCheck
+                    style={{ width: "25px", height: "25px" }}
+                  />
+                </>
+              )}
+            </button>
+          </div>
+        )}
       </div>
 
       {isFormVisible && <ActivityForm addActivity={addActivity} />}
@@ -81,6 +88,7 @@ export const ActivityManager: React.FC = () => {
             activity={activity}
             updateActivity={updateActivity}
             deleteActivity={deleteActivity}
+            rol={rol}
           />
         ))}
       </div>

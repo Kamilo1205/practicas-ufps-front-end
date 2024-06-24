@@ -10,21 +10,25 @@ import { MdExpandMore, MdExpandLess, MdEdit, MdDelete } from "react-icons/md";
 import { GoClock } from "react-icons/go";
 import { GiProgression } from "react-icons/gi";
 import { FaRegCalendar } from "react-icons/fa6";
-import { Label } from "../../ui";
+
 import { TfiSave } from "react-icons/tfi";
 import { IoIosAdd } from "react-icons/io";
 import { VscChromeClose } from "react-icons/vsc";
+import { Label } from "../../ui";
 import NumberSlider from "../../ui/Input/NumberSlider";
+
 interface ActivityProps {
   activity: ActivityType;
   updateActivity: (activity: ActivityType) => void;
   deleteActivity: (id: number) => void;
+  rol: boolean;
 }
 
 export const Activity: React.FC<ActivityProps> = ({
   activity,
   updateActivity,
   deleteActivity,
+  rol,
 }) => {
   const [isExpanded, setIsExpanded] = useState(false);
   const [totalHours, setTotalHours] = useState(0);
@@ -109,9 +113,7 @@ export const Activity: React.FC<ActivityProps> = ({
     updateActivity(updatedActivity);
     setIsEditing(false);
   };
-  {
-    console.log(activity.subActivities.length);
-  }
+
   useEffect(() => {
     const hours = activity.subActivities.reduce(
       (acc, sub) => acc + sub.hours,
@@ -183,38 +185,41 @@ export const Activity: React.FC<ActivityProps> = ({
               {`${percentageComplete.toFixed(2)}%`}
             </div>
           </div>
-
-          <button
-            onClick={toggleOpenEdit}
-            className=" cursor-pointer
+          {rol && (
+            <>
+              <button
+                onClick={toggleOpenEdit}
+                className=" cursor-pointer
               hover:scale-105
               active:scale-95
               transition-transform
               duration-150
               ease-in-out
               rounded"
-            style={{
-              color: !isEditing ? "rgb(29,210,0)" : "white",
-              backgroundColor: !isEditing ? "white" : "red",
-            }}
-          >
-            {!isEditing ? (
-              <MdEdit style={{ width: 25, height: 25 }} />
-            ) : (
-              <VscChromeClose style={{ width: 20, height: 20 }} />
-            )}
-          </button>
-          <button
-            onClick={() => deleteActivity(activity.id)}
-            className=" cursor-pointer
+                style={{
+                  color: !isEditing ? "rgb(29,210,0)" : "white",
+                  backgroundColor: !isEditing ? "white" : "red",
+                }}
+              >
+                {!isEditing ? (
+                  <MdEdit style={{ width: 25, height: 25 }} />
+                ) : (
+                  <VscChromeClose style={{ width: 20, height: 20 }} />
+                )}
+              </button>
+              <button
+                onClick={() => deleteActivity(activity.id)}
+                className=" cursor-pointer
               hover:scale-105
               active:scale-95
               transition-transform
               duration-150
               ease-in-out"
-          >
-            <MdDelete style={{ color: "red", width: 25, height: 25 }} />
-          </button>
+              >
+                <MdDelete style={{ color: "red", width: 25, height: 25 }} />
+              </button>
+            </>
+          )}
         </div>
       </div>
       {isEditing && (
@@ -313,32 +318,34 @@ export const Activity: React.FC<ActivityProps> = ({
               justifyContent: isSubFormVisible ? "flex-end" : "flex-start",
             }}
           >
-            <button
-              onClick={() => setIsSubFormVisible(!isSubFormVisible)}
-              className="rounded px-2 py-2 mb-2 flex
+            {rol && (
+              <button
+                onClick={() => setIsSubFormVisible(!isSubFormVisible)}
+                className="rounded px-2 py-2 mb-2 flex
               cursor-pointer
               hover:scale-105
               active:scale-95
               transition-transform
               duration-150
               ease-in-out"
-              style={{
-                color: !isSubFormVisible ? "#008BFF" : "white",
-                backgroundColor: !isSubFormVisible ? "white" : "red",
-                borderRadius: !isSubFormVisible ? "0px" : "7px",
-              }}
-            >
-              {isSubFormVisible ? (
-                <>
-                  <VscChromeClose />
-                </>
-              ) : (
-                <>
-                  <IoIosAdd className="mt-1 mr-1" />
-                  Añadir SubActividad
-                </>
-              )}
-            </button>
+                style={{
+                  color: !isSubFormVisible ? "#008BFF" : "white",
+                  backgroundColor: !isSubFormVisible ? "white" : "red",
+                  borderRadius: !isSubFormVisible ? "0px" : "7px",
+                }}
+              >
+                {isSubFormVisible ? (
+                  <>
+                    <VscChromeClose />
+                  </>
+                ) : (
+                  <>
+                    <IoIosAdd className="mt-1 mr-1" />
+                    Añadir SubActividad
+                  </>
+                )}
+              </button>
+            )}
           </div>
 
           {isSubFormVisible && (

@@ -5,7 +5,7 @@ import { Layout } from "../layouts/Layout";
 import { UsuariosPage } from "../pages/coordinador/UsuariosPage";
 import { RegistroLayout } from "../layouts/RegistroLayout";
 import { PerfilPage } from "../pages/estudiante/PerfilPage";
-import PlanDeTrabajoPage from "../pages/estudiante/PlanDeTrabajoPage";
+import PlanDeTrabajoVista from "./../components/PlanDeTrabajo/Coordinador-Empresa/PlanDeTrabajoVista";
 
 export const EstudianteRouter = () => {
   const { user } = useAuth();
@@ -17,7 +17,10 @@ export const EstudianteRouter = () => {
             <Route index path="" element={<PerfilPage />} />
             <Route path="usuarios" element={<UsuariosPage />} />
             <Route
-              path="plantrabajo"element={<PlanDeTrabajoPage />}
+              path="plantrabajo"
+              element={
+                <PlanDeTrabajoVista rol="ESTUDIANTE" initialOpen={false} />
+              }
             />
             <Route path="*" element={<Navigate to="/estudiante" replace />} />
           </Route>
