@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import Swal from "sweetalert2";
 
 const fetchGruposAPI = async () => { 
   return Promise.resolve([
@@ -57,11 +58,22 @@ const fetchDocentes = async () => {
   ]);
  }
 
+
 interface DocenteI{
   id: string;
   nombre: string;
   correo: string;
+  fotoUrl?: string;
 }
+
+const fetchNuevoDocente = async (docente:DocenteI) => {
+  return Promise.resolve({
+    id: '5',
+    nombre: docente.nombre,
+    correo: docente.correo
+  })
+}
+
 
 interface GrupoI { 
   id: string;
@@ -74,23 +86,28 @@ export const useGrupos = () => {
   const [grupos, setGrupos] = useState<GrupoI[]>([])
   const [error, setError] = useState<string | null>(null)
   const [docentes, setDocentes] = useState<DocenteI[]>([])
+  
+  useEffect(() => { 
+   
+      fetchGruposAPI()
+        .then((resp) => {
+          setGrupos(resp);
+        })
+        .catch((err) => setError(err));
+    
+
+    
+      fetchDocentes()
+        .then((resp) => {
+          setDocentes(resp);
+        })
+        .catch((err) => setError(err));
+    console.log('useGrupos mounted')
+    
+  }, [])
 
   useEffect(() => { 
-    grupos.length === 0 &&
-      fetchGruposAPI().then(
-        (resp) => {
-          setGrupos(resp)
-          
-        }
-      ).catch((err) => setError(err))
-    
-    docentes.length === 0 &&
-      fetchDocentes().then(
-        (resp) => {
-          setDocentes(resp)
-        }
-      ).catch((err) => setError(err))
-    
+    console.log('docentes', docentes)
   }, [grupos, docentes])
 
   const getDocentesDiponibles = () => { 
@@ -135,6 +152,51 @@ export const useGrupos = () => {
     }).catch((err) => setError(err));
   };
 
+  const crearNuevoDocente = (docente:DocenteI) => { 
+    const fetching = fetchNuevoDocente(docente)
+    fetching.then((resp) => {
+      
+      Swal.fire({
+        title: 'Docente creado',
+        text: `El docente ${docente.nombre} ha sido creado.`,
+        icon: 'success'
+      }).then(() => {
+        setDocentes([...docentes, resp])
+      })
+    }).catch((err) => {
+      setError(err)
+      Swal.fire({
+        title: 'Error',
+        text: 'No se ha podido crear el docente.',
+        icon: 'error'
+      })
+    })
+  }
+
+  const eliminarDocente = (docenteId: string) => { 
+    const fetching = Promise.resolve({ id: docenteId });
+    fetching.then(() => {
+      const nuevosDocentes = docentes.filter((doc) => doc.id !== docenteId)
+      Swal.fire({
+        title: 'Docente eliminado',
+        text: `El docente ha sido eliminado.`,
+        icon: 'success'
+      }).then(() => {
+        setDocentes(nuevosDocentes);
+      })
+    }).catch((err) => {
+      Swal.fire({
+        title: 'Error',
+        text: 'No se ha podido eliminar el docente.',
+        footer: err,
+        icon: 'error'
+      })
+      setError(err)
+    });
+  
+  }
+
+
   return {
     grupos,
     docentes,
@@ -142,6 +204,8 @@ export const useGrupos = () => {
     getDocentesDiponibles,
     crearNuevoGrupo,
     eliminarGrupo,
-    obtenerSiguienteNombreGrupo
+    obtenerSiguienteNombreGrupo,
+    crearNuevoDocente,
+    eliminarDocente
   };
 }

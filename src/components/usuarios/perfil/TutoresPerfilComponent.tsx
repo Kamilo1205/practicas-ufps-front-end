@@ -6,18 +6,7 @@ import { z } from "zod"
 import { FieldValues, SubmitHandler, useForm } from "react-hook-form"
 import { Form, FormControl, FormField, FormItem, FormMessage } from "../../ui/Input/Form"
 import { PhoneInput } from "../../ui/PhoneInput"
-
-interface Tutor {
-  id: string | number
-  nombre: string
-  apellido: string
-  email: string
-  telefono: string
-  direccion: string
-  estado: string
-  imagenUrl?: string
-}
-
+import { Tutor } from "../../../interfaces"
 interface SolicitudPendienteProps { 
   tutor:Tutor
 }
@@ -211,15 +200,15 @@ export const TutoresPerfilComponent = ({ tutor }: SolicitudPendienteProps) => {
             <dd className="mt-1 text-sm leading-6 text-gray-700 sm:col-span-2 sm:mt-0">
               <div className="flex space-x-2 justify-between">
                 {
-                  tutor.imagenUrl ? <div className="shrink-0 w-11 h-11">
-                    <Avatar url={tutor.imagenUrl} alt="Foto del tutor" />
+                  tutor.usuario?.imagenUrl ? <div className="shrink-0 w-11 h-11">
+                    <Avatar url={tutor.usuario?.imagenUrl} alt="Foto del tutor" />
                   </div>: <></>
                 }
                 <span className="self-center">
                   {
                     isEditing.nombre ?
-                    <EditarNombreTutorComponent nombre={tutor.nombre } apellido={tutor.apellido} />
-                      : <>{tutor.nombre} {tutor.apellido}</>                  }
+                    <EditarNombreTutorComponent nombre={tutor.nombre } apellido={tutor.apellidos} />
+                      : <>{tutor.nombre} {tutor.apellidos}</>                  }
                 </span>
                 <button
                   onClick={() => onEditar('nombre', !isEditing.nombre)}
@@ -241,7 +230,7 @@ export const TutoresPerfilComponent = ({ tutor }: SolicitudPendienteProps) => {
                         <select id="estado-tutor-edit"
                           name="estado"
                           autoComplete="estado-tutor"
-                          defaultValue={tutor.estado}
+                          defaultValue={tutor.usuario?.estaActivo ? 'Activo' : 'Inactivo'}
                           className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:max-w-xs sm:text-sm sm:leading-6">
                           <option>Activo</option>
                           <option>Inactivo</option>
@@ -252,7 +241,7 @@ export const TutoresPerfilComponent = ({ tutor }: SolicitudPendienteProps) => {
                         </button> 
                       </div>
                     </div>
-                    : <>{tutor.estado}</>  
+                    : <>{tutor.usuario?.estaActivo ? 'Activo':'Inactivo'}</>  
                 }
                 
                 <button
@@ -310,8 +299,8 @@ export const TutoresPerfilComponent = ({ tutor }: SolicitudPendienteProps) => {
               <div className="flex justify-between">
                 {
                   isEditing.direccion ?
-                    <EditarDireccionTutorComponent direccion={tutor.direccion} />
-                    : <>{tutor.direccion}</>
+                    <EditarDireccionTutorComponent direccion={tutor.direccionTrabajo} />
+                    : <>{tutor.direccionTrabajo}</>
               }
 
                 <button

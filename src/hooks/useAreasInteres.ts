@@ -2,6 +2,7 @@ import { useState, useCallback, useEffect } from 'react';
 import { AxiosError } from 'axios';
 import { fetchAreasDeInteres as fetchAreasDeInteresAPI, fetchSubareasByArea as fetchSubareasPorAreaAPI, fetchAreaDeInteresById as fetchAreaDeInteresByIdAPI, createAreaDeInteres as createAreaDeInteresAPI, updateAreaDeInteres as updateAreaDeInteresAPI, deleteAreaDeInteres as deleteAreaDeInteresAPI } from '../api/areasInteres.api';
 import { AreaInteres } from '../interfaces';
+import Swal from 'sweetalert2';
 
 type UseAreasDeInteresReturn = {
   areas: AreaInteres[];
@@ -64,7 +65,13 @@ const useAreasDeInteres = (): UseAreasDeInteresReturn => {
     setCargando(true);
     try {
       const data = await createAreaDeInteresAPI(newArea);
-      setAreas((prev) => [...prev, data]);
+      setAreas((prev) => [data,...prev]);
+      Swal.fire({
+        icon: 'success',
+        title: 'Area de interes creada',
+        showConfirmButton: false,
+        timer: 1500
+      })
       setError(null);
     } catch (err) {
       setError(err as AxiosError);
@@ -91,9 +98,32 @@ const useAreasDeInteres = (): UseAreasDeInteresReturn => {
   const deleteAreaDeInteres = async (id: string) => {
     setCargando(true);
     try {
-      await deleteAreaDeInteresAPI(id);
-      setAreas((prev) => prev.filter((area) => area.id !== id));
-      setError(null);
+      Swal.fire({
+        title: '¿Estás seguro?',
+        text: 'No podrás revertir esta acción',
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'Sí, eliminar',
+        cancelButtonText: 'Cancelar'
+      }).then(async (result) => {
+        if (result.isConfirmed) {
+          console.log(id)
+          await deleteAreaDeInteresAPI(id)
+          setAreas((prev) => prev.filter((area) => area.id !== id));
+          Swal.fire(
+            'Eliminado',
+            'El area de interes ha sido eliminada',
+            'success'
+          )
+          setError(null);
+        }
+      }).catch((err) => { 
+        setError(err as AxiosError);
+      });
+      
+      
     } catch (err) {
       setError(err as AxiosError);
     } finally {

@@ -5,7 +5,7 @@ export interface AreaInteres {
   nombre:                  string;
   fechaCreacion:           Date;
   fechaActualizacion:      Date;
-  areaPadre?:              AreaInteres; 
+  areaPadre?:              AreaInteres | string; 
   subAreas:               AreaInteres[];
   areaInteresHerramientas: areaInteresHerramientas[];
 }
@@ -16,3 +16,44 @@ export interface areaInteresHerramientas {
   fechaCreacion:           Date;
   fechaActualizacion:      Date;
 }
+
+/*
+{
+  nombre: 'Dev soft',
+    fechaCreacion: new Date(),
+    fechaActualizacion: new Date(),
+    areaPadre: null,
+    subAreas: [
+      {
+        nombre: 'Frontend',
+        fechaCreacion: new Date(),
+        fechaActualizacion: new Date(),
+        areaPadre: null,
+        areaInteresHerramientas: [
+          {
+            herramienta: {
+     
+              nombre: 'React',
+              fechaCreacion: new Date(),
+              fechaActualizacion: new Date()
+            },
+            fechaCreacion: new Date(),
+            fechaActualizacion: new Date()
+          }
+        ]
+      }
+  ]
+  areaInteresHerramientas: [
+    {
+      herramienta: {
+       
+        nombre: 'React',
+        fechaCreacion: new Date(),
+        fechaActualizacion: new Date()
+      },
+      fechaCreacion: new Date(),
+      fechaActualizacion: new Date()
+    }
+  ]
+}
+*/

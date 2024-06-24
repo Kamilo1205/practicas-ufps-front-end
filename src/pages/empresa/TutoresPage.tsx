@@ -9,6 +9,8 @@ import { Avatar, Pagination } from "../../components/ui"
 import { DialogComponent } from "../../components/ui/Dialog/DialogComponent"
 import { TutoresPerfilComponent } from "../../components/usuarios/perfil/TutoresPerfilComponent"
 import useEmpresas from "../../hooks/useEmpresas"
+import { Tutor } from "../../interfaces"
+import { EmptyStateMessage } from "../../components/estudiantes"
 
 
 const tabsList = [
@@ -20,57 +22,22 @@ const tabsList = [
   }
 ]
 
-interface Tutor { 
-  id: number
-  nombre: string
-  apellido: string
-  email: string
-  telefono: string
-  direccion: string
-  imagenUrl: string
-  estado: string
 
-}
-
-const getTutores = async () => {
-  return Promise.resolve([
-    {
-      id: 1,
-      nombre: 'Juan',
-      apellido: 'Perez',
-      email: 'juanP@correo.com',
-      telefono: '123456789',
-      direccion: 'Calle 123',
-      imagenUrl: '',
-      estado: 'Activo',
-    },
-    {
-      id: 2,
-      nombre: 'Maria',
-      apellido: 'Gomez',
-      email: 'mariag@correo.com',
-      telefono: '123456789',
-      direccion: 'Calle 123',
-      imagenUrl: 'https://randomuser.me/api/portraits',
-      estado: 'Activo',
-    }
-  ])
- }
 
 export const TutoresPage = () => {
 
   const [tab, setTab] = useState(0)
-  const [tutores, setTutores] = useState<Tutor[]>([])
+  //const [tutores, setTutores] = useState<Tutor[]>([])
   const [currentPage, setCurrentPage] = useState<number>(1)
   const [itemsPerPage] = useState<number>(5)
-  const [totalItems, setTotalItems] = useState<number>(0)
+  const [totalItems, ] = useState<number>(0)
   const [mostrarSolicitud, setMostrarSolicitud] = useState(false)
   const [tutorSeleccionado, setTutorSeleccionado] = useState<Tutor | null>(null)
   const form = useForm({
     resolver: zodResolver(tutorSchema)
   });
 
-  const {addTutorToEmpresaActual} = useEmpresas()
+  const {tutores, addTutorToEmpresaActual, getTutoresDeEmpresaActual} = useEmpresas()
 
   //console.log(form.getValues())
 
@@ -93,9 +60,7 @@ export const TutoresPage = () => {
   }
 
   useEffect(() => { 
-    getTutores().then((data) => {
-      setTutores(data)
-    })
+    getTutoresDeEmpresaActual()
   }, [])
   
 
@@ -126,64 +91,78 @@ export const TutoresPage = () => {
         {
           tab === 0 && (
             <>
-              <div className="overflow-x-auto">
-                <table className="min-w-full border-gray-300">
-                  <thead>
-                    <tr>
-                      <th className="min-w-[28rem] text-gray-900 font-semibold text-sm text-left pl-0 pr-3 py-3.5">Nombre</th>
-                      <th className="min-w-24 text-gray-900 font-semibold text-sm text-left pl-0 pr-3 py-3.5">Estado</th>
-                      <th className="min-w-24 text-gray-900 font-semibold text-sm text-left pl-0 pr-3 py-3.5">Telefono</th>
+              {
+                tutores.length === 0 ? (
+                  <EmptyStateMessage
+                    
+                    message="No hay tutores registrados en la empresa."
+                    showButton={false}
+                  />
+                ) :
+                  <>
+                    <div className="overflow-x-auto">
+                      <table className="min-w-full border-gray-300">
+                        <thead>
+                          <tr>
+                            <th className="min-w-[28rem] text-gray-900 font-semibold text-sm text-left pl-0 pr-3 py-3.5">Nombre</th>
+                            <th className="min-w-24 text-gray-900 font-semibold text-sm text-left pl-0 pr-3 py-3.5">Estado</th>
+                            <th className="min-w-24 text-gray-900 font-semibold text-sm text-left pl-0 pr-3 py-3.5">Telefono</th>
 
-                      <th className="min-w-32 text-gray-900 font-semibold text-sm text-left pl-0 pr-3 py-3.5">Dirección</th>
-                      <th/>
-                    </tr>
-                  </thead>
-                  <tbody className="border-gray-300 divide-y border-y">
-                    {
-                      tutores.map((usuario) => (
-                        <tr key={usuario.id} className="">
-                          <td className="text-sm whitespace-nowrap pl-0 pr-3 py-5">
-                            <div className="flex items-center">
-                              <div className="shrink-0 w-11 h-11">
-                                <Avatar url={usuario.imagenUrl} />
-                              </div>
-                              <div className="ml-4">
-                                <div className="text-gray-900 font-medium">{`${usuario.nombre} ${usuario.apellido}` || 'Nombre aun no registrado'}</div>
-                                <div className="text-gray-500 mt-1">{usuario.email}</div>
-                              </div>
-                            </div>
-                          </td>
-                          <td className="text-sm whitespace-nowrap pl-0 pr-3 py-5">
-                            {
-                              usuario.estado === 'Activo'
-                                ? <span className="text-green-700 font-medium text-xs py-1 px-2 ring-1 ring-green-600/20 bg-green-100 rounded-md items-center inline-flex border-green-600 ring-inset">Activo</span>
-                                : <span className="text-red-700 font-medium text-xs py-1 px-2 ring-1 ring-red-600/20 bg-red-100 rounded-md items-center inline-flex border-red-600 ring-inset">Inactivo</span>
-                            }
-                          </td>
-                          <td className="text-sm whitespace-nowrap pl-0 pr-3 py-5">
-                            {usuario.telefono}
-                          </td>
-                          <td className="text-sm whitespace-nowrap pl-0 pr-3 py-5">
-                            {
-                              usuario.direccion
-                            }
-                          </td>
-                          <td className="text-sm whitespace-nowrap pl-0 pr-3 py-5">
-                            <button
-                              onClick={() => onEditTutor(usuario)}
-                              className="text-indigo-600 hover:text-indigo-900">Editar</button>
-                          </td>
-                          
-                        </tr>
-                      ))
-                    }
-                  </tbody>
-                </table>
-              </div>
-              <Pagination currentPage={currentPage} itemsPerPage={itemsPerPage} totalItems={totalItems} paginate={setCurrentPage} />
-            
+                            <th className="min-w-32 text-gray-900 font-semibold text-sm text-left pl-0 pr-3 py-3.5">Dirección</th>
+                            <th />
+                          </tr>
+                        </thead>
+                        <tbody className="border-gray-300 divide-y border-y">
+                          {
+                            tutores.map((usuario) => (
+                              <tr key={usuario.id} className="">
+                                <td className="text-sm whitespace-nowrap pl-0 pr-3 py-5">
+                                  <div className="flex items-center">
+                                    <div className="shrink-0 w-11 h-11">
+                                      <Avatar url={usuario?.usuario?.imagenUrl} />
+                                    </div>
+                                    <div className="ml-4">
+                                      <div className="text-gray-900 font-medium">{`${usuario.nombre} ${usuario.apellidos}` || 'Nombre aun no registrado'}</div>
+                                      <div className="text-gray-500 mt-1">{usuario.email}</div>
+                                    </div>
+                                  </div>
+                                </td>
+                                <td className="text-sm whitespace-nowrap pl-0 pr-3 py-5">
+                                  {
+                                    usuario.usuario && usuario.usuario?.estaActivo
+                                      ? <span className="text-green-700 font-medium text-xs py-1 px-2 ring-1 ring-green-600/20 bg-green-100 rounded-md items-center inline-flex border-green-600 ring-inset">Activo</span>
+                                      : <span className="text-red-700 font-medium text-xs py-1 px-2 ring-1 ring-red-600/20 bg-red-100 rounded-md items-center inline-flex border-red-600 ring-inset">Inactivo</span>
+                                  }
+                                </td>
+                                <td className="text-sm whitespace-nowrap pl-0 pr-3 py-5">
+                                  {usuario.telefono}
+                                </td>
+                                <td className="text-sm whitespace-nowrap pl-0 pr-3 py-5">
+                                  {
+                                    usuario.direccionTrabajo || 'Dirección aun no registrada'
+                                  }
+                                </td>
+                                <td className="text-sm whitespace-nowrap pl-0 pr-3 py-5">
+                                  <button
+                                    onClick={() => onEditTutor(usuario)}
+                                    className="text-indigo-600 hover:text-indigo-900">Editar</button>
+                                </td>
+
+                              </tr>
+                            ))
+                          }
+                        </tbody>
+                      </table>
+                    </div>
+                    <Pagination currentPage={currentPage} itemsPerPage={itemsPerPage} totalItems={totalItems} paginate={setCurrentPage} />
+                    
+                  </>
+              }
+
+              
             </>
           )
+          
         }
         {
           tab === 1 && (
@@ -291,15 +270,3 @@ export const TutoresPage = () => {
 }
 
 
-/**
- * <div className="sm:col-span-3">
-                        <label htmlFor="country" className="block text-sm font-medium leading-6 text-gray-900">Country</label>
-                        <div className="mt-2">
-                          <select id="country" name="country" autoComplete="country-name" className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:max-w-xs sm:text-sm sm:leading-6">
-                            <option>United States</option>
-                            <option>Canada</option>
-                            <option>Mexico</option>
-                          </select>
-                        </div>
-                      </div>
- */

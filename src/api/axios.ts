@@ -5,7 +5,7 @@ const axiosInstance = axios.create({
   withCredentials: true, // Importante para el envío de cookies en cada solicitud
 });
 
-console.log("ESO SI ?",import.meta.env.VITE_APP_API_URL);
+//console.log("ESO SI ?",import.meta.env.VITE_APP_API_URL);
 
 axiosInstance.interceptors.response.use(
   (response) => response,

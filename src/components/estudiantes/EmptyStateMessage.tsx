@@ -7,7 +7,7 @@ interface EmptyStateMessageProps {
   buttonText?: string;
   showButton?:boolean
 
-  setOpen: (open: boolean) => void;
+  setOpen?: (open: boolean) => void;
 
 }
 
@@ -32,7 +32,7 @@ export const EmptyStateMessage = ({
            {submesage}
           </p>
           {
-            showButton &&
+            showButton && setOpen &&
             <>
               <input className="hidden" type="file" />
               <Button className="mt-9 items-center" onClick={() => setOpen(true)}>

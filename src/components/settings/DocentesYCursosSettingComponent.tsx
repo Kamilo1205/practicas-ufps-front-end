@@ -2,8 +2,11 @@ import { useEffect, useState } from "react";
 import { useGrupos } from "../../hooks/useGrupos";
 import { Button } from "../ui"
 import Swal from "sweetalert2";
-import { MdDelete, MdSave } from "react-icons/md";
+import { MdCancel, MdDelete, MdSave } from "react-icons/md";
 import { SelectInputC } from "../ui/Input/SelectUIComponent";
+import { DialogComponent } from "../ui/Dialog/DialogComponent";
+import { AgregarDocenteForm } from "../ui/form/AgregarDocenteForm";
+import { BiUserCircle } from "react-icons/bi";
 
 
 
@@ -14,16 +17,20 @@ interface DocenteI {
 
 export const DocentesYCursosSettingComponent = () => { 
   const [docentesDispobibles, setDocentesDispobibles] = useState<DocenteI[]>([]);
+  const [agregarDocente, setAgregarDocente] = useState(false);
   const {
     grupos,
     docentes,
     getDocentesDiponibles,
     crearNuevoGrupo,
     eliminarGrupo,
-    obtenerSiguienteNombreGrupo
+    obtenerSiguienteNombreGrupo,
+    crearNuevoDocente,
+    eliminarDocente
+    
   } = useGrupos();
 
-  //console.log(grupos)
+  console.log(docentes)
 
   const [edicion, setEdicion] = useState<{ editar: boolean }[]>([]);
 
@@ -77,14 +84,51 @@ export const DocentesYCursosSettingComponent = () => {
     })
   }
 
+  const onEliminarDocente = (docenteId: string) => {
+    const docente = docentes.find((doc) => doc.id === docenteId)
+    const gruposAsignados = grupos.filter((grupo) => grupo.docente && grupo.docente.id === docenteId)
+    Swal.fire({
+      title: 'Eliminar docente',
+      text: `Estas seguro de eliminar al docente ${docente?.nombre}? No podras revertir esta accion! ${ gruposAsignados.length >0 ? 'Los siguientes grupos quedaran sin docente asignado: ' + gruposAsignados.map((grupo) => grupo.nombre).join(', '):''}`,
+
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      confirmButtonText: 'Si, eliminar!'
+    }).then((r) => { 
+      if(!r.isConfirmed) return
+      eliminarDocente(docenteId)
+      Swal.fire({
+        title: 'Docente eliminado',
+        text: `El docente ${docente?.nombre} ha sido eliminado.`,
+        icon: 'success'
+      })
+    })
+    
+  }
+
   useEffect(() => {
     setEdicion(grupos.map(() => ({ editar: false })))
     const docDisp = getDocentesDiponibles()
-    console.log(grupos)
+    console.log('d',docentes)
     setDocentesDispobibles(docDisp)
-  }, [grupos])
+    
+  }, [grupos,docentes])
 
   return <div>
+    <DialogComponent
+      isOpen={agregarDocente}
+      onClose={() => setAgregarDocente(false)}
+      content={
+        <AgregarDocenteForm
+          crearNuevoDocente={crearNuevoDocente}
+          onClose={() => setAgregarDocente(false)}
+        />
+      }
+      title="Agregar docente"
+      size="lg"
+    />
     <div className="text-gray-600 font-semibold text-lg mb-10">
       Grupos de practicas
     </div>
@@ -154,7 +198,7 @@ export const DocentesYCursosSettingComponent = () => {
                           setEdicion(newEdicion)
                         }}>
                         <span className="text-white hidden lg:block">Cancelar</span>
-                        <MdDelete className="text-white lg:hidden" />
+                        <MdCancel className="text-white lg:hidden" />
                       </Button>
                     </div>
                   ) : (
@@ -182,7 +226,7 @@ export const DocentesYCursosSettingComponent = () => {
     <div className="flex w-full justify-end space-x-1">
       <Button
         className="bg-blue-500 hover:bg-blue-600 w-fit px-4"
-        onClick={onCrearNuevoGrupo}>
+        onClick={()=>setAgregarDocente(true)}>
         Crear un nuevo docente
       </Button>
 
@@ -193,7 +237,13 @@ export const DocentesYCursosSettingComponent = () => {
           docentes.map((docente) => (
             <li key={`doc-list-${docente.correo}`} className="flex justify-between gap-x-6 py-5">
               <div className="flex min-w-0 gap-x-4">
-                <img className="h-12 w-12 flex-none rounded-full bg-gray-50" src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80" alt="" />
+                {
+                  docente.fotoUrl ? (
+                    <img className="h-10 w-10 rounded-full" src={docente.fotoUrl} alt="foto de perfil docente" />
+                  ) : (
+                      <BiUserCircle className="h-10 w-10 rounded-full text-gray-300" />
+                  )
+                  }
                 <div className="min-w-0 flex-auto">
                   <p className="text-sm font-semibold leading-6 text-gray-900">{docente.nombre}</p>
                   <p className="mt-1 truncate text-xs leading-5 text-gray-500">{docente.correo}</p>
@@ -204,7 +254,7 @@ export const DocentesYCursosSettingComponent = () => {
                   className="bg-red-500 hover:bg-red-400 w-fit px-4 self-center"
                   variant="outline"
                   onClick={() => {
-
+                    onEliminarDocente(docente.id)
                   }}>
                   <span className="hidden lg:block text-white">Eliminar</span>
                   <MdDelete className="text-white " />

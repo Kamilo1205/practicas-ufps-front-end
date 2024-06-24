@@ -31,7 +31,7 @@ export const TablaPaginadaComponent = ({
   return (<>
     <div className="overflow-x-auto">
       {
-        filtrar  && (
+        filtrar && setFiltro && (
           <div className="flex justify-end">
             <div className="w-fit flex content-center">
               <div className="relative mt-2 rounded-md shadow-sm">

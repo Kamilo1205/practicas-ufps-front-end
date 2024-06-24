@@ -1,11 +1,13 @@
 import { Transition } from "@headlessui/react";
 import { useState } from "react";
+import { BiUserCircle } from "react-icons/bi";
 
 
 
 interface SelectInputCI {
   id: string;
   name: string;
+  imgUrl?: string;
 }
 
 interface SelectInputCProps {
@@ -36,8 +38,13 @@ export const SelectInputC = ({ selectedDefault, options }: SelectInputCProps) =>
           <span className="flex items-center">
             {
               selected && (
-                <img src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80" alt="" className="h-5 w-5 flex-shrink-0 rounded-full" />
-
+                
+                  selected.imgUrl? (
+                    <img className="h-5 w-5 rounded-full" src={selected.imgUrl} alt="foto de perfil" />
+                  ) : (
+                    <BiUserCircle className="h-5 w-5 rounded-full text-gray-300" />
+                  )
+                
               )
             }
             <span className="ml-3 block truncate">{selected ? selected?.name : 'Seleccione un docente'}</span>
@@ -74,7 +81,13 @@ export const SelectInputC = ({ selectedDefault, options }: SelectInputCProps) =>
                   onClick={() => onSeleccionar(index)}
                 >
                   <div className="flex items-center">
-                    <img src="https://images.unsplash.com/photo-1491528323818-fdd1faba62cc?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80" alt="" className="h-5 w-5 flex-shrink-0 rounded-full" />
+                    {
+                      option.imgUrl ? (
+                        <img className="h-5 w-5 rounded-full" src={option.imgUrl} alt="foto de perfil" />
+                      ) : (
+                        <BiUserCircle className="h-5 w-5 rounded-full text-gray-300" />
+                      )
+                    }
                     <span className={`ml-3 block truncate ${highlightedIndex === index ? 'font-semibold' : 'font-normal'}`}>{option.name}</span>
                   </div>
 

@@ -1,10 +1,13 @@
-import { Rol } from './rol.interface';
-import { Usuario } from './usuario.interface';
+import { Usuario } from "./usuario.interface"
+
 
 export interface Tutor {
-  id:                 string;
-  usuario:            Usuario;
-  fechaCreacion:      Date;
-  fechaActualizacion: Date;
-  roles:              Rol[];
+  id: string
+  nombre: string
+  apellidos: string
+  telefono: string
+  email: string
+  direccionTrabajo: string
+  empresaId: string
+  usuario?: Usuario
 }
