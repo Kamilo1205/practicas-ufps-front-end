@@ -31,14 +31,27 @@ const Popover: FC<PopoverProps> = ({ isOpen, setIsOpen }) => {
     <div className="relative flex justify-center items-center w-1 h-1 bg-gray p-4">
       <div
         ref={popoverRef}
-        className={`absolute left-200 transform -translate-x-1/2 w-64 bg-white shadow-lg rounded-md p-4 border border-gray-200 transition-opacity duration-300 ease-in-out ${
+        className={`absolute  transform -translate-x-1/2 w-64 bg-white shadow-lg rounded-md p-4 border border-gray-200 transition-opacity duration-300 ease-in-out ${
           isOpen ? "opacity-100 visible" : "opacity-0 invisible"
         }`}
-        style={{ zIndex: 1000, bottom: "70px" }}
+        style={{ zIndex: 1000, bottom: "40px", right: "-220px" }}
       >
-        <p className="text-gray-700">
-          Este es un popover con una transición de desvanecido.
-        </p>
+        <div style={{ width: "300px", height: "400px" }}>
+          <div
+            style={{ width: "220px", borderRadius: "5px" }}
+            className="p-2 border mb-2"
+          >
+            <p style={{ fontWeight: "bold" }}>Tutor</p>
+            <p style={{ fontWeight: "lighter" }}>Comentario y descripcion</p>
+          </div>
+          <div
+            style={{ width: "220px", borderRadius: "5px" }}
+            className="p-2 border"
+          >
+            <p style={{ fontWeight: "bold" }}>Tutor</p>
+            <p style={{ fontWeight: "lighter" }}>Comentario y descripcion</p>
+          </div>
+        </div>
       </div>
     </div>
   );
