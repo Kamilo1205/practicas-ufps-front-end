@@ -1,3 +1,5 @@
+
+
 import { zodResolver } from "@hookform/resolvers/zod"
 import { FieldValues, SubmitHandler, useForm } from "react-hook-form"
 import { z } from "zod"
@@ -5,12 +7,12 @@ import { AreaInteres } from "../../interfaces"
 import { Button } from "../ui"
 import { BiPlus } from "react-icons/bi"
 
-interface SubAreaFormComponentProps { 
+interface SubAreaFormComponentProps {
   createAreaDeInteres: (newArea: Omit<AreaInteres, 'id'>) => Promise<void>
   padre: AreaInteres | string
 }
 
-export const SubAreaFormComponent = ({createAreaDeInteres,padre}:SubAreaFormComponentProps) => {
+export const HerramientaFormComponent = ({ createAreaDeInteres, padre }: SubAreaFormComponentProps) => {
   const form = useForm({
     resolver: zodResolver(z.object({
       nombre: z.string().min(3, {
@@ -47,7 +49,7 @@ export const SubAreaFormComponent = ({createAreaDeInteres,padre}:SubAreaFormComp
             type="text"
             name="nombre" id="nombre-area"
             className="block w-full rounded-md border-0 py-1.5 text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
-            placeholder="Nombre del nueva sub area."
+            placeholder="Nombre de la nueva herramienta."
           />
           {
             form.formState.errors.nombre && <span className="text-red-500 text-sm">
@@ -64,8 +66,8 @@ export const SubAreaFormComponent = ({createAreaDeInteres,padre}:SubAreaFormComp
       >
 
         <BiPlus className="text-xl" />
-        <span className="hidden lg:inline-block text-nowrap">Agregar sub area</span>
+        <span className="hidden lg:inline-block text-nowrap">Agregar herramienta</span>
       </Button>
     </form>
   </>
- }
+}

@@ -46,7 +46,7 @@ export const DocentesYCursosSettingComponent = () => {
   const onCrearNuevoGrupo = () => {
     Swal.fire({
       title: 'Crear un nuevo grupo',
-      text: `Se crera el ${obtenerSiguienteNombreGrupo()} de practicas.`,
+      text: `Se creara el ${obtenerSiguienteNombreGrupo()} de practicas.`,
       icon: 'info',
       showCancelButton: true,
       confirmButtonColor: '#3085d6',
@@ -171,7 +171,7 @@ export const DocentesYCursosSettingComponent = () => {
                       options={cargarOpcionesDispobibles({ id: grupo.docente?.id, nombre: grupo.docente?.nombre })}
                     />
                   ) : (
-                    <span>{grupo.docente ? grupo.docente?.nombre : <span>Sin docente asignado</span>}</span>
+                    <span>{grupo.docente ? grupo.docente?.nombre : <span className="text-red-500">Sin docente asignado</span>}</span>
                   )
                 }
               </td>

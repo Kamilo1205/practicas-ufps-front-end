@@ -84,11 +84,25 @@ const useAreasDeInteres = (): UseAreasDeInteresReturn => {
     setCargando(true);
     try {
       const data = await updateAreaDeInteresAPI(id, updatedArea);
-      setAreas((prev) =>
-        prev.map((area) => (area.id === id ? data : area))
-      );
-      setError(null);
+      Swal.fire({
+        icon: 'success',
+        title: 'Area de interes actualizada',
+        showConfirmButton: false,
+        timer: 150
+      }).then(() => {
+        setAreas((prev) =>
+          prev.map((area) => (area.id === id ? data : area))
+        );
+        setError(null);
+
+      })
     } catch (err) {
+      Swal.fire({
+        icon: 'error',
+        title: 'Error al actualizar el area de interes',
+        showConfirmButton: false,
+        timer: 150
+      })
       setError(err as AxiosError);
     } finally {
       setCargando(false);

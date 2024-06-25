@@ -3,6 +3,7 @@ import { TabComponent } from "../../components/ui/Tab/TabComponent"
 
 import { DocentesYCursosSettingComponent } from "../../components/settings/DocentesYCursosSettingComponent";
 import { AreasDeInteresSettingComponent } from "../../components/settings/AreasDeInteresSettingComponent";
+import { GeneralComponent } from "../../components/settings/GeneralComponent";
 
 
 const Tabs = [
@@ -12,6 +13,9 @@ const Tabs = [
   {
     name:'Areas de Interes',
   },
+  {
+    name:'General'
+  }
 ]
 
 
@@ -45,6 +49,10 @@ export const ConfiguracionesPage = () => {
       {
         tab === 1 && (
           <AreasDeInteresSettingComponent />
+        )
+      }{
+        tab === 2 && (
+          <GeneralComponent/>
         )
       }
     </>

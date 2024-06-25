@@ -8,21 +8,22 @@ import { z } from "zod";
 import { DisclosureComponent } from "../ui/Disclosure/DisclousreComponent";
 import { AreaInteres } from "../../interfaces";
 import { LuSearchCheck } from "react-icons/lu";
-import ToogleComponent from "../ui/Toggle/toggleComponent";
-import { SubAreaFormComponent } from "./SubAreaFormComponent";
+
 
 import { MdDelete } from "react-icons/md";
+import { AreaInteresComponent } from "./AreaInteresComponent";
+
 
 
 
 export const AreasDeInteresSettingComponent = () => { 
 
-  const [editar, setEditar] = useState(false)
   const [filtro, setFiltro] = useState('')
   const [currentPage, setCurrentPage] = useState(1)
   const [areasPaginadas, setAreasPaginadas] = useState<AreaInteres[]>([])
+ 
 
-  const { areas, createAreaDeInteres,deleteAreaDeInteres} = useAreasDeInteres()
+  const { areas, createAreaDeInteres,deleteAreaDeInteres,updateAreaDeInteres} = useAreasDeInteres()
   
   const form = useForm({
     resolver: zodResolver(z.object({
@@ -69,7 +70,8 @@ export const AreasDeInteresSettingComponent = () => {
   },[filtro,areas,currentPage])
 
   return (<div>
-    <div className="text-gray-600 font-semibold text-lg mb-5">Areas de Interes</div>
+    
+    <div className="text-gray-600 font-semibold text-lg mb-5">Agregar nueva area de Interes</div>
     <div className="w-full mb-5">
       <div className="w-full">
         <form
@@ -84,13 +86,17 @@ export const AreasDeInteresSettingComponent = () => {
                 name="nombre" id="nombre-area"
                 className="block w-full rounded-md border-0 py-1.5 text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                 placeholder="Nombre del nuevo area de interes." />
-                
+              {
+                form.formState.errors.nombre && <span className="text-red-500 text-sm">
+                  {form.formState.errors.nombre.message?.toString()}
+                </span>
+              }
             </div>
           </div>
           <Button
             type="submit"
             variant="outline"
-            className="self-center w-fit text-gray-600 font-semibold text-sm border-indigo-500 hover:bg-indigo-500 hover:text-white h-fit"
+            className="w-fit text-gray-600 font-semibold text-sm border-indigo-500 hover:bg-indigo-500 hover:text-white h-fit"
           >
             
             <BiPlus className="text-xl" />
@@ -129,7 +135,7 @@ export const AreasDeInteresSettingComponent = () => {
             key={area.id}
             title={
               <div className="flex justify-between w-full">
-                <span className="hover:text-gray-500">{area.nombre}</span>
+                <span className="hover:text-gray-500 hover:underline">{area.nombre}</span>
                 <button
                   onClick={()=>deleteAreaDeInteres(area.id )}
                   className="text-red-500 flex">
@@ -140,27 +146,11 @@ export const AreasDeInteresSettingComponent = () => {
               
             }
           >
-            <div className="p-4">
-              <div className="flex space-x-1 self-center">
-                <span className="font-semibold">Editar</span>
-                <ToogleComponent enabled={editar} setEnabled={() => setEditar(!editar)} />
-              </div>
-              <div>
-                <h3 className="font-semibold text-lg">Sub areas</h3>
-                {
-                  area.subAreas.length === 0 ? <p>No hay sub areas</p> :
-                    area.subAreas.map((subArea) => {
-                   return <div key={subArea.id} className="flex justify-between">
-                     <span>{subArea.nombre}</span>
-                     <span className="text-gray-500">{subArea.fechaCreacion.toLocaleDateString()}</span>
-                   </div>
-                 })
-                }
-              </div>
-              <SubAreaFormComponent
-                padreId={area.id}
-                createAreaDeInteres={createAreaDeInteres} /> 
-            </div>
+            <AreaInteresComponent
+              area={area}
+              createAreaDeInteres={createAreaDeInteres}
+              updateAreaDeInteres={updateAreaDeInteres}
+            /> 
           </DisclosureComponent>
 
         })
