@@ -1,6 +1,7 @@
 import { useEffect } from 'react';
 import { useAuth } from '../../contexts';
 import useEstudiantes from '../../hooks/useEstudiantes';
+import { EstudiantePerfilComponent } from '../../components/usuarios/perfil/EstudiantePerfilComponent';
 
 export const PerfilPage = () => {
   const { user } = useAuth();
@@ -12,7 +13,8 @@ export const PerfilPage = () => {
 
   return (
     <div>
-      {JSON.stringify(estudiante, null, 2)}
+      { estudiante && <EstudiantePerfilComponent estudiante={estudiante} />}
+     
     </div>
   )
 }
