@@ -5,6 +5,7 @@ import Swal from "sweetalert2";
 import { TfiSave } from "react-icons/tfi";
 import { VscChromeClose } from "react-icons/vsc";
 import { Label, TextArea } from "../ui";
+import ComentariosComponent from "./ComentariosComponent";
 
 interface Obj {
   rol: boolean;
@@ -50,7 +51,6 @@ const Objetivos: FC<Obj> = ({ rol }) => {
                 ease-in-out"
                 onClick={handleEdit}
               >
-                {" "}
                 <MdEdit className="mt-1 mr-1" />
                 Editar
               </button>
@@ -82,13 +82,16 @@ const Objetivos: FC<Obj> = ({ rol }) => {
       <TextArea disabled={!isEditing} rows={5} />
       <Label className="mt-3">Alcance</Label>
       <TextArea disabled={!isEditing} rows={5} />
+      <div className="flex w-full justify-end mt-4 mb-4">
+        <ComentariosComponent />
+      </div>
 
       {isEditing && (
         <div className="flex w-full justify-end mt-4">
           <button
             className="bg-blue-500 text-white px-3 py-2 rounded-lg flex
              cursor-pointer 
-             hover:scale-105 
+             hover:scale-105F 
              active:scale-95 
              transition-transform 
              duration-150 
