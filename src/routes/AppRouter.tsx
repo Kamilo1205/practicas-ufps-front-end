@@ -5,16 +5,25 @@ import { EmpresaRouter } from './EmpresaRouter';
 import { CoordinadorRouter } from './CoordinadorRouter';
 import { EstudianteRouter } from './EstudianteRouter';
 import { TutorRouter } from './TutorRouter';
+import { DirectorRouter } from './DirectorRouter';
 
 export const AppRouter = () => {
   const { user, isAuthenticated, isLoading } = useAuth();
 
   if (isLoading) {
-    return <div>Loading...</div>;
+    return <div className="flex justify-center items-center h-screen">
+      <div
+        className="animate-spin inline-block w-10 h-10 border-[3px] border-current border-t-transparent text-red-600 rounded-full"
+        role="status"
+        aria-label="loading"
+      >
+        <span className="sr-only">Loading...</span>
+      </div>
+    </div>
   }
-  console.log('WTF 1',user, isAuthenticated);
+ 
   if (!isAuthenticated) {
-    console.log('WTF 2', user, isAuthenticated);
+  
 
     return <Routes>
       <Route path='auth/*' element={<AuthRouter />} />
@@ -60,7 +69,7 @@ export const AppRouter = () => {
       { 
         isAuthenticated && user && user.roles?.some(rol => rol.nombre == 'director-programa' ) && (
           <>
-            <Route path='/director-programa/*' element={<EmpresaRouter />} />
+            <Route path='/director-programa/*' element={<DirectorRouter />} />
             <Route path='*' element={<Navigate to="/director-programa" />} /> 
           </>
         )

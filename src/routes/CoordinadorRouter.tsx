@@ -1,6 +1,6 @@
 import { Navigate, Route, Routes } from 'react-router-dom';
 import { Layout } from '../layouts/Layout';
-import { CoordinadorScreen } from '../pages/coordinador/CoordinadorScreen';
+
 
 import { ConfiguracionRouter } from './ConfiguracionRouter';
 
@@ -17,7 +17,7 @@ export const CoordinadorRouter = () => {
   return (
     <Routes>
       <Route element={<Layout />}>
-        <Route index path='/' element={<CoordinadorScreen />} />
+        <Route index path='/' element={<ConfiguracionesPage />} />
         <Route path='usuarios' element={<UsuariosPage />} />
         <Route path='empresas' element={<EmpresaPage />} />
         <Route path='estudiantes' element={<EstudiantesPage />} />

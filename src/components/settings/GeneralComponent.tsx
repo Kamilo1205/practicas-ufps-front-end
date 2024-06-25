@@ -17,7 +17,7 @@ export const GeneralComponent = () => {
                     <input
                       type="text"
                       defaultValue={decano}
-                      className="block w-full rounded-md border-0 py-1.5 pl-7 pr-20 text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-base sm:leading-6"
+                      className="block w-full rounded-md border-0 py-1.5 pl-3 text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-base sm:leading-6"
                       placeholder="Nombre del decano"
                     />
                     <button
@@ -27,7 +27,7 @@ export const GeneralComponent = () => {
                     </button>
                     <button
                       onClick={() => setEditar([{ editar: false }])}
-                      className="text-white bg-red-500 hover:bg-green-700 px-2 rounded-md">
+                      className="text-white bg-red-500 hover:bg-red-700 px-2 rounded-md">
                       Cancelar
                     </button>
                   </div>
