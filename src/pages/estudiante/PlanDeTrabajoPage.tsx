@@ -16,26 +16,26 @@ const PlanDeTrabajoPage: React.FC<PlanTrabProps> = ({ estudiante, rol }) => {
   return (
     <>
       <Title titulo="Plan de Trabajo" />
-      <Collapse title="Estudiante">
+      <Collapse rol={rol} isShow={false} title="Estudiante">
         <p>Detalles de la tarea 1.</p>
       </Collapse>
-      <Collapse title="Empresa">
+      <Collapse rol={rol} isShow={false} title="Empresa">
         <p>Detalles de la tarea 2.</p>
       </Collapse>
-      <Collapse title="Intensidad Horaria">
+      <Collapse rol={rol} title="Intensidad Horaria">
         <IntensidadHorariaTable
           rol={rol}
           intensidadHoras={estudiante.intensidadHoras}
           numSemanas={estudiante.numSemanas}
         />
       </Collapse>
-      <Collapse title="Objetivos">
+      <Collapse rol={rol} title="Objetivos">
         <Objetivos rol={rol} />
       </Collapse>
-      <Collapse title="Actividades">
+      <Collapse rol={rol} title="Actividades">
         <ActivityManager rol={rol} />
       </Collapse>
-      <Collapse title="Requerimientos/Resultados">
+      <Collapse rol={rol} title="Requerimientos/Resultados">
         <RRForm rol={rol} />
       </Collapse>
     </>

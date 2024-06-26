@@ -5,6 +5,7 @@ import { Activity } from "./Activity";
 import { Activity as ActivityType } from "../types";
 import { MdLibraryAddCheck } from "react-icons/md";
 import { VscChromeClose } from "react-icons/vsc";
+import { BsEmojiAstonished } from "react-icons/bs";
 
 const initialActivities: ActivityType[] = [];
 interface ActivityProps {
@@ -91,6 +92,18 @@ export const ActivityManager: React.FC<ActivityProps> = ({ rol }) => {
             rol={rol}
           />
         ))}
+        {activities.length === 0 && !isFormVisible && (
+          <div className="w-full mt-20 mb-20">
+            <div className="flex " style={{ justifyContent: "center" }}>
+              <BsEmojiAstonished style={{ width: "150px", height: "150px" }} />
+            </div>
+            <div className="flex mt-4" style={{ justifyContent: "center" }}>
+              <p style={{ fontSize: "15pt" }}>
+                No se han registrado actividades
+              </p>
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );

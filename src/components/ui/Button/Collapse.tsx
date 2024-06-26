@@ -1,16 +1,21 @@
 import React, { useState } from "react";
 import { BiChevronDown, BiChevronUp } from "react-icons/bi";
+import ComentariosComponent from "../../PlanDeTrabajo/ComentariosComponent";
 
 interface CollapseProps {
   title: string;
   children: React.ReactNode;
   initialOpen?: boolean;
+  rol?: boolean;
+  isShow?: boolean;
 }
 
 const Collapse: React.FC<CollapseProps> = ({
   title,
   children,
   initialOpen = false,
+  rol = false,
+  isShow = true,
 }) => {
   const [isOpen, setIsOpen] = useState(initialOpen);
 
@@ -39,9 +44,13 @@ const Collapse: React.FC<CollapseProps> = ({
         className={`transition-max-height duration-500 ease-in-out overflow-hidden ${
           isOpen ? "max-h-full opacity-100" : "max-h-0 opacity-0"
         }`}
-        
       >
-        <div className="px-4 mt-6 w-full mb-5" > {children}</div>
+        <div className="px-4 mt-6 w-full mb-5">
+          {children}
+          <div className="flex w-full justify-end mt-4 mb-4">
+            <ComentariosComponent rol={rol} isShow={isShow}/>
+          </div>
+        </div>
       </div>
     </div>
   );

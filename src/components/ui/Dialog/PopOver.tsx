@@ -3,8 +3,9 @@ import { useRef, useEffect, FC } from "react";
 interface PopoverProps {
   isOpen: boolean;
   setIsOpen: (isOpen: boolean) => void;
+  rol?: boolean;
 }
-const Popover: FC<PopoverProps> = ({ isOpen, setIsOpen }) => {
+const Popover: FC<PopoverProps> = ({ isOpen, setIsOpen, rol = false }) => {
   const popoverRef = useRef<HTMLDivElement>(null);
 
   const togglePopover = () => {
@@ -34,7 +35,11 @@ const Popover: FC<PopoverProps> = ({ isOpen, setIsOpen }) => {
         className={`absolute  transform -translate-x-1/2 w-64 bg-white shadow-lg rounded-md p-4 border border-gray-200 transition-opacity duration-300 ease-in-out ${
           isOpen ? "opacity-100 visible" : "opacity-0 invisible"
         }`}
-        style={{ zIndex: 1000, bottom: "40px", right: "-220px" }}
+        style={{
+          zIndex: 1000,
+          bottom: "40px",
+          right: !rol ? "-220px" : "-170px",
+        }}
       >
         <div style={{ width: "300px", height: "400px" }}>
           <div

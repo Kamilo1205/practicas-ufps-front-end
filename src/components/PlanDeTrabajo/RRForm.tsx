@@ -6,6 +6,7 @@ import { VscChromeClose } from "react-icons/vsc";
 import { FaTrash } from "react-icons/fa";
 import { IoMdAdd } from "react-icons/io";
 import { Label, TextArea } from "../ui";
+import { BsEmojiAstonished } from "react-icons/bs";
 
 interface TableRow {
   resultado: string;
@@ -38,28 +39,7 @@ const RRForm: FC<RRFormProps> = ({ rol }) => {
     });
   };
 
-  const [rows, setRows] = useState<TableRow[]>([
-    {
-      resultado:
-        "Calidad del Producto: Producto con mayor estabilidad y fiabilidad.",
-      indicador:
-        "Número de defectos resueltos con respecto al total identificado.\nCantidad de Requerimientos en estado Terminado.",
-    },
-    {
-      resultado:
-        "Eficiencia de Pruebas: Ejecución eficiente de pruebas con menor tiempo y recursos.",
-      indicador: "Tiempo promedio requerido para ejecutar pruebas.",
-    },
-    {
-      resultado: "Trazabilidad de Requerimientos",
-      indicador:
-        "Porcentaje de casos de prueba trazados por requisitos.\nNúmero de requerimientos trabajados durante semana/mes.\nTiempo promedio requerido para implementar cambios post-pruebas.",
-    },
-    {
-      resultado: "Cumplimiento de Entrega",
-      indicador: "Cantidad de Requerimientos entregados a tiempo.",
-    },
-  ]);
+  const [rows, setRows] = useState<TableRow[]>([]);
 
   const addRow = () => {
     setRows([...rows, { resultado: "", indicador: "" }]);
@@ -149,7 +129,29 @@ const RRForm: FC<RRFormProps> = ({ rol }) => {
               </th>
             </tr>
           </thead>
+
           <tbody>
+            <tr>
+              <td colSpan={2}>
+                {rows.length === 0 && !isEditing && (
+                  <div className="w-full mt-20 mb-20">
+                    <div className="flex " style={{ justifyContent: "center" }}>
+                      <BsEmojiAstonished
+                        style={{ width: "150px", height: "150px" }}
+                      />
+                    </div>
+                    <div
+                      className="flex mt-4"
+                      style={{ justifyContent: "center" }}
+                    >
+                      <p style={{ fontSize: "15pt" }}>
+                        No se han registrado Resultados
+                      </p>
+                    </div>
+                  </div>
+                )}
+              </td>
+            </tr>
             {rows.map((row, index) => (
               <tr key={index}>
                 <td className="border border-gray-300 p-2">
