@@ -69,8 +69,8 @@ export const AppRouter = () => {
       { 
         isAuthenticated && user && user.roles?.some(rol => rol.nombre == 'director-programa' ) && (
           <>
-            <Route path='/director-programa/*' element={<DirectorRouter />} />
-            <Route path='*' element={<Navigate to="/director-programa" />} /> 
+            <Route path='/director/*' element={<DirectorRouter />} />
+            <Route path='*' element={<Navigate to="/director" />} /> 
           </>
         )
       }   

@@ -3,7 +3,9 @@ import { useAuth } from "../contexts";
 import { Layout } from "../layouts/Layout";
 import { RegistroLayout } from "../layouts/RegistroLayout";
 import { RegistroPage } from "../pages/auth";
-import { DirectorSolicitudesPage } from "../pages/director/SolicitudesPage";
+import { EmpresaPage } from "../pages/coordinador/EmpresasPage";
+import { EstudiantesPage } from "../pages/coordinador/EstudiantesPage";
+import { PracticasPage } from "../pages/coordinador/PracticasPage";
 
 
 export const DirectorRouter = () => { 
@@ -15,7 +17,10 @@ export const DirectorRouter = () => {
           (
             <>
               <Route path='/' element={<Layout />}>
-                <Route path='solicitudes' element={<DirectorSolicitudesPage />} />
+                <Route path='empresas' element={<EmpresaPage />} />
+                <Route path='estudiantes' element={<EstudiantesPage />} />
+                
+                <Route path='practicas' element={<PracticasPage />} />
                 <Route path="*" element={<Navigate to="/empresa" replace />} />
               </Route>
             </>
