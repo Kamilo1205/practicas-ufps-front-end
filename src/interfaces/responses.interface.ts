@@ -1,3 +1,4 @@
+import { AreaInteres, areaInteresHerramientas } from "./area-interes.interface";
 
 
 interface UsuarioI {
@@ -48,8 +49,8 @@ export interface EstudianteI {
   lugarExpedicionDocumento: string | null;
   tipoAfiliacionEps: string | null;
   tipoDocumento: string | null;
-  estudianteAreaInteres: any[];
-  herramientas: any[];
+  estudianteAreaInteres: AreaInteres[];
+  herramientas: areaInteresHerramientas[];
   semestres: any[];
 }
 

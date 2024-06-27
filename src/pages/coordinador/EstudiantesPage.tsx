@@ -13,22 +13,9 @@ import { EstudiantePerfilComponent } from "../../components/usuarios/perfil/Estu
 import { BiArrowToRight, BiCheck } from "react-icons/bi";
 import { IoAlertCircle } from "react-icons/io5";
 import { EstudianteI } from "../../interfaces/responses.interface";
+import { roles } from "../../interfaces/rol.interface";
 
-export const grupos = [
-  {
-    id: 1,
-    name: "Grupo A",
-  },
-  {
-    id: 2,
-    name: "Grupo B",
-  },
-  {
-    id: 3,
-    name: "Grupo C",
-  },
-  
-]
+
 
 const Tabs = [
   {
@@ -59,7 +46,13 @@ const Tabs = [
 
 ]
 
-export const EstudiantesPage = () => {
+
+interface EstudiantesPageProps { 
+  rol?: string
+
+}
+
+export const EstudiantesPage = ({rol=''}:EstudiantesPageProps) => {
   const [estudiantes, setEstudiantes] = useState<{ estudiantes: EstudianteI[], total: number }>({
     estudiantes: [],
     total: 0,
@@ -104,43 +97,50 @@ export const EstudiantesPage = () => {
       <div className="mb-10">
         <div className="text-gray-600 font-bold text-2xl">Estudiantes</div>
       </div>
-      <DialogComponent
-        isOpen={agregarEstudiante}
-        onClose={() => setAgregarEstudiante(false)}
-        content={
-          <AgregarEstudianteForm onClose={()=>setAgregarEstudiante(false)} />
-        }
-        title="Agregar estudiantes"
-      />
+      {
+        rol === roles.coordinador && <DialogComponent
+          isOpen={agregarEstudiante}
+          onClose={() => setAgregarEstudiante(false)}
+          content={
+            <AgregarEstudianteForm onClose={() => setAgregarEstudiante(false)} />
+          }
+          title="Agregar estudiantes"
+        />
+      }
       <DialogComponent
         isOpen={mostrarPerfil}
         onClose={() => setMostrarPerfil(false)}
         content={
           estudianteSeleccionado &&
           <EstudiantePerfilComponent
+            rol={rol}
             estudiante={estudianteSeleccionado}
           />|| <div>No hay información del estudiante seleccionado.</div>
         }
         title=""
         size="2xl"
       />
-      <div className="overflow-x-auto mb-4">
-        <ul role="list" className="divide-y divide-gray-100">
-          <li className="flex justify-between gap-x-6 py-2">
-            <div className="flex min-w-0 gap-x-4">
-                <div className="min-w-0 flex-auto">
+      {
+        rol === roles.coordinador && (
+          <div className="overflow-x-auto mb-4">
+            <ul role="list" className="divide-y divide-gray-100">
+              <li className="flex justify-between gap-x-6 py-2">
+                <div className="flex min-w-0 gap-x-4">
+                  <div className="min-w-0 flex-auto">
+                  </div>
                 </div>
-            </div>
-            <div className="hidden shrink-0 sm:flex sm:flex-col sm:items-end">
-              <Button onClick={()=>setAgregarEstudiante(true)}>
-                <HiOutlineUserPlus className="size-5 mr-2" />
-                Agregar estudiantes
-              </Button>
-            </div>
-          </li>
-          
-          </ul>
-      </div> 
+                <div className="hidden shrink-0 sm:flex sm:flex-col sm:items-end">
+                  <Button onClick={() => setAgregarEstudiante(true)}>
+                    <HiOutlineUserPlus className="size-5 mr-2" />
+                    Agregar estudiantes
+                  </Button>
+                </div>
+              </li>
+
+            </ul>
+          </div> 
+        )
+    }
       <TabComponent
         tabListI={Tabs}
         activeTab={tab}

@@ -3,16 +3,22 @@ import { Button } from "../ui";
 import { Field, Label, Listbox, ListboxButton, ListboxOption, ListboxOptions, Transition } from "@headlessui/react";
 import clsx from "clsx";
 import { HiMiniChevronDown } from 'react-icons/hi2';
-import { grupos } from "../../pages/coordinador/EstudiantesPage";
+import { useGrupos } from "../../hooks/useGrupos";
+//import { grupos } from "../../pages/coordinador/EstudiantesPage";
 
-export const AgregarEstudianteForm = ({ onClose }: any) => {
+interface AgregarEstudianteFormProps { 
+  onClose: () => void;
+
+}
+
+export const AgregarEstudianteForm = ({ onClose }: AgregarEstudianteFormProps) => {
   const [grupoSeleccionado, setGrupoSeleccionado] = useState({
     id: 0,
     name: '',
   });
 
   const [archivo, setArchivo] = useState<File | null>(null);
-
+  const {grupos} = useGrupos()
   const handleGuardar = () => {
     console.log(grupoSeleccionado);
     console.log(archivo);
@@ -52,7 +58,7 @@ export const AgregarEstudianteForm = ({ onClose }: any) => {
                     value={grupo}
                     className="group flex cursor-pointer items-center gap-2 rounded-lg py-1.5 px-3 select-none data-[focus]:bg-gray-200 data-[selected]:bg-gray-300/90"
                   >
-                    <div className="text-sm capitalize">{grupo.name}</div>
+                    <div className="text-sm capitalize">{grupo.nombre}</div>
                   </ListboxOption>
                 ))}
               </ListboxOptions>

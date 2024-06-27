@@ -7,7 +7,7 @@ export const MenuList = () => {
   const { user } = useAuth();
 
   const rolUrl = user?.roles.find(u => u.nombre == 'director-programa') ?
-    'director' : 'coordinador/empresas'
+    'director' : 'coordinador'
 
   const navLinks = [
     { to: '/coordinador/configuraciones', text: 'Configuraciones', icon: HiOutlineChartPie, roles: ['administrador',] },

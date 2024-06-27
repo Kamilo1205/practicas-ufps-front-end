@@ -2,10 +2,11 @@ import { useState } from "react";
 import { Avatar } from "../../ui";
 import { TabComponent } from "../../ui/Tab/TabComponent";
 import { EstudianteI } from "../../../interfaces/responses.interface";
+import { roles } from "../../../interfaces/rol.interface";
 
 interface EstudiantePerfilProps { 
   estudiante: EstudianteI ;
-
+  rol ?: string;
 }
 
 const Tabs = [
@@ -23,11 +24,26 @@ const Tabs = [
   }
 ]
 
-export const EstudiantePerfilComponent = ({estudiante}:EstudiantePerfilProps) => { 
+const permisos = {
+  activacion: [roles.coordinador, roles.administrador],
+  edicion: [roles.coordinador, roles.administrador, roles.estudiante],
+  soloVista: [roles.tutor, roles.empresa, roles.director]
+}
 
+export const EstudiantePerfilComponent = ({estudiante,rol=''}:EstudiantePerfilProps) => { 
 
+  const puedeActivarDesactivar = permisos.activacion.includes(rol)
+  //const puedeEditar = permisos.edicion.includes(rol)
+  const soloVista = permisos.soloVista.includes(rol)
+ 
+  const [tab, setTab] = useState(0)
+  
+  const onActivarDesactivar = () => { 
+    //TODO Activar o desactivar el usuario
+    const estaActivo = estudiante?.usuario?.estaActivo
+    console.log(estaActivo)
+  }
 
-  const [tab,setTab] = useState(0)
   return (<>
     
     <div className="">
@@ -65,6 +81,17 @@ export const EstudiantePerfilComponent = ({estudiante}:EstudiantePerfilProps) =>
                         <span className="ml-4 h-fit self-center text-red-700 font-medium text-xs py-1 px-2 ring-1 ring-red-600/20 bg-red-100 rounded-md items-center inline-flex border-red-600 ring-inset">
                         Inactivo
                       </span>
+                    )
+                  }
+                  {
+                    puedeActivarDesactivar && (
+                      <button
+                        onClick={onActivarDesactivar}
+                        className="ml-4 self-center text-blue-600 cursor-pointer">
+                        {
+                          estudiante?.usuario?.estaActivo ? 'Desactivar' : 'Activar'
+                        }
+                      </button>
                     )
                   }
                 </dd>
@@ -130,15 +157,22 @@ export const EstudiantePerfilComponent = ({estudiante}:EstudiantePerfilProps) =>
                       </div>
                       
                     </li>
-                    <li className="flex items-center justify-between pl-4 pr-5 text-sm leading-6">
-                      <div className="px-4 py-3 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0 w-full">
-                        <dt className="text-sm font-medium leading-6 text-gray-900">Aprovación del docente</dt>
-                        <dd className="mt-1 text-sm leading-6 text-gray-700 sm:col-span-2 sm:mt-0">
-                          
-{`Pendiente por aprovación...`}
-                        </dd>
-                      </div>
-                    </li>
+                    {
+                      !soloVista && (
+                        <li className="flex items-center justify-between pl-4 pr-5 text-sm leading-6">
+                          <div className="px-4 py-3 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0 w-full">
+                            <dt className="text-sm font-medium leading-6 text-gray-900">Aprovación del docente</dt>
+                            <dd className="mt-1 text-sm leading-6 text-gray-700 sm:col-span-2 sm:mt-0">
+                              {
+                                //TODO Calificación del plan de trabajo.
+                                `Pendiente por aprovación...`
+                              }
+
+                            </dd>
+                          </div>
+                        </li>
+                      )
+                    }
                     <li className="flex items-center justify-between pl-4 pr-5 text-sm leading-6">
                       <div className="px-4 py-3 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0 w-full">
                         <dt className="text-sm font-medium leading-6 text-gray-900">Aprovación del Tutor</dt>
@@ -169,18 +203,22 @@ export const EstudiantePerfilComponent = ({estudiante}:EstudiantePerfilProps) =>
                       </div>
 
                     </li>
-                    <li className="flex items-center justify-between pl-4 pr-5 text-sm leading-6">
-                      <div className="px-4 py-3 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0 w-full">
-                        <dt className="text-sm font-medium leading-6 text-gray-900">Aprovación del docente</dt>
-                        <dd className="mt-1 text-sm leading-6 text-gray-700 sm:col-span-2 sm:mt-0">
-                          {
-                            //TODO Calificación del plan de trabajo.
-                            `Pendiente por aprovación...`
-                          }
+                    {
+                      !soloVista && (
+                        <li className="flex items-center justify-between pl-4 pr-5 text-sm leading-6">
+                          <div className="px-4 py-3 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0 w-full">
+                            <dt className="text-sm font-medium leading-6 text-gray-900">Aprovación del docente</dt>
+                            <dd className="mt-1 text-sm leading-6 text-gray-700 sm:col-span-2 sm:mt-0">
+                              {
+                                //TODO Calificación del plan de trabajo.
+                                `Pendiente por aprovación...`
+                              }
 
-                        </dd>
-                      </div>
-                    </li>
+                            </dd>
+                          </div>
+                        </li>
+                      )
+                    }
                     <li className="flex items-center justify-between pl-4 pr-5 text-sm leading-6">
                       <div className="px-4 py-3 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0 w-full">
                         <dt className="text-sm font-medium leading-6 text-gray-900">Aprovación del Tutor</dt>
@@ -211,18 +249,22 @@ export const EstudiantePerfilComponent = ({estudiante}:EstudiantePerfilProps) =>
                       </div>
 
                     </li>
-                    <li className="flex items-center justify-between pl-4 pr-5 text-sm leading-6">
-                      <div className="px-4 py-3 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0 w-full">
-                        <dt className="text-sm font-medium leading-6 text-gray-900">Aprovación del docente</dt>
-                        <dd className="mt-1 text-sm leading-6 text-gray-700 sm:col-span-2 sm:mt-0">
-                          {
-                            //TODO Calificación del plan de trabajo.
-                            `Pendiente por aprovación...`
-                          }
+                    {
+                      !soloVista && (
+                        <li className="flex items-center justify-between pl-4 pr-5 text-sm leading-6">
+                        <div className="px-4 py-3 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0 w-full">
+                          <dt className="text-sm font-medium leading-6 text-gray-900">Aprovación del docente</dt>
+                          <dd className="mt-1 text-sm leading-6 text-gray-700 sm:col-span-2 sm:mt-0">
+                            {
+                              //TODO Calificación del plan de trabajo.
+                              `Pendiente por aprovación...`
+                            }
 
-                        </dd>
-                      </div>
-                    </li>
+                          </dd>
+                        </div>
+                        </li>
+                      )
+                    }
                     <li className="flex items-center justify-between pl-4 pr-5 text-sm leading-6">
                       <div className="px-4 py-3 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0 w-full">
                         <dt className="text-sm font-medium leading-6 text-gray-900">Aprovación del Tutor</dt>
@@ -255,12 +297,20 @@ export const EstudiantePerfilComponent = ({estudiante}:EstudiantePerfilProps) =>
                           <path fillRule="evenodd" d="M15.621 4.379a3 3 0 00-4.242 0l-7 7a3 3 0 004.241 4.243h.001l.497-.5a.75.75 0 011.064 1.057l-.498.501-.002.002a4.5 4.5 0 01-6.364-6.364l7-7a4.5 4.5 0 016.368 6.36l-3.455 3.553A2.625 2.625 0 119.52 9.52l3.45-3.451a.75.75 0 111.061 1.06l-3.45 3.451a1.125 1.125 0 001.587 1.595l3.454-3.553a3 3 0 000-4.242z" clipRule="evenodd" />
                         </svg>
                         <div className="ml-4 flex min-w-0 flex-1 gap-2">
-                          <span className="truncate font-medium">eps-1123.pdf</span>
+                          <span className="truncate font-medium">
+                            {
+                              estudiante?.certificadoAfiliacionEpsUrl ? `certificado-afiliacion-eps-${estudiante.codigo}.pdf` : 'No hay documento'
+                            }
+                          </span>
                           <span className="flex-shrink-0 text-gray-400">2.4mb</span>
                         </div>
                       </div>
                       <div className="ml-4 flex-shrink-0">
-                        <a href="#" className="font-medium text-indigo-600 hover:text-indigo-500">Descargar</a>
+                        {
+                          estudiante?.certificadoAfiliacionEpsUrl && (
+                            <a href={estudiante.certificadoAfiliacionEpsUrl} target="_blank" className="font-medium text-indigo-600 hover:text-indigo-500">Descargar</a>
+                          )
+                        }
                       </div>
                     </li>
                     
@@ -277,12 +327,20 @@ export const EstudiantePerfilComponent = ({estudiante}:EstudiantePerfilProps) =>
                           <path fillRule="evenodd" d="M15.621 4.379a3 3 0 00-4.242 0l-7 7a3 3 0 004.241 4.243h.001l.497-.5a.75.75 0 011.064 1.057l-.498.501-.002.002a4.5 4.5 0 01-6.364-6.364l7-7a4.5 4.5 0 016.368 6.36l-3.455 3.553A2.625 2.625 0 119.52 9.52l3.45-3.451a.75.75 0 111.061 1.06l-3.45 3.451a1.125 1.125 0 001.587 1.595l3.454-3.553a3 3 0 000-4.242z" clipRule="evenodd" />
                         </svg>
                         <div className="ml-4 flex min-w-0 flex-1 gap-2">
-                          <span className="truncate font-medium">documento-1123.pdf</span>
+                          <span className="truncate font-medium">
+                            {
+                              estudiante.documentoIdentidadUrl ? `documento-identidad-${estudiante.codigo}.pdf` : 'No hay documento'
+                            }
+                          </span>
                           <span className="flex-shrink-0 text-gray-400">2.4mb</span>
                         </div>
                       </div>
                       <div className="ml-4 flex-shrink-0">
-                        <a href="#" className="font-medium text-indigo-600 hover:text-indigo-500">Descargar</a>
+                        {
+                          estudiante.documentoIdentidadUrl && (
+                            <a href={estudiante.documentoIdentidadUrl} target="_blank" className="font-medium text-indigo-600 hover:text-indigo-500">Descargar</a>
+                          )
+                        }
                       </div>
                     </li>
                     
@@ -299,12 +357,18 @@ export const EstudiantePerfilComponent = ({estudiante}:EstudiantePerfilProps) =>
                           <path fillRule="evenodd" d="M15.621 4.379a3 3 0 00-4.242 0l-7 7a3 3 0 004.241 4.243h.001l.497-.5a.75.75 0 011.064 1.057l-.498.501-.002.002a4.5 4.5 0 01-6.364-6.364l7-7a4.5 4.5 0 016.368 6.36l-3.455 3.553A2.625 2.625 0 119.52 9.52l3.45-3.451a.75.75 0 111.061 1.06l-3.45 3.451a1.125 1.125 0 001.587 1.595l3.454-3.553a3 3 0 000-4.242z" clipRule="evenodd" />
                         </svg>
                         <div className="ml-4 flex min-w-0 flex-1 gap-2">
-                          <span className="truncate font-medium">hv-1123.pdf</span>
+                          <span className="truncate font-medium">{
+                            estudiante.hojaDeVidaUrl ? `hoja-vida-${estudiante.codigo}.pdf` : 'No hay documento'
+                          }</span>
                           <span className="flex-shrink-0 text-gray-400">2.4mb</span>
                         </div>
                       </div>
                       <div className="ml-4 flex-shrink-0">
-                        <a href="#" className="font-medium text-indigo-600 hover:text-indigo-500">Descargar</a>
+                        {
+                          estudiante.hojaDeVidaUrl && (
+                            <a href={estudiante.hojaDeVidaUrl} target="_blank" className="font-medium text-indigo-600 hover:text-indigo-500">Descargar</a>
+                          )
+                        }
                       </div>
                     </li>
 

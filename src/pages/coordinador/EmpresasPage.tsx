@@ -5,14 +5,26 @@ import { Empresa } from "../../interfaces";
 import { Avatar, Pagination } from "../../components/ui";
 import { fetchGetEmpresas } from "../../api/empresa.api";
 import { EmptyStateMessage } from "../../components/estudiantes";
+import { roles } from "../../interfaces/rol.interface";
 
-export const EmpresaPage = () => {
+interface EmpresaPageProps { 
+  rol?: string
+}
+
+const permisos = {
+  agregarEmpresas: [roles.director, roles.coordinador],
+ 
+}
+
+export const EmpresaPage = ({ rol = '' }:EmpresaPageProps) => {
   const [empresas, setEmpresas] = useState<Empresa[]>([]);
   const [totalItems, setTotalItems] = useState<number>(0); // Número total de ítems
   const [currentPage, setCurrentPage] = useState<number>(1);
   const [itemsPerPage] = useState<number>(5); // Suponiendo que el backend maneja 10 ítems por página
   const navigate = useNavigate();
   const location = useLocation();
+
+  const puedeAgregar = permisos.agregarEmpresas.includes(rol)  
 
   useEffect(() => {
     const query = new URLSearchParams(location.search);
@@ -49,10 +61,11 @@ export const EmpresaPage = () => {
         <div className="text-gray-600 font-bold text-2xl">Empresas</div>
       </div>
       {
-        empresas.length === 0 ? (
+         empresas.length === 0 ? (
           <EmptyStateMessage
+          showButton={puedeAgregar}
             message="No hay empresas registradas"
-            submesage="Puede registrar una nueva empresa"
+            submesage={puedeAgregar ? "Puedes agregar una empresa" : ""}
             buttonText="Agregar empresa"
             setOpen={() => { }}
           />

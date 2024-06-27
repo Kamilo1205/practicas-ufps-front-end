@@ -97,7 +97,7 @@ const [open, setOpen] = useState(false)
                 padre={area}
                 createAreaDeInteres={createAreaDeInteres} />
               {
-                area.subAreas.length === 0 ?
+                area.subAreas?.length === 0 ?
                   <p className="text-md">.</p> :
                   area.subAreas.map((subArea) => {
                     return <div key={subArea.id} className="flex justify-between">

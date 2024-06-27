@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { LuSearchCheck } from "react-icons/lu";
 import { Pagination } from "../Pagination/Pagination";
 
