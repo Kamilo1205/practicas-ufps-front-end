@@ -6,6 +6,7 @@ import { UsuariosPage } from "../pages/coordinador/UsuariosPage";
 import { RegistroLayout } from "../layouts/RegistroLayout";
 import { PerfilPage } from "../pages/estudiante/PerfilPage";
 import PlanDeTrabajoVista from "./../components/PlanDeTrabajo/Coordinador-Empresa/PlanDeTrabajoVista";
+import InformeParicialPage from './../pages/estudiante/InformeParicialPage';
 
 export const EstudianteRouter = () => {
   const { user } = useAuth();
@@ -20,6 +21,12 @@ export const EstudianteRouter = () => {
               path="plantrabajo"
               element={
                 <PlanDeTrabajoVista rol="ESTUDIANTE" initialOpen={false} />
+              }
+            />
+            <Route
+              path="informeparcial"
+              element={
+                <InformeParicialPage />
               }
             />
             <Route path="*" element={<Navigate to="/estudiante" replace />} />

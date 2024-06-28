@@ -23,6 +23,7 @@ export const MenuList = () => {
     { to: '/empresa/solicitudes', text: 'Administración de solicitudes', icon: HiOutlineUsers, roles: ['empresa'] },
     { to: '/estudiante', text: 'Datos personales', icon: HiOutlineUser, roles: ['estudiante'] },
     { to: '/estudiante/plantrabajo', text: 'Plan de trabajo', icon: HiOutlineUsers, roles: ['estudiante'] },
+    { to: '/estudiante/informeparcial', text: 'Informe Parcial', icon: HiOutlineUsers, roles: ['estudiante'] },
     { to: '/tutor/perfil', text: 'Datos del tutor', icon: HiOutlineUsers, roles: ['tutor'] },
     { to: '/tutor/practicantes', text: 'Practicantes', icon: HiOutlineUsers, roles: ['tutor'] },
     { to: '/director/practicas' ,text: 'Solicitudes', icon: HiOutlineUser, roles: ['director-programa']},
