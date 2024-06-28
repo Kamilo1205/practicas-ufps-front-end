@@ -135,7 +135,7 @@ export const Activity: React.FC<ActivityProps> = ({
     setTotalHours(hours);
     setPercentageComplete(progress);
   }, [activity.subActivities]);
-
+  console.log(activity.subActivities.length);
   return (
     <div className="border-b mb-2">
       <div className="flex justify-between items-center py-2">
@@ -144,11 +144,11 @@ export const Activity: React.FC<ActivityProps> = ({
             <button>{isEditing ? <></> : <TbPointFilled />}</button>
           ) : (
             <button className="cursor-pointer" onClick={toggleExpand}>
-              {rol && activity.subActivities.length >= 1 ? (
-                <>{isExpanded ? <MdExpandLess /> : <MdExpandMore />}</>
+              {!rol && activity.subActivities.length === 0 ? (
+                <TbPointFilled />
               ) : (
                 <>
-                  <TbPointFilled />
+                  <>{isExpanded ? <MdExpandLess /> : <MdExpandMore />}</>
                 </>
               )}
             </button>
@@ -171,7 +171,11 @@ export const Activity: React.FC<ActivityProps> = ({
             </div>
           ) : (
             <span
-              onClick={!informeP ? toggleExpand : () => {}}
+              onClick={
+                informeP && rol && activity.subActivities.length === 0
+                  ? () => {}
+                  : toggleExpand
+              }
               className="w-full cursor-pointer"
               style={{ fontWeight: "bold" }}
             >

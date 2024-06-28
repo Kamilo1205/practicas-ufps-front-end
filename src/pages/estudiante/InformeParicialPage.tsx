@@ -17,7 +17,7 @@ const InformeParicialPage = () => {
           Desarrollo de la Práctica
         </div>
         <div className="border" />
-        <ActivityManager rol={true} informeP={true} />
+        <ActivityManager rol={false} informeP={true} />
         <div className="border" />
         <div className="mt-2 p-2">
           <Label>Adaptación</Label>
