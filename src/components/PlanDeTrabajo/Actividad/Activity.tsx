@@ -16,6 +16,9 @@ import { IoIosAdd } from "react-icons/io";
 import { VscChromeClose } from "react-icons/vsc";
 import { Label } from "../../ui";
 import NumberSlider from "../../ui/Input/NumberSlider";
+import { RiEyeCloseFill } from "react-icons/ri";
+import { BiShowAlt } from "react-icons/bi";
+import PopOverViewInfo from "./../../ui/Dialog/PopOverViewInfo";
 
 interface ActivityProps {
   activity: ActivityType;
@@ -38,7 +41,7 @@ export const Activity: React.FC<ActivityProps> = ({
   const [title, setTitle] = useState(activity.title);
   const [startDate, setStartDate] = useState(activity.startDate);
   const [endDate, setEndDate] = useState(activity.endDate);
-
+  const [OpenView, setOpenView] = useState(false);
   const InicioDate = new Date(activity.startDate);
 
   const FinDate = new Date(activity.endDate);
@@ -114,6 +117,9 @@ export const Activity: React.FC<ActivityProps> = ({
     setIsEditing(false);
   };
 
+    const togglePopover = () => {
+      setOpenView(!OpenView);
+    };
   useEffect(() => {
     const hours = activity.subActivities.reduce(
       (acc, sub) => acc + sub.hours,
@@ -151,7 +157,7 @@ export const Activity: React.FC<ActivityProps> = ({
           ) : (
             <span
               onClick={toggleExpand}
-              className="cursor-pointer flex-grow truncate"
+              className="w-full cursor-pointer"
               style={{ fontWeight: "bold" }}
             >
               {activity.title}
@@ -182,11 +188,72 @@ export const Activity: React.FC<ActivityProps> = ({
               style={{ borderRadius: "15px", border: "1px solid gray" }}
             >
               <GiProgression className="mt-1 mr-1" />
-              {`${percentageComplete.toFixed(2)}%`}
+              {`${percentageComplete.toFixed(0)}%`}
             </div>
           </div>
+
           {rol && (
             <>
+              <div className="flex md:hidden">
+                <PopOverViewInfo
+                  OpenView={OpenView}
+                  setOpenView={setOpenView}
+                  rol={rol}
+                  content={
+                    <div className="block sm:flex">
+                      <div
+                        className="flex px-2 py-1"
+                        style={{
+                          borderRadius: "15px",
+                          border: "1px solid gray",
+                        }}
+                      >
+                        <FaRegCalendar className="mt-1 mr-1 " />
+                        <span className="xl:hidden">{formattedEndDate}</span>
+                        <span className="hidden xl:inline">
+                          {formattedStartDate} - {formattedEndDate}
+                        </span>
+                      </div>
+                      <div
+                        className="flex px-2 py-1"
+                        style={{
+                          borderRadius: "15px",
+                          border: "1px solid gray",
+                        }}
+                      >
+                        <GoClock className="mt-1 mr-1" />
+                        {totalHours}
+                      </div>
+                      <div
+                        className="flex px-2 py-1"
+                        style={{
+                          borderRadius: "15px",
+                          border: "1px solid gray",
+                        }}
+                      >
+                        <GiProgression className="mt-1 mr-1" />
+                        {`${percentageComplete.toFixed(0)}%`}
+                      </div>
+                    </div>
+                  }
+                />
+                <button
+                  onClick={togglePopover}
+                  className=" md:hidden cursor-pointer
+              hover:scale-105
+              active:scale-95
+              transition-transform
+              duration-150
+              ease-in-out"
+                >
+                  {OpenView ? (
+                    <RiEyeCloseFill style={{ width: "20px", height: "20px" }} />
+                  ) : (
+                    <BiShowAlt style={{ width: "20px", height: "20px" }} />
+                  )}
+                </button>
+              </div>
+
               <button
                 onClick={toggleOpenEdit}
                 className=" cursor-pointer

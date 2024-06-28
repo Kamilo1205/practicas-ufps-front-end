@@ -131,9 +131,9 @@ const RRForm: FC<RRFormProps> = ({ rol }) => {
           </thead>
 
           <tbody>
-            <tr>
-              <td colSpan={2}>
-                {rows.length === 0 && !isEditing && (
+            {rows.length === 0 && !isEditing && (
+              <tr>
+                <td colSpan={2}>
                   <div className="w-full mt-20 mb-20">
                     <div className="flex " style={{ justifyContent: "center" }}>
                       <BsEmojiAstonished
@@ -149,9 +149,9 @@ const RRForm: FC<RRFormProps> = ({ rol }) => {
                       </p>
                     </div>
                   </div>
-                )}
-              </td>
-            </tr>
+                </td>
+              </tr>
+            )}
             {rows.map((row, index) => (
               <tr key={index}>
                 <td className="border border-gray-300 p-2">

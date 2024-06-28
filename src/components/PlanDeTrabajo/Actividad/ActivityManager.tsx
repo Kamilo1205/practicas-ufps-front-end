@@ -51,7 +51,7 @@ export const ActivityManager: React.FC<ActivityProps> = ({ rol }) => {
 
   return (
     <div className="p-4">
-      <div className="p-0 flex w-full" style={{ alignItems: "center" }}>
+      <div className="p-0 flex w-full mb-6" style={{ alignItems: "center" }}>
         <h1 className="text-2xl mb-4 font-bold text-gray-700 w-full">
           Gestión de Actividades
         </h1>

@@ -19,3 +19,9 @@ export interface Activity {
   percentageComplete: number;
   subActivities: SubActivity[];
 }
+
+export interface Comment {
+  rol: string;
+  autor: string;
+  comentario: string;
+}
