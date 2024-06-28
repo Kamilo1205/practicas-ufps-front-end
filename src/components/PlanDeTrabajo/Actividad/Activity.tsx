@@ -10,6 +10,7 @@ import { MdExpandMore, MdExpandLess, MdEdit, MdDelete } from "react-icons/md";
 import { GoClock } from "react-icons/go";
 import { GiProgression } from "react-icons/gi";
 import { FaRegCalendar } from "react-icons/fa6";
+import { TbPointFilled } from "react-icons/tb";
 
 import { TfiSave } from "react-icons/tfi";
 import { IoIosAdd } from "react-icons/io";
@@ -25,6 +26,7 @@ interface ActivityProps {
   updateActivity: (activity: ActivityType) => void;
   deleteActivity: (id: number) => void;
   rol: boolean;
+  informeP?: boolean;
 }
 
 export const Activity: React.FC<ActivityProps> = ({
@@ -32,6 +34,7 @@ export const Activity: React.FC<ActivityProps> = ({
   updateActivity,
   deleteActivity,
   rol,
+  informeP = false,
 }) => {
   const [isExpanded, setIsExpanded] = useState(false);
   const [totalHours, setTotalHours] = useState(0);
@@ -117,9 +120,9 @@ export const Activity: React.FC<ActivityProps> = ({
     setIsEditing(false);
   };
 
-    const togglePopover = () => {
-      setOpenView(!OpenView);
-    };
+  const togglePopover = () => {
+    setOpenView(!OpenView);
+  };
   useEffect(() => {
     const hours = activity.subActivities.reduce(
       (acc, sub) => acc + sub.hours,
@@ -137,9 +140,20 @@ export const Activity: React.FC<ActivityProps> = ({
     <div className="border-b mb-2">
       <div className="flex justify-between items-center py-2">
         <div className="flex-1 items-center space-x-2 w-full mr-4">
-          <button className="cursor-pointer" onClick={toggleExpand}>
-            {isExpanded ? <MdExpandLess /> : <MdExpandMore />}
-          </button>
+          {informeP && !activity.subActivities.length > 0 ? (
+            <button>{isEditing ? <></> : <TbPointFilled />}</button>
+          ) : (
+            <button className="cursor-pointer" onClick={toggleExpand}>
+              {rol && activity.subActivities.length >= 1 ? (
+                <>{isExpanded ? <MdExpandLess /> : <MdExpandMore />}</>
+              ) : (
+                <>
+                  <TbPointFilled />
+                </>
+              )}
+            </button>
+          )}
+
           {isEditing ? (
             <div className="w-full flex-1">
               <Label>Título</Label>
@@ -152,11 +166,12 @@ export const Activity: React.FC<ActivityProps> = ({
                 }}
                 onChange={(e) => setTitle(e.target.value)}
                 className="px-2 py-1 w-full"
+                disabled={informeP}
               />
             </div>
           ) : (
             <span
-              onClick={toggleExpand}
+              onClick={!informeP ? toggleExpand : () => {}}
               className="w-full cursor-pointer"
               style={{ fontWeight: "bold" }}
             >
@@ -192,7 +207,7 @@ export const Activity: React.FC<ActivityProps> = ({
             </div>
           </div>
 
-          {rol && (
+          {rol ? (
             <>
               <div className="flex md:hidden">
                 <PopOverViewInfo
@@ -200,7 +215,7 @@ export const Activity: React.FC<ActivityProps> = ({
                   setOpenView={setOpenView}
                   rol={rol}
                   content={
-                    <div className="block sm:flex">
+                    <div className="inline sm:flex justify-center">
                       <div
                         className="flex px-2 py-1"
                         style={{
@@ -208,7 +223,7 @@ export const Activity: React.FC<ActivityProps> = ({
                           border: "1px solid gray",
                         }}
                       >
-                        <FaRegCalendar className="mt-1 mr-1 " />
+                        <FaRegCalendar className="mt-1 mr-1" />
                         <span className="xl:hidden">{formattedEndDate}</span>
                         <span className="hidden xl:inline">
                           {formattedStartDate} - {formattedEndDate}
@@ -253,42 +268,113 @@ export const Activity: React.FC<ActivityProps> = ({
                   )}
                 </button>
               </div>
-
-              <button
-                onClick={toggleOpenEdit}
-                className=" cursor-pointer
+              {informeP && activity.subActivities.length !== 0 ? (
+                <></>
+              ) : (
+                <button
+                  onClick={toggleOpenEdit}
+                  className=" cursor-pointer
               hover:scale-105
               active:scale-95
               transition-transform
               duration-150
               ease-in-out
               rounded"
-                style={{
-                  color: !isEditing ? "rgb(29,210,0)" : "white",
-                  backgroundColor: !isEditing ? "white" : "red",
-                }}
-              >
-                {!isEditing ? (
-                  <MdEdit style={{ width: 25, height: 25 }} />
-                ) : (
-                  <VscChromeClose style={{ width: 20, height: 20 }} />
-                )}
-              </button>
-              <button
-                onClick={() => deleteActivity(activity.id)}
-                className=" cursor-pointer
+                  style={{
+                    color: !isEditing ? "rgb(29,210,0)" : "white",
+                    backgroundColor: !isEditing ? "white" : "red",
+                  }}
+                >
+                  {!isEditing ? (
+                    <MdEdit style={{ width: 25, height: 25 }} />
+                  ) : (
+                    <VscChromeClose style={{ width: 20, height: 20 }} />
+                  )}
+                </button>
+              )}
+
+              {informeP ? (
+                <></>
+              ) : (
+                <button
+                  onClick={() => deleteActivity(activity.id)}
+                  className=" cursor-pointer
               hover:scale-105
               active:scale-95
               transition-transform
               duration-150
               ease-in-out"
-              >
-                <MdDelete style={{ color: "red", width: 25, height: 25 }} />
-              </button>
+                >
+                  <MdDelete style={{ color: "red", width: 25, height: 25 }} />
+                </button>
+              )}
+            </>
+          ) : (
+            <>
+              <div className="flex md:hidden">
+                <PopOverViewInfo
+                  OpenView={OpenView}
+                  setOpenView={setOpenView}
+                  rol={rol}
+                  content={
+                    <div className="inline sm:flex justify-center">
+                      <div
+                        className="flex px-2 py-1"
+                        style={{
+                          borderRadius: "15px",
+                          border: "1px solid gray",
+                        }}
+                      >
+                        <FaRegCalendar className="mt-1 mr-1" />
+                        <span className="xl:hidden">{formattedEndDate}</span>
+                        <span className="hidden xl:inline">
+                          {formattedStartDate} - {formattedEndDate}
+                        </span>
+                      </div>
+                      <div
+                        className="flex px-2 py-1"
+                        style={{
+                          borderRadius: "15px",
+                          border: "1px solid gray",
+                        }}
+                      >
+                        <GoClock className="mt-1 mr-1" />
+                        {totalHours}
+                      </div>
+                      <div
+                        className="flex px-2 py-1"
+                        style={{
+                          borderRadius: "15px",
+                          border: "1px solid gray",
+                        }}
+                      >
+                        <GiProgression className="mt-1 mr-1" />
+                        {`${percentageComplete.toFixed(0)}%`}
+                      </div>
+                    </div>
+                  }
+                />
+                <button
+                  onClick={togglePopover}
+                  className=" md:hidden cursor-pointer
+              hover:scale-105
+              active:scale-95
+              transition-transform
+              duration-150
+              ease-in-out"
+                >
+                  {OpenView ? (
+                    <RiEyeCloseFill style={{ width: "20px", height: "20px" }} />
+                  ) : (
+                    <BiShowAlt style={{ width: "20px", height: "20px" }} />
+                  )}
+                </button>
+              </div>
             </>
           )}
         </div>
       </div>
+
       {isEditing && (
         <div className="pl-6 mb-2 flex flex-wrap md:flex-nowrap">
           <div className="w-full md:w-auto mb-2 md:mb-0 md:mr-4">
@@ -303,6 +389,7 @@ export const Activity: React.FC<ActivityProps> = ({
               }}
               onChange={(e) => setStartDate(e.target.value)}
               className="border rounded px-2 py-1 w-full md:w-auto"
+              disabled={informeP}
             />
           </div>
           <div className="w-full md:w-auto mb-2 md:mb-0 md:mr-4">
@@ -318,6 +405,7 @@ export const Activity: React.FC<ActivityProps> = ({
               }}
               onChange={(e) => setEndDate(e.target.value)}
               className="border rounded px-2 py-1 w-full md:w-auto"
+              disabled={informeP}
             />
           </div>
           {activity.subActivities.length !== 0 ? (
@@ -340,6 +428,7 @@ export const Activity: React.FC<ActivityProps> = ({
                   onChange={(e) => setTotalHours(Number(e.target.value))}
                   className="border rounded py-1 w-full"
                   required
+                  disabled={informeP}
                 />
               </div>
               <div className="w-full md:w-auto">
@@ -353,7 +442,7 @@ export const Activity: React.FC<ActivityProps> = ({
           <div className="w-full md:w-auto">
             <button
               onClick={handleEdit}
-              className="bg-blue-500 text-white rounded px-2 py-1 flex
+              className="w-full bg-blue-500 text-white rounded px-2 py-1 flex
       cursor-pointer
       hover:scale-105
       active:scale-95
@@ -361,6 +450,7 @@ export const Activity: React.FC<ActivityProps> = ({
       duration-150
       ease-in-out
       mt-6"
+              style={{ justifyContent: "center" }}
             >
               <TfiSave className="mt-1 mr-1" />
               Guardar
@@ -376,47 +466,54 @@ export const Activity: React.FC<ActivityProps> = ({
               subActivity={subActivity}
               updateSubActivity={updateSubActivity}
               deleteSubActivity={deleteSubActivity}
+              rol={rol}
+              informeP={informeP}
             />
           ))}
-          <div
-            style={{
-              width: "100%",
-              display: "flex",
-              justifyContent: isSubFormVisible ? "flex-end" : "flex-start",
-            }}
-          >
-            {rol && (
-              <button
-                onClick={() => setIsSubFormVisible(!isSubFormVisible)}
-                className="rounded px-2 py-2 mb-2 flex
+          {informeP ? (
+            <div className="mb-3"></div>
+          ) : (
+            <>
+              <div
+                style={{
+                  width: "100%",
+                  display: "flex",
+                  justifyContent: isSubFormVisible ? "flex-end" : "flex-start",
+                }}
+              >
+                {rol && (
+                  <button
+                    onClick={() => setIsSubFormVisible(!isSubFormVisible)}
+                    className="rounded px-2 py-2 mb-2 flex
               cursor-pointer
               hover:scale-105
               active:scale-95
               transition-transform
               duration-150
               ease-in-out"
-                style={{
-                  color: !isSubFormVisible ? "#008BFF" : "white",
-                  backgroundColor: !isSubFormVisible ? "white" : "red",
-                  borderRadius: !isSubFormVisible ? "0px" : "7px",
-                }}
-              >
-                {isSubFormVisible ? (
-                  <>
-                    <VscChromeClose />
-                  </>
-                ) : (
-                  <>
-                    <IoIosAdd className="mt-1 mr-1" />
-                    Añadir SubActividad
-                  </>
+                    style={{
+                      color: !isSubFormVisible ? "#008BFF" : "white",
+                      backgroundColor: !isSubFormVisible ? "white" : "red",
+                      borderRadius: !isSubFormVisible ? "0px" : "7px",
+                    }}
+                  >
+                    {isSubFormVisible ? (
+                      <>
+                        <VscChromeClose />
+                      </>
+                    ) : (
+                      <>
+                        <IoIosAdd className="mt-1 mr-1" />
+                        Añadir SubActividad
+                      </>
+                    )}
+                  </button>
                 )}
-              </button>
-            )}
-          </div>
-
-          {isSubFormVisible && (
-            <SubActivityForm addSubActivity={addSubActivity} />
+              </div>
+              {isSubFormVisible && (
+                <SubActivityForm addSubActivity={addSubActivity} />
+              )}
+            </>
           )}
         </div>
       )}

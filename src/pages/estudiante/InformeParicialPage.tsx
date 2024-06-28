@@ -5,6 +5,9 @@ import { Label } from "./../../components/ui/Label/Label";
 import { RiEyeCloseFill } from "react-icons/ri";
 import { BiShowAlt } from "react-icons/bi";
 
+interface InfoProps {
+  rol:boolean;
+}
 const InformeParicialPage = () => {
   const [OpenView, setOpenView] = useState(false);
   return (
@@ -14,7 +17,7 @@ const InformeParicialPage = () => {
           Desarrollo de la Práctica
         </div>
         <div className="border" />
-        <ActivityManager rol={true} />
+        <ActivityManager rol={true} informeP={true} />
         <div className="border" />
         <div className="mt-2 p-2">
           <Label>Adaptación</Label>

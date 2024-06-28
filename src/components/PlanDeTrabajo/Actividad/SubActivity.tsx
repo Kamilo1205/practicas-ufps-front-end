@@ -10,18 +10,24 @@ import { GiProgression } from "react-icons/gi";
 import { TfiSave } from "react-icons/tfi";
 import { Label } from "../../ui";
 import NumberSlider from "../../ui/Input/NumberSlider";
-
+import PopOverViewInfo from "../../ui/Dialog/PopOverViewInfo";
+import { RiEyeCloseFill } from "react-icons/ri";
+import { BiShowAlt } from "react-icons/bi";
 
 interface SubActivityProps {
   subActivity: SubActivityType;
   updateSubActivity: (subActivity: SubActivityType) => void;
   deleteSubActivity: (id: number) => void;
+  rol: boolean;
+  informeP: boolean;
 }
 
 export const SubActivity: React.FC<SubActivityProps> = ({
   subActivity,
   updateSubActivity,
   deleteSubActivity,
+  rol,
+  informeP = false,
 }) => {
   const [isEditing, setIsEditing] = useState(false);
   const [title, setTitle] = useState(subActivity.title);
@@ -30,7 +36,7 @@ export const SubActivity: React.FC<SubActivityProps> = ({
   const [endDate, setEndDate] = useState(subActivity.endDate);
   const [hours, setHours] = useState(subActivity.hours);
   const [progress, setProgress] = useState(subActivity.progress);
-
+  const [OpenView, setOpenView] = useState(false);
   const InicioDate = new Date(subActivity.startDate);
 
   const FinDate = new Date(subActivity.endDate);
@@ -65,11 +71,22 @@ export const SubActivity: React.FC<SubActivityProps> = ({
     updateSubActivity(updatedSubActivity);
     setIsEditing(false);
   };
+  const togglePopover = () => {
+    setOpenView(!OpenView);
+  };
 
   return (
     <div className="flex justify-between items-center py-2">
       {isEditing ? (
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-2 p-4 rounded-lg w-full">
+          <div className="w-full flex justify-end">
+            <button
+              className="text-white bg-red-500 rounded"
+              onClick={() => setIsEditing(!isEditing)}
+            >
+              <VscChromeClose style={{ width: 20, height: 20 }} />
+            </button>
+          </div>
           <div className="col-span-1 lg:col-span-6 flex flex-col">
             <Label>Título de Subactividad</Label>
             <input
@@ -186,41 +203,175 @@ export const SubActivity: React.FC<SubActivityProps> = ({
                   style={{ borderRadius: "15px", border: "1px solid gray" }}
                 >
                   <GiProgression className="mt-1 mr-1" />
-                  {`${subActivity.progress.toFixed(2)}%`}
+                  {`${subActivity.progress.toFixed(0)}%`}
                 </div>
               </div>
-              <button
-                onClick={() => setIsEditing(true)}
-                className=" cursor-pointer
-              hover:scale-105
-              active:scale-95
-              transition-transform
-              duration-150
-              ease-in-out
-              rounded"
-                style={{
-                  color: !isEditing ? "rgb(29,210,0)" : "white",
-                  backgroundColor: !isEditing ? "white" : "red",
-                }}
-              >
-                {!isEditing ? (
-                  <MdEdit style={{ width: 25, height: 25 }} />
-                ) : (
-                  <VscChromeClose style={{ width: 20, height: 20 }} />
-                )}
-              </button>
-
-              <button
-                onClick={() => deleteSubActivity(subActivity.id)}
-                className=" cursor-pointer
+              {rol ? (
+                <>
+                  <div className="flex md:hidden">
+                    <PopOverViewInfo
+                      OpenView={OpenView}
+                      setOpenView={setOpenView}
+                      rol={rol}
+                      content={
+                        <div className="block sm:flex ml-1">
+                          <div
+                            className="flex px-2 py-1"
+                            style={{
+                              borderRadius: "15px",
+                              border: "1px solid gray",
+                            }}
+                          >
+                            <FaRegCalendar className="mt-1 mr-1 " />
+                            <span className="xl:hidden">
+                              {formattedEndDate}
+                            </span>
+                            <span className="hidden xl:inline">
+                              {formattedStartDate} - {formattedEndDate}
+                            </span>
+                          </div>
+                          <div
+                            className="flex px-2 py-1"
+                            style={{
+                              borderRadius: "15px",
+                              border: "1px solid gray",
+                            }}
+                          >
+                            <GoClock className="mt-1 mr-1" />
+                            {hours}
+                          </div>
+                          <div
+                            className="flex px-2 py-1"
+                            style={{
+                              borderRadius: "15px",
+                              border: "1px solid gray",
+                            }}
+                          >
+                            <GiProgression className="mt-1 mr-1" />
+                            {`${progress.toFixed(0)}%`}
+                          </div>
+                        </div>
+                      }
+                    />
+                    <button
+                      onClick={togglePopover}
+                      className=" md:hidden cursor-pointer
               hover:scale-105
               active:scale-95
               transition-transform
               duration-150
               ease-in-out"
-              >
-                <MdDelete style={{ color: "red", width: 25, height: 25 }} />
-              </button>
+                    >
+                      {OpenView ? (
+                        <RiEyeCloseFill
+                          style={{ width: "20px", height: "20px" }}
+                        />
+                      ) : (
+                        <BiShowAlt style={{ width: "20px", height: "20px" }} />
+                      )}
+                    </button>
+                  </div>
+                  <button
+                    onClick={() => setIsEditing(true)}
+                    className=" cursor-pointer
+              hover:scale-105
+              active:scale-95
+              transition-transform
+              duration-150
+              ease-in-out
+              rounded ml-1"
+                    style={{
+                      color: !isEditing ? "rgb(29,210,0)" : "white",
+                      backgroundColor: !isEditing ? "white" : "red",
+                    }}
+                  >
+                    {!isEditing ? (
+                      <MdEdit style={{ width: 25, height: 25 }} />
+                    ) : (
+                      <VscChromeClose style={{ width: 20, height: 20 }} />
+                    )}
+                  </button>
+                  {informeP ? (
+                    <></>
+                  ) : (
+                    <button
+                      onClick={() => deleteSubActivity(subActivity.id)}
+                      className=" cursor-pointer
+              hover:scale-105
+              active:scale-95
+              transition-transform
+              duration-150
+              ease-in-out"
+                    >
+                      <MdDelete
+                        style={{ color: "red", width: 25, height: 25 }}
+                      />
+                    </button>
+                  )}
+                </>
+              ) : (
+                <div className="flex md:hidden">
+                  <PopOverViewInfo
+                    OpenView={OpenView}
+                    setOpenView={setOpenView}
+                    rol={rol}
+                    content={
+                      <div className="block sm:flex ml-1">
+                        <div
+                          className="flex px-2 py-1"
+                          style={{
+                            borderRadius: "15px",
+                            border: "1px solid gray",
+                          }}
+                        >
+                          <FaRegCalendar className="mt-1 mr-1 " />
+                          <span className="xl:hidden">{formattedEndDate}</span>
+                          <span className="hidden xl:inline">
+                            {formattedStartDate} - {formattedEndDate}
+                          </span>
+                        </div>
+                        <div
+                          className="flex px-2 py-1"
+                          style={{
+                            borderRadius: "15px",
+                            border: "1px solid gray",
+                          }}
+                        >
+                          <GoClock className="mt-1 mr-1" />
+                          {hours}
+                        </div>
+                        <div
+                          className="flex px-2 py-1"
+                          style={{
+                            borderRadius: "15px",
+                            border: "1px solid gray",
+                          }}
+                        >
+                          <GiProgression className="mt-1 mr-1" />
+                          {`${progress.toFixed(0)}%`}
+                        </div>
+                      </div>
+                    }
+                  />
+                  <button
+                    onClick={togglePopover}
+                    className=" md:hidden cursor-pointer
+              hover:scale-105
+              active:scale-95
+              transition-transform
+              duration-150
+              ease-in-out"
+                  >
+                    {OpenView ? (
+                      <RiEyeCloseFill
+                        style={{ width: "20px", height: "20px" }}
+                      />
+                    ) : (
+                      <BiShowAlt style={{ width: "20px", height: "20px" }} />
+                    )}
+                  </button>
+                </div>
+              )}
             </div>
           </div>
           <div className="mt-3">

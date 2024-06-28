@@ -20,7 +20,7 @@ export const EstudianteRouter = () => {
             <Route
               path="plantrabajo"
               element={
-                <PlanDeTrabajoVista rol="ESTUDIANTE" initialOpen={false} />
+                <PlanDeTrabajoVista rol="ESTUDIANT" initialOpen={true} />
               }
             />
             <Route

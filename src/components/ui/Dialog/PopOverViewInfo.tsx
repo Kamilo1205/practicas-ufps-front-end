@@ -38,12 +38,11 @@ const PopOverViewInfo: FC<PopoverProps> = ({
   useEffect(() => {
     const handleResize = () => {
       if (window.innerWidth < 640) {
-        // Tailwind's sm breakpoint
         setRightPosition(!rol ? "-90px" : "-90px");
-        setPos("100px");
+        setPos("106px");
       } else {
-        setRightPosition(!rol ? "-130px" : "-130px");
-        setPos("200px");
+        setRightPosition(!rol ? "-140px" : "-140px");
+        setPos("215px");
       }
     };
 
@@ -59,7 +58,7 @@ const PopOverViewInfo: FC<PopoverProps> = ({
     <div className="relative flex justify-center items-center w-1 h-1 bg-gray p-4">
       <div
         ref={popoverRef}
-        className={`absolute transform -translate-x-1/2  bg-white shadow-lg rounded-md p-4 border sm:w-[222px] w-[135px] border-gray-200 transition-opacity duration-300 ease-in-out ${
+        className={`absolute justify-center transform -translate-x-1/2  bg-white shadow-lg rounded-md p-3 border sm:w-[240px] w-[135px] border-gray-200 transition-opacity duration-300 ease-in-out ${
           OpenView ? "opacity-100 visible" : "opacity-0 invisible"
         }`}
         style={{
