@@ -4,6 +4,7 @@ import { TabComponent } from "../../ui/Tab/TabComponent";
 import { EstudianteI } from "../../../interfaces/responses.interface";
 import { roles } from "../../../interfaces/rol.interface";
 
+
 interface EstudiantePerfilProps { 
   estudiante: EstudianteI ;
   rol ?: string;
@@ -29,9 +30,14 @@ const permisos = {
   edicion: [roles.coordinador, roles.administrador, roles.estudiante],
   soloVista: [roles.tutor, roles.empresa, roles.director]
 }
+/**
+ * ROL -> Adminstrador , Coordinador, Tutor, Empresa, Estudiante, Director de programa
+ * 
+ */
 
-export const EstudiantePerfilComponent = ({estudiante,rol=''}:EstudiantePerfilProps) => { 
 
+export const EstudiantePerfilComponent = ({ estudiante, rol = '' }: EstudiantePerfilProps) => { 
+  
   const puedeActivarDesactivar = permisos.activacion.includes(rol)
   //const puedeEditar = permisos.edicion.includes(rol)
   const soloVista = permisos.soloVista.includes(rol)
@@ -70,7 +76,7 @@ export const EstudiantePerfilComponent = ({estudiante,rol=''}:EstudiantePerfilPr
                     {
                       estudiante ? `${estudiante?.primerNombre || ''} ${estudiante?.segundoNombre || ''} ${estudiante?.primerApellido || ''} ${estudiante?.segundoApellido || ''}`
                      : 'Dato no registrado'
-                    }
+                    } 
                   </span>
                   {
                     estudiante?.usuario?.estaActivo ? (

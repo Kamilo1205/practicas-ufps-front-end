@@ -8,9 +8,11 @@ export const MenuList = () => {
 
   const rolUrl = user?.roles.find(u => u.nombre == 'director-programa') ?
     'director' : 'coordinador'
-
+//TODO: Restringir acceso a los roles
   const navLinks = [
-    { to: '/coordinador/configuraciones', text: 'Configuraciones', icon: HiOutlineChartPie, roles: ['administrador',] },
+    { to: '/coordinador/primerospasos', text: 'Primeros pasos', icon: HiOutlineChartPie, roles: ['administrador', 'coordinador',] },
+    { to: '/coordinador/configuraciones', text: 'Configuraciones', icon: HiOutlineChartPie, roles: ['administrador','coordinador'] },
+    { to: '/coordinador/ARL', text: 'ARL', icon: HiOutlineChartPie, roles: ['administrador', 'coordinador',] },
     { to: '/coordinador/usuarios', text: 'Usuarios', icon: HiOutlineUsers, roles: ['administrador'] },
     { to: `/${rolUrl}/empresas`, text: 'Empresas', icon: HiOutlineBuildingOffice2, roles: ['administrador', 'coordinador', 'director-programa'] },
     { to: `/${rolUrl}/estudiantes`, text: 'Estudiantes', icon: HiOutlineUser, roles: ['administrador', 'director-programa', 'coordinador'] },

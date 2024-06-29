@@ -9,6 +9,7 @@ import { DirectorRouter } from './DirectorRouter';
 
 export const AppRouter = () => {
   const { user, isAuthenticated, isLoading } = useAuth();
+  console.log(user?.roles.map(rol => rol.nombre))
 
   if (isLoading) {
     return <div className="flex justify-center items-center h-screen">

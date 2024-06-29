@@ -13,7 +13,8 @@ import { EstudiantePerfilComponent } from "../../components/usuarios/perfil/Estu
 import { BiArrowToRight, BiCheck } from "react-icons/bi";
 import { IoAlertCircle } from "react-icons/io5";
 import { EstudianteI } from "../../interfaces/responses.interface";
-import { roles } from "../../interfaces/rol.interface";
+import {  roles } from "../../interfaces/rol.interface";
+import { useAuth } from "../../contexts";
 
 
 
@@ -47,12 +48,12 @@ const Tabs = [
 ]
 
 
-interface EstudiantesPageProps { 
-  rol?: string
 
-}
+export const EstudiantesPage = () => {
+  
+  const { user } = useAuth()
+ const userRoles = user?.roles.map(rol => rol.nombre)
 
-export const EstudiantesPage = ({rol=''}:EstudiantesPageProps) => {
   const [estudiantes, setEstudiantes] = useState<{ estudiantes: EstudianteI[], total: number }>({
     estudiantes: [],
     total: 0,
@@ -98,7 +99,7 @@ export const EstudiantesPage = ({rol=''}:EstudiantesPageProps) => {
         <div className="text-gray-600 font-bold text-2xl">Estudiantes</div>
       </div>
       {
-        rol === roles.coordinador && <DialogComponent
+        (userRoles?.includes(roles.coordinador)|| userRoles?.includes(roles.administrador)) && <DialogComponent
           isOpen={agregarEstudiante}
           onClose={() => setAgregarEstudiante(false)}
           content={
@@ -113,7 +114,16 @@ export const EstudiantesPage = ({rol=''}:EstudiantesPageProps) => {
         content={
           estudianteSeleccionado &&
           <EstudiantePerfilComponent
-            rol={rol}
+            rol={
+              userRoles?.includes(roles.administrador) ? roles.administrador :
+                userRoles?.includes(roles.coordinador) ? roles.coordinador :
+                  userRoles?.includes(roles.director)? roles.director :
+                    userRoles?.includes(roles.estudiante) ? roles.estudiante :
+                      userRoles?.includes(roles.tutor) ? roles.tutor : 
+                        userRoles?.includes(roles.empresa) ? roles.empresa : ""
+                          
+
+            }
             estudiante={estudianteSeleccionado}
           />|| <div>No hay información del estudiante seleccionado.</div>
         }
@@ -121,7 +131,17 @@ export const EstudiantesPage = ({rol=''}:EstudiantesPageProps) => {
         size="2xl"
       />
       {
-        rol === roles.coordinador && (
+        (userRoles?.includes(roles.administrador)) && (
+          <div>
+            <div>
+              <label htmlFor="">Enviar ARLS</label>
+              <Button>Eviar ARL</Button>
+            </div>
+          </div>
+        )
+      }
+      {
+        (userRoles?.includes(roles.coordinador) || userRoles?.includes(roles.administrador) ) && (
           <div className="overflow-x-auto mb-4">
             <ul role="list" className="divide-y divide-gray-100">
               <li className="flex justify-between gap-x-6 py-2">
@@ -159,9 +179,10 @@ export const EstudiantesPage = ({rol=''}:EstudiantesPageProps) => {
                 setCurrentPage={setCurrentPage}
                 filtro={filtro}
                 setFiltro={setFiltro}
-                encabezados={["Nombre", "Codigo", "Plan de trabajo", "Primer informe", "Segundo informe", "Estado"]}
+                encabezados={["Codigo","Nombre" , "Plan de trabajo", "Primer informe", "Segundo informe", "Estado"]}
                 filas={
                   estudiantes.estudiantes.map((estudiante) => [
+                    estudiante.codigo,
                     <div className="flex items-center">
                       <div className="shrink-0 w-11 h-11">
                         <Avatar url={estudiante?.usuario?.imagenUrl} />
@@ -184,7 +205,7 @@ export const EstudiantesPage = ({rol=''}:EstudiantesPageProps) => {
                         </div>
                       </div>
                     </div>,
-                    estudiante.codigo,
+                    
                     <div className="flex justify-center cursor-pointer w-full pr-6">
                       {
                         //TODO: Diferenciar cuando el plan está completo o no.

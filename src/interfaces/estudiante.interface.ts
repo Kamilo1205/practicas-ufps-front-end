@@ -1,29 +1,73 @@
-import { Ciudad } from './ciudad.interface';
-import { Usuario } from './usuario.interface';
+import { AreaInteres, areaInteresHerramientas } from "./area-interes.interface";
 
+
+interface UsuarioI {
+  id: string;
+  fechaCreacion: string;
+  fechaActualizacion: string;
+  email: string;
+  displayName: string;
+  imagenUrl: string;
+  estaActivo: boolean;
+  emailConfirmado: string;
+  estaRegistrado: boolean;
+}
+
+interface CiudadResidencia {
+  id: string;
+  fechaCreacion: string;
+  fechaActualizacion: string;
+  nombre: string;
+  codigoGubernamental: string | null;
+}
 
 export interface Estudiante {
-  id:                       string;
-  primerNombre:             string;
-  segundoNombre:            string;
-  primerApellido:           string;
-  segundoApellido:          string;
-  genero:                   string;
-  direccion:                string;
-  telefono:                 string;
-  departamentoResidencia:   string;
-  municipioResidencia:      string;
-  fechaNacimiento:          Date;
-  numeroDocumento:          string;
-  lugarExpedicionDocumento: string;
-  fechaExpedicionDocumento: Date;
-  fechaAfiliacionEps:       Date;
-  semestreMatriculado:      number;
-  codigo:                   number;
-  fechaCreacion:            Date;
-  fechaActualizacion:       Date;
-  fechaEliminacion?:        Date;
-  grupo:                    string;
-  ciudadResidencia:         Ciudad;
-  usuario:                  Usuario;
+  id: string;
+  fechaCreacion: string;
+  fechaActualizacion: string;
+  primerNombre: string;
+  segundoNombre: string;
+  primerApellido: string;
+  segundoApellido: string;
+  genero: string;
+  direccionResidencia: string;
+  telefono: string;
+  grupoMatriculado: string;
+  fechaNacimiento: string;
+  numeroDocumento: string;
+  fechaExpedicionDocumento: string;
+  fechaAfiliacionEps: string;
+  semestreMatriculado: number;
+  certificadoAfiliacionEpsUrl: string | null;
+  documentoIdentidadUrl: string | null;
+  hojaDeVidaUrl: string | null;
+  horarioClaseUrl: string | null;
+  codigo: number;
+  usuario: UsuarioI;
+  ciudadResidencia: CiudadResidencia;
+  eps: string | null;
+  lugarExpedicionDocumento: string | null;
+  tipoAfiliacionEps: string | null;
+  tipoDocumento: string | null;
+  estudianteAreaInteres: AreaInteres[];
+  herramientas: areaInteresHerramientas[];
+  semestres: any[];
+}
+
+interface Meta {
+  itemsPerPage: number;
+  totalItems: number;
+  currentPage: number;
+  totalPages: number;
+  sortBy: [string, 'ASC' | 'DESC'][];
+}
+
+interface Links {
+  current: string;
+}
+
+export interface EstudiantesResponse {
+  data: Estudiante[];
+  meta: Meta;
+  links: Links;
 }

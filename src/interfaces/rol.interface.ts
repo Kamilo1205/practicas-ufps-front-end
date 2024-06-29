@@ -5,11 +5,13 @@ export interface Rol {
   fechaActualizacion: Date;
 }
 
-export const roles = {
-  coordinador: 'coordinador',
-  director: 'director-programa',
+export type Role = 'coordinador' | 'director' | 'administrador' | 'empresa' | 'estudiante' | 'tutor';
+
+export const roles: Record<Role, string> = {
   administrador: 'administrador',
-  empresa: 'empresa',
+  coordinador: 'coordinador',
+  director: 'director',
   estudiante: 'estudiante',
   tutor: 'tutor',
-}
+  empresa: 'empresa'
+};

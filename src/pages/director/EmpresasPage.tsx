@@ -1,37 +1,77 @@
 
 import Title from "../../components/ui/Tittle/Title"
-import { useState } from "react"
-import { EmpresaPage } from "../coordinador/EmpresasPage"
-import { Combobox, ComboboxButton, ComboboxInput, ComboboxOption, ComboboxOptions } from "@headlessui/react"
+import { useEffect, useState } from "react"
+import {  Combobox, ComboboxButton, ComboboxInput, ComboboxOption, ComboboxOptions } from "@headlessui/react"
 import { BiCheck, BiChevronDown } from "react-icons/bi"
 import clsx from "clsx"
+import { Empresa } from "../../interfaces"
+import { TablaPaginadaComponent } from "../../components/ui/Table/TablaPaginadaComponent"
+import { FieldValues, SubmitHandler, useForm } from "react-hook-form"
+import { z } from "zod"
+import { zodResolver } from "@hookform/resolvers/zod"
+import useEmpresas from "../../hooks/useEmpresas"
 
-const empresas = [
-  {
-    id: 1,
-    name: 'Empresa 1',
-    ruc: '123456789',
-    email: '',
+interface ConvenioFormProps {
+  empresa:Empresa
+
+}
+const ConvenioForm = ({ empresa }: ConvenioFormProps) => { 
+  
+  
+  console.log(empresa)
+  const form = useForm({
+    resolver: zodResolver(z.object({
+      convenio: z.instanceof(FileList)
+    }))
+  })
+
+  console.log(form.formState.errors)
+  const onSubmit: SubmitHandler<FieldValues> = (data) => {
+    console.log(data)
   }
-]
+  return (
+    <form onSubmit={form.handleSubmit(onSubmit)} className="space-x-2">
+      <input type="file"
+        accept=".pdf, .doc, .docx"
+        {...form.register('convenio')} />
+      <button type="submit" className="text-indigo-500">
+        Registrar
+      </button>
+
+    </form>
+  )
+}
 
 export const DirectorEmpresasPage = () => {
+
+  const { empresas } = useEmpresas()
+
   const [filtro, setFiltro] = useState('')
   const [selected, setSelected] = useState(null)
-
-  const empresasFiltradas = empresas.filter((empresa) => {
-    return empresa.name.toLowerCase().includes(filtro.toLowerCase())
-   })
+  const [empresasFiltradas, setEmpresasFiltradas] = useState<Empresa[]>(empresas)
+  const [paginacion, setPaginacion] = useState({
+    currentPage: 1,
+    itemsPerPage: 5
+  })
+  
+  
+  
+  useEffect(() => { 
+    setEmpresasFiltradas(empresas.filter((empresa) => {
+      return empresa.nombre.toLowerCase().includes(filtro.toLowerCase()) || empresa.nit.includes(filtro)
+    }))
+    }, [filtro,empresas])
+ // const empresasFiltradas:Empresa[] = 
 console.log(empresasFiltradas)
   return (
     <>
       <Title titulo="Empresas" />
 
       <div>
-        <h1>Regitrar convenio</h1>
+        <h1></h1>
 
         <div className="w-80">
-          <label htmlFor="empresa">Empresa</label>
+          <label htmlFor="empresa">Regitrar convenio</label>
          
           <Combobox
             value={selected} onChange={(value) => setSelected(value)} onClose={() => setFiltro('')}
@@ -42,8 +82,9 @@ console.log(empresasFiltradas)
                   'w-full rounded-lg border-none bg-white/5 py-1.5 pr-8 pl-3 text-sm/6 text-back',
                   'focus:outline-none data-[focus]:outline-2 data-[focus]:-outline-offset-2 data-[focus]:outline-white/25'
                 )}
-                displayValue={(empresa) => empresa?.name}
+                displayValue={(empresa:Empresa) => empresa && `${empresa?.nit}-${empresa?.nombre}`}
                 onChange={(event) => setFiltro(event.target.value)}
+                placeholder="Nombre o nit de la empresa"
               />
               <ComboboxButton className="group absolute inset-y-0 right-0 px-2.5">
                 <BiChevronDown className="size-4 fill-black/60 group-data-[hover]:fill-black" />
@@ -58,12 +99,12 @@ console.log(empresasFiltradas)
               )}
             >
               {
-                empresasFiltradas.map((empresa) => (
+                empresasFiltradas.map((empresa:Empresa) => (
                   <ComboboxOption key={empresa.id} value={empresa}
                     className="group flex cursor-default items-center gap-2 rounded-lg py-1.5 px-3 select-none data-[focus]:bg-indigo-400"
                   >
                     <BiCheck className="invisible size-4 fill-black group-data-[focus]:fill-white group-data-[selected]:visible" />
-                    <div className="text-sm/6 text-black group-data-[focus]:text-white">{empresa.name}</div>
+                    <div className="text-sm/6 text-black group-data-[focus]:text-white">{ empresa.nit} - {empresa.nombre}</div>
                   </ComboboxOption>
                 ))
 }
@@ -72,38 +113,35 @@ console.log(empresasFiltradas)
         </div>
 
       </div>
-      <EmpresaPage  />
+      <div>
+        <TablaPaginadaComponent
+          
+          encabezados={['Nombre', 'NIT', 'Registrar convenio']}
+          itemsPerPage={paginacion.itemsPerPage}
+          currentPage={paginacion.currentPage}
+          setCurrentPage={(page) => setPaginacion({ ...paginacion, currentPage: page })}
+          totalItems={empresasFiltradas.length || 0}
+          filas={empresasFiltradas.map((empresa: Empresa) => ([
+             empresa.nombre ,
+            empresa.nit ,
+            <>
+              {
+                empresa.convenioActivo ? (<div>
+                  <BiCheck className="text-green-500 w-5 h-5" />
+                </div>) :
+                  <div>
+                  <ConvenioForm empresa={empresa}/>
+                    
+                  </div>
+              }
+            </>,
+            
+          ]
+          ))}
+        /> 
+       
+      </div>
     </>
   )
 }
 
-/**
- *  <div className="relative mt-2 w-fit">
-            <div className="flex">
-              <div className="w-fit flex content-center">
-                <div className="relative mt-2 rounded-md shadow-sm">
-                  <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
-                    <span className="text-gray-500 sm:text-sm">
-                      <LuSearchCheck />
-                    </span>
-                  </div>
-                  <input
-                    type="text"
-                    name="search"
-                    id="search"
-                    value={filtro}
-                    onChange={(e) => setFiltro(e.target.value)}
-                    className="block w-full rounded-md border-0 py-1.5 pl-7 pr-20 text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" placeholder="Busqueda global" />
-
-                </div>
-               
-                  <ul className="absolute top-11 z-10 mt-1 max-h-56 w-full overflow-auto rounded-md bg-white py-1 text-base shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none sm:text-sm" tabIndex={-1} role="listbox" aria-labelledby="listbox-label" aria-activedescendant="listbox-option-3">
-                    <li className="relative cursor-default select-none py-2 pl-3 pr-9 text-gray-900" id="listbox-option-0" role="option">
-                      <span className="ml-3 block truncate font-normal">Wade Cooper</span>
-                    </li>
-                  </ul>
-                
-              </div>
-            </div>
-          </div>
- */
