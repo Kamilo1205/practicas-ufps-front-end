@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { BiChevronDown, BiChevronUp } from "react-icons/bi";
 import ComentariosComponent from "../../PlanDeTrabajo/ComentariosComponent";
+import { Comment } from "../../PlanDeTrabajo/Actividad/types";
 
 interface CollapseProps {
   title: string;
@@ -8,6 +9,10 @@ interface CollapseProps {
   initialOpen?: boolean;
   rol?: boolean;
   isShow?: boolean;
+  comments?: Comment[];
+  setComments: React.Dispatch<React.SetStateAction<Comment[]>>;
+  isComment?: boolean;
+  autor: string;
 }
 
 const Collapse: React.FC<CollapseProps> = ({
@@ -16,6 +21,10 @@ const Collapse: React.FC<CollapseProps> = ({
   initialOpen = false,
   rol = false,
   isShow = true,
+  comments,
+  setComments,
+  isComment = true,
+  autor,
 }) => {
   const [isOpen, setIsOpen] = useState(initialOpen);
 
@@ -47,9 +56,19 @@ const Collapse: React.FC<CollapseProps> = ({
       >
         <div className="px-4 mt-6 w-full mb-5">
           {children}
-          <div className="flex w-full justify-end mt-4 mb-4">
-            <ComentariosComponent rol={rol} isShow={isShow}/>
-          </div>
+          {isComment ? (
+            <div className="flex w-full justify-end mt-4 mb-4">
+              <ComentariosComponent
+                rol={rol}
+                isShow={isShow}
+                comments={comments}
+                setComments={setComments}
+                autor={autor}
+              />
+            </div>
+          ) : (
+            <></>
+          )}
         </div>
       </div>
     </div>

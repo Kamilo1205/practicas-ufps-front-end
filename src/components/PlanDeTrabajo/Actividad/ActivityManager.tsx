@@ -6,13 +6,58 @@ import { Activity as ActivityType } from "../types";
 import { MdLibraryAddCheck } from "react-icons/md";
 import { VscChromeClose } from "react-icons/vsc";
 import { BsEmojiAstonished } from "react-icons/bs";
+import { Label } from "./../../ui/Label/Label";
 
-const initialActivities: ActivityType[] = [];
+const initialActivities: ActivityType[] = [
+  {
+    id: 1,
+    title: "Actividad 1",
+    description: "Descripcion de las actividades",
+    startDate: "2024-05-30",
+    endDate: "2024-05-30",
+    totalHours: 20,
+    percentageComplete: 0,
+    subActivities: [
+      {
+        id: 2,
+        title: "subactivities1",
+        description: "descripcion de subactivida",
+        startDate: "2024-04-30",
+        endDate: "2024-04-30",
+        hours: 10,
+        progress: 20,
+      },
+      {
+        id: 3,
+        title: "subactivities1",
+        description: "descripcion de subactivida",
+        startDate: "2024-04-30",
+        endDate: "2024-04-30",
+        hours: 10,
+        progress: 30,
+      },
+    ],
+  },
+  {
+    id: 2,
+    title: "Actividad 2",
+    description: "Descripcion de las actividades 2",
+    startDate: "2024-05-30",
+    endDate: "2024-05-30",
+    totalHours: 20,
+    percentageComplete: 0,
+    subActivities: [],
+  },
+];
 interface ActivityProps {
   rol: boolean;
   estudiante: {};
+  informeP?: boolean;
 }
-export const ActivityManager: React.FC<ActivityProps> = ({ rol }) => {
+export const ActivityManager: React.FC<ActivityProps> = ({
+  rol,
+  informeP = false,
+}) => {
   const [activities, setActivities] =
     useState<ActivityType[]>(initialActivities);
   const [isFormVisible, setIsFormVisible] = useState(false);
@@ -51,33 +96,45 @@ export const ActivityManager: React.FC<ActivityProps> = ({ rol }) => {
 
   return (
     <div className="p-4">
-      <div className="p-0 flex w-full" style={{ alignItems: "center" }}>
-        <h1 className="text-2xl mb-4 font-bold text-gray-700 w-full">
-          Gestión de Actividades
-        </h1>
-        {rol && (
-          <div className="flex justify-end mt-1 ">
-            <button
-              onClick={() => setIsFormVisible(!isFormVisible)}
-              className="flex justify-end text-white px-2 py-2 mb-4"
-              style={{
-                backgroundColor: isFormVisible ? "Red" : "rgb(59 ,130 ,246)",
-                borderRadius: "10px",
-              }}
-            >
-              {isFormVisible ? (
-                <>
-                  <VscChromeClose />
-                </>
-              ) : (
-                <>
-                  <MdLibraryAddCheck
-                    style={{ width: "25px", height: "25px" }}
-                  />
-                </>
-              )}
-            </button>
-          </div>
+      <div className="p-0 flex w-full mb-6" style={{ alignItems: "center" }}>
+        {informeP ? (
+          <Label className="w-full">Actividades de Practicas</Label>
+        ) : (
+          <h1 className="text-2xl mb-4 font-bold text-gray-700 w-full">
+            Gestión de Actividades
+          </h1>
+        )}
+        {informeP ? (
+          <></>
+        ) : (
+          <>
+            {rol && (
+              <div className="flex justify-end mt-1 ">
+                <button
+                  onClick={() => setIsFormVisible(!isFormVisible)}
+                  className="flex justify-end text-white px-2 py-2 mb-4"
+                  style={{
+                    backgroundColor: isFormVisible
+                      ? "Red"
+                      : "rgb(59 ,130 ,246)",
+                    borderRadius: "10px",
+                  }}
+                >
+                  {isFormVisible ? (
+                    <>
+                      <VscChromeClose />
+                    </>
+                  ) : (
+                    <>
+                      <MdLibraryAddCheck
+                        style={{ width: "25px", height: "25px" }}
+                      />
+                    </>
+                  )}
+                </button>
+              </div>
+            )}
+          </>
         )}
       </div>
 
@@ -90,6 +147,7 @@ export const ActivityManager: React.FC<ActivityProps> = ({ rol }) => {
             updateActivity={updateActivity}
             deleteActivity={deleteActivity}
             rol={rol}
+            informeP={informeP}
           />
         ))}
         {activities.length === 0 && !isFormVisible && (
