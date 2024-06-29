@@ -18,6 +18,11 @@ export interface Activity {
   totalHours: number;
   percentageComplete: number;
   subActivities: SubActivity[];
+  estrategias: string;
+  recursos: string;
+  resultadosOb: string;
+  impactos: string;
+  limitaciones: string;
 }
 
 export interface Comment {

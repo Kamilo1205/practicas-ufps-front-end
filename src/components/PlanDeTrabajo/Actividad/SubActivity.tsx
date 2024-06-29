@@ -78,89 +78,95 @@ export const SubActivity: React.FC<SubActivityProps> = ({
   return (
     <div className="flex justify-between items-center py-2">
       {isEditing ? (
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-2 p-4 rounded-lg w-full">
-          <div className="w-full flex justify-end">
+        <div className="w-full border rounded">
+          <div className="w-full flex justify-end mt-2">
             <button
-              className="text-white bg-red-500 rounded"
+              className="text-white bg-red-500 rounded mr-4"
               onClick={() => setIsEditing(!isEditing)}
             >
               <VscChromeClose style={{ width: 20, height: 20 }} />
             </button>
           </div>
-          <div className="col-span-1 lg:col-span-6 flex flex-col">
-            <Label>Título de Subactividad</Label>
-            <input
-              id="title"
-              type="text"
-              value={title}
-              onChange={(e) => setTitle(e.target.value)}
-              className="border rounded px-3 py-2 w-full"
-              required
-            />
-          </div>
-
-          <div className="col-span-1 lg:col-span-3 flex flex-col">
-            <Label>Inicio</Label>
-            <input
-              id="start-date"
-              type="date"
-              value={startDate}
-              onChange={(e) => setStartDate(e.target.value)}
-              className="border rounded px-3 py-2 w-full"
-              required
-            />
-          </div>
-
-          <div className="col-span-1 lg:col-span-3 flex flex-col">
-            <Label>Fin</Label>
-            <input
-              id="end-date"
-              type="date"
-              min={startDate}
-              value={endDate}
-              onChange={(e) => setEndDate(e.target.value)}
-              className="border rounded px-3 py-2 w-full"
-              required
-            />
-          </div>
-
-          <div className="col-span-1 lg:col-span-9 flex flex-col">
-            <Label>Descripción de la Subactividad</Label>
-            <textarea
-              id="description"
-              value={description}
-              onChange={(e) => setDescription(e.target.value)}
-              className="border rounded px-3 py-2 w-full resize-none"
-              rows={6}
-              required
-            />
-          </div>
-
-          <div className="col-span-1 lg:col-span-3 flex flex-col">
-            <div>
-              <Label>Horas</Label>
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-2 p-4 rounded-lg w-full">
+            <div className="col-span-1 lg:col-span-6 flex flex-col">
+              <Label>Título de Subactividad</Label>
               <input
-                id="hours"
-                min={0}
-                type="number"
-                placeholder="Horas"
-                value={hours}
-                onChange={(e) => setHours(Number(e.target.value))}
+                id="title"
+                type="text"
+                disabled={informeP}
+                value={title}
+                onChange={(e) => setTitle(e.target.value)}
                 className="border rounded px-3 py-2 w-full"
                 required
               />
             </div>
-            <div className="mt-1 mb-1">
-              <NumberSlider progreso={progress} setProgreso={setProgress} />
+
+            <div className="col-span-1 lg:col-span-3 flex flex-col">
+              <Label>Inicio</Label>
+              <input
+                id="start-date"
+                type="date"
+                value={startDate}
+                disabled={informeP}
+                onChange={(e) => setStartDate(e.target.value)}
+                className="border rounded px-3 py-2 w-full"
+                required
+              />
             </div>
-            <button
-              onClick={handleEdit}
-              className="bg-blue-500 text-white rounded px-2 py-1 mt-2 flex"
-              style={{ justifyContent: "center", alignItems: "center" }}
-            >
-              <TfiSave className="mt-1 mr-1" />
-              Guardar
-            </button>
+
+            <div className="col-span-1 lg:col-span-3 flex flex-col">
+              <Label>Fin</Label>
+              <input
+                id="end-date"
+                type="date"
+                min={startDate}
+                disabled={informeP}
+                value={endDate}
+                onChange={(e) => setEndDate(e.target.value)}
+                className="border rounded px-3 py-2 w-full"
+                required
+              />
+            </div>
+            <div className="col-span-1 lg:col-span-9 flex flex-col">
+              <Label>Descripción de la Subactividad</Label>
+              <textarea
+                id="description"
+                value={description}
+                disabled={informeP}
+                onChange={(e) => setDescription(e.target.value)}
+                className="border rounded px-3 py-2 w-full resize-none"
+                rows={6}
+                required
+              />
+            </div>
+
+            <div className="col-span-1 lg:col-span-3 flex flex-col">
+              <div>
+                <Label>Horas</Label>
+                <input
+                  id="hours"
+                  min={0}
+                  type="number"
+                  placeholder="Horas"
+                  disabled={informeP}
+                  value={hours}
+                  onChange={(e) => setHours(Number(e.target.value))}
+                  className="border rounded px-3 py-2 w-full"
+                  required
+                />
+              </div>
+              <div className="mt-1 mb-1">
+                <NumberSlider progreso={progress} setProgreso={setProgress} />
+              </div>
+              <button
+                onClick={handleEdit}
+                className="bg-blue-500 text-white rounded px-2 py-1 mt-2 flex"
+                style={{ justifyContent: "center", alignItems: "center" }}
+              >
+                <TfiSave className="mt-1 mr-1" />
+                Guardar
+              </button>
+            </div>
           </div>
         </div>
       ) : (

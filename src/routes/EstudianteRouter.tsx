@@ -26,7 +26,7 @@ export const EstudianteRouter = () => {
             <Route
               path="informeparcial"
               element={
-                <InformeParicialPage />
+                <InformeParicialPage rol={true}/> //TRUE=== ESTUDIANTE SINO POS FALSE
               }
             />
             <Route path="*" element={<Navigate to="/estudiante" replace />} />
