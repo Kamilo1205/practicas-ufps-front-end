@@ -6,6 +6,8 @@ import { TiInfoLarge } from "react-icons/ti";
 import { TiInfoLargeOutline } from "react-icons/ti";
 import { TfiSave } from "react-icons/tfi";
 import Swal from "sweetalert2";
+import ComentariosComponent from "../../components/PlanDeTrabajo/ComentariosComponent";
+import { Comment } from "../../components/PlanDeTrabajo/Actividad/types";
 
 interface InfoProps {
   rol: boolean;
@@ -18,6 +20,8 @@ const InformeParicialPage: FC<InfoProps> = ({ rol }) => {
   const [fuer, setFuer] = useState("");
   const [comp, setComp] = useState("");
   const [concl, setConcl] = useState("");
+
+  const [comments, setComments] = useState<Comment[]>([]);
 
   const saveDoc = () => {
     Swal.fire({
@@ -35,7 +39,7 @@ const InformeParicialPage: FC<InfoProps> = ({ rol }) => {
           Desarrollo de la Práctica
         </div>
         <div className="border" />
-        <ActivityManager rol={true} informeP={true} />
+        <ActivityManager rol={rol} informeP={true} />
         <div className="border" />
         <div className="mt-2 p-2">
           <Label>Adaptación</Label>
@@ -168,24 +172,36 @@ const InformeParicialPage: FC<InfoProps> = ({ rol }) => {
             disabled={!rol}
           />
         </div>
-        {!rol ? (
-          <></>
-        ) : (
-          <div className="w-full flex justify-end ">
-            <button
-              className="bg-blue-500 p-2 text-white rounded flex  cursor-pointer 
+        <div className="w-full flex ">
+          <div className="w-full flex justify-end mt-2">
+            {!rol ? (
+              <></>
+            ) : (
+              <button
+                className="bg-blue-500 p-2 text-white rounded flex  cursor-pointer 
              hover:scale-105F 
              active:scale-95 
              transition-transform 
              duration-150 
-             ease-in-out"
-              onClick={saveDoc}
-            >
-              <TfiSave className="mt-1 mr-1" />
-              Guardar
-            </button>
+             ease-in-out ml-2"
+                onClick={saveDoc}
+              >
+                <TfiSave className="mt-1 mr-1" />
+                Guardar
+              </button>
+            )}
           </div>
-        )}
+        </div>
+        <div className="border mt-5 mb-3" />
+        <div className="flex w-full justify-end">
+          <ComentariosComponent
+            rol={rol}
+            isShow={true}
+            comments={comments}
+            setComments={setComments}
+            autor={"TUTOR"}
+          />
+        </div>
       </div>
     </>
   );

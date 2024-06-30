@@ -72,15 +72,29 @@ const Objetivos: FC<Obj> = ({ rol }) => {
       </div>
 
       <Label>Objetivo de su práctica</Label>
-      <TextArea disabled={!isEditing} />
+      <TextArea
+        disabled={!isEditing}
+        rows={3}
+        placeholder="Los objetivos deben expresar lo que se pretende lograr.
+Debe ser redactado en infinitivo (Verbo sin conjugar, por ejemplo: Analizar, evaluar, diseñar) debe ser claro (Qué exprese la acción a realizar), concreto (Conciso que no dé lugar a confusiones), medible (verificable o demostrable su logro dentro del trabajo).
+"
+      />
       <Label className="mt-3">Objetivo Principal</Label>
-      <TextArea disabled={!isEditing} />
+      <TextArea disabled={!isEditing} rows={3} />
       <Label className="mt-3">Objetivos Específicos</Label>
       <TextArea disabled={!isEditing} rows={3} />
       <Label className="mt-3">Justificación</Label>
-      <TextArea disabled={!isEditing} rows={5} />
+      <TextArea
+        disabled={!isEditing}
+        rows={5}
+        placeholder="La justificación debe presentarla clara y argumentada desde el punto de vista teórico, práctico, empresarial y personal sobre las razones que justifican realizarla y su relación con el programa académico. Se debe dar respuesta a la importancia del desarrollo de la práctica."
+      />
       <Label className="mt-3">Alcance</Label>
-      <TextArea disabled={!isEditing} rows={5} />
+      <TextArea
+        disabled={!isEditing}
+        rows={5}
+        placeholder="El alcance debe definir en forma clara los entregables de la práctica de acuerdo con los objetivos definidos."
+      />
 
       {isEditing && (
         <div className="flex w-full justify-end mt-4">

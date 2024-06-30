@@ -10,7 +10,6 @@ import { MdExpandMore, MdExpandLess, MdEdit, MdDelete } from "react-icons/md";
 import { GoClock } from "react-icons/go";
 import { GiProgression } from "react-icons/gi";
 import { FaCircleInfo, FaRegCalendar } from "react-icons/fa6";
-import { TbPointFilled } from "react-icons/tb";
 
 import { TfiSave } from "react-icons/tfi";
 import { IoIosAdd } from "react-icons/io";
@@ -467,7 +466,7 @@ export const Activity: React.FC<ActivityProps> = ({
       {isExpanded && (
         <div className="pl-6">
           {activity.subActivities.length === 0 ? (
-            <div className="w-full">{description}</div>
+            <div className="w-full mb-5">{description}</div>
           ) : (
             <></>
           )}
@@ -482,24 +481,13 @@ export const Activity: React.FC<ActivityProps> = ({
             />
           ))}
           {informeP ? (
-            <div className="mb-3"></div>
-          ) : (
-            <>
-              <div
+            <div className="mb-3">
+              <button
                 style={{
-                  width: "100%",
-                  display: "flex",
+                  background: !OpenInfo ? "rgb(0,44,81)" : "red",
+                  borderRadius: "7px",
                 }}
-              >
-                {rol && (
-                  <div className="w-full flex mt-2">
-                    <div className="flex w-full justify-start">
-                      <button
-                        style={{
-                          background: !OpenInfo ? "rgb(0,44,81)" : "red",
-                          borderRadius: "7px",
-                        }}
-                        className=" px-2 py-2 mb-2 flex
+                className=" px-2 py-2 mb-2 flex
               cursor-pointer
               hover:scale-105
               active:scale-95
@@ -508,22 +496,61 @@ export const Activity: React.FC<ActivityProps> = ({
               ease-in-out
               text-white
               "
-                        onClick={() => setOpenInfo(!OpenInfo)}
-                      >
-                        {OpenInfo ? (
-                          <>
-                            <VscChromeClose className="mt-1" />
-                          </>
-                        ) : (
-                          <>
-                            <FaCircleInfo className="flexmt-0 sm:mt-1 sm:mr-1 mr-0" />
-                            <p className="hidden sm:block">
-                              Informe de Actividades
-                            </p>
-                          </>
-                        )}
-                      </button>
-                    </div>
+                onClick={() => setOpenInfo(!OpenInfo)}
+              >
+                {OpenInfo ? (
+                  <>
+                    <VscChromeClose className="mt-1" />
+                  </>
+                ) : (
+                  <>
+                    <FaCircleInfo className="flexmt-0 sm:mt-1 sm:mr-1 mr-0" />
+                    <p className="hidden sm:block">Informe de Actividades</p>
+                  </>
+                )}
+              </button>
+            </div>
+          ) : (
+            <>
+              <div
+                style={{
+                  width: "100%",
+                  display: "flex",
+                }}
+              >
+                <div className="w-full flex mt-2">
+                  <div className="flex w-full justify-start">
+                    <button
+                      style={{
+                        background: !OpenInfo ? "rgb(0,44,81)" : "red",
+                        borderRadius: "7px",
+                      }}
+                      className=" px-2 py-2 mb-2 flex
+              cursor-pointer
+              hover:scale-105
+              active:scale-95
+              transition-transform
+              duration-150
+              ease-in-out
+              text-white
+              "
+                      onClick={() => setOpenInfo(!OpenInfo)}
+                    >
+                      {OpenInfo ? (
+                        <>
+                          <VscChromeClose className="mt-1" />
+                        </>
+                      ) : (
+                        <>
+                          <FaCircleInfo className="flexmt-0 sm:mt-1 sm:mr-1 mr-0" />
+                          <p className="hidden sm:block">
+                            Informe de Actividades
+                          </p>
+                        </>
+                      )}
+                    </button>
+                  </div>
+                  {rol && (
                     <div className="flex w-full justify-end">
                       <button
                         onClick={() => setIsSubFormVisible(!isSubFormVisible)}
@@ -556,8 +583,8 @@ export const Activity: React.FC<ActivityProps> = ({
                         )}
                       </button>
                     </div>
-                  </div>
-                )}
+                  )}
+                </div>
               </div>
               {isSubFormVisible && (
                 <div className="border rounded mb-5">
@@ -567,44 +594,117 @@ export const Activity: React.FC<ActivityProps> = ({
             </>
           )}
           {OpenInfo ? (
-            <div className="mb-2 mt-2 overflow-auto rounded border border-gray-300 ">
-              <div className="p-3">
+            <div className="mb-2 mt-2 rounded border border-gray-300">
+              <div className="p-3 overflow-auto min-w-750px min-h-750px max-w-full">
                 <div
                   className="w-full flex justify-center mb-2"
                   style={{ fontWeight: "bold" }}
                 >
                   Informe de Actividades
                 </div>
-                <table className="min-w-full bg-white text-left">
-                  <tr className="w-full">
-                    <th className="border border-gray-300 p-2">
-                      Estrategia de Desarrollo
-                    </th>
-                    <td className="border border-gray-300 p-2">
-                      <TextArea rows={3}></TextArea>
-                    </td>
-                  </tr>
-                  <tr>
-                    <th className="border border-gray-300 p-2">
-                      Recursos Utilizados
-                    </th>
-                    <td className="border border-gray-300 p-2">
-                      <TextArea rows={3}></TextArea>
-                    </td>
-                  </tr>
-                  <tr>
-                    <th className="border border-gray-300 p-2">
-                      Resultados Obtenidos
-                    </th>
-                    <td className="border border-gray-300 p-2">
-                      <TextArea rows={3}></TextArea>
-                    </td>
-                  </tr>
+                <table className="table-auto border-collapse border border-gray-400 w-full rounded-lg">
+                  {!rol ? (
+                    <>
+                      <tr className="w-full">
+                        <th className="border border-gray-300 p-2">
+                          Estrategia de Desarrollo
+                        </th>
+                        <td className="border border-gray-300 p-2">
+                          <TextArea
+                            rows={3}
+                            disabled={!rol}
+                            style={{ minWidth: "150px" }}
+                          ></TextArea>
+                        </td>
+                      </tr>
+                      <tr>
+                        <th className="border border-gray-300 p-2">
+                          Recursos Utilizados
+                        </th>
+                        <td className="border border-gray-300 p-2">
+                          <TextArea rows={3} disabled={!rol}></TextArea>
+                        </td>
+                      </tr>
+                      <tr>
+                        <th className="border border-gray-300 p-2">
+                          Resultados Obtenidos
+                        </th>
+                        <td className="border border-gray-300 p-2">
+                          <TextArea rows={3} disabled={!rol}></TextArea>
+                        </td>
+                      </tr>
+                    </>
+                  ) : (
+                    <>
+                      <tr className="w-full">
+                        <th className="border border-gray-300 p-2">
+                          Estrategia de Desarrollo
+                        </th>
+                        <td className="border border-gray-300 p-2">
+                          <TextArea
+                            rows={3}
+                            disabled={informeP}
+                            style={{ minWidth: "150px" }}
+                          ></TextArea>
+                        </td>
+                      </tr>
+                      <tr>
+                        <th className="border border-gray-300 p-2">
+                          Recursos Utilizados
+                        </th>
+                        <td className="border border-gray-300 p-2">
+                          <TextArea rows={3} disabled={informeP}></TextArea>
+                        </td>
+                      </tr>
+                      <tr>
+                        <th className="border border-gray-300 p-2">
+                          Resultados Obtenidos
+                        </th>
+                        <td className="border border-gray-300 p-2">
+                          <TextArea rows={3} disabled={informeP}></TextArea>
+                        </td>
+                      </tr>
+                    </>
+                  )}
+
+                  {informeP ? (
+                    <>
+                      <tr>
+                        <th className="border border-gray-300 p-2 w-[30%]">
+                          Impactos percibidos por el estudiante
+                        </th>
+                        <td className="border border-gray-300 p-2 w-[70%]">
+                          <TextArea
+                            rows={3}
+                            disabled={!rol}
+                            placeholder="Describa los aportes y beneficios, que la realización de la actividad o subactividad le aportó a usted a nivel personal, académico y laboral"
+                          ></TextArea>
+                        </td>
+                      </tr>
+                      <tr>
+                        <th className="border border-gray-300 p-2 w-[30%]">
+                          Limitaciones
+                        </th>
+                        <td className="border border-gray-300 p-2 w-[70%]">
+                          <TextArea
+                            rows={3}
+                            disabled={!rol}
+                            placeholder="Relacione las situaciones presentadas durante el desarrollo de la práctica que de un modo u otro retrasaron o limitaron el logro de los objetivos trazados inicialmente."
+                          ></TextArea>
+                        </td>
+                      </tr>
+                    </>
+                  ) : (
+                    <></>
+                  )}
                 </table>
               </div>
               <div className="flex w-full justify-end px-4">
-                <button
-                  className="   cursor-pointer
+                {!rol ? (
+                  <></>
+                ) : (
+                  <button
+                    className="   cursor-pointer
               hover:scale-105
               active:scale-95
               transition-transform
@@ -612,10 +712,11 @@ export const Activity: React.FC<ActivityProps> = ({
               ease-in-out
               bg-blue-500
               text-white p-2 mb-2 rounded flex"
-                >
-                  <TfiSave className="mt-1 mr-1"/>
-                  Guardar
-                </button>
+                  >
+                    <TfiSave className="mt-1 mr-1" />
+                    Guardar
+                  </button>
+                )}
               </div>
             </div>
           ) : (
