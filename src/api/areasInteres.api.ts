@@ -19,7 +19,7 @@ export const fetchAreaDeInteresById = async (id: string): Promise<AreaInteres> =
 
 export const createAreaDeInteres = async (newArea: Omit<AreaInteres, 'id'>): Promise<AreaInteres> => {
   
-  console.log(exist)
+  console.log(newArea)
   const response = await axios.post('/areas-interes', newArea);
   console.log(response);
   return response.data;
@@ -34,4 +34,4 @@ export const deleteAreaDeInteres = async (id: string): Promise<void> => {
   await axios.delete(`/areas-interes/${id}`);
 };
 
-export const restoreAreaDeInteres = async (id: string): Promise<void> => { }
+

@@ -97,12 +97,12 @@ const [open, setOpen] = useState(false)
                 padre={area}
                 createAreaDeInteres={createAreaDeInteres} />
               {
-                area.subAreas?.length === 0 ?
+                area.subAreas && area.subAreas?.length === 0 ?
                   <p className="text-md">.</p> :
                   area.subAreas.map((subArea) => {
                     return <div key={subArea.id} className="flex justify-between">
-                      <span>{subArea.nombre}</span>
-                      <span className="text-gray-500">{subArea.fechaCreacion.toLocaleDateString()}</span>
+                      <span>{subArea?.nombre}</span>
+                      <span className="text-gray-500"></span>
                     </div>
                   })
               }
@@ -147,7 +147,7 @@ const [open, setOpen] = useState(false)
                   })}
                   className="text-md cursor-pointer text-blue-600 hover:underline">Front end</li>
                 <li
-                  onClick={() => onSelectSubArea(area.subAreas[1])}
+                  onClick={() => {}}
                   className="text-md cursor-pointer text-blue-600 hover:underline">Back end</li>
               </ul>
             </dd>

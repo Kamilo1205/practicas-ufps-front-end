@@ -7,13 +7,40 @@ import { Avatar } from '../components/ui';
 import { useAuth } from '../contexts';
 import { Menu, MenuButton, MenuItem, MenuItems, Transition } from '@headlessui/react';
 import { CgProfile } from 'react-icons/cg';
+import Swal from 'sweetalert2';
+
+
+const Toast = Swal.mixin({
+  toast: true,
+  position: "top-end",
+  showConfirmButton: false,
+  timer: 100000,
+  timerProgressBar: true,
+  showCloseButton: true,
+  didOpen: (toast) => {
+    toast.onmouseenter = Swal.stopTimer;
+    toast.onmouseleave = Swal.resumeTimer;
+  }
+});
+
 
 export const Layout = () => {
   const { user ,logout} = useAuth();
   const [open, setOpen] = useState<boolean>(false);
 
+  //TODO: Alerta de configuraciones pendientes ajustarla.
+  if (true) {
+    Toast.fire({
+      icon: "warning",
+      title: "Hay configuraciones pendientes",
+      html: '<a href="/coordinador/primerospasos" style="color: blue;">Ir a configuraciones</a>',
+
+    });
+  }
+
   return (
     <div className="overflow-x-hidden">
+      
       <Sidebar />
       <SidebarOvers open={open} setOpen={setOpen} />
       <div className="flex justify-between items-center gap-x-6 z-10 sticky top-0 p-4 ring-0 ring-offset-0 sm:px-6 lg:hidden">

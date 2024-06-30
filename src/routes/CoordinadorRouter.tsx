@@ -32,7 +32,7 @@ export const CoordinadorRouter = () => {
         <Route path='practicas' element={<PracticasPage />} />
         <Route path='tutores' element={<GestionTutoresPage />} />
         <Route path='configuraciones' element={<ConfiguracionesPage />} />
-        <Route path="*" element={<Navigate to="/coordinador" replace />} />
+        <Route path="*" element={<Navigate to="/coordinador/primerospasos" replace />} />
       </Route>
     </Routes>
   );

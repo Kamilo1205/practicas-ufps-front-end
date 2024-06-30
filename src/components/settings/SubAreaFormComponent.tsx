@@ -25,16 +25,17 @@ export const SubAreaFormComponent = ({createAreaDeInteres,padre}:SubAreaFormComp
 
   const onCreacteArea: SubmitHandler<FieldValues> = (data) => {
     console.log(data)
-
+    const padreId = typeof padre === 'string' ? padre : padre.id
     createAreaDeInteres({
       nombre: data.nombre,
       fechaCreacion: new Date(),
       fechaActualizacion: new Date(),
       subAreas: [],
       areaInteresHerramientas: [],
-      areaPadre: padre
+      areaPadre: padreId
     })
   }
+  
   return <>
     <form
       onSubmit={form.handleSubmit(onCreacteArea)}

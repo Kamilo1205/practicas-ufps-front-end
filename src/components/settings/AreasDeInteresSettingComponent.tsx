@@ -21,10 +21,11 @@ export const AreasDeInteresSettingComponent = () => {
   const [filtro, setFiltro] = useState('')
   const [currentPage, setCurrentPage] = useState(1)
   const [areasPaginadas, setAreasPaginadas] = useState<AreaInteres[]>([])
- 
+  const itemsPerPage = 5
+  const [totalItems, setTotalItems] = useState(0)
 
   const { areas, createAreaDeInteres,deleteAreaDeInteres,updateAreaDeInteres} = useAreasDeInteres()
-  
+console.log(areas)
   const form = useForm({
     resolver: zodResolver(z.object({
       nombre: z.string().min(3, {
@@ -52,19 +53,21 @@ export const AreasDeInteresSettingComponent = () => {
 
 
   useEffect(() => {
-    
+    const indexOfLastItem = currentPage * itemsPerPage
+    const indexOfFirstItem = indexOfLastItem - itemsPerPage
     if (filtro === '') {
-      const indexOfLastItem = currentPage * 5
-      const indexOfFirstItem = indexOfLastItem - 5
-      setAreasPaginadas(areas.slice(indexOfFirstItem, indexOfLastItem))
+      
+      const areasHabilitadas = areas.filter((area) => !area.fechaEliminacion)
+      setAreasPaginadas(areasHabilitadas.slice(indexOfFirstItem, indexOfLastItem))
+      setTotalItems(areasHabilitadas.length)
       return
     }
     
-    const indexOfLastItem = currentPage * 5
-    const indexOfFirstItem = indexOfLastItem - 5
     let areasFiltradas = areas.filter((area) => area.nombre.toLowerCase().includes(filtro.toLowerCase()))
+    areasFiltradas = areasFiltradas.filter((area) => !area.fechaEliminacion)
     areasFiltradas = areasFiltradas.slice(indexOfFirstItem, indexOfLastItem)
     setAreasPaginadas(areasFiltradas)
+    setTotalItems(areasFiltradas.length)
    
 
   },[filtro,areas,currentPage])
@@ -131,7 +134,7 @@ export const AreasDeInteresSettingComponent = () => {
       {
         
         areasPaginadas.map((area) => {
-          return <DisclosureComponent
+          return !area.fechaEliminacion &&!area.areaPadre &&<DisclosureComponent
             key={area.id}
             title={
               <div className="flex justify-between w-full">
@@ -158,8 +161,8 @@ export const AreasDeInteresSettingComponent = () => {
         }
         <Pagination
           currentPage={currentPage}
-          totalItems={areas.length | 0}
-          itemsPerPage={5}
+          totalItems={totalItems | 0}
+          itemsPerPage={itemsPerPage}
           paginate={setCurrentPage}
         />
       

@@ -5,6 +5,7 @@ import { DocentesYCursosSettingComponent } from "../../components/settings/Docen
 import { AreasDeInteresSettingComponent } from "../../components/settings/AreasDeInteresSettingComponent";
 import { GeneralComponent } from "../../components/settings/GeneralComponent";
 
+import SlideOver from "../../components/ui/SlideOver/SlideOverComponent";
 
 const Tabs = [
   {
@@ -29,10 +30,19 @@ interface GrupoI {
 */
 export const ConfiguracionesPage = () => { 
   const [tab, setTab] = useState(0);
-  
+  const [helpOpen, setHelpOpen] = useState(false);
   return (<>
     <div className="mb-10">
       <div className="text-gray-600 font-bold text-2xl mb-3">Configuraciones</div>
+
+      <SlideOver
+        isOpen={helpOpen}
+        onClose={() => setHelpOpen(false)}
+        title="¡Bienvenido a la plataforma de prácticas empresariales!"
+
+      >
+        <></>
+      </SlideOver>
     </div>
     <>
       <TabComponent

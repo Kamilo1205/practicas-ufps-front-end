@@ -4,7 +4,8 @@ export interface AreaInteres {
   id:                      string;
   nombre:                  string;
   fechaCreacion:           Date;
-  fechaActualizacion:      Date;
+  fechaActualizacion: Date;
+  fechaEliminacion?: Date;
   areaPadre?:              AreaInteres | string; 
   subAreas:               AreaInteres[];
   areaInteresHerramientas: areaInteresHerramientas[];
