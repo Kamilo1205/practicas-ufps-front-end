@@ -9,15 +9,16 @@ import { BiX } from "react-icons/bi"
 interface SubAreaComponentProps { 
   subArea: AreaInteres
   createHerramienta: (areaId: string, herramienta: Omit<Herramienta, 'id'>) => Promise<void>
-
+  deleteHerramienta: (herramientaId: string) => Promise<void>
 }
 
-export const SubAreaComponent = ({subArea,createHerramienta}:SubAreaComponentProps) => { 
+export const SubAreaComponent = ({subArea,createHerramienta,deleteHerramienta}:SubAreaComponentProps) => { 
 
   
   
   const onDeleteHerramienta = (id: string) => { 
     console.log('delete herramienta', id)
+    deleteHerramienta(id)
   }
   useEffect(() => { console.log(subArea, "aaa") }, [subArea])
   return (<>
@@ -38,11 +39,11 @@ export const SubAreaComponent = ({subArea,createHerramienta}:SubAreaComponentPro
               <ul className="flex flex-wrap space-x-1 space-y-1 md:space-y-0">
                 {
                   subArea?.areaInteresHerramientas.map((areaInteresHerramienta) => {
-                    return <li key={areaInteresHerramienta.id}>
+                    return !areaInteresHerramienta?.fechaEliminacion && !areaInteresHerramienta?.herramienta?.fechaEliminacion &&  <li key={areaInteresHerramienta.id}>
                       <Badge className="border bg-transparent border-green-600 font-semibold text-base flex w-fit space-x-2">
                         <span className="text-black">{areaInteresHerramienta.herramienta.nombre}</span>
                         <button
-                          onClick={() => onDeleteHerramienta(areaInteresHerramienta.id)}
+                          onClick={() => onDeleteHerramienta(areaInteresHerramienta.herramienta.id)}
                           className="text-red-500">
                           <BiX className="w-7 h-7" />
                         </button>

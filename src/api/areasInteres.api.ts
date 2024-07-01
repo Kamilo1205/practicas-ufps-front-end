@@ -56,6 +56,13 @@ export const createHerramientaApi = async (areaId: string, herramienta: Omit<Her
     console.log(relacionAreaHerramienta,'relacionAreaHerramienta')
      return relacionAreaHerramienta.data
   })
-  
-  
+}
+
+export const deleteHerramientaApi = async (herramientaId: string): Promise<void> => { 
+  const response = await axios.delete(`/herramientas/${herramientaId}`)
+  //La API no devuelve nada, por lo que agregar la fecha de eliminación.
+  return {
+    ...response.data,
+    fechaEliminacion: new Date()
+  }
 }

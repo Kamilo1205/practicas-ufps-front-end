@@ -1,6 +1,6 @@
 import { useState, useCallback, useEffect } from 'react';
 import { AxiosError } from 'axios';
-import { fetchAreasDeInteres as fetchAreasDeInteresAPI, fetchSubareasByArea as fetchSubareasPorAreaAPI, fetchAreaDeInteresById as fetchAreaDeInteresByIdAPI, createAreaDeInteres as createAreaDeInteresAPI, updateAreaDeInteres as updateAreaDeInteresAPI, deleteAreaDeInteres as deleteAreaDeInteresAPI, createHerramientaApi } from '../api/areasInteres.api';
+import { fetchAreasDeInteres as fetchAreasDeInteresAPI, fetchSubareasByArea as fetchSubareasPorAreaAPI, fetchAreaDeInteresById as fetchAreaDeInteresByIdAPI, createAreaDeInteres as createAreaDeInteresAPI, updateAreaDeInteres as updateAreaDeInteresAPI, deleteAreaDeInteres as deleteAreaDeInteresAPI, createHerramientaApi, deleteHerramientaApi } from '../api/areasInteres.api';
 import { AreaInteres } from '../interfaces';
 import Swal from 'sweetalert2';
 import { Herramienta } from '../interfaces/herramienta.interface';
@@ -17,13 +17,14 @@ type UseAreasDeInteresReturn = {
   updateAreaDeInteres: (id: string, updatedArea: Omit<AreaInteres, 'id'>) => Promise<void>;
   deleteAreaDeInteres: (id: string) => Promise<void>;
   createHerramienta: (areaId: string, herramienta: Omit<Herramienta, 'id'>) => Promise<void>;
+  deleteHerramienta: (herramientaId: string) => Promise<void>;
 };
 
 const useAreasDeInteres = (): UseAreasDeInteresReturn => {
   const [areas, setAreas] = useState<AreaInteres[]>([]);
   const [cargando, setCargando] = useState<boolean>(false);
   const [error, setError] = useState<AxiosError | null>(null);
-
+  console.log('useAreasDeInteres',areas)
   const fetchAreasDeInteres = useCallback(async () => {
     setCargando(true);
     try {
@@ -226,6 +227,64 @@ const useAreasDeInteres = (): UseAreasDeInteresReturn => {
       setCargando(false);
     }
   }
+
+  const deleteHerramienta = async (herramientaId: string) => {
+    setCargando(true);
+    try {
+      Swal.fire({
+        title: '¿Estás seguro?',
+        text: 'No podrás revertir esta acción',
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'Sí, eliminar',
+        cancelButtonText: 'Cancelar'
+      }).then(async (result) => { 
+        if (result.isConfirmed) {
+          await deleteHerramientaApi(herramientaId)
+          //Buscar que area contiene la herramienta.
+          const areaHerramienta = areas.find((area) =>
+            area.subAreas?.find(
+              (subarea) => subarea.areaInteresHerramientas?.find((herramienta)=>herramienta.herramienta.id === herramientaId))
+          )
+          console.log('areaHerramienta',areaHerramienta)
+          //Actualizar el area que contiene la herramienta
+          setAreas((prev) => prev.map((area) => {
+            if (area.id === areaHerramienta?.id) {
+              return {
+                ...area,
+                subAreas: area.subAreas?.map((subArea) => (
+                  {
+                    ...subArea,
+                  areaInteresHerramientas :subArea.areaInteresHerramientas?.filter((herramienta) => herramienta.herramienta.id !== herramientaId)
+                }
+          )
+                ),
+                areaInteresHerramientas: area.areaInteresHerramientas?.filter((herramienta) => herramienta.id !== herramientaId)
+              }
+            }
+            return area
+          }))
+          setAreas((prev) => prev.filter((area) => area.id !== herramientaId));
+          Swal.fire(
+            'Eliminado',
+            'La herramienta ha sido inhabilitada',
+            'success'
+          )
+          setError(null);
+        }
+      })
+    } catch (err) {
+      setError(err as AxiosError);
+    } finally {
+      setCargando(false);
+    }
+  
+    
+  }
+
+
   useEffect(() => {
     fetchAreasDeInteres();
   }, [fetchAreasDeInteres]);
@@ -239,6 +298,7 @@ const useAreasDeInteres = (): UseAreasDeInteresReturn => {
       updateAreaDeInteres,
       deleteAreaDeInteres,
       createHerramienta,
+      deleteHerramienta,
     };
 };
 

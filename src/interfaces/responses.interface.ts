@@ -1,4 +1,5 @@
 import { AreaInteres, areaInteresHerramientas } from "./area-interes.interface";
+import { Empresa } from "./empresa.interface";
 
 
 interface UsuarioI {
@@ -71,3 +72,9 @@ export interface EstudiantesResponse {
   meta: Meta;
   links: Links;
 }
+
+export interface EmpresasResponse {
+  data: Empresa[];
+  meta: Meta;
+  links: Links;
+ }

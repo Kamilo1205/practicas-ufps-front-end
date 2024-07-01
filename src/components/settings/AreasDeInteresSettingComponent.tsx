@@ -24,8 +24,8 @@ export const AreasDeInteresSettingComponent = () => {
   const itemsPerPage = 5
   const [totalItems, setTotalItems] = useState(0)
 
-  const { areas, createAreaDeInteres,deleteAreaDeInteres,updateAreaDeInteres,createHerramienta} = useAreasDeInteres()
-console.log(areas)
+  const { areas, createAreaDeInteres,deleteAreaDeInteres,updateAreaDeInteres,createHerramienta, deleteHerramienta} = useAreasDeInteres()
+
   const form = useForm({
     resolver: zodResolver(z.object({
       nombre: z.string().min(3, {
@@ -157,7 +157,7 @@ console.log(areas)
               createAreaDeInteres={createAreaDeInteres}
               updateAreaDeInteres={updateAreaDeInteres}
               createHerramienta={createHerramienta}
-
+              deleteHerramienta={deleteHerramienta}
             /> 
           </DisclosureComponent>
 

@@ -25,16 +25,17 @@ export const EmpresaPage = ({ rol = '' }:EmpresaPageProps) => {
   const location = useLocation();
 
   const puedeAgregar = permisos.agregarEmpresas.includes(rol)  
-
+  console.log(empresas,totalItems,currentPage,itemsPerPage)
   useEffect(() => {
     const query = new URLSearchParams(location.search);
     const page = parseInt(query.get("page") || "1", 10);
 
     const fetchData = async (pageToFetch: number) => {
       const response = await fetchGetEmpresas(pageToFetch, itemsPerPage);
+      console.log(response)
       setEmpresas(response.data);
-      setTotalItems(response.total);
-      const totalPages = Math.ceil(response.total / itemsPerPage);
+      setTotalItems(response.meta.totalItems);
+      const totalPages = Math.ceil(response.meta.totalItems / itemsPerPage);
 
       // Validar la página solicitada
       if (pageToFetch < 1 || pageToFetch > totalPages) {
@@ -79,7 +80,7 @@ export const EmpresaPage = ({ rol = '' }:EmpresaPageProps) => {
                 <th className="min-w-24 text-gray-900 font-semibold text-sm text-left pl-0 pr-3 py-3.5">Convenio</th>
                 <th className="min-w-32 text-gray-900 font-semibold text-sm text-left pl-0 pr-3 py-3.5">Nit</th>
                 <th className="min-w-56 text-gray-900 font-semibold text-sm text-left pl-0 pr-3 py-3.5">Dirección</th>
-                <th className="min-w-28 text-gray-900 font-semibold text-sm text-left pl-0 pr-3 py-3.5">Telefono</th>
+                <th className="min-w-28 text-gray-900 font-semibold text-sm text-left pl-0 pr-3 py-3.5">Teléfono</th>
                 <th className="min-w-28 text-gray-900 font-semibold text-sm text-left pl-0 pr-3 py-3.5">Fecha creación</th>
                 <th className="min-w-28 text-gray-900 font-semibold text-sm text-left pl-0 pr-3 py-3.5">Estado</th>
               </tr>
@@ -90,20 +91,20 @@ export const EmpresaPage = ({ rol = '' }:EmpresaPageProps) => {
                   <td className="text-sm whitespace-nowrap pl-0 pr-3 py-5">
                     <div className="flex items-center">
                       <div className="shrink-0 w-11 h-11">
-                        <Avatar url={empresa.usuario.imagenUrl} />
+                        <Avatar url={empresa?.usuario?.imagenUrl} />
                       </div>
                       <div className="ml-4">
                         <div className="text-gray-900 font-medium">
-                          {empresa.nombre || "Nombre aun no registrado"}
+                          {empresa?.nombre || "Nombre aun no registrado"}
                         </div>
                         <div className="text-gray-500 mt-1">
-                          {empresa.usuario.email}
+                          {empresa?.usuario?.email}
                         </div>
                       </div>
                     </div>
                   </td>
                   <td className="text-sm whitespace-nowrap pl-0 pr-3 py-5">
-                    {empresa.convenioActivo ? (
+                    {empresa?.convenioActivo ? (
                       <span className="text-green-700 font-medium text-xs py-1 px-2 ring-1 ring-green-600/20 bg-green-100 rounded-md items-center inline-flex border-green-600 ring-inset">
                         Activo
                       </span>
@@ -114,22 +115,22 @@ export const EmpresaPage = ({ rol = '' }:EmpresaPageProps) => {
                     )}
                   </td>
                   <td className="text-sm whitespace-nowrap capitalize text-gray-500">
-                    {empresa.nit}
+                    {empresa?.nit}
                   </td>
                   <td className="text-sm whitespace-nowrap capitalize text-gray-500">
-                    <div>{empresa.direccion}</div>
+                    <div>{empresa?.direccion}</div>
                     <div>
-                      {empresa.ciudad}, {empresa.pais}
+                      {empresa?.ciudad}, {empresa?.pais}
                     </div>
                   </td>
                   <td className="text-sm whitespace-nowrap capitalize text-gray-500">
-                    {empresa.telefono}
+                    {empresa?.telefono}
                   </td>
                   <td className="text-sm whitespace-nowrap capitalize text-gray-500">
-                    {new Date(empresa.fechaCreacion).toLocaleDateString()}
+                    {new Date(empresa?.fechaCreacion).toLocaleDateString()}
                   </td>
                   <td className="text-sm whitespace-nowrap pl-0 pr-3 py-5">
-                    {empresa.usuario.estaActivo ? (
+                    {empresa?.usuario?.estaActivo ? (
                       <span className="text-green-700 font-medium text-xs py-1 px-2 ring-1 ring-green-600/20 bg-green-100 rounded-md items-center inline-flex border-green-600 ring-inset">
                         Activo
                       </span>

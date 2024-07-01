@@ -12,9 +12,10 @@ interface AreaInteresComponentProps {
   createAreaDeInteres: (newArea: Omit<AreaInteres, 'id'>) => Promise<void>
   updateAreaDeInteres: (id: string, updatedArea: Omit<AreaInteres, 'id'>) => Promise<void>
   createHerramienta: (areaId: string, herramienta: Omit<Herramienta, 'id'>) => Promise<void>
+  deleteHerramienta: (herramientaId: string) => Promise<void>
 }
 
-export const AreaInteresComponent = ({ area,createAreaDeInteres,updateAreaDeInteres,createHerramienta }: AreaInteresComponentProps) => { 
+export const AreaInteresComponent = ({ area,createAreaDeInteres,updateAreaDeInteres,createHerramienta,deleteHerramienta }: AreaInteresComponentProps) => { 
   const [editar, setEditar] = useState(false)
   const [nombre, setNombre] = useState(area.nombre)
   const [subAreaSelected, setSubAreaSelected] = useState<AreaInteres | null>(null)
@@ -50,6 +51,7 @@ const [open, setOpen] = useState(false)
         content={
           subAreaSelected ?
             <SubAreaComponent
+              deleteHerramienta={deleteHerramienta}
               createHerramienta={createHerramienta}
           subArea={ subAreaSelected }
             />
@@ -106,7 +108,9 @@ const [open, setOpen] = useState(false)
             <dd className="mt-1 text-base leading-6 text-gray-700 sm:col-span-2 sm:mt-0">
               <SubAreaFormComponent
                 padre={area}
-                createAreaDeInteres={createAreaDeInteres} />
+                createAreaDeInteres={createAreaDeInteres}
+               
+              />
               {
                 area?.subAreas && area?.subAreas?.length !== 0 &&
                 <p className="font-light">Haz click sobre la sub area para ver, agregar o eliminar las herramientas asociadas a ella.</p>

@@ -1,6 +1,7 @@
 import { RepresentanteLegal } from './representante-legal.interface';
 import { Usuario } from './usuario.interface';
 
+//TODO: La API de empresas cambió, se debe actualizar la interfaz
 export interface Empresa {
   id:                    string;
   nombre:                string;

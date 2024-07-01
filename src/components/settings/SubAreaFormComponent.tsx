@@ -6,6 +6,7 @@ import { Button } from "../ui"
 import { BiPlus } from "react-icons/bi"
 
 interface SubAreaFormComponentProps { 
+  
   createAreaDeInteres: (newArea: Omit<AreaInteres, 'id'>) => Promise<void>
   padre: AreaInteres | string
 }
