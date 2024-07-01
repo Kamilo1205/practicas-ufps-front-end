@@ -1,17 +1,18 @@
 import { HiOutlineBuildingOffice2, HiOutlineCalendar, HiOutlineChartPie, HiOutlineFolder, HiOutlineUser, HiOutlineUsers } from 'react-icons/hi2';
 import { MenuItem } from './MenuItem';
 import { useAuth } from '../../../contexts';
+import { roles } from '../../../interfaces/rol.interface';
 
 export const MenuList = () => {
   //{ to: '/coordinador/documentos', text: 'Documentos', icon: HiOutlineDocumentDuplicate, roles: ['administrador', 'director-programa', 'coordinador'] },
   const { user } = useAuth();
 
-  const rolUrl = user?.roles.find(u => u.nombre == 'director-programa') ?
-    'director' : 'coordinador'
+  const rolUrl = user?.roles.find(u => u.nombre == roles.director) ?
+    roles.director : roles.coordinador
 //TODO: Restringir acceso a los roles
   const navLinks = [
     { to: '/coordinador/primerospasos', text: 'Primeros pasos', icon: HiOutlineChartPie, roles: ['administrador', 'coordinador',] },
-    { to: '/coordinador/configuraciones', text: 'Configuraciones', icon: HiOutlineChartPie, roles: ['administrador','coordinador'] },
+    { to: '/coordinador/configuraciones', text: 'Configuraciones', icon: HiOutlineChartPie, roles: ['administrador',] },
     { to: '/coordinador/ARL', text: 'ARL', icon: HiOutlineChartPie, roles: ['administrador', 'coordinador',] },
     { to: '/coordinador/usuarios', text: 'Usuarios', icon: HiOutlineUsers, roles: ['administrador'] },
     { to: `/${rolUrl}/empresas`, text: 'Empresas', icon: HiOutlineBuildingOffice2, roles: ['administrador', 'coordinador', 'director-programa'] },

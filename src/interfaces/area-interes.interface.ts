@@ -17,6 +17,7 @@ export interface areaInteresHerramientas {
   fechaCreacion:           Date;
   fechaActualizacion: Date;
   areaInteres?: AreaInteres;
+  fechaEliminacion?: Date;
 }
 
 /*

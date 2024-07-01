@@ -15,8 +15,8 @@ interface HerramientaFormComponentProps {
 export const HerramientaFormComponent = ({ createHerramienta, padre }: HerramientaFormComponentProps) => {
   const form = useForm({
     resolver: zodResolver(z.object({
-      nombre: z.string().min(3, {
-        message: 'El nombre debe tener al menos 3 caracteres'
+      nombre: z.string().min(1, {
+        message: 'El nombre debe tener al menos 1 caracteres'
       }).max(50, {
         message: 'El nombre debe tener menos de 50 caracteres'
 
