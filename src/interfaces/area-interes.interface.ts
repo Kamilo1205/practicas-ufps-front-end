@@ -15,7 +15,8 @@ export interface areaInteresHerramientas {
   id: string;
   herramienta: Herramienta;
   fechaCreacion:           Date;
-  fechaActualizacion:      Date;
+  fechaActualizacion: Date;
+  areaInteres?: AreaInteres;
 }
 
 /*

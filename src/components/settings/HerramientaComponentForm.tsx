@@ -3,16 +3,16 @@
 import { zodResolver } from "@hookform/resolvers/zod"
 import { FieldValues, SubmitHandler, useForm } from "react-hook-form"
 import { z } from "zod"
-import { AreaInteres } from "../../interfaces"
 import { Button } from "../ui"
 import { BiPlus } from "react-icons/bi"
+import { Herramienta } from "../../interfaces/herramienta.interface"
 
-interface SubAreaFormComponentProps {
-  createAreaDeInteres: (newArea: Omit<AreaInteres, 'id'>) => Promise<void>
-  padre: AreaInteres | string
+interface HerramientaFormComponentProps {
+  createHerramienta: (areaId:string ,herramienta: Omit<Herramienta, 'id'>) => Promise<void>
+  padre: string
 }
 
-export const HerramientaFormComponent = ({ createAreaDeInteres, padre }: SubAreaFormComponentProps) => {
+export const HerramientaFormComponent = ({ createHerramienta, padre }: HerramientaFormComponentProps) => {
   const form = useForm({
     resolver: zodResolver(z.object({
       nombre: z.string().min(3, {
@@ -27,14 +27,12 @@ export const HerramientaFormComponent = ({ createAreaDeInteres, padre }: SubArea
 
   const onCreacteArea: SubmitHandler<FieldValues> = (data) => {
     console.log(data)
-
-    createAreaDeInteres({
+    //TODO: No se están actualizando en la vista.
+    createHerramienta(padre, {
       nombre: data.nombre,
       fechaCreacion: new Date(),
       fechaActualizacion: new Date(),
-      subAreas: [],
-      areaInteresHerramientas: [],
-      areaPadre: padre
+    
     })
   }
   return <>
@@ -66,7 +64,7 @@ export const HerramientaFormComponent = ({ createAreaDeInteres, padre }: SubArea
       >
 
         <BiPlus className="text-xl" />
-        <span className="hidden lg:inline-block text-nowrap">Agregar herramienta</span>
+        
       </Button>
     </form>
   </>

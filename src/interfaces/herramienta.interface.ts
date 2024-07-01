@@ -4,3 +4,8 @@ export interface Herramienta {
   fechaCreacion:      Date;
   fechaActualizacion: Date;
 }
+
+export interface AreaInteresHerramienta { 
+  areaInteresId: string;
+  herramientaId: string;
+}

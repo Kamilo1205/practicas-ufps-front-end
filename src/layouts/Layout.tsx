@@ -8,6 +8,7 @@ import { useAuth } from '../contexts';
 import { Menu, MenuButton, MenuItem, MenuItems, Transition } from '@headlessui/react';
 import { CgProfile } from 'react-icons/cg';
 import Swal from 'sweetalert2';
+import { roles } from '../interfaces/rol.interface';
 
 
 const Toast = Swal.mixin({
@@ -29,7 +30,7 @@ export const Layout = () => {
   const [open, setOpen] = useState<boolean>(false);
 
   //TODO: Alerta de configuraciones pendientes ajustarla.
-  if (true) {
+  if (user?.roles.find((rol) => rol.nombre === roles.administrador ) ){
     Toast.fire({
       icon: "warning",
       title: "Hay configuraciones pendientes",

@@ -1,5 +1,7 @@
 import axios from './axios';
 import { AreaInteres } from '../interfaces';
+import { Herramienta } from '../interfaces/herramienta.interface';
+import { areaInteresHerramientas } from '../interfaces/area-interes.interface';
 
 export const fetchAreasDeInteres = async (): Promise<AreaInteres[]> => {
   const response = await axios.get('/areas-interes');
@@ -22,7 +24,13 @@ export const createAreaDeInteres = async (newArea: Omit<AreaInteres, 'id'>): Pro
   console.log(newArea)
   const response = await axios.post('/areas-interes', newArea);
   console.log(response);
-  return response.data;
+  //La API manda el objeto sin areaInteresHerramientas y sin subAreas, por lo que se lo agregamos
+  return {
+    ...response.data,
+    areaInteresHerramientas: [],
+    subAreas: [],
+  
+  };
 };
 
 export const updateAreaDeInteres = async (id: string, updatedArea: Omit<AreaInteres, 'id'>): Promise<AreaInteres> => {
@@ -35,3 +43,19 @@ export const deleteAreaDeInteres = async (id: string): Promise<void> => {
 };
 
 
+export const createHerramientaApi = async (areaId: string, herramienta: Omit<Herramienta, 'id'>): Promise<areaInteresHerramientas> => { 
+   return await axios.post(`/herramientas`, herramienta).then(async(resp) => {
+    console.log(resp.data)
+    const herramientaId = resp.data.id
+    const areaInteresHerramienta = {
+      areaInteresId: areaId,
+      herramientaId: herramientaId
+    }
+     const relacionAreaHerramienta = await axios.post(`/area-interes-herramientas`, areaInteresHerramienta)
+     
+    console.log(relacionAreaHerramienta,'relacionAreaHerramienta')
+     return relacionAreaHerramienta.data
+  })
+  
+  
+}

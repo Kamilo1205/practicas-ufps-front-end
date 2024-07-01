@@ -24,7 +24,7 @@ export const AreasDeInteresSettingComponent = () => {
   const itemsPerPage = 5
   const [totalItems, setTotalItems] = useState(0)
 
-  const { areas, createAreaDeInteres,deleteAreaDeInteres,updateAreaDeInteres} = useAreasDeInteres()
+  const { areas, createAreaDeInteres,deleteAreaDeInteres,updateAreaDeInteres,createHerramienta} = useAreasDeInteres()
 console.log(areas)
   const form = useForm({
     resolver: zodResolver(z.object({
@@ -57,24 +57,27 @@ console.log(areas)
     const indexOfFirstItem = indexOfLastItem - itemsPerPage
     if (filtro === '') {
       
-      const areasHabilitadas = areas.filter((area) => !area.fechaEliminacion)
+      const areasHabilitadas = areas.filter((area) => !area.fechaEliminacion && !area.areaPadre)
+      
       setAreasPaginadas(areasHabilitadas.slice(indexOfFirstItem, indexOfLastItem))
       setTotalItems(areasHabilitadas.length)
-      return
+     
+    }
+    else {
+      let areasFiltradas = areas.filter((area) => area.nombre.toLowerCase().includes(filtro.toLowerCase()))
+      areasFiltradas = areasFiltradas.filter((area) => !area.fechaEliminacion && !area.areaPadre)
+      areasFiltradas = areasFiltradas.slice(indexOfFirstItem, indexOfLastItem)
+      setAreasPaginadas(areasFiltradas)
+      setTotalItems(areasFiltradas.length)
+
     }
     
-    let areasFiltradas = areas.filter((area) => area.nombre.toLowerCase().includes(filtro.toLowerCase()))
-    areasFiltradas = areasFiltradas.filter((area) => !area.fechaEliminacion)
-    areasFiltradas = areasFiltradas.slice(indexOfFirstItem, indexOfLastItem)
-    setAreasPaginadas(areasFiltradas)
-    setTotalItems(areasFiltradas.length)
-   
 
   },[filtro,areas,currentPage])
 
   return (<div>
     
-    <div className="text-gray-600 font-semibold text-lg mb-5">Agregar nueva area de Interes</div>
+    <div className="text-gray-600 font-semibold text-lg mb-5">Agregar nueva area de interés</div>
     <div className="w-full mb-5">
       <div className="w-full">
         <form
@@ -88,7 +91,7 @@ console.log(areas)
                 type="text"
                 name="nombre" id="nombre-area"
                 className="block w-full rounded-md border-0 py-1.5 text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
-                placeholder="Nombre del nuevo area de interes." />
+                placeholder="Nombre del nuevo area de interés." />
               {
                 form.formState.errors.nombre && <span className="text-red-500 text-sm">
                   {form.formState.errors.nombre.message?.toString()}
@@ -103,7 +106,7 @@ console.log(areas)
           >
             
             <BiPlus className="text-xl" />
-            <span className="hidden lg:inline-block text-nowrap">Agregar Area</span>
+            <span className="hidden lg:inline-block text-nowrap">Agregar area</span>
           </Button>
         </form>
         
@@ -126,7 +129,7 @@ console.log(areas)
               value={filtro}
               onChange={(e) => setFiltro(e.target.value)}
               className="block w-full rounded-md border-0 py-1.5 pl-7 pr-20 text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
-              placeholder="Buscar un area de interes" />
+              placeholder="Buscar un area de interés" />
 
           </div>
         </div>
@@ -153,6 +156,8 @@ console.log(areas)
               area={area}
               createAreaDeInteres={createAreaDeInteres}
               updateAreaDeInteres={updateAreaDeInteres}
+              createHerramienta={createHerramienta}
+
             /> 
           </DisclosureComponent>
 
@@ -169,10 +174,3 @@ console.log(areas)
     </div>
   </div>)
 } 
-
-/**
- * <div className="flex space-x-1 self-center">
-                <span className="font-semibold">Editar</span>
-                <ToogleComponent enabled={editar} setEnabled={() => setEditar(!editar)} />
-              </div>
- */
