@@ -29,6 +29,7 @@ const PlanDeTrabajoPage: React.FC<PlanTrabProps> = ({ estudiante, rol }) => {
         comments={comments}
         setComments={setComments}
         autor="TUTOR"
+        isComment={false}
       >
         <IntensidadHorariaTable
           rol={rol}

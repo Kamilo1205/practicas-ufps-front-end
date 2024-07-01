@@ -7,6 +7,8 @@ import { RegistroLayout } from "../layouts/RegistroLayout";
 import { PerfilPage } from "../pages/estudiante/PerfilPage";
 import PlanDeTrabajoVista from "./../components/PlanDeTrabajo/Coordinador-Empresa/PlanDeTrabajoVista";
 import InformeParicialPage from "./../pages/estudiante/InformeParicialPage";
+import InformeFinalPage from "./../pages/estudiante/InformeFinalPage";
+import EvaluacionEstudiante from "../pages/estudiante/EvaluacionEstudiante";
 
 export const EstudianteRouter = () => {
   const { user } = useAuth();
@@ -28,6 +30,14 @@ export const EstudianteRouter = () => {
               element={
                 <InformeParicialPage rol={true} /> //TRUE=== ESTUDIANTE SINO POS FALSE
               }
+            />
+            <Route
+              path="informefinal"
+              element={<InformeFinalPage rol={true} />}
+            />
+            <Route
+              path="evaluacionestudiante"
+              element={<EvaluacionEstudiante rol={false}/>}
             />
             <Route path="*" element={<Navigate to="/estudiante" replace />} />
           </Route>
