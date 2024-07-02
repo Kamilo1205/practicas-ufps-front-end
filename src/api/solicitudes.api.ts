@@ -12,7 +12,7 @@ export const fetchSolicitudesApi = async (): Promise<SolicitudesResponse> => {
   return response.data
 }
 
-export const fetchSolicitudesEmpresaApi = async (empresaId: string) => { 
+export const fetchSolicitudesEmpresaApi = async () => { 
   const response = await axios.get(`${SOLICITUDES_URL_EMPRESA}`)
   return response.data
 }

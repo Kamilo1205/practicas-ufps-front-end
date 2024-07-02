@@ -51,7 +51,8 @@ export interface SolicitudesResponse {
 export interface Solicitud {
   id:                   string;
   fechaCreacion:        Date;
-  fechaActualizacion:   Date;
+  fechaActualizacion: Date;
+  fechaEliminacion?:     Date;
   cantidadPracticantes: number;
   esRenumerado:         boolean;
   areasInteres:         AreasIntere[];

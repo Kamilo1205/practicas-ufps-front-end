@@ -1,43 +1,21 @@
 import { useState } from "react";
-import { HerramientasForm } from "../../components/area-interes";
 import { FieldValues, SubmitHandler, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Form } from "../../components/ui/Input/Form";
-import { TabComponent } from "../../components/ui/Tab/TabComponent";
-import { BiArrowToRight, BiCheckCircle, } from "react-icons/bi";
-import { MdCancel } from "react-icons/md";
-import { DialogComponent } from "../../components/ui/Dialog/DialogComponent";
-import { SolicitudComponent } from "../../components/solicitudes/SolicitudComponent";
-import { BsXLg } from "react-icons/bs";
-import Swal from "sweetalert2";
-import useAreasDeInteres from "../../hooks/useAreasInteres";
 import { z } from "zod";
 
 import { useAuth } from "../../contexts";
+import useAreasDeInteres from "../../hooks/useAreasInteres";
 import { useSolicitudes } from "../../hooks/useSolicitudes";
 
+import { HerramientasForm } from "../../components/area-interes";
+import { DialogComponent } from "../../components/ui/Dialog/DialogComponent";
+import { EmptyStateMessage } from "../../components/estudiantes";
+import { Form } from "../../components/ui/Input/Form";
+import { SolicitudComponent } from "../../components/solicitudes/SolicitudComponent";
+import { TabComponent } from "../../components/ui/Tab/TabComponent";
 
-const getSolicitudesPracticantes = async () => {
-  return Promise.resolve([
-    {
-      id: 1,
-      estado: true,
-      empresa: {
-        nombre: 'Empresa 1',
-        nit: '123456789',
-
-      },
-      perfil: {
-        areaConocimiento: 'Desarrollo de software',
-        habilidades: 'Conocimiento en React, Node.js, MongoDB',
-        herramientas: 'Visual Studio Code, Git, GitHub',
-      },
-      numeroPracticantes: 1,
-      remunerado: true,
-    },
-  ])
-}
-
+import { Solicitud } from "../../schemas/solicitudSchema";
+import { TablaSolicitudesComponent } from "../../components/solicitudes/TablaSolicitudesComponent";
 
 const AlertComponent = () => {
   return (
@@ -67,11 +45,11 @@ export default AlertComponent;
 
 export const SolicitudesPracticantes = () => {
 
-  const { solicitudes, createSolicitud } = useSolicitudes()
+  const { solicitudes, createSolicitud, eliminarSolicitud } = useSolicitudes()
   const [tab, setTab] = useState(0)
   const [mostrarSolicitud, setMostrarSolicitud] = useState(false)
-  const [solicitudSeleccionada, setSolicitudSeleccionada] = useState<any>(null)
-
+  const [solicitudSeleccionada, setSolicitudSeleccionada] = useState<Solicitud | null>(null)
+  const cantidadPracticantes = solicitudes.reduce((acumulador, numPracticantes) => acumulador + numPracticantes.cantidadPracticantes, 0)
   console.log('solicitudes', solicitudes)
 
   const { areas } = useAreasDeInteres()
@@ -83,7 +61,7 @@ export const SolicitudesPracticantes = () => {
   const form = useForm({
     defaultValues: {
       areasInteres: [],
-      numeroPracticantes: 1,
+      numeroPracticantes: "1",
       remuneracion: false,
       herramientas: [],
       id: user?.id
@@ -92,16 +70,23 @@ export const SolicitudesPracticantes = () => {
 
       areaConocimiento: z.string().optional(),
       herramientas: z.array(z.string()).optional(),
-      numeroPracticantes: z.number().min(1, { message: 'Debe solicitar minimo 1 practicante.' }).max(3, { message: 'Solo puede solicitar un maximo de 3 practicantes.' }),
+      numeroPracticantes: z.string().refine((value) => {
+        const parsedInt = parseInt(value)
+        return !isNaN(parsedInt)
+      }, { message: 'Se debe seleccionar un número.' }).
+        refine((value) => {
+          const parsedInt = parseInt(value)
+          return parsedInt > 0 && parsedInt <= 3
+        }, { message: 'Debe solicitar un mínimo de 1 y máximo de 3 practicantes.' }),
       remuneracion: z.boolean(),
       areasInteres: z.array(z.string())
-        .min(1, { message: 'Debe seleccionar al menos una área de interes.' })
-        .max(3, { message: 'Solo puede seleccionar un maximo de 3 áreas de interes.' }),
+        .min(1, { message: 'Debe seleccionar al menos una área de interés.' })
+        .max(3, { message: 'Solo puede seleccionar un máximo de 3 áreas de interés.' }),
     }))
   });
 
-  //console.log('errores', form.formState.errors)
-  //console.log(form.getValues())
+  console.log('errores', form.formState.errors)
+  console.log(form.getValues())
   //console.log(form.getValues())
   //const selectedDepartamento = form.watch("departamentoResidenciaId");
   // const watch = form.watch() as Record<string, any>;
@@ -118,28 +103,14 @@ export const SolicitudesPracticantes = () => {
     //console.log('solicitudRequest',solicitudRequest)
   }
 
-  const onCancelarSolictud = () => {
-    Swal.fire({
-      title: '¿Estás seguro de cancelar la solicitud?',
-      text: "No podrás revertir esta acción!",
-      icon: 'warning',
-      showCancelButton: true,
-      confirmButtonColor: '#3085d6',
-      cancelButtonColor: '#d33',
-      confirmButtonText: 'Si, cancelar solicitud!',
-      cancelButtonText: 'No!'
-    }).then((result) => {
-      if (result.isConfirmed) {
-        Swal.fire(
-          'Solicitud cancelada!',
-          'Tu solicitud ha sido cancelada.',
-          'success'
-        )
-      }
-    })
+  const onCancelarSolictud = (solicitudId: string) => {
+    eliminarSolicitud(solicitudId)
   }
 
-
+  const onMostrarSolicitud = (solicitud: Solicitud) => {
+    setSolicitudSeleccionada(solicitud)
+    setMostrarSolicitud(true)
+  }
 
   console.log(solicitudes)
   return (
@@ -181,227 +152,168 @@ export const SolicitudesPracticantes = () => {
       </div>
       {
         tab === 0 && (
-          <div>
-
-
-            <ul role="list" className="divide-y divide-gray-100">
-              {
-                solicitudes.map((solicitud) => (
-                  <li
-                    key={solicitud.id || 0}
-
-                    className="flex justify-between gap-x-6 py-5">
-                    <div
-                      onClick={() => setMostrarSolicitud(true)}
-                      className="flex min-w-0 gap-x-4 cursor-pointer">
-                      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true"
-                        className="h-8 w-8 text-yellow-400 self-center">
-                        <title>Solicitud pendiente</title>
-                        <path fillRule="evenodd" d="M8.485 2.495c.673-1.167 2.357-1.167 3.03 0l6.28 10.875c.673 1.167-.17 2.625-1.516 2.625H3.72c-1.347 0-2.189-1.458-1.515-2.625L8.485 2.495zM10 5a.75.75 0 01.75.75v3.5a.75.75 0 01-1.5 0v-3.5A.75.75 0 0110 5zm0 9a1 1 0 100-2 1 1 0 000 2z" clipRule="evenodd"></path>
-                      </svg>
-                      <div className="min-w-0 flex-auto">
-                        <p className="text-sm font-semibold leading-6 text-gray-900">Solicitud de 1 practicante</p>
-                        <p className="mt-1 truncate text-xs leading-5 text-blue-500 flex content-center">
-                          Ver solicitud
-                          <BiArrowToRight className="self-center" />
-                        </p>
-                      </div>
-                    </div>
-                    <div className="hidden shrink-0 sm:flex sm:flex-col sm:items-end">
-                      <button
-                        onClick={onCancelarSolictud}
-                        className="self-center"
-                      >
-                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true"
-                          className="h-10 w-10 text-red-400 cursor-pointer">
-                          <BsXLg />
-                        </svg>
-                      </button>
-                    </div>
-                  </li>
-                ))
-              }
-
-              <li className="flex justify-between gap-x-6 py-5 cursor-pointer">
-                <div className="flex min-w-0 gap-x-4">
-                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true" className="h-10 w-10 text-green-400">
-                    <title>Solicitud aprobada</title>
-                    <BiCheckCircle />
-                  </svg>
-                  <div className="min-w-0 flex-auto">
-                    <p className="text-sm font-semibold leading-6 text-gray-900">Solicitud de 2 practicantes</p>
-                    <p className="mt-1 truncate text-xs leading-5 text-blue-500 flex content-center">
-                      Ver solicitud
-                      <BiArrowToRight className="self-center" />
-                    </p>
-                  </div>
-                </div>
-
-              </li>
-            </ul>
-            <div className="flex flex-col space-y-0">
-              <div className="flex">
-                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true" className="h-5 w-5 text-green-400">
-                  <BiCheckCircle />
-                </svg>
-                <div className="text-green-600 font-bold text-sm mb-3">Solicitudes de practicantes asignadas</div>
-              </div>
-              <div className="flex">
-                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true" className="h-5 w-5 text-yellow-400">
-                  <path fillRule="evenodd" d="M8.485 2.495c.673-1.167 2.357-1.167 3.03 0l6.28 10.875c.673 1.167-.17 2.625-1.516 2.625H3.72c-1.347 0-2.189-1.458-1.515-2.625L8.485 2.495zM10 5a.75.75 0 01.75.75v3.5a.75.75 0 01-1.5 0v-3.5A.75.75 0 0110 5zm0 9a1 1 0 100-2 1 1 0 000 2z" clipRule="evenodd"></path>
-                </svg>
-                <div className="text-yellow-600 font-bold text-sm mb-3">Solicitudes de practicantes pendientes de asignación</div>
-              </div>
-              <div className="flex">
-                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true" className="h-5 w-5 text-red-400">
-                  <MdCancel />
-                </svg>
-                <div className="text-red-600 font-bold text-sm mb-3">Solicitudes de practicantes rechazadas</div>
-              </div>
-            </div>
-          </div>
+          <TablaSolicitudesComponent
+            operable
+            solicitudes={solicitudes.filter(solicitud => !solicitud.fechaEliminacion)}
+            onCancelarSolictud={onCancelarSolictud}
+            onMostrarSolicitud={onMostrarSolicitud}
+          />
         )
       }
       {
         tab === 1 && (
-          <Form {...form}>
-            <h2
-              className="text-md font-bold mb-5"
-            >Formulario de solicitud de practicantes</h2>
-            <AlertComponent />
+          cantidadPracticantes >= 3 ?
+            <EmptyStateMessage
+              message="Ya haz alcanzado el máximo de practicantes que puedes solicitar por semestre."
+              submesage=""
 
-            <form onSubmit={form.handleSubmit(onSubmit)}>
-              <div>
-                <div className="flex space-x-3">
-                  <label htmlFor="country"
-                    className="block text-sm font-medium leading-6 text-gray-900 self-center"
-                  >Número de practicantes solicitados para el perfil
-                  </label>
-                  <div className="mt-2">
-                    <select
-                      id="numero-practicantes-solicitud"
-                      {...form.register("numeroPracticantes")}
-                      autoComplete="numero-practicantes"
-                      className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:max-w-xs sm:text-sm sm:leading-6">
-                      <option>1</option>
-                      <option>2</option>
-                      <option>3</option>
-                    </select>
+            /> : <Form {...form}>
+              <h2
+                className="text-md font-bold mb-5"
+              >Formulario de solicitud de practicantes</h2>
+              <AlertComponent />
+
+              <form onSubmit={form.handleSubmit(onSubmit)}>
+                <div>
+                  <div className="flex space-x-3">
+                    <label htmlFor="country"
+                      className="block text-sm font-medium leading-6 text-gray-900 self-center"
+                    >Número de practicantes solicitados para el perfil
+                    </label>
+                    <div className="mt-2">
+                      <select
+
+                        id="numero-practicantes-solicitud"
+                        {...form.register("numeroPracticantes")}
+                        autoComplete="numero-practicantes"
+                        className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:max-w-xs sm:text-sm sm:leading-6">
+                        <option itemType="number">1</option>
+                        <option>2</option>
+                        <option>3</option>
+                      </select>
+                    </div>
+
+                  </div>
+                </div>
+                <div>
+                  <div>
+                    <fieldset>
+                      <legend className="text-sm font-semibold leading-6 text-gray-900">¿Tendrá algún tipo de remuneración?</legend>
+                      <p className="mt-1 text-sm leading-6 text-gray-600">Incentivo monetario de cualquier tipo (salario, subsidio, comisión...).</p>
+                      <div className="space-y-1">
+                        <div className="flex items-center gap-x-3">
+                          <input id="push-everything" type="radio"
+                            checked={form.watch("remuneracion")}
+                            onChange={() => form.setValue("remuneracion", true)}
+                            className="h-4 w-4 border-gray-300 text-indigo-600 focus:ring-indigo-600" />
+                          <label htmlFor="push-everything" className="block text-sm font-medium leading-6 text-gray-900">Si</label>
+                        </div>
+                        <div className="flex items-center gap-x-3">
+                          <input id="push-email" name="push-notifications" type="radio"
+                            checked={!form.watch("remuneracion")}
+                            onChange={() => form.setValue("remuneracion", false)}
+                            className="h-4 w-4 border-gray-300 text-indigo-600 focus:ring-indigo-600" />
+                          <label htmlFor="push-email" className="block text-sm font-medium leading-6 text-gray-900">No</label>
+                        </div>
+
+                      </div>
+                    </fieldset>
+
                   </div>
 
                 </div>
-              </div>
-              <div>
-                <div>
+                <div className="mt-3">
                   <fieldset>
-                    <legend className="text-sm font-semibold leading-6 text-gray-900">¿Tendrá algún tipo de remuneración?</legend>
-                    <p className="mt-1 text-sm leading-6 text-gray-600">Incentivo monetario de cualquier tipo (salario, subsidio, comisión...).</p>
-                    <div className="space-y-1">
-                      <div className="flex items-center gap-x-3">
-                        <input id="push-everything" type="radio"
-                          checked={form.watch("remuneracion")}
-                          {...form.register("remuneracion")}
-                          className="h-4 w-4 border-gray-300 text-indigo-600 focus:ring-indigo-600" />
-                        <label htmlFor="push-everything" className="block text-sm font-medium leading-6 text-gray-900">Si</label>
-                      </div>
-                      <div className="flex items-center gap-x-3">
-                        <input id="push-email" name="push-notifications" type="radio"
-                          checked={!form.watch("remuneracion")}
-                          onChange={() => form.setValue("remuneracion", false)}
-                          className="h-4 w-4 border-gray-300 text-indigo-600 focus:ring-indigo-600" />
-                        <label htmlFor="push-email" className="block text-sm font-medium leading-6 text-gray-900">No</label>
+                    <legend className="text-sm font-semibold leading-6 text-gray-900">
+                      Seleccione las áreas de interés de los practicantes que necesita.
+                    </legend>
+                    <div className="mt-6 space-y-2">
+                      {
+                        areas.map((area) =>
+                          !area?.fechaEliminacion && !area?.areaPadre && <div key={area.id} className="relative flex gap-x-3">
+                            <div className="flex h-6 items-center">
+                              <input
+                                id={area.id}
+
+                                type="checkbox"
+                                {...form.register(`areasInteres.${area.id}`)}
+                                value={area.id}
+                                checked={form.watch("areasInteres").includes(area.id)}
+                                onChange={(e) => {
+                                  const checked = e.target.checked;
+                                  if (checked) {
+                                    form.setValue("areasInteres", [...form.watch("areasInteres"), area.id])
+                                  } else {
+                                    form.setValue("areasInteres", form.watch("areasInteres").filter((id: string) => id !== area.id))
+                                  }
+                                }}
+                                className="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-600"
+                              />
+
+                            </div>
+                            <div className="text-sm leading-6">
+                              <label htmlFor={area.id} className="font-normal text-gray-900">{area.nombre}</label>
+
+                            </div>
+                            <div>
+
+                            </div>
+                          </div>
+                        )
+                      }
+                      <div>
+                        <label htmlFor="">
+                          {
+                            form.formState.errors.areasInteres ? (
+                              <span className="text-red-500 text-sm">
+                                {
+                                  form.formState.errors.areasInteres.root?.message
+
+                                }</span>
+                            ) : null
+                          }
+                        </label>
                       </div>
 
                     </div>
                   </fieldset>
 
                 </div>
+                <div>
 
-              </div>
-              <div className="mt-3">
-                <fieldset>
-                  <legend className="text-sm font-semibold leading-6 text-gray-900">
-                    Seleccione las áreas de interés de los practicantes que necesita.
-                  </legend>
-                  <div className="mt-6 space-y-2">
-                    {
-                      areas.map((area) =>
-                        !area?.fechaEliminacion && !area?.areaPadre && <div className="relative flex gap-x-3">
-                          <div className="flex h-6 items-center">
-                            <input
-                              id={area.id}
-
-                              type="checkbox"
-                              {...form.register(`areasInteres.${area.id}`)}
-                              value={area.id}
-                              checked={form.watch("areasInteres").includes(area.id)}
-                              onChange={(e) => {
-                                const checked = e.target.checked;
-                                if (checked) {
-                                  form.setValue("areasInteres", [...form.watch("areasInteres"), area.id])
-                                } else {
-                                  form.setValue("areasInteres", form.watch("areasInteres").filter((id: string) => id !== area.id))
-                                }
-                              }}
-                              className="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-600"
-                            />
-
-                          </div>
-                          <div className="text-sm leading-6">
-                            <label htmlFor={area.id} className="font-normal text-gray-900">{area.nombre}</label>
-
-                          </div>
-                          <div>
-
-                          </div>
-                        </div>
-                      )
-                    }
-                    <div>
-                      <label htmlFor="">
-                        {
-                          form.formState.errors.areasInteres ? (
-                            <span className="text-red-500 text-sm">
-                              {
-                                form.formState.errors.areasInteres.root?.message
-
-                              }</span>
-                          ) : null
-                        }
-                      </label>
+                  <div className="mt-10 mb-3">
+                    <div className="text-sm text-gray-900 mb-5">
+                      Seleccione las herramientas y/o conocimientos que el practicante debe manejar de las
+                      siguientes sub categorías. <span className="font-semibold">Esto es opcional, puede no seleccionar nada</span>.
                     </div>
+                    <HerramientasForm form={form} />
 
                   </div>
-                </fieldset>
-
-              </div>
-              <div>
-
-                <div className="mt-10 mb-3">
-                  <div className="text-sm text-gray-900 mb-5">
-                    Seleccione las herramientas y/o conocimientos que el practicante debe manejar de las
-                    siguientes sub categorías. <span className="font-semibold">Esto es opcional, puede no seleccionar nada</span>.
-                  </div>
-                  <HerramientasForm form={form} />
-
                 </div>
-              </div>
 
-              <button
-                type="submit"
-                className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded mt-5"
-              >
-                Enviar solicitud
-              </button>
-            </form>
-          </Form>
+                <button
+                  type="submit"
+                  className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded mt-5"
+                >
+                  Enviar solicitud
+                </button>
+              </form>
+            </Form>
         )
       }
       {
         tab === 2 && (
           <div>
             <h2>Solicitudes de practicantes finalizadas</h2>
+
+            <TablaSolicitudesComponent
+              solicitudes={solicitudes.filter(solicitud => solicitud.fechaEliminacion)}
+              onCancelarSolictud={onCancelarSolictud}
+              onMostrarSolicitud={onMostrarSolicitud}
+            />
+
           </div>
+
         )}
 
 

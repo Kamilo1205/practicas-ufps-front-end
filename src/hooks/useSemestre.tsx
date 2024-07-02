@@ -10,7 +10,7 @@ export const useSemestre = () => {
     setLoading(true)
     fetchSemestreApi().then(resp => {
       setSemestre(resp)
-      console.log(resp)
+      //console.log(resp)
       setLoading(false)
     }
     )

@@ -1,9 +1,10 @@
 import { useCallback, useEffect, useState } from "react"
 
 import { Solicitud,  SolicitudRequest } from "../schemas/solicitudSchema"
-import { createSolicitudApi, fetchSolicitudesApi, fetchSolicitudesEmpresaApi } from "../api/solicitudes.api"
+import { createSolicitudApi, eliminarSolicitudApi, fetchSolicitudesApi, fetchSolicitudesEmpresaApi } from "../api/solicitudes.api"
 import { useAuth } from "../contexts"
 import { roles } from "../interfaces/rol.interface"
+import Swal from "sweetalert2"
 
 
 export const useSolicitudes = () => {
@@ -21,7 +22,7 @@ export const useSolicitudes = () => {
 
   const fetchSolicitudesEmpresa = useCallback(async () => {
     if (user && esEmpresa) {
-      return await fetchSolicitudesEmpresaApi(user.id);
+      return await fetchSolicitudesEmpresaApi();
     }
   }, [user, esEmpresa]);
 
@@ -51,10 +52,40 @@ export const useSolicitudes = () => {
       const peticion = await createSolicitudApi(nuevaSolicitud)
       console.log(peticion)
       setSolicitudes([...solicitudes, peticion])
+      Swal.fire({
+        title: 'Solicitud creada',
+        text: 'La solicitud ha sido creada exitosamente',
+        icon: 'success',
+        confirmButtonText: 'Aceptar'
+      })
     }
     else {
       setError('No se puede crear una solicitud si el usuario no es una empresa.')
     }
+  }
+
+  const eliminarSolicitud = async (solicitudId: string) => { 
+    Swal.fire({
+      title: '¿Estás seguro?',
+      text: 'La solicitud será eliminada permanentemente',
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonText: 'Sí, eliminar',
+      cancelButtonText: 'Cancelar'
+    }).then(async(result) => {
+      if (result.isConfirmed) {
+        const eliminar = await eliminarSolicitudApi(solicitudId)
+        console.log(eliminar)
+        setSolicitudes(solicitudes.filter(solicitud => solicitud.id !== solicitudId))
+        Swal.fire({
+          title: 'Solicitud eliminada',
+          text: 'La solicitud ha sido eliminada exitosamente',
+          icon: 'success',
+          confirmButtonText: 'Aceptar'
+        })
+      }
+    })
+    
   }
 
   return {
@@ -62,5 +93,6 @@ export const useSolicitudes = () => {
     solicitudes,
     totalSolictudes,
     createSolicitud,
+    eliminarSolicitud
   }
  } 
