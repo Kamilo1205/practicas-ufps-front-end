@@ -37,7 +37,7 @@ export const EstudianteRouter = () => {
             />
             <Route
               path="evaluacionestudiante"
-              element={<EvaluacionEstudiante rol={false}/>}
+              element={<EvaluacionEstudiante rol={true}/>}
             />
             <Route path="*" element={<Navigate to="/estudiante" replace />} />
           </Route>

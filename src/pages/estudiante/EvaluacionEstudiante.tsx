@@ -173,7 +173,7 @@ const EvaluacionEstudiante = ({ rol = true }) => {
       <div className="mb-10" />
       <table className="min-w-full border border-gray-400">
         <thead>
-          <tr className="min-w-full border border-gray-400">
+          <tr className="bg-slate-200">
             <th colSpan={6} className="justify-center w-full">
               5. COMENTARIOS
             </th>
