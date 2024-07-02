@@ -1,10 +1,10 @@
-import { useEffect, useState } from "react";
-import {  HerramientasForm } from "../../components/area-interes";
-import { useForm } from "react-hook-form";
+import { useState } from "react";
+import { HerramientasForm } from "../../components/area-interes";
+import { FieldValues, SubmitHandler, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Form } from "../../components/ui/Input/Form";
 import { TabComponent } from "../../components/ui/Tab/TabComponent";
-import { BiArrowToRight, BiCheckCircle, BiChevronDown } from "react-icons/bi";
+import { BiArrowToRight, BiCheckCircle, } from "react-icons/bi";
 import { MdCancel } from "react-icons/md";
 import { DialogComponent } from "../../components/ui/Dialog/DialogComponent";
 import { SolicitudComponent } from "../../components/solicitudes/SolicitudComponent";
@@ -12,9 +12,9 @@ import { BsXLg } from "react-icons/bs";
 import Swal from "sweetalert2";
 import useAreasDeInteres from "../../hooks/useAreasInteres";
 import { z } from "zod";
-import { HerramientaCheckbox } from "../../components/area-interes/HerramientaCheckbox";
-import { Disclosure, DisclosureButton, DisclosurePanel } from "@headlessui/react";
+
 import { useAuth } from "../../contexts";
+import { useSolicitudes } from "../../hooks/useSolicitudes";
 
 
 const getSolicitudesPracticantes = async () => {
@@ -54,7 +54,7 @@ const AlertComponent = () => {
           <div className="ml-5 text-left">
             <h3 className="text-md leading-5 font-medium text-yellow-700">¡Atención!</h3>
             <div className="mt-2 text-sm text-yellow-600">
-              <p>Solamente puede solicitar un maximo de   <span className="font-bold">3 practicantes</span> por semestre.</p>
+              <p>Solamente puede solicitar un máximo de   <span className="font-bold">3 practicantes</span> por semestre.</p>
             </div>
           </div>
         </div>
@@ -65,20 +65,21 @@ const AlertComponent = () => {
 
 export default AlertComponent;
 
-export const SolicitudesPracticantes = () => { 
+export const SolicitudesPracticantes = () => {
 
-  const [solicitudes, setSolicitudes] = useState<any[]>([]);
+  const { solicitudes, createSolicitud } = useSolicitudes()
   const [tab, setTab] = useState(0)
   const [mostrarSolicitud, setMostrarSolicitud] = useState(false)
   const [solicitudSeleccionada, setSolicitudSeleccionada] = useState<any>(null)
 
+  console.log('solicitudes', solicitudes)
 
-  const {areas} = useAreasDeInteres()
-  const {user} = useAuth()
+  const { areas } = useAreasDeInteres()
+  const { user } = useAuth()
   //console.log(user)
 
-  console.log(areas)
-  
+  //console.log(areas)
+
   const form = useForm({
     defaultValues: {
       areasInteres: [],
@@ -88,33 +89,36 @@ export const SolicitudesPracticantes = () => {
       id: user?.id
     },
     resolver: zodResolver(z.object({
-    
+
       areaConocimiento: z.string().optional(),
-      herramientas: z.array(z.object({
-        id: z.string(),
-        nombre: z.string()
-      })),
-      numeroPracticantes: z.number().min(1,{message:'Debe solicitar minimo 1 practicante.'}).max(3, { message: 'Solo puede solicitar un maximo de 3 practicantes.' }),
+      herramientas: z.array(z.string()).optional(),
+      numeroPracticantes: z.number().min(1, { message: 'Debe solicitar minimo 1 practicante.' }).max(3, { message: 'Solo puede solicitar un maximo de 3 practicantes.' }),
       remuneracion: z.boolean(),
       areasInteres: z.array(z.string())
-        .min(1,{ message: 'Debe seleccionar al menos una área de interes.' })
+        .min(1, { message: 'Debe seleccionar al menos una área de interes.' })
         .max(3, { message: 'Solo puede seleccionar un maximo de 3 áreas de interes.' }),
     }))
   });
 
-  console.log(form.formState.errors)
+  //console.log('errores', form.formState.errors)
+  //console.log(form.getValues())
   //console.log(form.getValues())
   //const selectedDepartamento = form.watch("departamentoResidenciaId");
- // const watch = form.watch() as Record<string, any>;
-//  const { createEstudiante, cargando, error } = useEstudiantes();
+  // const watch = form.watch() as Record<string, any>;
+  //  const { createEstudiante, cargando, error } = useEstudiantes();
 
-  const onSubmit = (data: any) => { 
-    console.log('data',data)
-   
+  const onSubmit: SubmitHandler<FieldValues> = (data) => {
+    console.log('data', data)
+    createSolicitud({
+      areasInteresIds: data.areasInteres,
+      herramientasIds: data.herramientas,
+      cantidadPracticantes: String(data.numeroPracticantes),
+      esRenumerado: data.remuneracion ? 'true' : 'false'
+    })
     //console.log('solicitudRequest',solicitudRequest)
   }
 
-  const onCancelarSolictud = () => { 
+  const onCancelarSolictud = () => {
     Swal.fire({
       title: '¿Estás seguro de cancelar la solicitud?',
       text: "No podrás revertir esta acción!",
@@ -136,9 +140,6 @@ export const SolicitudesPracticantes = () => {
   }
 
 
-  useEffect(() => {
-    getSolicitudesPracticantes().then(setSolicitudes);
-  }, []);
 
   console.log(solicitudes)
   return (
@@ -173,7 +174,7 @@ export const SolicitudesPracticantes = () => {
               name: 'Crear solicitud'
             },
             {
-              name:'Solicitudes de practicantes finalizadas'
+              name: 'Solicitudes de practicantes finalizadas'
             }
           ]}
         />
@@ -181,14 +182,14 @@ export const SolicitudesPracticantes = () => {
       {
         tab === 0 && (
           <div>
-            
-            
+
+
             <ul role="list" className="divide-y divide-gray-100">
               {
                 solicitudes.map((solicitud) => (
                   <li
-                    key={solicitud.id||0}
-                    
+                    key={solicitud.id || 0}
+
                     className="flex justify-between gap-x-6 py-5">
                     <div
                       onClick={() => setMostrarSolicitud(true)}
@@ -206,7 +207,7 @@ export const SolicitudesPracticantes = () => {
                         </p>
                       </div>
                     </div>
-                    <div className="hidden shrink-0 sm:flex sm:flex-col sm:items-end">    
+                    <div className="hidden shrink-0 sm:flex sm:flex-col sm:items-end">
                       <button
                         onClick={onCancelarSolictud}
                         className="self-center"
@@ -219,12 +220,12 @@ export const SolicitudesPracticantes = () => {
                     </div>
                   </li>
                 ))
-}
-              
+              }
+
               <li className="flex justify-between gap-x-6 py-5 cursor-pointer">
                 <div className="flex min-w-0 gap-x-4">
                   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true" className="h-10 w-10 text-green-400">
-                    <title>Solicitud aprovada</title>
+                    <title>Solicitud aprobada</title>
                     <BiCheckCircle />
                   </svg>
                   <div className="min-w-0 flex-auto">
@@ -235,7 +236,7 @@ export const SolicitudesPracticantes = () => {
                     </p>
                   </div>
                 </div>
-                
+
               </li>
             </ul>
             <div className="flex flex-col space-y-0">
@@ -266,112 +267,10 @@ export const SolicitudesPracticantes = () => {
           <Form {...form}>
             <h2
               className="text-md font-bold mb-5"
-            >Formulario de solicitud de practicantes</h2> 
+            >Formulario de solicitud de practicantes</h2>
             <AlertComponent />
 
             <form onSubmit={form.handleSubmit(onSubmit)}>
-              <div className="mt-3">
-                <fieldset>
-                  <legend className="text-sm font-semibold leading-6 text-gray-900">
-                    Seleccione las áreas de interés de los practicantes que necesita.
-                  </legend>
-                  <div className="mt-6 space-y-2">
-                    {
-                      areas.map((area) =>
-                        <div className="relative flex gap-x-3">
-                          <div className="flex h-6 items-center">
-                            <input id={area.id} name={area.id} type="checkbox"
-                              value={area.id}
-                              checked={form.watch("areasInteres").includes(area.id)}
-                              onChange={(e) => {
-                                const checked = e.target.checked;
-                                if (checked) {
-                                  form.setValue("areasInteres", [...form.watch("areasInteres"), area.id])
-                                } else {
-                                  form.setValue("areasInteres", form.watch("areasInteres").filter((id: string) => id !== area.id))
-                                }
-                              }}
-                              className="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-600" />
-                            
-                          </div>
-                          <div className="text-sm leading-6">
-                            <label htmlFor={area.id} className="font-normal text-gray-900">{ area.nombre}</label>
-                           
-                          </div>
-                          <div>
-                            
-                          </div>
-                        </div>
-                      )
-                    }
-                    <div>
-                      <label htmlFor="">
-                        {
-                          form.formState.errors.areasInteres ? (
-                            <span className="text-red-500 text-sm">
-                              {
-                              form.formState.errors.areasInteres.message 
-                            
-                            }</span>
-                          ) : null
-                        }
-                      </label>
-                    </div>
-                    
-                  </div>
-                </fieldset>
-
-              </div>
-              <div>
-
-                <div className="mt-10 mb-3">
-                  <div className="text-sm text-gray-900 mb-2">
-                    Seleccione las herramientas y/o conocimientos que maneja de las
-                    siguientes subcategorias (solo si aplica).
-                  </div>
-                  <HerramientasForm />
-                  <div className="divide-y mt-3">
-                   
-                   
-                      <Disclosure>
-                      <DisclosureButton
-                        className="text-sm font-semibold leading-6 text-gray-900 flex w-full justify-between p-3">
-                        <span>Frontend</span>       
-                        <BiChevronDown className="h-5 w-5 text-gray-400" />
-                      </DisclosureButton>
-                      <DisclosurePanel>
-                        <div className="flex space-x-1 p-3">
-                          <HerramientaCheckbox nombre="HTML" />
-                          <HerramientaCheckbox nombre="CSS" />
-                          <HerramientaCheckbox nombre="React" />
-                          <HerramientaCheckbox nombre="Angular" />
-                          <HerramientaCheckbox nombre="Vue" />
-                        </div>
-                      </DisclosurePanel>
-                      
-                      </Disclosure>
-                      
-                    <Disclosure>
-                      <DisclosureButton
-                        className="text-sm font-semibold leading-6 text-gray-900 flex w-full justify-between p-3">
-                        <span>Backend</span>
-                        <BiChevronDown className="h-5 w-5 text-gray-400" />
-                      </DisclosureButton>
-                      <DisclosurePanel>
-                        <div className="flex space-x-1 p-3">
-                          <HerramientaCheckbox nombre="Node js" />
-                          <HerramientaCheckbox nombre="Spring" />
-                          <HerramientaCheckbox nombre="Nest" />
-                          <HerramientaCheckbox nombre="C#" />
-                          <HerramientaCheckbox nombre="GO" />
-                        </div>
-                      </DisclosurePanel>
-
-                    </Disclosure>
-                    
-                  </div>
-                </div>
-              </div>
               <div>
                 <div className="flex space-x-3">
                   <label htmlFor="country"
@@ -379,7 +278,11 @@ export const SolicitudesPracticantes = () => {
                   >Número de practicantes solicitados para el perfil
                   </label>
                   <div className="mt-2">
-                    <select id="country" name="country" autoComplete="numero-practicantes" className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:max-w-xs sm:text-sm sm:leading-6">
+                    <select
+                      id="numero-practicantes-solicitud"
+                      {...form.register("numeroPracticantes")}
+                      autoComplete="numero-practicantes"
+                      className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:max-w-xs sm:text-sm sm:leading-6">
                       <option>1</option>
                       <option>2</option>
                       <option>3</option>
@@ -395,31 +298,101 @@ export const SolicitudesPracticantes = () => {
                     <p className="mt-1 text-sm leading-6 text-gray-600">Incentivo monetario de cualquier tipo (salario, subsidio, comisión...).</p>
                     <div className="space-y-1">
                       <div className="flex items-center gap-x-3">
-                        <input id="push-everything" name="push-notifications" type="radio"
+                        <input id="push-everything" type="radio"
                           checked={form.watch("remuneracion")}
-                          onChange={() => form.setValue("remuneracion", true)}
+                          {...form.register("remuneracion")}
                           className="h-4 w-4 border-gray-300 text-indigo-600 focus:ring-indigo-600" />
-                          <label htmlFor="push-everything" className="block text-sm font-medium leading-6 text-gray-900">Si</label>
+                        <label htmlFor="push-everything" className="block text-sm font-medium leading-6 text-gray-900">Si</label>
                       </div>
                       <div className="flex items-center gap-x-3">
                         <input id="push-email" name="push-notifications" type="radio"
                           checked={!form.watch("remuneracion")}
                           onChange={() => form.setValue("remuneracion", false)}
                           className="h-4 w-4 border-gray-300 text-indigo-600 focus:ring-indigo-600" />
-                          <label htmlFor="push-email" className="block text-sm font-medium leading-6 text-gray-900">No</label>
+                        <label htmlFor="push-email" className="block text-sm font-medium leading-6 text-gray-900">No</label>
                       </div>
-                      
+
                     </div>
                   </fieldset>
 
                 </div>
-                <button
-                  type="submit"
-                  className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded mt-5"
-                >
-                  Enviar solicitud
-                </button>
+
               </div>
+              <div className="mt-3">
+                <fieldset>
+                  <legend className="text-sm font-semibold leading-6 text-gray-900">
+                    Seleccione las áreas de interés de los practicantes que necesita.
+                  </legend>
+                  <div className="mt-6 space-y-2">
+                    {
+                      areas.map((area) =>
+                        !area?.fechaEliminacion && !area?.areaPadre && <div className="relative flex gap-x-3">
+                          <div className="flex h-6 items-center">
+                            <input
+                              id={area.id}
+
+                              type="checkbox"
+                              {...form.register(`areasInteres.${area.id}`)}
+                              value={area.id}
+                              checked={form.watch("areasInteres").includes(area.id)}
+                              onChange={(e) => {
+                                const checked = e.target.checked;
+                                if (checked) {
+                                  form.setValue("areasInteres", [...form.watch("areasInteres"), area.id])
+                                } else {
+                                  form.setValue("areasInteres", form.watch("areasInteres").filter((id: string) => id !== area.id))
+                                }
+                              }}
+                              className="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-600"
+                            />
+
+                          </div>
+                          <div className="text-sm leading-6">
+                            <label htmlFor={area.id} className="font-normal text-gray-900">{area.nombre}</label>
+
+                          </div>
+                          <div>
+
+                          </div>
+                        </div>
+                      )
+                    }
+                    <div>
+                      <label htmlFor="">
+                        {
+                          form.formState.errors.areasInteres ? (
+                            <span className="text-red-500 text-sm">
+                              {
+                                form.formState.errors.areasInteres.root?.message
+
+                              }</span>
+                          ) : null
+                        }
+                      </label>
+                    </div>
+
+                  </div>
+                </fieldset>
+
+              </div>
+              <div>
+
+                <div className="mt-10 mb-3">
+                  <div className="text-sm text-gray-900 mb-5">
+                    Seleccione las herramientas y/o conocimientos que el practicante debe manejar de las
+                    siguientes sub categorías. <span className="font-semibold">Esto es opcional, puede no seleccionar nada</span>.
+                  </div>
+                  <HerramientasForm form={form} />
+
+                </div>
+              </div>
+
+              <button
+                type="submit"
+                className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded mt-5"
+              >
+                Enviar solicitud
+              </button>
             </form>
           </Form>
         )
@@ -429,8 +402,8 @@ export const SolicitudesPracticantes = () => {
           <div>
             <h2>Solicitudes de practicantes finalizadas</h2>
           </div>
-)}
+        )}
 
 
-  </>)
+    </>)
 }

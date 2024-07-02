@@ -4,6 +4,8 @@ import dayjs from 'dayjs'
 import { Disclosure, DisclosureButton, DisclosurePanel } from "@headlessui/react";
 import { IoChevronDown } from "react-icons/io5";
 import { BiCheck } from "react-icons/bi";
+import { useSemestre } from "../../hooks/useSemestre";
+import { Semestre } from "../../schemas/semestreSchema";
 dayjs().format()
 
 interface TimelineItem {
@@ -14,7 +16,7 @@ interface TimelineItem {
 
 }
 
-interface ApiResponse { 
+interface ApiResponse {
   ok: boolean;
   message: string;
 
@@ -25,53 +27,49 @@ const prueba = ({ nombre = 'JJ' }: any) => {
 }
  */
 
-const timelineItems = [
-  {
-    fechaInicial: '',
-    fechaFinal: '2022-08-05',
-    title: 'Inicio y cierre del semestre',
-    content: 'Esta fecha marca el inicio de las clases del semestre 2022-2, ',
-  },
-  {
-    fechaInicial: '2022-08-05',
-    fechaFinal: '2022-08-05',
-    title: 'Inscripción de datos por parte del estudiante',
-    content: 'Plazo máximo para que los estudiantes diligencien el formulario de inscripción de de sus datos para las practicas profesionales',
-  },
-  {
-    fechaInicial: '2022-08-08',
-    fechaFinal: '2022-08-05',
-    title: 'Entrega del plan de trabajo',
-    content: 'Fecha límite para que los estudiantes entreguen la carta de presentación a la empresa',
-  },
-  {
-    fechaInicial: '2022-11-01',
-    fechaFinal: '2022-08-05',
-    title: 'Entrega del primer informe',
-    content: 'Se finalizan las clases del semestre 2022-2',
-  },
-  {
-    fechaInicial: '2022-11-01',
-    fechaFinal: '2022-08-05',
-    title: 'Entregas del informe final',
-    content: 'Se finalizan las clases del semestre 2022-2',
-  },
-  
 
-]
 
-const getCalendario = async () => { 
-  return new Promise<TimelineItem[]>((resolve) => {
-    setTimeout(() => {
-      resolve(timelineItems)
-    }, 2000)
-  })
+const getCalendario = (semestre: Semestre) => {
 
+  return [
+    {
+      fechaInicial: semestre.fechaInicio || '',
+      fechaFinal: semestre.fechaFin || '',
+      title: 'Inicio y cierre del semestre',
+      content: 'Esta fecha marca el inicio de las clases del semestre 2022-2, ',
+    },
+    {
+      fechaInicial: '',
+      fechaFinal: '',
+      title: 'Inscripción de datos por parte del estudiante',
+      content: 'Plazo máximo para que los estudiantes diligencien el formulario de inscripción de de sus datos para las practicas profesionales',
+    },
+    {
+      fechaInicial: semestre.fechaInicioPlanDeTrabajo || '',
+      fechaFinal: semestre.fechaFinPlanDeTrabajo || '',
+      title: 'Entrega del plan de trabajo',
+      content: 'Fecha límite para que los estudiantes entreguen la carta de presentación a la empresa',
+    },
+    {
+      fechaInicial: semestre.fechaInicioPrimerInforme || '',
+      fechaFinal: semestre.fechaFinPrimerInforme || '',
+      title: 'Entrega del primer informe',
+      content: 'Se finalizan las clases del semestre 2022-2',
+    },
+    {
+      fechaInicial: semestre.fechaInicioInformeFinal || '',
+      fechaFinal: semestre.fechaFinInformeFinal || '',
+      title: 'Entregas del informe final',
+      content: 'Se finalizan las clases del semestre 2022-2',
+    },
+
+
+  ]
 }
 
-const guardarCambios = async (items: TimelineItem[]):Promise<ApiResponse> => { 
+const guardarCambios = async (items: TimelineItem[]): Promise<ApiResponse> => {
   return new Promise((resolve,) => {
-    console.log('Guardando cambios',items)
+    console.log('Guardando cambios', items)
     setTimeout(() => {
       resolve({
         ok: true,
@@ -85,22 +83,42 @@ const LoadingItemsComponent = () => {
   return <div className="flex justify-center items-center h-screen content-center">
     <div className="animate-spin rounded-full h-11 w-11 border-t-2 border-b-2 border-blue-900"></div>
   </div>
-} 
+}
+interface EstadoFechas {
+  editar: boolean;
+  fechaPrimerEncuentro: boolean;
+  fechaInicial: boolean;
+  fechaFinal: boolean;
+  valorEditadoFechaInicial: string;
+  valorEditadoFechaFinal: string;
+  valorEditadoPrimerEncuentro: string;
+}
 
 
 export const CalendarioPage = () => {
+
+  const { semestre, loading } = useSemestre()
   const [items, setItems] = useState<TimelineItem[]>([])
-  const [edicion, setEdicion] = useState(items.map(() => {
-    return {
-      editar: false,
-      fechaPrimerEncuentro: false,
-      fechaInicial: false,
-      fechaFinal: false,
-      valorEditadoFechaInicial: '',
-      valorEditadoFechaFinal: '',
-      valorEditadoPrimerEncuentro: ''
-  }})) 
-  const [loading, setLoading] = useState(true)
+  const [edicion, setEdicion] = useState<EstadoFechas[]>([])
+
+  useEffect(() => {
+    if (semestre) {
+      setItems(getCalendario(semestre))
+      setEdicion(items.map(() => {
+        return {
+          editar: false,
+          fechaPrimerEncuentro: false,
+          fechaInicial: false,
+          fechaFinal: false,
+          valorEditadoFechaInicial: '',
+          valorEditadoFechaFinal: '',
+          valorEditadoPrimerEncuentro: ''
+        }
+      }))
+    }
+  }, [semestre])
+
+
   /*
   const onFechaInicialChange = (date: string,index:number) => {
     //YYYY-MM-DD
@@ -114,7 +132,7 @@ export const CalendarioPage = () => {
     try {
       const response = await guardarCambios(items)
       if (!response.ok) throw new Error(response.message)
-       const Toast = Swal.mixin({
+      const Toast = Swal.mixin({
         toast: true,
         position: "top-end",
         showConfirmButton: false,
@@ -128,42 +146,42 @@ export const CalendarioPage = () => {
       Toast.fire({
         icon: "success",
         title: "Los cambios se guardaron correctamente"
-      }); 
+      });
     }
-    catch (error) { 
+    catch (error) {
       console.error(error)
       Swal.fire({
         title: 'Error',
         text: 'No se pudieron guardar los cambios',
         icon: 'error',
         confirmButtonText: 'Ok'
-      }) 
+      })
     }
   }
-  
-  const onChangeEditarFechaInicial = (index: number) => { 
+
+  const onChangeEditarFechaInicial = (index: number) => {
     const nuevoEstado = [...edicion]
     nuevoEstado[index].fechaInicial = !nuevoEstado[index].fechaInicial
-    if (!nuevoEstado[index].fechaInicial) { 
+    if (!nuevoEstado[index].fechaInicial) {
       nuevoEstado[index].valorEditadoFechaInicial = items[index].fechaInicial
     }
     setEdicion(nuevoEstado)
   }
- 
+
   const onChangeEditarFechaFinal = (index: number) => {
     const nuevoEstado = [...edicion]
     nuevoEstado[index].fechaFinal = !nuevoEstado[index].fechaFinal
-    if (!nuevoEstado[index].fechaFinal) { 
+    if (!nuevoEstado[index].fechaFinal) {
       nuevoEstado[index].valorEditadoFechaFinal = items[index].fechaFinal
     }
     setEdicion(nuevoEstado)
   }
-  const onChangeValorEditadoFechaInicial = (index: number, valor: string) => { 
+  const onChangeValorEditadoFechaInicial = (index: number, valor: string) => {
     //YYYY-MM-DD
     const nuevoEstado = [...edicion]
     nuevoEstado[index].valorEditadoFechaInicial = valor
     setEdicion(nuevoEstado)
-  
+
   }
 
   const onChangeValorEditadoFechaFinal = (index: number, valor: string) => {
@@ -173,28 +191,14 @@ export const CalendarioPage = () => {
     setEdicion(nuevoEstado)
   }
 
-  const onChangePrimerEncuentro = (index: number, valor: string) => { 
+  const onChangePrimerEncuentro = (index: number, valor: string) => {
     //YYYY-MM-DD
     const nuevoEstado = [...edicion]
     nuevoEstado[index].valorEditadoPrimerEncuentro = valor
     setEdicion(nuevoEstado)
   }
 
-  useEffect(() => {
-    getCalendario().then((items) => {
-      setItems(items)
-      setEdicion(items.map((item) => { 
-        return {
-          editar: false,
-          fechaInicial: false,
-          fechaFinal: false,
-          valorEditadoFechaInicial: item.fechaInicial,
-          valorEditadoFechaFinal: item.fechaFinal
-        }
-      }))
-      setLoading(false)
-    })
-   }, [])
+
 
   return (
     <>
@@ -215,46 +219,46 @@ export const CalendarioPage = () => {
             <div className="overflow-x-auto">
               <ul role="list" className="divide-y divide-gray-100">
 
-                  {
-                items.map((item, index) => (
+                {
+                  items.length === edicion.length && items.map((item, index) => (
                     <li key={`item-${index}-${item}`} className="flex justify-between gap-x-6 py-2">
 
                       <Disclosure as="div" className="p-3 w-full" defaultOpen={index === 0}>
 
-                          
-                        <DisclosureButton className="group flex w-full items-center justify-between">       
+
+                        <DisclosureButton className="group flex w-full items-center justify-between">
                           <div>
                             <span className="">{item.title}</span>
                             {
-                            (item.fechaInicial === '' || item.fechaInicial === null)
-                              ||
-                              (item.fechaFinal === '' || item.fechaFinal === null)
-                              ?
+                              (item.fechaInicial === '' || item.fechaInicial === null)
+                                ||
+                                (item.fechaFinal === '' || item.fechaFinal === null)
+                                ?
                                 <span className="ml-4 h-fit self-center text-red-700 font-medium text-xs py-1 px-2 ring-1 ring-red-600/20 bg-red-100 rounded-md items-center inline-flex border-green-600 ring-inset">
                                   Fechas aún sin configurar
                                 </span> :
                                 <span className="ml-4 h-fit self-center text-green-700 font-medium text-xs py-1 px-2 ring-1 ring-green-600/20 bg-green-100 rounded-md items-center inline-flex border-green-600 ring-inset">
-                                  Asignadas 
+                                  Asignadas
                                 </span>
                             }
-                            
+
                           </div>
-                          
-                            <IoChevronDown className="size-5 fill-white/60 group-data-[hover]:fill-white/50 group-data-[open]:rotate-180" />
+
+                          <IoChevronDown className="size-5 fill-white/60 group-data-[hover]:fill-white/50 group-data-[open]:rotate-180" />
                         </DisclosureButton>
                         <DisclosurePanel>
                           <div className="px-8 py-3">
-                          
-                              <div className="mt-3">
+
+                            <div className="mt-3">
                               <dl className="divide-y divide-gray-100">
-                                  <div className="px-4 py-2 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
+                                <div className="px-4 py-2 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
                                   <dt className="text-sm font-medium leading-6 text-gray-900">
                                     <span className="text-gray-600 font-medium">Fecha inicial</span>
                                   </dt>
                                   <dd className="mt-1 text-sm leading-6 text-gray-700 sm:col-span-2 sm:mt-0 flex content-center">
                                     <div className="relative flex gap-x-3 items-center">
                                       <div className="text-sm leading-6">
-                                      <label htmlFor={`${index}-fechaInicialEdit`} className="font-medium text-gray-900">Editar</label>
+                                        <label htmlFor={`${index}-fechaInicialEdit`} className="font-medium text-gray-900">Editar</label>
                                       </div>
                                       <div className="flex h-6 items-center">
                                         <input
@@ -268,7 +272,7 @@ export const CalendarioPage = () => {
 
                                     </div>
                                     <input
-                                      
+
                                       type="date"
                                       disabled={!edicion[index].fechaInicial}
                                       className={`cursor-pointer border-0 ${!edicion[index].fechaInicial ? 'text-gray-500' : ''}`}
@@ -282,7 +286,7 @@ export const CalendarioPage = () => {
                                         <BiCheck className="size-5 fill-white" />
                                       </button>
                                     }
-                                    </dd>
+                                  </dd>
                                 </div>
                                 <div className="px-4 py-2 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
                                   <dt className="text-sm font-medium leading-6 text-gray-900">
@@ -299,10 +303,10 @@ export const CalendarioPage = () => {
                                           name={`${index}-fechaFinalEdit`}
                                           type="checkbox"
                                           checked={edicion[index].fechaFinal}
-                                          onChange={ () => onChangeEditarFechaFinal(index)}
+                                          onChange={() => onChangeEditarFechaFinal(index)}
                                           className="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-600" />
                                       </div>
-                                      
+
                                     </div>
                                     <input
                                       type="date"
@@ -318,8 +322,8 @@ export const CalendarioPage = () => {
                                         <BiCheck className="size-5 fill-white" />
                                       </button>
                                     }
-                                </dd>
-                              </div>
+                                  </dd>
+                                </div>
                                 {
                                   item.title === 'Inscripción de datos por parte del estudiante' &&
                                   <div className="px-4 py-2 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
@@ -360,33 +364,33 @@ export const CalendarioPage = () => {
 
                                   </div>
                                 }
-                                
+
                                 <div className="px-4 py-2 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
                                   <dt className="text-sm font-medium leading-6 text-gray-900">
-                                    
+
                                   </dt>
-                                  
+
                                 </div>
                               </dl>
 
-                              
+
                             </div>
-                          
+
                           </div>
-                          
-                          
+
+
                         </DisclosurePanel>
                       </Disclosure>
                     </li>
 
-                          
-                    ))
-                  }
+
+                  ))
+                }
               </ul>
             </div>
           </>
       }
     </>
-    
+
   )
 }

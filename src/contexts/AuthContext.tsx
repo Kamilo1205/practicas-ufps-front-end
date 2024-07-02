@@ -15,9 +15,9 @@ interface AuthContextType {
 const AuthContext = createContext<AuthContextType | null>({
   isAuthenticated: false,
   user: null,
-  login: () => {},
-  signup: () => {},
-  logout: () => {},
+  login: () => { },
+  signup: () => { },
+  logout: () => { },
   isLoading: true,
 
 });
@@ -38,7 +38,8 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const [user, setUser] = useState<Usuario | null>(null);
   const [isLoading, setLoading] = useState<boolean>(true);
 
-  const login = async(credentials: LoginSchema) => {
+  const login = async (credentials: LoginSchema) => {
+    // eslint-disable-next-line no-useless-catch
     try {
       const response = await fetchPostUsuarioLogin(credentials)
       setUser(response.usuario);
@@ -47,11 +48,12 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     }
   };
 
-  const logout = async() => {
+  const logout = async () => {
     try {
       setLoading(true);
       await fetchPostUsuarioLogout();
       setUser(null);
+      // eslint-disable-next-line no-useless-catch
     } catch (error) {
       throw error; // Lanza el error para que el componente que llama pueda manejarlo
     } finally {
@@ -59,7 +61,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     }
   };
 
-  const signup = async(usuario: Usuario) => {
+  const signup = async (usuario: Usuario) => {
     setUser(usuario);
   }
 

@@ -24,7 +24,7 @@ const useAreasDeInteres = (): UseAreasDeInteresReturn => {
   const [areas, setAreas] = useState<AreaInteres[]>([]);
   const [cargando, setCargando] = useState<boolean>(false);
   const [error, setError] = useState<AxiosError | null>(null);
-  console.log('useAreasDeInteres',areas)
+
   const fetchAreasDeInteres = useCallback(async () => {
     setCargando(true);
     try {
@@ -146,7 +146,7 @@ const useAreasDeInteres = (): UseAreasDeInteresReturn => {
         cancelButtonText: 'Cancelar'
       }).then(async (result) => {
         if (result.isConfirmed) {
-          console.log(id)
+ 
           await deleteAreaDeInteresAPI(id)
           setAreas((prev) => prev.filter((area) => area.id !== id));
           Swal.fire(
@@ -194,7 +194,7 @@ const useAreasDeInteres = (): UseAreasDeInteresReturn => {
       }))
       //Ahora debo buscar el area padre de la subarea que contiene la herramienta creada.
       const padre = areas.find((area) => area.subAreas?.find((subArea) => subArea.id === areaId));
-      console.log('padre encontrado.',padre)
+
       //Ahora se debe actualizar el area padre con la nueva herramienta. Esto permite que los cambios se hagan sin localmente sin refrescar la pg.
       setAreas((prev) => prev.map((area) => { 
         if (padre && typeof herramientaCreada.areaInteres?.areaPadre !== 'string'
@@ -248,7 +248,7 @@ const useAreasDeInteres = (): UseAreasDeInteresReturn => {
             area.subAreas?.find(
               (subarea) => subarea.areaInteresHerramientas?.find((herramienta)=>herramienta.herramienta.id === herramientaId))
           )
-          console.log('areaHerramienta',areaHerramienta)
+
           //Actualizar el area que contiene la herramienta
           setAreas((prev) => prev.map((area) => {
             if (area.id === areaHerramienta?.id) {
