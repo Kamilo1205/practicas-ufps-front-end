@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { fetchEstudiantes as fetchGetEstudiantes } from "../../api/estudiante.api";
-import { Avatar, Button,  } from "../../components/ui";
+import { Avatar, Button, } from "../../components/ui";
 import { EmptyStateMessage } from "../../components/estudiantes/EmptyStateMessage";
 //import { useLocation, useNavigate } from "react-router-dom";
 
@@ -13,7 +13,7 @@ import { EstudiantePerfilComponent } from "../../components/usuarios/perfil/Estu
 import { BiArrowToRight, BiCheck } from "react-icons/bi";
 import { IoAlertCircle } from "react-icons/io5";
 import { EstudianteI } from "../../interfaces/responses.interface";
-import {  roles } from "../../interfaces/rol.interface";
+import { roles } from "../../interfaces/rol.interface";
 import { useAuth } from "../../contexts";
 
 
@@ -22,7 +22,7 @@ const Tabs = [
   {
     id: 0,
     name: "Activos",
-    grupo : ""
+    grupo: ""
   },
   {
     id: 1,
@@ -32,12 +32,12 @@ const Tabs = [
   {
     id: 2,
     name: "Grupo B",
-    grupo : "Grupo B"
+    grupo: "Grupo B"
   },
   {
     id: 3,
     name: "Grupo C",
-    grupo : "Grupo C"
+    grupo: "Grupo C"
   },
   {
     id: 4,
@@ -50,14 +50,14 @@ const Tabs = [
 
 
 export const EstudiantesPage = () => {
-  
+
   const { user } = useAuth()
- const userRoles = user?.roles.map(rol => rol.nombre)
+  const userRoles = user?.roles.map(rol => rol.nombre)
 
   const [estudiantes, setEstudiantes] = useState<{ estudiantes: EstudianteI[], total: number }>({
     estudiantes: [],
     total: 0,
-  
+
   });
   console.log(estudiantes)
   const [totalItems, setTotalItems] = useState<number>(0); // Número total de ítems
@@ -86,12 +86,12 @@ export const EstudiantesPage = () => {
       setEstudiantes({
         estudiantes: data.data || [],
         total: 100
-      
+
       });
       //console.log(data);
     };
     fetchData();
-  }, [tab,filtro,currentPage,itemsPerPage]);
+  }, [tab, filtro, currentPage, itemsPerPage]);
 
   return (
     <>
@@ -99,7 +99,7 @@ export const EstudiantesPage = () => {
         <div className="text-gray-600 font-bold text-2xl">Estudiantes</div>
       </div>
       {
-        (userRoles?.includes(roles.coordinador)|| userRoles?.includes(roles.administrador)) && <DialogComponent
+        (userRoles?.includes(roles.coordinador) || userRoles?.includes(roles.administrador)) && <DialogComponent
           isOpen={agregarEstudiante}
           onClose={() => setAgregarEstudiante(false)}
           content={
@@ -117,31 +117,22 @@ export const EstudiantesPage = () => {
             rol={
               userRoles?.includes(roles.administrador) ? roles.administrador :
                 userRoles?.includes(roles.coordinador) ? roles.coordinador :
-                  userRoles?.includes(roles.director)? roles.director :
+                  userRoles?.includes(roles.director) ? roles.director :
                     userRoles?.includes(roles.estudiante) ? roles.estudiante :
-                      userRoles?.includes(roles.tutor) ? roles.tutor : 
+                      userRoles?.includes(roles.tutor) ? roles.tutor :
                         userRoles?.includes(roles.empresa) ? roles.empresa : ""
-                          
+
 
             }
             estudiante={estudianteSeleccionado}
-          />|| <div>No hay información del estudiante seleccionado.</div>
+          /> || <div>No hay información del estudiante seleccionado.</div>
         }
         title=""
         size="2xl"
       />
+
       {
-        (userRoles?.includes(roles.administrador)) && (
-          <div>
-            <div>
-              <label htmlFor="">Enviar ARLS</label>
-              <Button>Eviar ARL</Button>
-            </div>
-          </div>
-        )
-      }
-      {
-        (userRoles?.includes(roles.coordinador) || userRoles?.includes(roles.administrador) ) && (
+        (userRoles?.includes(roles.coordinador) || userRoles?.includes(roles.administrador)) && (
           <div className="overflow-x-auto mb-4">
             <ul role="list" className="divide-y divide-gray-100">
               <li className="flex justify-between gap-x-6 py-2">
@@ -158,9 +149,9 @@ export const EstudiantesPage = () => {
               </li>
 
             </ul>
-          </div> 
+          </div>
         )
-    }
+      }
       <TabComponent
         tabListI={Tabs}
         activeTab={tab}
@@ -171,76 +162,76 @@ export const EstudiantesPage = () => {
           setOpen={setAgregarEstudiante}
         />
       ) : (
-          <div>
-            
-            <>
-              <TablaPaginadaComponent
-                filtrar
-                setCurrentPage={setCurrentPage}
-                filtro={filtro}
-                setFiltro={setFiltro}
-                encabezados={["Codigo","Nombre" , "Plan de trabajo", "Primer informe", "Segundo informe", "Estado"]}
-                filas={
-                  estudiantes.estudiantes.map((estudiante) => [
-                    estudiante.codigo,
-                    <div className="flex items-center">
-                      <div className="shrink-0 w-11 h-11">
-                        <Avatar url={estudiante?.usuario?.imagenUrl} />
-                      </div>
-                      <div className="ml-4 cursor-pointer"
-                        onClick={() => {
-                          setEstudianteSeleccionado(estudiante)
+        <div>
+
+          <>
+            <TablaPaginadaComponent
+              filtrar
+              setCurrentPage={setCurrentPage}
+              filtro={filtro}
+              setFiltro={setFiltro}
+              encabezados={["Codigo", "Nombre", "Plan de trabajo", "Primer informe", "Segundo informe", "Estado"]}
+              filas={
+                estudiantes.estudiantes.map((estudiante) => [
+                  estudiante.codigo,
+                  <div className="flex items-center">
+                    <div className="shrink-0 w-11 h-11">
+                      <Avatar url={estudiante?.usuario?.imagenUrl} />
+                    </div>
+                    <div className="ml-4 cursor-pointer"
+                      onClick={() => {
+                        setEstudianteSeleccionado(estudiante)
 
                         setMostrarPerfil(true)
                       }}>
-                        
-                        <div className="text-gray-900 font-medium">
-                          {
-                            `${estudiante.primerNombre } ${estudiante.segundoNombre} ${estudiante.primerApellido} ${estudiante.segundoApellido}` 
-                            || "Nombre aun no registrado"
-                          }
-                        </div>
-                        <div className="text-gray-500 mt-1">
-                          {estudiante?.usuario?.email}
-                        </div>
+
+                      <div className="text-gray-900 font-medium">
+                        {
+                          `${estudiante.primerNombre} ${estudiante.segundoNombre} ${estudiante.primerApellido} ${estudiante.segundoApellido}`
+                          || "Nombre aun no registrado"
+                        }
                       </div>
-                    </div>,
-                    
-                    <div className="flex justify-center cursor-pointer w-full pr-6">
-                      {
-                        //TODO: Diferenciar cuando el plan está completo o no.
-                        //TODO: Implementar vizualización del plan de trabajo.
-                      }
-                      <div>
-                        <BiCheck className="text-green-500 w-5 h-5" />
+                      <div className="text-gray-500 mt-1">
+                        {estudiante?.usuario?.email}
                       </div>
-                      <span className="text-blue-400 flex">Ver <span className="self-center"><BiArrowToRight/></span></span>
-                    </div>,
-                    <div className="flex justify-center pr-6">
-                      <IoAlertCircle className="text-yellow-500 w-5 h-5" />
-                      <span>Pendiente</span>
-                    </div>,
-                    <div className="flex justify-center pr-6">
-                      <IoAlertCircle className="text-yellow-500 w-5 h-5" />
-                      <span>Pendiente</span>
-                    </div>,
-                    estudiante?.usuario?.estaActivo ? (
-                      <span className="text-green-700 font-medium text-xs py-1 px-2 ring-1 ring-green-600/20 bg-green-100 rounded-md items-center inline-flex border-green-600 ring-inset">
-                        Activo
-                      </span>
-                    ) : (
-                      <span className="text-red-700 font-medium text-xs py-1 px-2 ring-1 ring-red-600/20 bg-red-100 rounded-md items-center inline-flex border-red-600 ring-inset">
-                        Inactivo
-                      </span>
-                    ),
-                  ])
-                }
-                totalItems = {totalItems}
-                currentPage = {currentPage}
-                itemsPerPage = {itemsPerPage}
-              />
-            </>
-           
+                    </div>
+                  </div>,
+
+                  <div className="flex justify-center cursor-pointer w-full pr-6">
+                    {
+                      //TODO: Diferenciar cuando el plan está completo o no.
+                      //TODO: Implementar vizualización del plan de trabajo.
+                    }
+                    <div>
+                      <BiCheck className="text-green-500 w-5 h-5" />
+                    </div>
+                    <span className="text-blue-400 flex">Ver <span className="self-center"><BiArrowToRight /></span></span>
+                  </div>,
+                  <div className="flex justify-center pr-6">
+                    <IoAlertCircle className="text-yellow-500 w-5 h-5" />
+                    <span>Pendiente</span>
+                  </div>,
+                  <div className="flex justify-center pr-6">
+                    <IoAlertCircle className="text-yellow-500 w-5 h-5" />
+                    <span>Pendiente</span>
+                  </div>,
+                  estudiante?.usuario?.estaActivo ? (
+                    <span className="text-green-700 font-medium text-xs py-1 px-2 ring-1 ring-green-600/20 bg-green-100 rounded-md items-center inline-flex border-green-600 ring-inset">
+                      Activo
+                    </span>
+                  ) : (
+                    <span className="text-red-700 font-medium text-xs py-1 px-2 ring-1 ring-red-600/20 bg-red-100 rounded-md items-center inline-flex border-red-600 ring-inset">
+                      Inactivo
+                    </span>
+                  ),
+                ])
+              }
+              totalItems={totalItems}
+              currentPage={currentPage}
+              itemsPerPage={itemsPerPage}
+            />
+          </>
+
         </div>
       )}
     </>

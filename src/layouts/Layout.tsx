@@ -8,7 +8,7 @@ import { useAuth } from '../contexts';
 import { Menu, MenuButton, MenuItem, MenuItems, Transition } from '@headlessui/react';
 import { CgProfile } from 'react-icons/cg';
 
-import { roles } from '../interfaces/rol.interface';
+
 import { useConfigNotificaciones } from '../hooks/useConfigNotificaciones';
 
 

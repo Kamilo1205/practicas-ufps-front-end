@@ -1,23 +1,34 @@
 
 import { Link } from "react-router-dom"
 import Title from "../../components/ui/Tittle/Title"
+import { useConfigNotificaciones } from "../../hooks/useConfigNotificaciones"
 
 
+const PasoCheckCircle = () => {
+  return (<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="absolute -top-0.5 z-10 -ml-3.5 h-7 w-7 rounded-full text-indigo-500">
+    <path fillRule="evenodd" d="M2.25 12c0-5.385 4.365-9.75 9.75-9.75s9.75 4.365 9.75 9.75-4.365 9.75-9.75 9.75S2.25 17.385 2.25 12zm13.36-1.814a.75.75 0 10-1.22-.872l-3.236 4.53L9.53 12.22a.75.75 0 00-1.06 1.06l2.25 2.25a.75.75 0 001.14-.094l3.75-5.25z" clipRule="evenodd" />
+  </svg>)
+}
 
+const PasoEmptyCircle = () => {
+  return (<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" className="absolute -top-0.5 z-10 -ml-3.5 h-7 w-7 rounded-full text-indigo-500">
+    <path fillRule="evenodd" d="M2.25 12c0-5.385 4.365-9.75 9.75-9.75s9.75 4.365 9.75 9.75-4.365 9.75-9.75 9.75S2.25 17.385 2.25 12z" clipRule="evenodd" />
+  </svg>)
+}
 
-export const IntroduccionPage = () => { 
+export const IntroduccionPage = () => {
 
+  const { pendientes } = useConfigNotificaciones()
+  console.log(pendientes)
   return (<>
-    <Title titulo='Primeros pasos'/>
+    <Title titulo='Primeros pasos' />
     <div>
-     
+
       <div className="flex h-full w-full items-center justify-center bg-white px-6">
         <div className="space-y-6 border-l-2 border-dashed">
           <div className="relative w-full">
             {
-              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="absolute -top-0.5 z-10 -ml-3.5 h-7 w-7 rounded-full text-indigo-500">
-                <path fillRule="evenodd" d="M2.25 12c0-5.385 4.365-9.75 9.75-9.75s9.75 4.365 9.75 9.75-4.365 9.75-9.75 9.75S2.25 17.385 2.25 12zm13.36-1.814a.75.75 0 10-1.22-.872l-3.236 4.53L9.53 12.22a.75.75 0 00-1.06 1.06l2.25 2.25a.75.75 0 001.14-.094l3.75-5.25z" clipRule="evenodd" />
-              </svg>
+              pendientes.fechas ? <PasoEmptyCircle /> : <PasoCheckCircle />
             }
             <div className="ml-6">
               <h4 className="font-bold text-grey-500">¡Configura las fechas del calendario!</h4>
@@ -28,19 +39,23 @@ export const IntroduccionPage = () => {
             </div>
           </div>
           <div className="relative w-full">
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" className="absolute -top-0.5 z-10 -ml-3.5 h-7 w-7 rounded-full text-indigo-500">
-              <path fillRule="evenodd" d="M2.25 12c0-5.385 4.365-9.75 9.75-9.75s9.75 4.365 9.75 9.75-4.365 9.75-9.75 9.75S2.25 17.385 2.25 12z" clipRule="evenodd" />
-            </svg>
+            {
+
+              pendientes.asignacionesGrupoDocente ? <PasoEmptyCircle /> : <PasoCheckCircle />
+            }
 
             <div className="ml-6">
               <h4 className="font-bold text-black">¡Revisa los grupos y docentes disponibles!</h4>
               <p className="mt-2 max-w-screen-sm text-sm text-gray-500">
-                  Crea los grupos de practicas y docentes y asignalos.
+                Crea los grupos de practicas y docentes y asignalos.
               </p>
               <Link to={'/coordinador/configuraciones'} className="mt-1 block text-sm font-semibold text-blue-500">Da click aquí para ir al apartado de configuraciones!</Link>
             </div>
           </div>
           <div className="relative w-full">
+            {
+              //TODO: Validar las configuraciones generales.
+            }
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="absolute -top-0.5 z-10 -ml-3.5 h-7 w-7 rounded-full text-indigo-500">
               <path fillRule="evenodd" d="M2.25 12c0-5.385 4.365-9.75 9.75-9.75s9.75 4.365 9.75 9.75-4.365 9.75-9.75 9.75S2.25 17.385 2.25 12zm13.36-1.814a.75.75 0 10-1.22-.872l-3.236 4.53L9.53 12.22a.75.75 0 00-1.06 1.06l2.25 2.25a.75.75 0 001.14-.094l3.75-5.25z" clipRule="evenodd" />
             </svg>
@@ -55,9 +70,9 @@ export const IntroduccionPage = () => {
             </div>
           </div>
           <div className="relative w-full">
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="absolute -top-0.5 z-10 -ml-3.5 h-7 w-7 rounded-full text-indigo-500">
-              <path fillRule="evenodd" d="M2.25 12c0-5.385 4.365-9.75 9.75-9.75s9.75 4.365 9.75 9.75-4.365 9.75-9.75 9.75S2.25 17.385 2.25 12zm13.36-1.814a.75.75 0 10-1.22-.872l-3.236 4.53L9.53 12.22a.75.75 0 00-1.06 1.06l2.25 2.25a.75.75 0 001.14-.094l3.75-5.25z" clipRule="evenodd" />
-            </svg>
+            {
+              pendientes.estudiantes ? <PasoEmptyCircle /> : <PasoCheckCircle />
+            }
             <div className="ml-6">
               <h4 className="font-bold text-black">¡Carga los estudiantes!</h4>
               <p className="mt-2 max-w-screen-sm text-sm text-gray-500">
