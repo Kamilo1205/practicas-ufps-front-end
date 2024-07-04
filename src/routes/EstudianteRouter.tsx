@@ -6,9 +6,11 @@ import { UsuariosPage } from "../pages/coordinador/UsuariosPage";
 import { RegistroLayout } from "../layouts/RegistroLayout";
 import { PerfilPage } from "../pages/estudiante/PerfilPage";
 import PlanDeTrabajoVista from "./../components/PlanDeTrabajo/Coordinador-Empresa/PlanDeTrabajoVista";
-import InformeParicialPage from "./../pages/estudiante/InformeParicialPage";
 import InformeFinalPage from "./../pages/estudiante/InformeFinalPage";
 import EvaluacionEstudiante from "../pages/estudiante/EvaluacionEstudiante";
+import InformeParcialVista from "../components/VistasCoorDTutor/InformeParcialVista";
+import InformeFinalVista from "../components/VistasCoorDTutor/InformeFinalVista";
+import EvaluacionEstudianteVista from "../components/VistasCoorDTutor/EvaluacionPracticaVista";
 
 export const EstudianteRouter = () => {
   const { user } = useAuth();
@@ -22,22 +24,33 @@ export const EstudianteRouter = () => {
             <Route
               path="plantrabajo"
               element={
-                <PlanDeTrabajoVista rol="ESTUDIANTE" initialOpen={false} />
+                <PlanDeTrabajoVista
+                  rol="ESTUDIANTE"
+                  initialOpen={false}
+                  //isTutor={true}
+                />
               }
             />
             <Route
               path="informeparcial"
               element={
-                <InformeParicialPage rol={true} /> //TRUE=== ESTUDIANTE SINO POS FALSE
+                <InformeParcialVista rol={"ESTUDIANTE"} initialOpen={false} /> //TRUE=== ESTUDIANTE SINO POS FALSE
               }
             />
             <Route
               path="informefinal"
-              element={<InformeFinalPage rol={true} />}
+              element={
+                <InformeFinalVista rol={"ESTUDIANTE"} initialOpen={false} /> //TRUE=== ESTUDIANTE SINO POS FALSE
+              }
             />
             <Route
               path="evaluacionestudiante"
-              element={<EvaluacionEstudiante rol={true}/>}
+              element={
+                <EvaluacionEstudianteVista
+                  rol={"ESTUDIANTE"}
+                  initialOpen={false}
+                />
+              }
             />
             <Route path="*" element={<Navigate to="/estudiante" replace />} />
           </Route>
