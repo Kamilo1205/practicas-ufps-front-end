@@ -1,16 +1,17 @@
-import { Fragment } from 'react';
-import useAreasDeInteres from '../../hooks/useAreasInteres';
-import { Checkbox, Disclosure, DisclosureButton, DisclosurePanel } from '@headlessui/react';
-import { BiChevronDown } from 'react-icons/bi';
-import { Controller, } from 'react-hook-form';
-import { HiCheck } from 'react-icons/hi2';
+import { Fragment } from "react/jsx-runtime";
+import useAreasDeInteres from "../../hooks/useAreasInteres";
+import { Checkbox, Disclosure, DisclosureButton, DisclosurePanel } from "@headlessui/react";
+import { BiChevronDown } from "react-icons/bi";
+import { HiCheck } from "react-icons/hi2";
+import { Controller } from "react-hook-form";
+
 
 interface HerramientasFormProps {
   form: any;
 
 }
 
-export const HerramientasForm = ({ form }: HerramientasFormProps) => {
+export const HerramientasFormRegistro = ({ form }: HerramientasFormProps) => {
   const { areas } = useAreasDeInteres();
   const handleCheckboxChange = (checked: boolean, herramientaId: string) => {
     const currentValues = form.getValues('herramientas');
@@ -21,7 +22,7 @@ export const HerramientasForm = ({ form }: HerramientasFormProps) => {
     }
   };
 
-  console.log('areas', form.getValues('areasInteres'));
+  console.log('herramientas', areas);
   return (
     <div className="text-sm">
       {areas
@@ -29,7 +30,7 @@ export const HerramientasForm = ({ form }: HerramientasFormProps) => {
           && !area.areaPadre
           && !area.fechaEliminacion
           && area.subAreas.some((subArea) => subArea.areaInteresHerramientas.length > 0)
-          && form.getValues('areasInteres').includes(area.id)
+          && form.getValues('areasInteres')[area.id] && form.getValues('areasInteres')[area.id] >= 3
         )
         .map((area) => (
           <Fragment key={area.id}>

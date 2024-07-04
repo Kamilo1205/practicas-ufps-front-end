@@ -4,6 +4,7 @@ import { fetchAreasDeInteres as fetchAreasDeInteresAPI, fetchSubareasByArea as f
 import { AreaInteres } from '../interfaces';
 import Swal from 'sweetalert2';
 import { Herramienta } from '../interfaces/herramienta.interface';
+import { areaInteresHerramientas } from '../interfaces/area-interes.interface';
 
 
 type UseAreasDeInteresReturn = {
@@ -18,6 +19,7 @@ type UseAreasDeInteresReturn = {
   deleteAreaDeInteres: (id: string) => Promise<void>;
   createHerramienta: (areaId: string, herramienta: Omit<Herramienta, 'id'>) => Promise<void>;
   deleteHerramienta: (herramientaId: string) => Promise<void>;
+  getAreasDeInteresHerramientas: (areaId: string) => areaInteresHerramientas[];
 };
 
 const useAreasDeInteres = (): UseAreasDeInteresReturn => {
@@ -284,6 +286,9 @@ const useAreasDeInteres = (): UseAreasDeInteresReturn => {
     
   }
 
+  const getAreasDeInteresHerramientas = (areaId: string) => { 
+    return areas.find((area) => area.id === areaId)?.areaInteresHerramientas || [];
+  }
 
   useEffect(() => {
     fetchAreasDeInteres();
@@ -299,6 +304,7 @@ const useAreasDeInteres = (): UseAreasDeInteresReturn => {
       deleteAreaDeInteres,
       createHerramienta,
       deleteHerramienta,
+      getAreasDeInteresHerramientas
     };
 };
 

@@ -3,33 +3,35 @@ import { Combobox, ComboboxButton, ComboboxInput, ComboboxOption, ComboboxOption
 import clsx from 'clsx';
 import { HiMiniChevronDown } from 'react-icons/hi2';
 import useCiudades from '../../hooks/useCiudades';
+import { useGeneralConfig } from '../../hooks/useGeneralConfig';
 
 interface CiudadComboboxProps {
+  general?: boolean;
   value: string;
   onChange: (value: string) => void;
   departamentoId?: string;
 }
 
-export const CiudadCombobox: FC<CiudadComboboxProps> = ({ departamentoId, value = null, onChange }) => {
+export const CiudadCombobox: FC<CiudadComboboxProps> = ({ general = false, departamentoId, value = null, onChange }) => {
   const [query, setQuery] = useState<string>("");
   const { ciudades, fetchCiudades } = useCiudades();
-  console.log('tal vex',ciudades);
+  console.log('tal vex', ciudades);
   useEffect(() => {
-    console.log('tal vez',departamentoId);
-    if(departamentoId) fetchCiudades(departamentoId);
-  }, [departamentoId, fetchCiudades]);
+    console.log('tal vez', departamentoId);
+    if (departamentoId || general) fetchCiudades(departamentoId);
+  }, [departamentoId, fetchCiudades, general]);
 
   const filteredCiudades =
     query === ""
       ? ciudades
       : ciudades?.filter((item) =>
-          item.nombre.toLowerCase().includes(query.toLowerCase())
-        );
+        item.nombre.toLowerCase().includes(query.toLowerCase())
+      );
 
   const displayValue = (ciudadId: string) => {
     const selectCiudad = ciudades?.find((i) => i.id == ciudadId);
-    return selectCiudad ? (!departamentoId ? `${selectCiudad?.departamento?.pais?.nombre}, ${selectCiudad?.departamento?.nombre}, ${selectCiudad?.nombre}`: `${selectCiudad?.nombre}`) : "";
-  };      
+    return selectCiudad ? (!departamentoId ? `${selectCiudad?.departamento?.pais?.nombre}, ${selectCiudad?.departamento?.nombre}, ${selectCiudad?.nombre}` : `${selectCiudad?.nombre}`) : "";
+  };
 
   return (
     <Combobox immediate value={value} onChange={onChange}>
@@ -61,23 +63,23 @@ export const CiudadCombobox: FC<CiudadComboboxProps> = ({ departamentoId, value 
         >
           {
             filteredCiudades.map((ciudad) => (
-                <ComboboxOption
-                  key={ciudad.id}
-                  value={ciudad.id}
-                  className="group flex cursor-pointer items-center gap-2 rounded-md py-1.5 px-3 select-none data-[focus]:bg-gray-200 data-[selected]:bg-gray-300/90"
-                >
-                  {
-                    departamentoId 
-                      ? <div className="text-sm/6 text-gray-900">{ciudad.nombre}</div> 
-                      : <div className="flex flex-col text-gray-900">
-                          <div className="text-sm/6">{ ciudad.nombre }</div>
-                          <div className="flex gap-x-1 text-xs">
-                            <div>{ ciudad.departamento?.pais?.nombre },</div>
-                            <div>{ ciudad.departamento?.nombre }</div>
-                          </div>
-                        </div>
-                  }                  
-                </ComboboxOption>
+              <ComboboxOption
+                key={ciudad.id}
+                value={ciudad.id}
+                className="group flex cursor-pointer items-center gap-2 rounded-md py-1.5 px-3 select-none data-[focus]:bg-gray-200 data-[selected]:bg-gray-300/90"
+              >
+                {
+                  departamentoId
+                    ? <div className="text-sm/6 text-gray-900">{ciudad.nombre}</div>
+                    : <div className="flex flex-col text-gray-900">
+                      <div className="text-sm/6">{ciudad.nombre}</div>
+                      <div className="flex gap-x-1 text-xs">
+                        <div>{ciudad.departamento?.pais?.nombre},</div>
+                        <div>{ciudad.departamento?.nombre}</div>
+                      </div>
+                    </div>
+                }
+              </ComboboxOption>
             ))
           }
         </ComboboxOptions>

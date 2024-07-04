@@ -37,7 +37,7 @@ export const SolicitudComponent = ({ solicitud }: SolicitudComponentProps) => {
   const [mostrarPerfil, setMostrarPerfil] = useState(false)
   const [estudianteSeleccionado, setEstudianteSeleccionado] = useState<Estudiante | null>(null)
   const [solicitudSeleccionada,] = useState<Solicitud | null>(solicitud)
-  console.log('sol-select', solicitudSeleccionada)
+  //console.log('sol-select', solicitudSeleccionada)
 
   const { fetchEstudianteById } = useEstudiantes()
 
@@ -107,7 +107,7 @@ export const SolicitudComponent = ({ solicitud }: SolicitudComponentProps) => {
           <div className="px-4 py-4 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
             <dt className="text-sm font-medium leading-6 text-gray-900">Herramientas solicitadas</dt>
             <dd className="mt-1 text-sm leading-6 text-gray-700 sm:col-span-2 sm:mt-0">
-              <ul>
+              <ul className="flex space-x-3">
                 {
                   solicitudSeleccionada?.herramientas?.map((herramienta) => (
                     <li key={herramienta.id}>{herramienta.nombre}</li>
@@ -133,7 +133,7 @@ export const SolicitudComponent = ({ solicitud }: SolicitudComponentProps) => {
                       onClick={() => onEstudianteClick(asignacion?.estudiante?.id)}
                       className="flex space-x-2 cursor-pointer text-blue-500">
                       <span>{asignacion?.estudiante?.codigo}</span>
-                      <span>- {asignacion?.estudiante?.nombre}</span>
+                      <span>- {asignacion?.estudiante?.primerNombre}</span>
                     </div>
                   ))
               }

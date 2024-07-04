@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 
@@ -23,13 +23,19 @@ import {
 } from '../../components/form';
 import useEstudiantes from '../../hooks/useEstudiantes';
 import { FileInput } from '../../components/ui/Input/FileInput';
-import { AreasDeInteresForm, HerramientasForm } from '../../components/area-interes';
+import { AreasDeInteresForm, } from '../../components/area-interes';
+import { HerramientasFormRegistro } from '../../components/area-interes/HerramientasFormRegistro';
+import useAreasDeInteres from '../../hooks/useAreasInteres';
 
 export const RegistroPage = () => {
-  const form = useForm({ 
-    resolver: zodResolver(estudianteSchema) 
+  const form = useForm({
+    defaultValues: {
+      areasInteres: {},
+      herramientas: [],
+    },
+    resolver: zodResolver(estudianteSchema)
   });
-
+  const { getAreasDeInteresHerramientas } = useAreasDeInteres()
   const selectedDepartamento = form.watch("departamentoResidenciaId");
   const watch = form.watch() as Record<string, any>;
   const { createEstudiante, cargando, error } = useEstudiantes();
@@ -44,14 +50,13 @@ export const RegistroPage = () => {
           areaInteresId,
           nivelInteres: parseInt(nivelInteres as string, 10),
         })),
-        herramientas: Object.entries(data.herramientas)
-          .filter(([, value]) => value)
-          .map(([herramientaId]) => herramientaId),
+        herramientas: data.herramientas.map((herramientaId: string) => getAreasDeInteresHerramientas(herramientaId)),
       };
 
-      const response = await createEstudiante(formattedData);
-      console.log(response);
-      console.log("data", data);
+      //const response = await createEstudiante(formattedData);
+      //console.log(response);
+      //console.log("data", data);
+      console.log("formattedData", formattedData);
     } catch (error) {
       console.log(error);
       alert("Ocurrio un error:" + error);
@@ -163,6 +168,7 @@ export const RegistroPage = () => {
                         <FormControl>
                           <DepartamentoCombobox
                             paisNombre="Colombia"
+
                             {...field}
                             onChange={(value) => {
                               field.onChange(value);
@@ -217,7 +223,7 @@ export const RegistroPage = () => {
                     name="telefonoHogar"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel>Telefono Hogar (Opcional)</FormLabel>
+                        <FormLabel>Teléfono Hogar (Opcional)</FormLabel>
                         <FormControl>
                           <PhoneInput {...field} />
                         </FormControl>
@@ -292,7 +298,7 @@ export const RegistroPage = () => {
                       <FormItem>
                         <FormLabel>Lugar Expedición Documento</FormLabel>
                         <FormControl>
-                          <CiudadCombobox {...field} />
+                          <CiudadCombobox general {...field} />
                         </FormControl>
                         <FormMessage />
                       </FormItem>
@@ -387,7 +393,7 @@ export const RegistroPage = () => {
                 <div className="col-span-full">
                   <p className="text-sm leading-6 text-gray-600">
                     A continuación registre su información académica, así como
-                    sus áreas de interés y los conocimientos/herramienstas que
+                    sus áreas de interés y los conocimientos/herramientas que
                     manejan adecuadamente.
                   </p>
                 </div>
@@ -414,7 +420,7 @@ export const RegistroPage = () => {
                     name="codigo"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel>Codigo</FormLabel>
+                        <FormLabel>Código</FormLabel>
                         <FormControl>
                           <Input type="number" {...field} />
                         </FormControl>
@@ -461,9 +467,12 @@ export const RegistroPage = () => {
               <div className="mt-10">
                 <div className="text-sm text-gray-900 mb-2">
                   Seleccione las herramientas y/o conocimientos que maneja de las
-                  siguientes subcategorias (solo si aplica).
+                  siguientes sub categorías (solo si aplica).
                 </div>
-                <HerramientasForm />
+                {
+                  //TODO: <HerramientasForm form={form} />
+                }
+                <HerramientasFormRegistro form={form} />
               </div>
 
               <div className="mt-10 space-y-4">

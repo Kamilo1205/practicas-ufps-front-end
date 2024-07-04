@@ -7,17 +7,23 @@ import { SelectInputC } from "../ui/Input/SelectUIComponent";
 import { DialogComponent } from "../ui/Dialog/DialogComponent";
 import { AgregarDocenteForm } from "../ui/form/AgregarDocenteForm";
 import { BiUserCircle } from "react-icons/bi";
+import { useDocentes } from "../../hooks/useDocentes";
 
 
 
 interface DocenteI {
   id: string;
-  nombre: string;
+  nombres: string;
+  apellidos: string;
+  email: string;
+  fechaEliminacion?: Date;
 }
 
-export const DocentesYCursosSettingComponent = () => { 
+export const DocentesYCursosSettingComponent = () => {
   const [docentesDispobibles, setDocentesDispobibles] = useState<DocenteI[]>([]);
   const [agregarDocente, setAgregarDocente] = useState(false);
+  const { docentes: doclist } = useDocentes()
+  console.log('doc_list', doclist)
   const {
     grupos,
     docentes,
@@ -27,7 +33,7 @@ export const DocentesYCursosSettingComponent = () => {
     obtenerSiguienteNombreGrupo,
     crearNuevoDocente,
     eliminarDocente
-    
+
   } = useGrupos();
 
   console.log(docentes)
@@ -37,7 +43,7 @@ export const DocentesYCursosSettingComponent = () => {
   const cargarOpcionesDispobibles = ({ id, nombre }: { id?: string, nombre?: string }) => {
 
     const optiones = docentesDispobibles.map(
-      (docente) => ({ id: docente.id, name: docente.nombre })
+      (docente) => ({ id: docente.id, name: docente.nombres })
     )
     if (!id || !nombre) return optiones
     return [{ id, name: nombre }, ...optiones]
@@ -89,32 +95,32 @@ export const DocentesYCursosSettingComponent = () => {
     const gruposAsignados = grupos.filter((grupo) => grupo.docente && grupo.docente.id === docenteId)
     Swal.fire({
       title: 'Eliminar docente',
-      text: `Estas seguro de eliminar al docente ${docente?.nombre}? No podras revertir esta accion! ${ gruposAsignados.length >0 ? 'Los siguientes grupos quedaran sin docente asignado: ' + gruposAsignados.map((grupo) => grupo.nombre).join(', '):''}`,
+      text: `Estas seguro de eliminar al docente ${docente?.nombres}? No podras revertir esta accion! ${gruposAsignados.length > 0 ? 'Los siguientes grupos quedaran sin docente asignado: ' + gruposAsignados.map((grupo) => grupo.nombre).join(', ') : ''}`,
 
       icon: 'warning',
       showCancelButton: true,
       confirmButtonColor: '#3085d6',
       cancelButtonColor: '#d33',
       confirmButtonText: 'Si, eliminar!'
-    }).then((r) => { 
-      if(!r.isConfirmed) return
+    }).then((r) => {
+      if (!r.isConfirmed) return
       eliminarDocente(docenteId)
       Swal.fire({
         title: 'Docente eliminado',
-        text: `El docente ${docente?.nombre} ha sido eliminado.`,
+        text: `El docente ${docente?.nombres} ha sido eliminado.`,
         icon: 'success'
       })
     })
-    
+
   }
 
   useEffect(() => {
     setEdicion(grupos.map(() => ({ editar: false })))
     const docDisp = getDocentesDiponibles()
-    console.log('d',docentes)
+    console.log('d', docentes)
     setDocentesDispobibles(docDisp)
-    
-  }, [grupos,docentes])
+
+  }, [grupos, docentes])
 
   return <div>
     <DialogComponent
@@ -167,11 +173,11 @@ export const DocentesYCursosSettingComponent = () => {
                 {
                   edicion.length > 0 && edicion[index]?.editar ? (
                     <SelectInputC
-                      selectedDefault={grupo.docente && { id: grupo.docente.id, name: grupo.docente.nombre } || undefined}
-                      options={cargarOpcionesDispobibles({ id: grupo.docente?.id, nombre: grupo.docente?.nombre })}
+                      selectedDefault={grupo.docente && { id: grupo.docente.id, name: grupo.docente.nombres } || undefined}
+                      options={cargarOpcionesDispobibles({ id: grupo.docente?.id, nombre: grupo.docente?.nombres })}
                     />
                   ) : (
-                    <span>{grupo.docente ? grupo.docente?.nombre : <span className="text-red-500">Sin docente asignado</span>}</span>
+                    <span>{grupo.docente ? grupo.docente?.nombres : <span className="text-red-500">Sin docente asignado</span>}</span>
                   )
                 }
               </td>
@@ -226,7 +232,7 @@ export const DocentesYCursosSettingComponent = () => {
     <div className="flex w-full justify-end space-x-1">
       <Button
         className="bg-blue-500 hover:bg-blue-600 w-fit px-4"
-        onClick={()=>setAgregarDocente(true)}>
+        onClick={() => setAgregarDocente(true)}>
         Crear un nuevo docente
       </Button>
 
@@ -235,18 +241,18 @@ export const DocentesYCursosSettingComponent = () => {
       <ul role="list" className="divide-y divide-gray-100">
         {
           docentes.map((docente) => (
-            <li key={`doc-list-${docente.correo}`} className="flex justify-between gap-x-6 py-5">
+            !docente.fechaEliminacion && <li key={`doc-list-${docente.email}`} className="flex justify-between gap-x-6 py-5">
               <div className="flex min-w-0 gap-x-4">
                 {
                   docente.fotoUrl ? (
                     <img className="h-10 w-10 rounded-full" src={docente.fotoUrl} alt="foto de perfil docente" />
                   ) : (
-                      <BiUserCircle className="h-10 w-10 rounded-full text-gray-300" />
+                    <BiUserCircle className="h-10 w-10 rounded-full text-gray-300" />
                   )
-                  }
+                }
                 <div className="min-w-0 flex-auto">
-                  <p className="text-sm font-semibold leading-6 text-gray-900">{docente.nombre}</p>
-                  <p className="mt-1 truncate text-xs leading-5 text-gray-500">{docente.correo}</p>
+                  <p className="text-sm font-semibold leading-6 text-gray-900">{docente.nombres} {docente.apellidos}</p>
+                  <p className="mt-1 truncate text-xs leading-5 text-gray-500">{docente.email}</p>
                 </div>
               </div>
               <div className="shrink-0 sm:flex sm:flex-col sm:items-end">

@@ -5,6 +5,8 @@ import {  SolicitudRequest, SolicitudesResponse } from "../schemas/solicitudSche
 
 const SOLICITUDES_URL_COORDINADOR = '/empresas-solicitudes'
 const SOLICITUDES_URL_EMPRESA = '/empresas-solicitudes/empresa'
+const URL_EMPRESA_ASPIRANTES = '/mejores-estudiantes'
+
 const getUrlParaSolicitudDeEmpresa = (solicitudId: string) => `empresas-solicitudes/${solicitudId}/empresa`
 
 export const fetchSolicitudesApi = async (): Promise<SolicitudesResponse> => { 
@@ -31,3 +33,8 @@ export const eliminarSolicitudApi = async (solicitudId: string) => {
   const response = await axios.delete(`${SOLICITUDES_URL_EMPRESA}/${solicitudId}`)
   return response.data
 }
+
+export const getAspirantesASolicitudApi = async (solicitudId: string) => {
+  const response = await axios.get(`${SOLICITUDES_URL_COORDINADOR}/${solicitudId}${URL_EMPRESA_ASPIRANTES}`)
+  return response.data
+ }

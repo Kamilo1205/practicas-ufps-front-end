@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import Swal from "sweetalert2";
+import { eliminarDocenteApi, getDocentesApi, postDocenteApi } from "../api/docentes.api";
 
 const fetchGruposAPI = async () => { 
   return Promise.resolve([
@@ -34,7 +35,8 @@ const fetchGruposAPI = async () => {
 }
 
 const fetchDocentes = async () => {
-  return Promise.resolve([
+  return getDocentesApi()
+  /*return Promise.resolve([
     {
       id: '1',
       nombre: 'Docente A',
@@ -55,23 +57,21 @@ const fetchDocentes = async () => {
       nombre: 'Docente D',
       correo: 'docenteD@correo.com'
     }
-  ]);
+  ]);*/
  }
 
 
 interface DocenteI{
   id: string;
-  nombre: string;
-  correo: string;
+  nombres: string;
+  apellidos: string;
+  email: string;
   fotoUrl?: string;
+  fechaEliminacion?: Date;
 }
 
 const fetchNuevoDocente = async (docente:DocenteI) => {
-  return Promise.resolve({
-    id: '5',
-    nombre: docente.nombre,
-    correo: docente.correo
-  })
+  return postDocenteApi(docente)
 }
 
 
@@ -99,6 +99,7 @@ export const useGrupos = () => {
     
       fetchDocentes()
         .then((resp) => {
+          console.log('docentes', resp)
           setDocentes(resp);
         })
         .catch((err) => setError(err));
@@ -111,7 +112,7 @@ export const useGrupos = () => {
   }, [grupos, docentes])
 
   const getDocentesDiponibles = () => { 
-    return docentes.filter((docente) => !grupos.find((grupo) => grupo.docente && grupo.docente.nombre === docente.nombre))
+    return docentes.filter((docente) => !grupos.find((grupo) => grupo.docente && grupo.docente.nombres === docente.nombres))
   }
   const obtenerSiguienteNombreGrupo = (): string => {
     if (grupos.length === 0) {
@@ -158,7 +159,7 @@ export const useGrupos = () => {
       
       Swal.fire({
         title: 'Docente creado',
-        text: `El docente ${docente.nombre} ha sido creado.`,
+        text: `El docente ${docente.nombres} ha sido creado.`,
         icon: 'success'
       }).then(() => {
         setDocentes([...docentes, resp])
@@ -174,7 +175,8 @@ export const useGrupos = () => {
   }
 
   const eliminarDocente = (docenteId: string) => { 
-    const fetching = Promise.resolve({ id: docenteId });
+    //const fetching = Promise.resolve({ id: docenteId });
+    const fetching = eliminarDocenteApi(docenteId)
     fetching.then(() => {
       const nuevosDocentes = docentes.filter((doc) => doc.id !== docenteId)
       Swal.fire({

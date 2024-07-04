@@ -27,6 +27,7 @@ const useCiudades = (): UseCiudadesReturn => {
         console.log('ciudadesData',ciudadesData);
         setCiudades(ciudadesData);
       } else {
+        console.log('fetchCiudadesAPI');
         const todasLasCiudadesData = await fetchCiudadesAPI();
         setCiudades(todasLasCiudadesData);
       }

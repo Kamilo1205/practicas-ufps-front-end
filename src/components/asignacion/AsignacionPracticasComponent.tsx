@@ -3,23 +3,27 @@ import { Button } from "../ui"
 import { BiSearch } from "react-icons/bi"
 import AvatarScore from "../ui/Avatar/AvatarScoreComponent"
 import { IoChevronForward, IoClose } from "react-icons/io5"
-import { EstudianteAspirante, SolicitudPracticante } from "../../schemas/solicitudSchema"
-import { useState } from "react"
+import { EstudianteAspirante, Solicitud, } from "../../schemas/solicitudSchema"
+import { useEffect, useState } from "react"
 
-
+interface SolicitudPracticante {
+  solicitud: Solicitud
+  aspirantes: EstudianteAspirante[]
+}
 
 interface AsignacionPracticasComponentProps {
   solicitud: SolicitudPracticante
   setMostrarPerfil: (mostrar: boolean) => void
+  getAspirantesASolicitud: (idSolicitud: string) => Promise<any[]>
 
 }
 
-export const AsignacionPracticasComponent = ({solicitud,setMostrarPerfil}:AsignacionPracticasComponentProps) => { 
+export const AsignacionPracticasComponent = ({ solicitud, setMostrarPerfil, getAspirantesASolicitud }: AsignacionPracticasComponentProps) => {
 
-  console.log(solicitud)
 
-  const [solicitudState,] = useState<SolicitudPracticante>(solicitud)
-  const [perfilSeleccionado,setPerfilSeleccionado] = useState<EstudianteAspirante | null>(null)
+
+  const [solicitudState,] = useState<Solicitud>(solicitud.solicitud)
+  const [perfilSeleccionado, setPerfilSeleccionado] = useState<EstudianteAspirante | null>(null)
 
   const onAsignarPracticante = (nombrePracticante: string) => {
     Swal.fire({
@@ -45,6 +49,14 @@ export const AsignacionPracticasComponent = ({solicitud,setMostrarPerfil}:Asigna
     })
   }
 
+  useEffect(() => {
+    console.log('perfil seleccionado',)
+    if (solicitud) {
+
+      getAspirantesASolicitud(solicitudState.id)
+    }
+  }, [solicitudState, solicitud, getAspirantesASolicitud])
+
   return (<>
     <div className="flex flex-col divide-y rounded-md">
       <div className="search">
@@ -62,15 +74,15 @@ export const AsignacionPracticasComponent = ({solicitud,setMostrarPerfil}:Asigna
         <div className="flex flex-col divide-y">
           <div className="asignados-list pl-5 pb-4">
             <h2 className="text-gray-500 font-semibold text-sm text-opacity-100 pt-3">
-              Estudiantes asignados - <span>{solicitudState.estudiantesAsignados.length}</span> de <span>{solicitudState.numeroPracticantes}</span>
+              Estudiantes asignados - <span>{solicitudState.asignaciones.length}</span> de <span>{solicitudState.cantidadPracticantes}</span>
             </h2>
 
             <ul className="mt-2 max-h-20 overflow-y-scroll">
               {
-                solicitudState.estudiantesAsignados && solicitudState.estudiantesAsignados.map((estudiante) => (
+                solicitudState.asignaciones && solicitudState.asignaciones.map((estudiante) => (
                   <li
                     key={estudiante.id}
-                    onClick={()=>setPerfilSeleccionado(estudiante)}
+                    onClick={() => setPerfilSeleccionado(estudiante)}
                     className={`flex cursor-pointer ${perfilSeleccionado && estudiante.id === perfilSeleccionado?.id && 'bg-slate-100'} justify-between rounded-md w-72 pr-5 hover:bg-slate-100`}>
                     <div className="flex space-x-1">
                       <div>
@@ -87,7 +99,7 @@ export const AsignacionPracticasComponent = ({solicitud,setMostrarPerfil}:Asigna
                   </li>
                 ))
               }
-              
+
             </ul>
           </div>
           <div className="list py-5 pl-5">
@@ -98,13 +110,13 @@ export const AsignacionPracticasComponent = ({solicitud,setMostrarPerfil}:Asigna
                 solicitudState.aspirantes && solicitudState.aspirantes.map((aspirante) =>
                   <li
                     key={JSON.stringify(aspirante)}
-                    onClick={()=>setPerfilSeleccionado(aspirante)}
+                    onClick={() => setPerfilSeleccionado(aspirante)}
                     className={`flex ${perfilSeleccionado && aspirante.id === perfilSeleccionado?.id && 'bg-slate-100'} justify-between rounded-md w-72 pr-5 hover:bg-slate-100 cursor-pointer`}>
                     <div className="flex space-x-1">
                       <div>
                         <AvatarScore score={Number(aspirante.puntaje)} />
                       </div>
-                      <span className="font-normal text-sm text-gray-600 self-center">{aspirante.nombre }</span>
+                      <span className="font-normal text-sm text-gray-600 self-center">{aspirante.nombre}</span>
                     </div>
 
                     <div className="self-center">
@@ -114,7 +126,7 @@ export const AsignacionPracticasComponent = ({solicitud,setMostrarPerfil}:Asigna
                 )
 
               }
-              
+
 
             </ul>
           </div>
@@ -128,8 +140,8 @@ export const AsignacionPracticasComponent = ({solicitud,setMostrarPerfil}:Asigna
                   <AvatarScore score={Number(perfilSeleccionado.puntaje)} size="medium" />
                 </div>
 
-                <span className="text-gray-600 font-semibold text-lg">{ perfilSeleccionado.nombre}</span>
-                <span className="text-gray-500 font-normal text-sm">{ perfilSeleccionado.codigo}</span>
+                <span className="text-gray-600 font-semibold text-lg">{perfilSeleccionado.nombre}</span>
+                <span className="text-gray-500 font-normal text-sm">{perfilSeleccionado.codigo}</span>
               </div>
               <div className="p-2 text-gray-500">
 
@@ -157,14 +169,14 @@ export const AsignacionPracticasComponent = ({solicitud,setMostrarPerfil}:Asigna
                 <div className="pr-1 flex flex-col">
                   <span className="font-semibold text-sm">Herramientas</span>
                   <div className="flex flex-wrap space-x-1 space-y-1 justify-center align-middle">
-                    
+
                     {
                       solicitudState.perfil.herramientas.map(herramienta => (
-                        perfilSeleccionado.perfil.map(perfil => 
+                        perfilSeleccionado.perfil.map(perfil =>
                           !perfil.herramientas.includes(herramienta) ? <span
                             key={herramienta}
                             className="text-sm bg-red-100 text-gray-600 px-1 py-0.5 rounded-md">{herramienta}</span>
-                            : 
+                            :
                             <span
                               key={herramienta}
                               className="text-sm bg-green-100 text-gray-600 px-1 py-0.5 rounded-md" > {herramienta}
@@ -172,13 +184,13 @@ export const AsignacionPracticasComponent = ({solicitud,setMostrarPerfil}:Asigna
                         )
                       ))
                     }
-                    
+
                   </div>
 
                 </div>
                 <div className="mt-3">
                   <Button
-                    disabled={ solicitudState.estado === 'Asignada' || solicitudState.estudiantesAsignados.length === solicitudState.numeroPracticantes}
+                    disabled={solicitudState.estado === 'Asignada' || solicitudState.estudiantesAsignados.length === solicitudState.numeroPracticantes}
                     onClick={() => onAsignarPracticante('1152004 - Jeison Omar Ferrer Ortega')}>Asignar practicante</Button>
                 </div>
               </div>
@@ -186,7 +198,7 @@ export const AsignacionPracticasComponent = ({solicitud,setMostrarPerfil}:Asigna
             :
             <></>
         }
-        
+
       </div>
     </div>
   </>)

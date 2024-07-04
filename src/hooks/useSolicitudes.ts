@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useState } from "react"
 
 import { Solicitud,  SolicitudRequest } from "../schemas/solicitudSchema"
-import { createSolicitudApi, eliminarSolicitudApi, fetchSolicitudesApi, fetchSolicitudesEmpresaApi } from "../api/solicitudes.api"
+import { createSolicitudApi, eliminarSolicitudApi, fetchSolicitudesApi, fetchSolicitudesEmpresaApi, getAspirantesASolicitudApi } from "../api/solicitudes.api"
 import { useAuth } from "../contexts"
 import { roles } from "../interfaces/rol.interface"
 import Swal from "sweetalert2"
@@ -14,7 +14,7 @@ export const useSolicitudes = () => {
   const [solicitudes, setSolicitudes] = useState<Solicitud[]>([])
   const [totalSolictudes, setTotalSolicitudes] = useState<number>(0)
   const [error, setError] = useState<string | null>(null)
-
+  console.log('solicitudes: ', solicitudes)
   const fetchSolicitudes = useCallback(async () => {
     return await fetchSolicitudesApi();
     
@@ -40,7 +40,7 @@ export const useSolicitudes = () => {
     {
       fetchSolicitudes().then(resp => {
         console.log('peti2', resp)
-        setSolicitudes(resp.data);
+        setSolicitudes(resp.data.sort((a,) => a.cantidadPracticantes > a.asignaciones.length ? 1 : -1));
         setTotalSolicitudes(resp.meta.totalItems);
       })
     }
@@ -88,11 +88,19 @@ export const useSolicitudes = () => {
     
   }
 
+  const getAspirantesASolicitud = async (solicitudId: string) => { 
+
+    const resp = await getAspirantesASolicitudApi(solicitudId)
+    console.log('aspirantes', resp)
+  }
+
   return {
     error,
     solicitudes,
     totalSolictudes,
     createSolicitud,
-    eliminarSolicitud
+    eliminarSolicitud,
+    getAspirantesASolicitud
+    
   }
  } 

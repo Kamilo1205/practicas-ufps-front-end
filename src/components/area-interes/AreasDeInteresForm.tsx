@@ -5,7 +5,7 @@ import useAreasDeInteres from '../../hooks/useAreasInteres';
 export const AreasDeInteresForm = () => {
   const { register, formState: { errors } } = useFormContext();
   const { areas } = useAreasDeInteres();
-  
+
   const areasInteresErrors = errors.areasInteres as Record<string, { message: string }>;
 
   return (
@@ -23,7 +23,7 @@ export const AreasDeInteresForm = () => {
             </thead>
             <tbody>
               {areas.map((area, index) => (
-                !area.areaPadre && (
+                !area.areaPadre && !area.fechaEliminacion && (
                   <Fragment key={index}>
                     <tr>
                       <td className="border-b px-4 py-2.5">{area.nombre}</td>
@@ -46,7 +46,7 @@ export const AreasDeInteresForm = () => {
                         </tr>
                       )*/
                     }
-                  </Fragment> 
+                  </Fragment>
                 )
               ))}
             </tbody>
