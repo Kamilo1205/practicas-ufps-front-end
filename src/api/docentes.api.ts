@@ -18,3 +18,9 @@ export const eliminarDocenteApi = async (id:string) => {
   const { data } = await axios.delete(`${URL}/${id}`)
   return data
 }
+
+export const habilitarDocenteApi = async (id: string) => { 
+
+  const { data } = await axios.patch(`${URL}/${id}/restore`)
+  return data
+}

@@ -18,7 +18,7 @@ export const fetchEstudiante = async (): Promise<Estudiante> => {
 
 // Obtener una lista paginada de estudiantes
 export const fetchEstudiantes = async (page: number = 1, limit: number = 10, grupo: string = '', search: string = ''): Promise<EstudiantesResponse> => {
-  console.log(page, limit, grupo, search)
+  //console.log(page, limit, grupo, search)
   const filtros = {
     grupoFiltro: grupo && grupo !== '' && grupo !== 'inactivo' ? `&filter.grupoMatriculado=${grupo}&filter.usuario.estaActivo=$eq:true` : '',
     estaInactivoFiltro: grupo === 'inactivo' ? `&filter.usuario.estaActivo=$eq:false` : '',
@@ -54,3 +54,11 @@ export const fetchEstudianteById = async (id: string): Promise<Estudiante> => {
   const response = await axios.get(`/estudiantes/${id}`);
   return response.data;
 };
+
+
+export const createEstudiantesPorCSV = async (file: File): Promise<Estudiante[]> => {
+  const URL = '/csv/estudiantes';
+  const response = await axios.post(URL, file);
+  console.log('csv est',response.data); 
+  return response.data;
+ }

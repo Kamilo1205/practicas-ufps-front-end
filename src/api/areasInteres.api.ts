@@ -21,9 +21,8 @@ export const fetchAreaDeInteresById = async (id: string): Promise<AreaInteres> =
 
 export const createAreaDeInteres = async (newArea: Omit<AreaInteres, 'id'>): Promise<AreaInteres> => {
   
-  console.log(newArea)
   const response = await axios.post('/areas-interes', newArea);
-  console.log(response);
+  //console.log(response);
   //La API manda el objeto sin areaInteresHerramientas y sin subAreas, por lo que se lo agregamos
   return {
     ...response.data,
@@ -45,7 +44,7 @@ export const deleteAreaDeInteres = async (id: string): Promise<void> => {
 
 export const createHerramientaApi = async (areaId: string, herramienta: Omit<Herramienta, 'id'>): Promise<areaInteresHerramientas> => { 
    return await axios.post(`/herramientas`, herramienta).then(async(resp) => {
-    console.log(resp.data)
+    //console.log(resp.data)
     const herramientaId = resp.data.id
     const areaInteresHerramienta = {
       areaInteresId: areaId,
@@ -53,7 +52,7 @@ export const createHerramientaApi = async (areaId: string, herramienta: Omit<Her
     }
      const relacionAreaHerramienta = await axios.post(`/area-interes-herramientas`, areaInteresHerramienta)
      
-    console.log(relacionAreaHerramienta,'relacionAreaHerramienta')
+    //console.log(relacionAreaHerramienta,'relacionAreaHerramienta')
      return relacionAreaHerramienta.data
   })
 }

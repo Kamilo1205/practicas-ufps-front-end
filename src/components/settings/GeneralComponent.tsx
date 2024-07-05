@@ -5,8 +5,8 @@ import { useGeneralConfig } from "../../hooks/useGeneralConfig"
 //TODO: Ajustar nombre
 export const GeneralComponent = () => {
 
-  const { decano } = useGeneralConfig()
-
+  const { decano, director, crearDirector } = useGeneralConfig()
+  //console.log('decano', decano, 'director', director)
   return (<>
     <div className="px-10">
       <div className="mt-6 border-t border-gray-100">
@@ -20,7 +20,7 @@ export const GeneralComponent = () => {
           <div className="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
             <dt className="text-base font-medium leading-6 text-gray-900">Cuenta del director del programa</dt>
             <dd className="mt-1 text-base leading-6 text-gray-700 sm:col-span-2 sm:mt-0">
-              <DirectorSetttingComponent />
+              <DirectorSetttingComponent director={director} crearDirector={crearDirector} />
             </dd>
           </div>
 

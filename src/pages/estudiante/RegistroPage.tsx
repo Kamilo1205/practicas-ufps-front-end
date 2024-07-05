@@ -168,7 +168,6 @@ export const RegistroPage = () => {
                         <FormControl>
                           <DepartamentoCombobox
                             paisNombre="Colombia"
-
                             {...field}
                             onChange={(value) => {
                               field.onChange(value);
@@ -431,33 +430,7 @@ export const RegistroPage = () => {
                 </div>
 
                 {/* Grupo de práctica matriculado */}
-                <div className="sm:col-span-3">
-                  <FormField
-                    name="grupoMatriculado"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Grupo de Prácticas Matriculado</FormLabel>
-                        <FormControl>
-                          <div className="flex flex-col space-y-2 sm:flex-row sm:space-y-0 sm:space-x-6 text-sm">
-                            <label className="flex items-center">
-                              <input type="radio" {...field} value="grupoA" />
-                              <span className="ml-2">Grupo A</span>
-                            </label>
-                            <label className="flex items-center">
-                              <input type="radio" {...field} value="grupoB" />
-                              <span className="ml-2">Grupo B</span>
-                            </label>
-                            <label className="flex items-center">
-                              <input type="radio" {...field} value="grupoC" />
-                              <span className="ml-2">Grupo C</span>
-                            </label>
-                          </div>
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                </div>
+
               </div>
 
               <div className="mt-10">
@@ -559,3 +532,33 @@ export const RegistroPage = () => {
     </>
   );
 };
+
+/*
+<div className="sm:col-span-3">
+                  <FormField
+                    name="grupoMatriculado"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Grupo de Prácticas Matriculado</FormLabel>
+                        <FormControl>
+                          <div className="flex flex-col space-y-2 sm:flex-row sm:space-y-0 sm:space-x-6 text-sm">
+                            <label className="flex items-center">
+                              <input type="radio" {...field} value="grupoA" />
+                              <span className="ml-2">Grupo A</span>
+                            </label>
+                            <label className="flex items-center">
+                              <input type="radio" {...field} value="grupoB" />
+                              <span className="ml-2">Grupo B</span>
+                            </label>
+                            <label className="flex items-center">
+                              <input type="radio" {...field} value="grupoC" />
+                              <span className="ml-2">Grupo C</span>
+                            </label>
+                          </div>
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                </div>
+*/

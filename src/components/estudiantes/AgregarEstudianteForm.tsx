@@ -6,7 +6,7 @@ import { HiMiniChevronDown } from 'react-icons/hi2';
 import { useGrupos } from "../../hooks/useGrupos";
 //import { grupos } from "../../pages/coordinador/EstudiantesPage";
 
-interface AgregarEstudianteFormProps { 
+interface AgregarEstudianteFormProps {
   onClose: () => void;
 
 }
@@ -18,11 +18,19 @@ export const AgregarEstudianteForm = ({ onClose }: AgregarEstudianteFormProps) =
   });
 
   const [archivo, setArchivo] = useState<File | null>(null);
-  const {grupos} = useGrupos()
+  const { grupos } = useGrupos()
   const handleGuardar = () => {
     console.log(grupoSeleccionado);
     console.log(archivo);
   };
+
+  const onSelectGrupo = (grupo: any) => {
+    console.log('grupo', grupo)
+    setGrupoSeleccionado({
+      id: grupo.id,
+      name: grupo.nombre
+    })
+  }
 
   return (
     <div>
@@ -30,7 +38,7 @@ export const AgregarEstudianteForm = ({ onClose }: AgregarEstudianteFormProps) =
         <Field>
 
           <Label htmlFor="grupo-listbox">Grupo</Label>
-          <Listbox value={grupoSeleccionado} onChange={setGrupoSeleccionado}>
+          <Listbox value={grupoSeleccionado} onChange={(d) => onSelectGrupo(d)}>
             <ListboxButton
               id={`grupo-listbox`}
               className={clsx(
@@ -53,7 +61,7 @@ export const AgregarEstudianteForm = ({ onClose }: AgregarEstudianteFormProps) =
                 className="z-50 w-[var(--button-width)] rounded-md border border-gray-200 bg-white p-1 [--anchor-gap:4px] focus:outline-none"
               >
                 {grupos.map((grupo) => (
-                  <ListboxOption
+                  !grupo.fechaEliminacion && <ListboxOption
                     key={grupo.id}
                     value={grupo}
                     className="group flex cursor-pointer items-center gap-2 rounded-lg py-1.5 px-3 select-none data-[focus]:bg-gray-200 data-[selected]:bg-gray-300/90"

@@ -13,18 +13,27 @@ interface SelectInputCI {
 interface SelectInputCProps {
   selectedDefault?: SelectInputCI;
   options: SelectInputCI[];
+  onChange?: (selected: SelectInputCI | null) => void;
 
 }
 
-export const SelectInputC = ({ selectedDefault, options }: SelectInputCProps) => {
+export const SelectInputC = ({ selectedDefault, options, onChange }: SelectInputCProps) => {
   const [selected, setSelected] = useState<SelectInputCI | null>(selectedDefault || null);
   const [open, setOpen] = useState(false);
   const [highlightedIndex, setHighlightedIndex] = useState<number | null>(null);
 
   //TODO: Implementar guardar nueva seleccion.
+  console.log('selected', selected)
 
-  const onSeleccionar = (index: number) => {
-    setSelected(options[index]);
+  const onSeleccionar = (index: number | null) => {
+    if (index !== null) {
+      setSelected(options[index]);
+      onChange(options[index]);
+    }
+    else {
+      onChange(null);
+      setSelected(null);
+    }
     setOpen(false);
   }
 
@@ -38,13 +47,13 @@ export const SelectInputC = ({ selectedDefault, options }: SelectInputCProps) =>
           <span className="flex items-center">
             {
               selected && (
-                
-                  selected.imgUrl? (
-                    <img className="h-5 w-5 rounded-full" src={selected.imgUrl} alt="foto de perfil" />
-                  ) : (
-                    <BiUserCircle className="h-5 w-5 rounded-full text-gray-300" />
-                  )
-                
+
+                selected.imgUrl ? (
+                  <img className="h-5 w-5 rounded-full" src={selected.imgUrl} alt="foto de perfil" />
+                ) : (
+                  <BiUserCircle className="h-5 w-5 rounded-full text-gray-300" />
+                )
+
               )
             }
             <span className="ml-3 block truncate">{selected ? selected?.name : 'Seleccione un docente'}</span>
@@ -65,10 +74,20 @@ export const SelectInputC = ({ selectedDefault, options }: SelectInputCProps) =>
           leaveTo="opacity-0"
         >
           <ul
-            onBlur={() => setOpen(false)}
+
 
             className="absolute z-10 mt-1 max-h-56 w-full overflow-auto rounded-md bg-white py-1 text-base shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none sm:text-sm" tabIndex={-1} role="listbox" aria-labelledby="listbox-label" aria-activedescendant="listbox-option-3">
-
+            <li
+              id={`op-no-select`} role="option"
+              key={`opkey-no-select`}
+              className={`relative cursor-default select-none py-2 pl-3 pr-9 ${highlightedIndex === null ? 'bg-indigo-600 text-white' : 'text-gray-900'
+                }`}
+              onMouseEnter={() => setHighlightedIndex(null)}
+              onMouseLeave={() => setHighlightedIndex(null)}
+              onClick={() => onSeleccionar(null)}
+            >
+              Sin seleccionar...
+            </li>
             {
               options.map((option, index) => (
                 <li

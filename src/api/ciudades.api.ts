@@ -3,13 +3,13 @@ import { Ciudad } from '../interfaces';
 
 export const fetchCiudades = async (): Promise<Ciudad[]> => {
   const response = await axios.get('/ciudades');
-  console.log('response',response.data);
+//console.log('response',response.data);
   return response.data;
 };
 
 export const fetchCiudadesByDepartamento = async (departamentoId: string): Promise<Ciudad[]> => {
   const response = await axios.get(`/ciudades/departamento/${departamentoId}`);
-  console.log('response2',response.data);
+//console.log('response2',response.data);
   return response.data;
 };
 

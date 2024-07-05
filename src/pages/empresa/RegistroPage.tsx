@@ -11,6 +11,8 @@ import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, For
 import { CiudadCombobox, DepartamentoCombobox, IndustriaCombobox, PaisCombobox, TipoDocumentoListbox } from '../../components/form';
 import { PhoneInput } from '../../components/ui/PhoneInput';
 import { FileInput } from '../../components/ui/Input/FileInput';
+import { useNavigate } from 'react-router-dom';
+import { useState } from 'react';
 
 export const RegistroPage = () => {
   const form: UseFormReturn<EmpresaSchema> = useForm<EmpresaSchema>({
@@ -19,9 +21,16 @@ export const RegistroPage = () => {
   const selectedPais = form.watch("paisId");
   const selectedDepartamento = form.watch("departamentoId");
   const watch = form.watch() as Record<string, any>;
-
+  const [loading, setLoading] = useState(false);
+  const navigate = useNavigate();
   const onSubmit = async (data: EmpresaSchema) => {
+    setLoading(true);
     const response = await fetchPostEmpresa(data);
+    if (response) {
+      toast.success("Empresa registrada correctamente");
+      setLoading(false);
+      navigate('/auth/login')
+    }
   };
 
   const downloadDocumento = async () => {
@@ -35,6 +44,12 @@ export const RegistroPage = () => {
     link.click();
     link.parentNode?.removeChild(link);
   };
+
+  if (loading) {
+    return <div className="flex justify-center items-center h-screen content-center">
+      <div className="animate-spin rounded-full h-11 w-11 border-t-2 border-b-2 border-blue-900"></div>
+    </div>
+  }
 
   return (
     <>
@@ -151,7 +166,7 @@ export const RegistroPage = () => {
                             onChange={(value) => {
                               field.onChange(value);
                               form.setValue("ciudadId", "");
-                            } }                          />
+                            }} />
                         </FormControl>
                         <FormMessage />
                       </FormItem>
@@ -360,7 +375,7 @@ export const RegistroPage = () => {
                       <FormItem>
                         <FormLabel>Lugar Expedición Documento</FormLabel>
                         <FormControl>
-                          <CiudadCombobox {...field} />
+                          <CiudadCombobox general {...field} />
                         </FormControl>
                         <FormMessage />
                       </FormItem>
@@ -417,7 +432,7 @@ export const RegistroPage = () => {
                               <FormItem>
                                 <FormControl>
                                   <>
-                                    <FileInput 
+                                    <FileInput
                                       variant="button"
                                       accept="application/pdf"
                                       buttonClassName="w-32"

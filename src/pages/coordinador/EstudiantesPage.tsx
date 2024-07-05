@@ -15,9 +15,10 @@ import { IoAlertCircle } from "react-icons/io5";
 import { EstudianteI } from "../../interfaces/responses.interface";
 import { roles } from "../../interfaces/rol.interface";
 import { useAuth } from "../../contexts";
+import { useGrupos } from "../../hooks/useGrupos";
 
 
-
+/*
 const Tabs = [
   {
     id: 0,
@@ -46,12 +47,20 @@ const Tabs = [
   },
 
 ]
+*/
+interface Tab {
 
+  id: string | number
+  name: string
+  grupo: string
 
+}
 
 export const EstudiantesPage = () => {
 
   const { user } = useAuth()
+  const { grupos } = useGrupos()
+  console.log(grupos)
   const userRoles = user?.roles.map(rol => rol.nombre)
 
   const [estudiantes, setEstudiantes] = useState<{ estudiantes: EstudianteI[], total: number }>({
@@ -65,11 +74,39 @@ export const EstudiantesPage = () => {
   const [itemsPerPage] = useState<number>(5); // Suponiendo que el backend maneja 10 ítems por página
   const [agregarEstudiante, setAgregarEstudiante] = useState<boolean>(false);
   const [tab, setTab] = useState<number>(0);
+  const [Tabs, setTabs] = useState<Tab[]>([]); // Tabs[tab
   const [mostrarPerfil, setMostrarPerfil] = useState<boolean>(false);
   const [estudianteSeleccionado, setEstudianteSeleccionado] = useState<EstudianteI | null>(null);
   const [filtro, setFiltro] = useState<string>("");
+
   //const navigate = useNavigate();
   //const location = useLocation();
+
+  useEffect(() => {
+    if (grupos) {
+      const tl = grupos.filter(grupo => !grupo.fechaEliminacion)
+      setTabs([
+        {
+          id: 0,
+          name: "Activos",
+          grupo: ""
+        },
+        ...tl.map(grupo => {
+          const t = {
+            id: grupo.id,
+            name: grupo.nombre,
+            grupo: grupo.nombre.replace(/\s+/g, '')
+          }
+          return t
+        }),
+        {
+          id: 4,
+          name: "Inactivos",
+          grupo: 'inactivo'
+        },
+      ])
+    }
+  }, [grupos])
 
   useEffect(() => {
     setCurrentPage(1);
@@ -91,7 +128,7 @@ export const EstudiantesPage = () => {
       //console.log(data);
     };
     fetchData();
-  }, [tab, filtro, currentPage, itemsPerPage]);
+  }, [tab, filtro, currentPage, itemsPerPage, Tabs]);
 
   return (
     <>

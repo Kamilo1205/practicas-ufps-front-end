@@ -10,7 +10,7 @@ export const estudianteSchema = z.object({
   ciudadResidenciaId: z.string().min(1, 'la ciudad de residenca es obligatoria').default(''),
   direccionResidencia: z.string().min(1, 'La dirección es obligatoria').default(''),
   telefonoHogar: z.string().default(''),
-  grupoMatriculado: z.string().min(1, 'El grupo matriculado es obligatorio').default(''),
+ 
 
   numeroDocumento: z.string().min(1, 'El número de documento es obligatorio').default(''),
   tipoDocumentoId: z.string().min(1, 'El tipo de documento es obligatorio').default(''),
@@ -34,3 +34,5 @@ export const estudianteSchema = z.object({
 });
 
 export type EstudianteSchema = z.infer<typeof estudianteSchema>;
+
+// grupoMatriculado: z.string().min(1, 'El grupo matriculado es obligatorio').default(''),

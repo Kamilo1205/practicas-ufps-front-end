@@ -1,15 +1,18 @@
 import { useEffect, useState } from "react";
 import Swal from "sweetalert2";
-import { eliminarDocenteApi, getDocentesApi, postDocenteApi } from "../api/docentes.api";
+import { eliminarDocenteApi, getDocentesApi, habilitarDocenteApi, postDocenteApi } from "../api/docentes.api";
+import { asignarDocenteApi, deleteGrupoPracticaApi, getGruposPracticasApi, postGruposPracticasApi, registrarEstudiantesGrupoApi } from "../api/gupos_practicas.api";
 
 const fetchGruposAPI = async () => { 
-  return Promise.resolve([
+  const response = await getGruposPracticasApi()
+  return response
+  /*return Promise.resolve([
     {
       id: '1',
       nombre: 'Grupo A',
       docente: {
         id: '1',
-        nombre: 'Docente A',
+        nombres: 'Docente A',
         correo: 'docenteA@correo.com'
 
       },
@@ -19,7 +22,7 @@ const fetchGruposAPI = async () => {
       nombre: 'Grupo B',
       docente: {
         id: '2',
-        nombre: 'Docente B',
+        nombres: 'Docente B',
         correo: 'docenteB@correo.com'
 
       
@@ -31,7 +34,7 @@ const fetchGruposAPI = async () => {
       nombre: 'Grupo C',
       docente: null,
     }
-  ]);
+  ]);*/
 }
 
 const fetchDocentes = async () => {
@@ -39,23 +42,23 @@ const fetchDocentes = async () => {
   /*return Promise.resolve([
     {
       id: '1',
-      nombre: 'Docente A',
-      correo: 'docenteA@correo.com'
+      nombres: 'Docente A',
+      email: 'docenteA@email.com'
     },
     {
       id: '2',
-      nombre: 'Docente B',
-      correo: 'docenteB@correo.com'
+      nombres: 'Docente B',
+      email: 'docenteB@email.com'
     },
     {
       id: '3',
-      nombre: 'Docente C',
-      correo: 'docenteC@correo.com'
+      nombres: 'Docente C',
+      email: 'docenteC@email.com'
     },
     {
       id: '4',
-      nombre: 'Docente D',
-      correo: 'docenteD@correo.com'
+      nombres: 'Docente D',
+      email: 'docenteD@email.com'
     }
   ]);*/
  }
@@ -78,7 +81,8 @@ const fetchNuevoDocente = async (docente:DocenteI) => {
 interface GrupoI { 
   id: string;
   nombre: string;
-  docente: DocenteI | null;
+  docente?: DocenteI | null;
+  fechaEliminacion?: Date;
 
 }
 
@@ -91,7 +95,14 @@ export const useGrupos = () => {
    
       fetchGruposAPI()
         .then((resp) => {
-          setGrupos(resp);
+          const grup = resp.map((grupo: any) => { 
+            return {
+              ...grupo,
+              docente: grupo.tutor
+            }
+          })
+          //console.log('grupo', grup, resp)
+          setGrupos(grup);
         })
         .catch((err) => setError(err));
     
@@ -99,16 +110,16 @@ export const useGrupos = () => {
     
       fetchDocentes()
         .then((resp) => {
-          console.log('docentes', resp)
+          //console.log('docentes', resp)
           setDocentes(resp);
         })
         .catch((err) => setError(err));
-    console.log('useGrupos mounted')
+    //console.log('useGrupos mounted')
     
   }, [])
 
   useEffect(() => { 
-    console.log('docentes', docentes)
+    //console.log('docentes', docentes)
   }, [grupos, docentes])
 
   const getDocentesDiponibles = () => { 
@@ -127,12 +138,12 @@ export const useGrupos = () => {
   };
 
   const crearNuevoGrupo = () => {
-    const fetching = Promise.resolve({
+    /*const fetching = Promise.resolve({
       id: String(grupos.length + 1),
       nombre: obtenerSiguienteNombreGrupo(),
-      docente: null,
-    });
-
+ 
+    });*/
+    const fetching = postGruposPracticasApi({ nombre: obtenerSiguienteNombreGrupo()})
     fetching.then((resp) => {
       setGrupos([...grupos, resp]);
     }).catch((err) => setError(err));
@@ -145,7 +156,7 @@ export const useGrupos = () => {
       return;
     }
 
-    const fetching = Promise.resolve({ id: grupos[grupos.length - 1].id });
+    const fetching = deleteGrupoPracticaApi( grupos[grupos.length - 1].id );
 
     fetching.then(() => {
       const nuevosGrupos = grupos.slice(0, -1);
@@ -198,6 +209,80 @@ export const useGrupos = () => {
   
   }
 
+  const habilitarDocente = (docenteId: string) => { 
+    const response = habilitarDocenteApi(docenteId)
+    response.then(() => { 
+      const nuevosDocentes = docentes.map((doc) => {
+        if (doc.id === docenteId) {
+          delete doc.fechaEliminacion
+        }
+        return doc
+      })
+      Swal.fire({
+        title: 'Docente habilitado',
+        text: `El docente ha sido habilitado.`,
+        icon: 'success'
+      }).then(() => {
+        setDocentes(nuevosDocentes)
+      })
+    }, (err) => {
+      Swal.fire({
+        title: 'Ha ocurrido un error inesperado!',
+        text: 'Refresque la página e inténtelo nuevamente.',
+        icon: 'error'
+      })
+      setError(err)
+    })
+  }
+
+  const asignarDocenteGrupo = (grupoId: string, docenteId: string | null) => { 
+    const fetching = asignarDocenteApi(grupoId, docenteId)
+    fetching.then(() => {
+      const nuevosGrupos = grupos.map((grupo) => {
+        if (grupo.id === grupoId) {
+          grupo.docente = docentes.find((doc) => doc.id === docenteId)
+        }
+        return grupo
+      })
+      setGrupos(nuevosGrupos)
+      Swal.fire({
+        title: 'Docente asignado',
+        text: `El docente ha sido asignado al grupo.`,
+        icon: 'success',
+        showConfirmButton:true
+      })
+    }).catch((err) => {
+      setError(err)
+      Swal.fire({
+        title: 'Error',
+        text: 'No se ha podido asignar el docente.',
+        icon: 'error',
+        showConfirmButton:true
+      })
+    })
+  }
+
+  const asignarEstudinatesAGrupo = (grupoId: string, archivo: File) => { 
+    
+    registrarEstudiantesGrupoApi(grupoId, archivo).then(() => {
+      
+      Swal.fire({
+        title: 'Estudiantes registrados',
+        text: 'Los estudiantes han sido registrados en el grupo.',
+        icon: 'success',
+        showConfirmButton: true
+      })
+    }).catch((err) => { 
+      Swal.fire({
+        title: 'Error',
+        text: 'No se han podido registrar los estudiantes.',
+        icon: 'error',
+        showConfirmButton: true
+      })
+      setError(err)
+      location.reload()
+    })
+  }
 
   return {
     grupos,
@@ -208,6 +293,8 @@ export const useGrupos = () => {
     eliminarGrupo,
     obtenerSiguienteNombreGrupo,
     crearNuevoDocente,
-    eliminarDocente
+    eliminarDocente,
+    habilitarDocente,
+    asignarDocenteGrupo
   };
 }

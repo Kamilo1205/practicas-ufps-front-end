@@ -2,12 +2,13 @@ import { useEffect, useState } from "react";
 import { useGrupos } from "../../hooks/useGrupos";
 import { Button } from "../ui"
 import Swal from "sweetalert2";
-import { MdCancel, MdDelete, MdSave } from "react-icons/md";
+import { MdCancel, MdDelete, MdRestore, MdSave } from "react-icons/md";
 import { SelectInputC } from "../ui/Input/SelectUIComponent";
 import { DialogComponent } from "../ui/Dialog/DialogComponent";
 import { AgregarDocenteForm } from "../ui/form/AgregarDocenteForm";
 import { BiUserCircle } from "react-icons/bi";
 import { useDocentes } from "../../hooks/useDocentes";
+import { EmptyStateMessage } from "../estudiantes";
 
 
 
@@ -22,8 +23,8 @@ interface DocenteI {
 export const DocentesYCursosSettingComponent = () => {
   const [docentesDispobibles, setDocentesDispobibles] = useState<DocenteI[]>([]);
   const [agregarDocente, setAgregarDocente] = useState(false);
-  const { docentes: doclist } = useDocentes()
-  console.log('doc_list', doclist)
+  //const { docentes: doclist } = useDocentes()
+
   const {
     grupos,
     docentes,
@@ -32,18 +33,21 @@ export const DocentesYCursosSettingComponent = () => {
     eliminarGrupo,
     obtenerSiguienteNombreGrupo,
     crearNuevoDocente,
-    eliminarDocente
+    eliminarDocente,
+    habilitarDocente,
+    asignarDocenteGrupo
 
   } = useGrupos();
-
-  console.log(docentes)
+  //console.log('gruposAa', grupos)
 
   const [edicion, setEdicion] = useState<{ editar: boolean }[]>([]);
+  const [docenteSeleccionado, setDocenteSeleccionado] = useState<DocenteI | null>(null)
+  //console.log('docenteSelect', docenteSeleccionado)
 
   const cargarOpcionesDispobibles = ({ id, nombre }: { id?: string, nombre?: string }) => {
 
     const optiones = docentesDispobibles.map(
-      (docente) => ({ id: docente.id, name: docente.nombres })
+      (docente) => ({ id: docente.id, name: `${docente?.nombres} ${docente?.apellidos}` })
     )
     if (!id || !nombre) return optiones
     return [{ id, name: nombre }, ...optiones]
@@ -114,10 +118,14 @@ export const DocentesYCursosSettingComponent = () => {
 
   }
 
+  const onAsignarDocente = (grupoId: string) => {
+    asignarDocenteGrupo(grupoId, docenteSeleccionado?.id || null)
+  }
+
   useEffect(() => {
     setEdicion(grupos.map(() => ({ editar: false })))
     const docDisp = getDocentesDiponibles()
-    console.log('d', docentes)
+    //console.log('d', docentes)
     setDocentesDispobibles(docDisp)
 
   }, [grupos, docentes])
@@ -150,7 +158,7 @@ export const DocentesYCursosSettingComponent = () => {
         Eliminar un grupo
       </Button>
     </div>
-    <table className="w-full border-collapse indent-0 border-inherit mt-5 overflow-y-scroll">
+    {grupos.length === 0 ? <EmptyStateMessage message="No hay grupos registrados" submesage="" /> : <table className="w-full border-collapse indent-0 border-inherit mt-5 overflow-y-scroll">
       <thead className="">
         <tr className="mb-2">
           <th className="border-r border-gray-300 py-2">Nombre</th>
@@ -161,7 +169,7 @@ export const DocentesYCursosSettingComponent = () => {
       <tbody className="border-t border-gray-300">
         {
           grupos.map((grupo, index) => (
-            <tr key={grupo.id} className="border-t border-r border-gray-300">
+            !grupo.fechaEliminacion && <tr key={grupo.id} className="border-t border-r border-gray-300">
               <td className="border-r border-gray-300 p-3">
                 {
 
@@ -173,6 +181,7 @@ export const DocentesYCursosSettingComponent = () => {
                 {
                   edicion.length > 0 && edicion[index]?.editar ? (
                     <SelectInputC
+                      onChange={setDocenteSeleccionado}
                       selectedDefault={grupo.docente && { id: grupo.docente.id, name: grupo.docente.nombres } || undefined}
                       options={cargarOpcionesDispobibles({ id: grupo.docente?.id, nombre: grupo.docente?.nombres })}
                     />
@@ -188,6 +197,7 @@ export const DocentesYCursosSettingComponent = () => {
                       <Button
                         className="bg-green-500 hover:bg-green-600 w-fit px-4"
                         onClick={() => {
+                          onAsignarDocente(grupo.id)
                           const newEdicion = [...edicion]
                           newEdicion[index].editar = false
                           setEdicion(newEdicion)
@@ -225,7 +235,7 @@ export const DocentesYCursosSettingComponent = () => {
           ))
         }
       </tbody>
-    </table>
+    </table>}
     <div className="text-gray-600 font-semibold text-lg mb-10 mt-10">
       Docentes de practicas
     </div>
@@ -241,7 +251,7 @@ export const DocentesYCursosSettingComponent = () => {
       <ul role="list" className="divide-y divide-gray-100">
         {
           docentes.map((docente) => (
-            !docente.fechaEliminacion && <li key={`doc-list-${docente.email}`} className="flex justify-between gap-x-6 py-5">
+            <li key={`doc-list-${docente.email}`} className="flex justify-between gap-x-6 py-5">
               <div className="flex min-w-0 gap-x-4">
                 {
                   docente.fotoUrl ? (
@@ -256,15 +266,28 @@ export const DocentesYCursosSettingComponent = () => {
                 </div>
               </div>
               <div className="shrink-0 sm:flex sm:flex-col sm:items-end">
-                <Button
-                  className="bg-red-500 hover:bg-red-400 w-fit px-4 self-center"
-                  variant="outline"
-                  onClick={() => {
-                    onEliminarDocente(docente.id)
-                  }}>
-                  <span className="hidden lg:block text-white">Eliminar</span>
-                  <MdDelete className="text-white " />
-                </Button>
+
+                {
+                  !docente.fechaEliminacion ? <Button
+                    className="bg-red-500 hover:bg-red-400 w-fit px-4 self-center"
+                    variant="outline"
+                    onClick={() => {
+                      onEliminarDocente(docente.id)
+                    }}>
+                    <span className="hidden lg:block text-white">Eliminar</span>
+                    <MdDelete className="text-white " />
+                  </Button> :
+                    <Button
+                      className="bg-red-500 hover:bg-red-400 w-fit px-4 self-center"
+                      variant="outline"
+                      onClick={() => {
+                        habilitarDocente(docente.id)
+                      }}>
+                      <span className="hidden lg:block text-white">Habilitar</span>
+                      <MdRestore className="text-white " />
+                    </Button>
+
+                }
               </div>
             </li>
           ))
