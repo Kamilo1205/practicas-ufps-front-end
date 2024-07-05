@@ -1,8 +1,6 @@
 import axios from "./axios";
 import { SubActividad } from "../interfaces";
 
-
-
 export const createSubActividad = async (
   newSubActividad: Omit<SubActividad, "id">
 ): Promise<SubActividad> => {
