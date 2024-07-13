@@ -6,11 +6,10 @@ import { RegistroPage } from "../pages/auth";
 //import { EmpresaPage } from "../pages/coordinador/EmpresasPage";
 import { EstudiantesPage } from "../pages/coordinador/EstudiantesPage";
 import { PracticasPage } from "../pages/coordinador/PracticasPage";
-import { roles } from "../interfaces/rol.interface";
 import { DirectorEmpresasPage } from "../pages/director/EmpresasPage";
 
 
-export const DirectorRouter = () => { 
+export const DirectorRouter = () => {
   const { user } = useAuth();
   return (
     <Routes>
@@ -20,8 +19,8 @@ export const DirectorRouter = () => {
             <>
               <Route path='/' element={<Layout />}>
                 <Route path='empresas' element={<DirectorEmpresasPage />} />
-                <Route path='estudiantes' element={<EstudiantesPage rol={roles.director} />} />
-                
+                <Route path='estudiantes' element={<EstudiantesPage />} />
+
                 <Route path='practicas' element={<PracticasPage />} />
                 <Route path="*" element={<Navigate to="/director/empresas" replace />} />
               </Route>

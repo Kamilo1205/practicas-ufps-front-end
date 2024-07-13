@@ -10,7 +10,7 @@ export type Role = 'coordinador' | 'director' | 'administrador' | 'empresa' | 'e
 export const roles: Record<Role, string> = {
   administrador: 'administrador',
   coordinador: 'coordinador',
-  director: 'director',
+  director: 'director-programa',
   estudiante: 'estudiante',
   tutor: 'tutor',
   empresa: 'empresa'

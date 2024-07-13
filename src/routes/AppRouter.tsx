@@ -6,6 +6,7 @@ import { CoordinadorRouter } from './CoordinadorRouter';
 import { EstudianteRouter } from './EstudianteRouter';
 import { TutorRouter } from './TutorRouter';
 import { DirectorRouter } from './DirectorRouter';
+import { roles } from '../interfaces/rol.interface';
 
 export const AppRouter = () => {
   const { user, isAuthenticated, isLoading } = useAuth();
@@ -36,7 +37,7 @@ export const AppRouter = () => {
     <Routes>
 
       {
-        isAuthenticated && user && user.roles?.some(rol => rol.nombre == 'coordinador') && (
+        isAuthenticated && user && user.roles?.some(rol => rol.nombre == roles.coordinador) && (
           <>
             <Route path='coordinador/*' element={<CoordinadorRouter />} />
             <Route path='*' element={<Navigate to="/coordinador" />} />
@@ -44,7 +45,7 @@ export const AppRouter = () => {
         )
       }
       {
-        isAuthenticated && user && user.roles?.some(rol => rol.nombre == 'empresa') && (
+        isAuthenticated && user && user.roles?.some(rol => rol.nombre == roles.empresa) && (
           <>
             <Route path='empresa/*' element={<EmpresaRouter />} />
             <Route path='*' element={<Navigate to="/empresa" />} />
@@ -52,7 +53,7 @@ export const AppRouter = () => {
         )
       }
       {
-        isAuthenticated && user && user.roles?.some(rol => rol.nombre == 'tutor') && (
+        isAuthenticated && user && user.roles?.some(rol => rol.nombre == roles.tutor) && (
           <>
             <Route path='tutor/*' element={<TutorRouter />} />
             <Route path='*' element={<Navigate to="/tutor" />} />
@@ -60,7 +61,7 @@ export const AppRouter = () => {
         )
       }
       {
-        isAuthenticated && user && user.roles?.some(rol => rol.nombre == 'estudiante') && (
+        isAuthenticated && user && user.roles?.some(rol => rol.nombre == roles.estudiante) && (
           <>
             <Route path='/estudiante/*' element={<EstudianteRouter />} />
             <Route path='*' element={<Navigate to="/estudiante" />} />
@@ -68,10 +69,10 @@ export const AppRouter = () => {
         )
       }
       {
-        isAuthenticated && user && user.roles?.some(rol => rol.nombre == 'director-programa') && (
+        isAuthenticated && user && user.roles?.some(rol => rol.nombre == roles.director) && (
           <>
-            <Route path='/director/*' element={<DirectorRouter />} />
-            <Route path='*' element={<Navigate to="/director/empresas" />} />
+            <Route path={`/${roles.director}/*`} element={<DirectorRouter />} />
+            <Route path='*' element={<Navigate to={`/${roles.director}/empresas`} />} />
           </>
         )
       }
