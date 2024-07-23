@@ -78,7 +78,7 @@ const fetchNuevoDocente = async (docente:DocenteI) => {
 }
 
 
-interface GrupoI { 
+export interface GrupoI { 
   id: string;
   nombre: string;
   docente?: DocenteI | null;

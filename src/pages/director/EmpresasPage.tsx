@@ -1,7 +1,7 @@
 
 import Title from "../../components/ui/Tittle/Title"
 import { useEffect, useState } from "react"
-import {  Combobox, ComboboxButton, ComboboxInput, ComboboxOption, ComboboxOptions } from "@headlessui/react"
+import { Combobox, ComboboxButton, ComboboxInput, ComboboxOption, ComboboxOptions } from "@headlessui/react"
 import { BiCheck, BiChevronDown } from "react-icons/bi"
 import clsx from "clsx"
 import { Empresa } from "../../interfaces"
@@ -12,12 +12,12 @@ import { zodResolver } from "@hookform/resolvers/zod"
 import useEmpresas from "../../hooks/useEmpresas"
 
 interface ConvenioFormProps {
-  empresa:Empresa
+  empresa: Empresa
 
 }
-const ConvenioForm = ({ empresa }: ConvenioFormProps) => { 
-  
-  
+const ConvenioForm = ({ empresa }: ConvenioFormProps) => {
+
+
   console.log(empresa)
   const form = useForm({
     resolver: zodResolver(z.object({
@@ -53,16 +53,16 @@ export const DirectorEmpresasPage = () => {
     currentPage: 1,
     itemsPerPage: 5
   })
-  
-  
-  
-  useEffect(() => { 
-    setEmpresasFiltradas(empresas.filter((empresa) => {
-      return empresa.nombre.toLowerCase().includes(filtro.toLowerCase()) || empresa.nit.includes(filtro)
+
+
+
+  useEffect(() => {
+    if (filtro !== '') setEmpresasFiltradas(empresas.filter((empresa) => {
+      return empresa.nombreLegal.toLowerCase().includes(filtro.toLowerCase()) || empresa.nit.includes(filtro)
     }))
-    }, [filtro,empresas])
- // const empresasFiltradas:Empresa[] = 
-console.log(empresasFiltradas)
+  }, [filtro, empresas])
+  // const empresasFiltradas:Empresa[] = 
+  console.log(empresasFiltradas)
   return (
     <>
       <Title titulo="Empresas" />
@@ -72,7 +72,7 @@ console.log(empresasFiltradas)
 
         <div className="w-80">
           <label htmlFor="empresa">Regitrar convenio</label>
-         
+
           <Combobox
             value={selected} onChange={(value) => setSelected(value)} onClose={() => setFiltro('')}
           >
@@ -82,7 +82,7 @@ console.log(empresasFiltradas)
                   'w-full rounded-lg border-none bg-white/5 py-1.5 pr-8 pl-3 text-sm/6 text-back',
                   'focus:outline-none data-[focus]:outline-2 data-[focus]:-outline-offset-2 data-[focus]:outline-white/25'
                 )}
-                displayValue={(empresa:Empresa) => empresa && `${empresa?.nit}-${empresa?.nombre}`}
+                displayValue={(empresa: Empresa) => empresa && `${empresa?.nit}-${empresa?.nombreLegal}`}
                 onChange={(event) => setFiltro(event.target.value)}
                 placeholder="Nombre o nit de la empresa"
               />
@@ -99,47 +99,49 @@ console.log(empresasFiltradas)
               )}
             >
               {
-                empresasFiltradas.map((empresa:Empresa) => (
+                empresasFiltradas.map((empresa: Empresa) => (
                   <ComboboxOption key={empresa.id} value={empresa}
                     className="group flex cursor-default items-center gap-2 rounded-lg py-1.5 px-3 select-none data-[focus]:bg-indigo-400"
                   >
                     <BiCheck className="invisible size-4 fill-black group-data-[focus]:fill-white group-data-[selected]:visible" />
-                    <div className="text-sm/6 text-black group-data-[focus]:text-white">{ empresa.nit} - {empresa.nombre}</div>
+                    <div className="text-sm/6 text-black group-data-[focus]:text-white">
+                      {empresa.nit} - {empresa.nombreLegal} {empresa.convenioActivo ? <span className="text-green-600">Convenio activo</span> : ''}
+                    </div>
                   </ComboboxOption>
                 ))
-}
-              </ComboboxOptions>
+              }
+            </ComboboxOptions>
           </Combobox>
         </div>
 
       </div>
       <div>
         <TablaPaginadaComponent
-          
+
           encabezados={['Nombre', 'NIT', 'Registrar convenio']}
           itemsPerPage={paginacion.itemsPerPage}
           currentPage={paginacion.currentPage}
           setCurrentPage={(page) => setPaginacion({ ...paginacion, currentPage: page })}
           totalItems={empresasFiltradas.length || 0}
           filas={empresasFiltradas.map((empresa: Empresa) => ([
-             empresa.nombre ,
-            empresa.nit ,
+            empresa.nombreLegal,
+            empresa.nit,
             <>
               {
                 empresa.convenioActivo ? (<div>
                   <BiCheck className="text-green-500 w-5 h-5" />
                 </div>) :
                   <div>
-                  <ConvenioForm empresa={empresa}/>
-                    
+                    <ConvenioForm empresa={empresa} />
+
                   </div>
               }
             </>,
-            
+
           ]
           ))}
-        /> 
-       
+        />
+
       </div>
     </>
   )

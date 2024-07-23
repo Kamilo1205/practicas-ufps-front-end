@@ -40,8 +40,9 @@ export const RegistroPage = () => {
   const watch = form.watch() as Record<string, any>;
   const { createEstudiante, cargando, error } = useEstudiantes();
 
-  console.log(error);
+  //console.log(error);
   console.log(form.formState.errors);
+  console.log(form.getValues())
   const onSubmit = async (data: any) => {
     try {
       const formattedData = {
@@ -50,13 +51,12 @@ export const RegistroPage = () => {
           areaInteresId,
           nivelInteres: parseInt(nivelInteres as string, 10),
         })),
-        herramientas: data.herramientas.map((herramientaId: string) => getAreasDeInteresHerramientas(herramientaId)),
+        herramientas: data.herramientas,
       };
 
-      //const response = await createEstudiante(formattedData);
-      //console.log(response);
-      //console.log("data", data);
-      console.log("formattedData", formattedData);
+      const response = await createEstudiante(formattedData, 'reload');
+      console.log(response);
+
     } catch (error) {
       console.log(error);
       alert("Ocurrio un error:" + error);

@@ -1,13 +1,14 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Avatar } from "../../ui";
 import { TabComponent } from "../../ui/Tab/TabComponent";
 import { EstudianteI } from "../../../interfaces/responses.interface";
 import { roles } from "../../../interfaces/rol.interface";
+import { fetchGetDocumentoPorId } from "../../../api/documento.api";
 
 
-interface EstudiantePerfilProps { 
-  estudiante: EstudianteI ;
-  rol ?: string;
+interface EstudiantePerfilProps {
+  estudiante: EstudianteI;
+  rol?: string;
 }
 
 const Tabs = [
@@ -30,28 +31,66 @@ const permisos = {
   edicion: [roles.coordinador, roles.administrador, roles.estudiante],
   soloVista: [roles.tutor, roles.empresa, roles.director]
 }
+
+const getDownloadFileUrl = async (fileId: string,) => {
+  try {
+    const response = await fetchGetDocumentoPorId(fileId);
+
+    const blob = new Blob([response]);
+    const urlBlob = window.URL.createObjectURL(blob);
+    return urlBlob;
+  } catch (error) {
+    console.error('Download error:', error);
+  }
+
+}
 /**
  * ROL -> Adminstrador , Coordinador, Tutor, Empresa, Estudiante, Director de programa
  * 
  */
 
 
-export const EstudiantePerfilComponent = ({ estudiante, rol = '' }: EstudiantePerfilProps) => { 
-  
+export const EstudiantePerfilComponent = ({ estudiante, rol = '' }: EstudiantePerfilProps) => {
+
+  console.log('aaa', estudiante)
   const puedeActivarDesactivar = permisos.activacion.includes(rol)
   //const puedeEditar = permisos.edicion.includes(rol)
   const soloVista = permisos.soloVista.includes(rol)
- 
+
   const [tab, setTab] = useState(0)
-  
-  const onActivarDesactivar = () => { 
+  const [documentosUrls, setDocumentosUrls] = useState({
+    certificadoAfiliacionEpsUrl: '',
+    documentoIdentidadUrl: '',
+    hojaDeVidaUrl: ''
+  })
+
+  useEffect(() => {
+    if (estudiante &&
+      estudiante?.certificadoAfiliacionEpsUrl &&
+      estudiante?.documentoIdentidadUrl &&
+      estudiante?.hojaDeVidaUrl) {
+      Promise.all([
+        getDownloadFileUrl(estudiante?.certificadoAfiliacionEpsUrl),
+        getDownloadFileUrl(estudiante?.documentoIdentidadUrl),
+        getDownloadFileUrl(estudiante?.hojaDeVidaUrl)
+      ]).then((urls) => {
+        setDocumentosUrls({
+          certificadoAfiliacionEpsUrl: urls[0] || '',
+          documentoIdentidadUrl: urls[1] || '',
+          hojaDeVidaUrl: urls[2] || ''
+        })
+      })
+    }
+  }, [])
+
+  const onActivarDesactivar = () => {
     //TODO Activar o desactivar el usuario
     const estaActivo = estudiante?.usuario?.estaActivo
     console.log(estaActivo)
   }
 
   return (<>
-    
+
     <div className="">
       <div className="px-4 sm:px-0">
         <h3 className="text-base font-semibold leading-7 text-gray-900">Información del estudiante</h3>
@@ -75,8 +114,8 @@ export const EstudiantePerfilComponent = ({ estudiante, rol = '' }: EstudiantePe
                   <span className="ml-2 self-center">
                     {
                       estudiante ? `${estudiante?.primerNombre || ''} ${estudiante?.segundoNombre || ''} ${estudiante?.primerApellido || ''} ${estudiante?.segundoApellido || ''}`
-                     : 'Dato no registrado'
-                    } 
+                        : 'Dato no registrado'
+                    }
                   </span>
                   {
                     estudiante?.usuario?.estaActivo ? (
@@ -84,7 +123,7 @@ export const EstudiantePerfilComponent = ({ estudiante, rol = '' }: EstudiantePe
                         Activo
                       </span>
                     ) : (
-                        <span className="ml-4 h-fit self-center text-red-700 font-medium text-xs py-1 px-2 ring-1 ring-red-600/20 bg-red-100 rounded-md items-center inline-flex border-red-600 ring-inset">
+                      <span className="ml-4 h-fit self-center text-red-700 font-medium text-xs py-1 px-2 ring-1 ring-red-600/20 bg-red-100 rounded-md items-center inline-flex border-red-600 ring-inset">
                         Inactivo
                       </span>
                     )
@@ -104,13 +143,13 @@ export const EstudiantePerfilComponent = ({ estudiante, rol = '' }: EstudiantePe
               </div>
               <div className="px-4 py-3 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
                 <dt className="text-sm font-medium leading-6 text-gray-900">Código</dt>
-                <dd className="mt-1 text-sm leading-6 text-gray-700 sm:col-span-2 sm:mt-0">{estudiante ? estudiante?.codigo : 'Dato no registrado' || '' }</dd>
+                <dd className="mt-1 text-sm leading-6 text-gray-700 sm:col-span-2 sm:mt-0">{estudiante ? estudiante?.codigo : 'Dato no registrado' || ''}</dd>
               </div>
               <div className="px-4 py-3 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
                 <dt className="text-sm font-medium leading-6 text-gray-900">Correo</dt>
-                <dd className="mt-1 text-sm leading-6 text-gray-700 sm:col-span-2 sm:mt-0">{estudiante ? estudiante?.usuario.email : 'Dato no registrado' || ''}</dd>
+                <dd className="mt-1 text-sm leading-6 text-gray-700 sm:col-span-2 sm:mt-0">{estudiante ? estudiante?.usuario?.email : 'Dato no registrado' || ''}</dd>
               </div>
-              
+
               <div className="px-4 py-3 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
                 <dt className="text-sm font-medium leading-6 text-gray-900">Genero</dt>
                 <dd className="mt-1 text-sm leading-6 text-gray-700 sm:col-span-2 sm:mt-0 capitalize">{estudiante ? estudiante?.genero : 'Dato no registrado' || ''}</dd>
@@ -121,10 +160,10 @@ export const EstudiantePerfilComponent = ({ estudiante, rol = '' }: EstudiantePe
               </div>
               <div className="px-4 py-3 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
                 <dt className="text-sm font-medium leading-6 text-gray-900">Dirección</dt>
-                <dd className="mt-1 text-sm leading-6 text-gray-700 sm:col-span-2 sm:mt-0 capitalize">{`${estudiante ? estudiante?.direccionResidencia : 'Dato no registrado' || ''}, ${estudiante?.ciudadResidencia.nombre || ''}`}</dd>
+                <dd className="mt-1 text-sm leading-6 text-gray-700 sm:col-span-2 sm:mt-0 capitalize">{`${estudiante ? estudiante?.direccionResidencia : 'Dato no registrado' || ''}, ${estudiante?.ciudadResidencia?.nombre || ''}`}</dd>
               </div>
-              
-              
+
+
             </dl>
           )
         }
@@ -136,7 +175,7 @@ export const EstudiantePerfilComponent = ({ estudiante, rol = '' }: EstudiantePe
                 <dd className="mt-1 text-sm leading-6 text-gray-700 sm:col-span-2 sm:mt-0">
                   {
                     //TODO Agregar la empresa asignada
-                    'Departamento de sistemas'
+                    estudiante?.asignacion?.solicitud?.empresa?.nombreLegal || 'No asignado'
                   }
                 </dd>
               </div>
@@ -145,7 +184,12 @@ export const EstudiantePerfilComponent = ({ estudiante, rol = '' }: EstudiantePe
                 <dd className="mt-1 text-sm leading-6 text-gray-700 sm:col-span-2 sm:mt-0">
                   {
                     //TODO Agregar la empresa asignada
-                    <a href=""><span className="text-blue-300">{ `Angelica Maria Hernandez` }</span></a>
+                    estudiante?.asignacion?.tutor ?
+                      <a href=""><span className="text-blue-300">{
+                        `${estudiante?.asignacion?.tutor?.usuario?.displayName}`
+                      }</span></a>
+                      : 'No asignado'
+
                   }
                 </dd>
               </div>
@@ -157,11 +201,11 @@ export const EstudiantePerfilComponent = ({ estudiante, rol = '' }: EstudiantePe
                       <div className="px-4 py-3 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0 w-full">
                         <dt className="text-sm font-medium leading-6 text-gray-900">Entrega</dt>
                         <dd className="mt-1 text-sm leading-6 text-gray-700 sm:col-span-2 sm:mt-0">
-                         <a href=""><span className="text-blue-300">Ver entrega</span></a> 
-                          
+                          <a href=""><span className="text-blue-300">Ver entrega</span></a>
+
                         </dd>
                       </div>
-                      
+
                     </li>
                     {
                       !soloVista && (
@@ -258,16 +302,16 @@ export const EstudiantePerfilComponent = ({ estudiante, rol = '' }: EstudiantePe
                     {
                       !soloVista && (
                         <li className="flex items-center justify-between pl-4 pr-5 text-sm leading-6">
-                        <div className="px-4 py-3 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0 w-full">
-                          <dt className="text-sm font-medium leading-6 text-gray-900">Aprovación del docente</dt>
-                          <dd className="mt-1 text-sm leading-6 text-gray-700 sm:col-span-2 sm:mt-0">
-                            {
-                              //TODO Calificación del plan de trabajo.
-                              `Pendiente por aprovación...`
-                            }
+                          <div className="px-4 py-3 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0 w-full">
+                            <dt className="text-sm font-medium leading-6 text-gray-900">Aprovación del docente</dt>
+                            <dd className="mt-1 text-sm leading-6 text-gray-700 sm:col-span-2 sm:mt-0">
+                              {
+                                //TODO Calificación del plan de trabajo.
+                                `Pendiente por aprovación...`
+                              }
 
-                          </dd>
-                        </div>
+                            </dd>
+                          </div>
                         </li>
                       )
                     }
@@ -287,10 +331,10 @@ export const EstudiantePerfilComponent = ({ estudiante, rol = '' }: EstudiantePe
                 </dd>
               </div>
             </>
-            
+
           )
         }
-        { 
+        {
           tab === 2 && (
             <>
               <div className="px-4 py-2 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
@@ -305,7 +349,7 @@ export const EstudiantePerfilComponent = ({ estudiante, rol = '' }: EstudiantePe
                         <div className="ml-4 flex min-w-0 flex-1 gap-2">
                           <span className="truncate font-medium">
                             {
-                              estudiante?.certificadoAfiliacionEpsUrl ? `certificado-afiliacion-eps-${estudiante.codigo}.pdf` : 'No hay documento'
+                              estudiante?.certificadoAfiliacionEpsUrl ? `certificado-afiliacion-eps-${estudiante?.codigo}.pdf` : 'No hay documento'
                             }
                           </span>
                           <span className="flex-shrink-0 text-gray-400">2.4mb</span>
@@ -313,13 +357,17 @@ export const EstudiantePerfilComponent = ({ estudiante, rol = '' }: EstudiantePe
                       </div>
                       <div className="ml-4 flex-shrink-0">
                         {
-                          estudiante?.certificadoAfiliacionEpsUrl && (
-                            <a href={estudiante.certificadoAfiliacionEpsUrl} target="_blank" className="font-medium text-indigo-600 hover:text-indigo-500">Descargar</a>
-                          )
+                          estudiante?.certificadoAfiliacionEpsUrl ? (
+                            <a className="font-medium text-indigo-600 hover:text-indigo-500"
+                              href={documentosUrls.certificadoAfiliacionEpsUrl}
+                              download={`certificado-afiliacion-eps-${estudiante?.codigo}.pdf`}
+                            >Descargar</a>
+                          ) :
+                            <span className="font-medium text-gray-400">No hay documento</span>
                         }
                       </div>
                     </li>
-                    
+
                   </ul>
                 </dd>
               </div>
@@ -335,7 +383,7 @@ export const EstudiantePerfilComponent = ({ estudiante, rol = '' }: EstudiantePe
                         <div className="ml-4 flex min-w-0 flex-1 gap-2">
                           <span className="truncate font-medium">
                             {
-                              estudiante.documentoIdentidadUrl ? `documento-identidad-${estudiante.codigo}.pdf` : 'No hay documento'
+                              estudiante?.documentoIdentidadUrl ? `documento-identidad-${estudiante?.codigo}.pdf` : 'No hay documento'
                             }
                           </span>
                           <span className="flex-shrink-0 text-gray-400">2.4mb</span>
@@ -343,13 +391,16 @@ export const EstudiantePerfilComponent = ({ estudiante, rol = '' }: EstudiantePe
                       </div>
                       <div className="ml-4 flex-shrink-0">
                         {
-                          estudiante.documentoIdentidadUrl && (
-                            <a href={estudiante.documentoIdentidadUrl} target="_blank" className="font-medium text-indigo-600 hover:text-indigo-500">Descargar</a>
-                          )
+                          estudiante?.documentoIdentidadUrl ? (
+                            <a href={documentosUrls.documentoIdentidadUrl}
+                              download={`documento-identidad-${estudiante?.codigo}.pdf`}
+                              target="_blank" className="font-medium text-indigo-600 hover:text-indigo-500">Descargar</a>
+                          ) :
+                            <span className="font-medium text-gray-400">No hay documento</span>
                         }
                       </div>
                     </li>
-                    
+
                   </ul>
                 </dd>
               </div>
@@ -364,16 +415,19 @@ export const EstudiantePerfilComponent = ({ estudiante, rol = '' }: EstudiantePe
                         </svg>
                         <div className="ml-4 flex min-w-0 flex-1 gap-2">
                           <span className="truncate font-medium">{
-                            estudiante.hojaDeVidaUrl ? `hoja-vida-${estudiante.codigo}.pdf` : 'No hay documento'
+                            estudiante?.hojaDeVidaUrl ? `hoja-vida-${estudiante?.codigo}.pdf` : 'No hay documento'
                           }</span>
                           <span className="flex-shrink-0 text-gray-400">2.4mb</span>
                         </div>
                       </div>
                       <div className="ml-4 flex-shrink-0">
                         {
-                          estudiante.hojaDeVidaUrl && (
-                            <a href={estudiante.hojaDeVidaUrl} target="_blank" className="font-medium text-indigo-600 hover:text-indigo-500">Descargar</a>
-                          )
+                          estudiante?.hojaDeVidaUrl ? (
+                            <a href={documentosUrls.hojaDeVidaUrl}
+                              download={`hoja-vida-${estudiante?.codigo}.pdf`}
+                              target="_blank" className="font-medium text-indigo-600 hover:text-indigo-500">Descargar</a>
+                          ) :
+                            <span className="font-medium text-gray-400">No hay documento</span>
                         }
                       </div>
                     </li>
@@ -383,9 +437,9 @@ export const EstudiantePerfilComponent = ({ estudiante, rol = '' }: EstudiantePe
               </div>
 
             </>
-                      )
+          )
         }
       </div>
     </div>
-</>)
+  </>)
 }

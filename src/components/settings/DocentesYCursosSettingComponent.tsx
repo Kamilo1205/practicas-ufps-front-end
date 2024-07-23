@@ -7,7 +7,6 @@ import { SelectInputC } from "../ui/Input/SelectUIComponent";
 import { DialogComponent } from "../ui/Dialog/DialogComponent";
 import { AgregarDocenteForm } from "../ui/form/AgregarDocenteForm";
 import { BiUserCircle } from "react-icons/bi";
-import { useDocentes } from "../../hooks/useDocentes";
 import { EmptyStateMessage } from "../estudiantes";
 
 
@@ -39,7 +38,7 @@ export const DocentesYCursosSettingComponent = () => {
 
   } = useGrupos();
   //console.log('gruposAa', grupos)
-
+  console.log('docentes', docentes)
   const [edicion, setEdicion] = useState<{ editar: boolean }[]>([]);
   const [docenteSeleccionado, setDocenteSeleccionado] = useState<DocenteI | null>(null)
   //console.log('docenteSelect', docenteSeleccionado)

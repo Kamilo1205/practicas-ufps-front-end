@@ -3,33 +3,55 @@ import { Button } from "../ui";
 import { Field, Label, Listbox, ListboxButton, ListboxOption, ListboxOptions, Transition } from "@headlessui/react";
 import clsx from "clsx";
 import { HiMiniChevronDown } from 'react-icons/hi2';
-import { useGrupos } from "../../hooks/useGrupos";
+import { GrupoI, } from "../../hooks/useGrupos";
+import useEstudiantes from "../../hooks/useEstudiantes";
+import Swal from "sweetalert2";
 //import { grupos } from "../../pages/coordinador/EstudiantesPage";
 
 interface AgregarEstudianteFormProps {
+  grupos: GrupoI[];
+  dispararCargaEstidiantes: () => void;
   onClose: () => void;
 
 }
 
-export const AgregarEstudianteForm = ({ onClose }: AgregarEstudianteFormProps) => {
-  const [grupoSeleccionado, setGrupoSeleccionado] = useState({
-    id: 0,
-    name: '',
+export const AgregarEstudianteForm = ({
+  grupos,
+  dispararCargaEstidiantes,
+  onClose }: AgregarEstudianteFormProps) => {
+  const [grupoSeleccionado, setGrupoSeleccionado] = useState<GrupoI>({
+    id: '0',
+    nombre: '',
+    fechaEliminacion: undefined
   });
 
+  const { cargarEstudiantesCsvAGrupo } = useEstudiantes();
+
   const [archivo, setArchivo] = useState<File | null>(null);
-  const { grupos } = useGrupos()
+  console.log('archivo', archivo)
   const handleGuardar = () => {
     console.log(grupoSeleccionado);
     console.log(archivo);
+    if (grupoSeleccionado.id !== '0' && archivo !== null) {
+      cargarEstudiantesCsvAGrupo(archivo, grupoSeleccionado.id)
+        .then(() => {
+          dispararCargaEstidiantes();
+          onClose();
+        })
+        .catch((err) => console.error(err));
+    }
+    else {
+      Swal.fire({
+        icon: 'error',
+        title: 'Oops...',
+        text: 'Seleccione un grupo y un archivo',
+      })
+    }
   };
 
-  const onSelectGrupo = (grupo: any) => {
+  const onSelectGrupo = (grupo: GrupoI) => {
     console.log('grupo', grupo)
-    setGrupoSeleccionado({
-      id: grupo.id,
-      name: grupo.nombre
-    })
+    setGrupoSeleccionado(grupo)
   }
 
   return (
@@ -46,7 +68,7 @@ export const AgregarEstudianteForm = ({ onClose }: AgregarEstudianteFormProps) =
                 "focus:outline-none data-[focus]:ring-2  data-[focus]:ring-inset data-[focus]:ring-indigo-600 truncate"
               )}
             >
-              {grupoSeleccionado.id !== 0 ? grupoSeleccionado.name : 'Seleccione un grupo'}
+              {grupoSeleccionado.id !== '0' ? grupoSeleccionado.nombre : 'Seleccione un grupo'}
               <HiMiniChevronDown
                 className="group pointer-events-none absolute top-2.5 right-2.5"
                 aria-hidden="true" />
@@ -78,7 +100,7 @@ export const AgregarEstudianteForm = ({ onClose }: AgregarEstudianteFormProps) =
           <label htmlFor="nombre">Archivo</label>
           <input
             type="file"
-            accept=".txt"
+            accept="csv"
             onChange={(e) => setArchivo(e.target.files?.[0] || null)}
             id="nombre"
             name="nombre"
@@ -90,9 +112,9 @@ export const AgregarEstudianteForm = ({ onClose }: AgregarEstudianteFormProps) =
           Cancelar
         </Button>
         <Button
-          disabled={grupoSeleccionado.id === 0 || archivo === null}
+          disabled={grupoSeleccionado.id === '0' || archivo === null}
           onClick={handleGuardar}
-          className={`${grupoSeleccionado.id === 0 || archivo === null ? 'bg-slate-400 hover:bg-slate-400' : ''} `}
+          className={`${grupoSeleccionado.id === '0' || archivo === null ? 'bg-slate-400 hover:bg-slate-400' : ''} `}
         >
           Guardar
 

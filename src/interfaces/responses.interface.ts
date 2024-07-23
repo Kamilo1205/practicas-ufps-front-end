@@ -1,5 +1,6 @@
 import { AreaInteres, areaInteresHerramientas } from "./area-interes.interface";
 import { Empresa } from "./empresa.interface";
+import { Asignacion } from "./estudiante.interface";
 
 
 interface UsuarioI {
@@ -53,6 +54,7 @@ export interface EstudianteI {
   estudianteAreaInteres: AreaInteres[];
   herramientas: areaInteresHerramientas[];
   semestres: any[];
+  asignacion?: Asignacion;
 }
 
 interface Meta {

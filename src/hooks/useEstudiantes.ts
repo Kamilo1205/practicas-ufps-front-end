@@ -6,9 +6,11 @@ import {
     createEstudiante as createEstudianteAPI, 
     updateEstudiante as updateEstudianteAPI, 
     deleteEstudiante as deleteEstudianteAPI,
-    fetchEstudianteById as fetchEstudianteByIdAPI 
+    fetchEstudianteById as fetchEstudianteByIdAPI, 
+    createEstudiantesPorCSV
 } from '../api/estudiante.api';
 import { Estudiante } from '../interfaces/estudiante.interface';
+import Swal from 'sweetalert2';
 
 type UseEstudiantesReturn = {
   estudiantes: Estudiante[];
@@ -18,9 +20,10 @@ type UseEstudiantesReturn = {
   fetchEstudiantes: (page?: number, limit?: number) => Promise<void>;
   fetchEstudiante: () => Promise<Estudiante | null>;
   fetchEstudianteById: (id: string) => Promise<Estudiante | null>;
-  createEstudiante: (nuevoEstudiante: Omit<Estudiante, 'id'>) => Promise<void>;
+  createEstudiante: (nuevoEstudiante: Omit<Estudiante, 'id'>,rediredUrl?:string) => Promise<void>;
   updateEstudiante: (id: string, estudianteActualizado: Omit<Estudiante, 'id'>) => Promise<void>;
   deleteEstudiante: (id: string) => Promise<void>;
+  cargarEstudiantesCsvAGrupo: (file: File,grupo:string) => Promise<void>;
 };
 
 const useEstudiantes = (): UseEstudiantesReturn => {
@@ -72,15 +75,28 @@ const useEstudiantes = (): UseEstudiantesReturn => {
     }
   };
 
-  const createEstudiante = async (nuevoEstudiante: Omit<Estudiante, 'id'>) => {
+  const createEstudiante = async (nuevoEstudiante: Omit<Estudiante, 'id'>,rediredUrl='') => {
     setCargando(true);
     try {
       const data = await createEstudianteAPI(nuevoEstudiante);
       setEstudiantes((prev) => [...prev, data]);
       setEstudiante(data);
       setError(null);
+      Swal.fire({
+        icon: 'success',
+        title: 'Estudiante registrado',
+        showConfirmButton: false,
+        timer: 1500,
+      }).then(() => { 
+        if(rediredUrl !== '') window.location.reload();
+      })
     } catch (err) {
       setError(err as AxiosError);
+      Swal.fire({
+        icon: 'error',
+        title: 'Error al registrar el estudiante',
+        text: 'Por favor, intenta de nuevo o contacta a soporte.',
+      })
     } finally {
       setCargando(false);
     }
@@ -120,7 +136,25 @@ const useEstudiantes = (): UseEstudiantesReturn => {
     }
   };
 
-  return { estudiantes, estudiante, cargando, error, fetchEstudiantes, fetchEstudiante, fetchEstudianteById, createEstudiante, updateEstudiante, deleteEstudiante };
+  const cargarEstudiantesCsvAGrupo = async (file: File,grupoId:string) => { 
+    setCargando(true);
+    try {
+      await createEstudiantesPorCSV(file,grupoId);
+      fetchEstudiantes(1,10);
+      setError(null);
+    } catch (err) {
+      setError(err as AxiosError);
+    } finally {
+      setCargando(false);
+    }
+  
+  }
+
+  return {
+    estudiantes, estudiante, cargando, error,
+    fetchEstudiantes, fetchEstudiante, fetchEstudianteById, createEstudiante, updateEstudiante, deleteEstudiante,
+    cargarEstudiantesCsvAGrupo
+  };
 };
 
 export default useEstudiantes;

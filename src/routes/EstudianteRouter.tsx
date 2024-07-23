@@ -6,8 +6,6 @@ import { UsuariosPage } from "../pages/coordinador/UsuariosPage";
 import { RegistroLayout } from "../layouts/RegistroLayout";
 import { PerfilPage } from "../pages/estudiante/PerfilPage";
 import PlanDeTrabajoVista from "./../components/PlanDeTrabajo/Coordinador-Empresa/PlanDeTrabajoVista";
-import InformeFinalPage from "./../pages/estudiante/InformeFinalPage";
-import EvaluacionEstudiante from "../pages/estudiante/EvaluacionEstudiante";
 import InformeParcialVista from "../components/VistasCoorDTutor/InformeParcialVista";
 import InformeFinalVista from "../components/VistasCoorDTutor/InformeFinalVista";
 import EvaluacionEstudianteVista from "../components/VistasCoorDTutor/EvaluacionPracticaVista";
@@ -27,7 +25,7 @@ export const EstudianteRouter = () => {
                 <PlanDeTrabajoVista
                   rol="ESTUDIANTE"
                   initialOpen={false}
-                  //isTutor={true}
+                //isTutor={true}
                 />
               }
             />

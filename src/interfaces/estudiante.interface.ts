@@ -1,4 +1,7 @@
 import { AreaInteres, areaInteresHerramientas } from "./area-interes.interface";
+import { Empresa } from "./empresa.interface";
+import { Herramienta } from "./herramienta.interface";
+
 
 
 interface UsuarioI {
@@ -20,7 +23,23 @@ interface CiudadResidencia {
   nombre: string;
   codigoGubernamental: string | null;
 }
+interface Solicitud {
+  empresa: Empresa
+  semestre: any
+  herramientas: Herramienta[]
+  areasInteres: AreaInteres[]
+  cantidadPracticantes: number
+  esRenumerado: boolean
+}
 
+interface Tutor {
+  usuario: UsuarioI
+
+}
+export interface Asignacion {
+  solicitud: Solicitud
+  tutor: Tutor
+}
 export interface Estudiante {
   id: string;
   fechaCreacion: string;
@@ -52,6 +71,7 @@ export interface Estudiante {
   estudianteAreaInteres: AreaInteres[];
   herramientas: areaInteresHerramientas[];
   semestres: any[];
+  asignacion? : Asignacion
 }
 
 interface Meta {

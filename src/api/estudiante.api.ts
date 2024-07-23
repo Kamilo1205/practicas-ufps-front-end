@@ -13,6 +13,7 @@ const formDataConfig = {
 // Obtener el perfil de un estudiante
 export const fetchEstudiante = async (): Promise<Estudiante> => {
   const response = await axios.get('/estudiantes/perfil');
+  console.log(response.data);
   return response.data;
 };
 
@@ -34,7 +35,7 @@ export const fetchEstudiantes = async (page: number = 1, limit: number = 10, gru
 export const createEstudiante = async (nuevoEstudiante: Omit<Estudiante, 'id'>): Promise<Estudiante> => {
   console.log(nuevoEstudiante);
   const formData = objectToFormData(nuevoEstudiante);
-  const response = await axios.post('/estudiantes/registro', formData, formDataConfig);
+  const response = await axios.patch('/estudiantes/registro', formData, formDataConfig);
   return response.data;
 };
 
@@ -56,9 +57,13 @@ export const fetchEstudianteById = async (id: string): Promise<Estudiante> => {
 };
 
 
-export const createEstudiantesPorCSV = async (file: File): Promise<Estudiante[]> => {
-  const URL = '/csv/estudiantes';
-  const response = await axios.post(URL, file);
+export const createEstudiantesPorCSV = async (file: File,grupoId:string): Promise<Estudiante[]> => {
+  const URL = `/csv/estudiantes/${grupoId}`;
+  const formData = new FormData();
+  formData.append('file', file);
+  console.log('csv',formData);
+  const response = await axios.post(URL, formData);
+  console.log('csv resp', response)
   console.log('csv est',response.data); 
   return response.data;
  }

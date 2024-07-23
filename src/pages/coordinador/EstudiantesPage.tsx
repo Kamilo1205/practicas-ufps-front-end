@@ -78,7 +78,7 @@ export const EstudiantesPage = () => {
   const [mostrarPerfil, setMostrarPerfil] = useState<boolean>(false);
   const [estudianteSeleccionado, setEstudianteSeleccionado] = useState<EstudianteI | null>(null);
   const [filtro, setFiltro] = useState<string>("");
-
+  const [estudiantesCargados, setEstudiantesCargados] = useState<boolean>(false);
   //const navigate = useNavigate();
   //const location = useLocation();
 
@@ -128,7 +128,8 @@ export const EstudiantesPage = () => {
       //console.log(data);
     };
     fetchData();
-  }, [tab, filtro, currentPage, itemsPerPage, Tabs]);
+    setEstudiantesCargados(false);
+  }, [tab, filtro, currentPage, itemsPerPage, Tabs, estudiantesCargados]);
 
   return (
     <>
@@ -140,7 +141,10 @@ export const EstudiantesPage = () => {
           isOpen={agregarEstudiante}
           onClose={() => setAgregarEstudiante(false)}
           content={
-            <AgregarEstudianteForm onClose={() => setAgregarEstudiante(false)} />
+            <AgregarEstudianteForm
+              grupos={grupos}
+              dispararCargaEstidiantes={() => setEstudiantesCargados(true)}
+              onClose={() => setAgregarEstudiante(false)} />
           }
           title="Agregar estudiantes"
         />
