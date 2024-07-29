@@ -81,18 +81,21 @@ export const PracticasPage = () => {
   const onAsignarPracticantes = (solicitud: Solicitud) => {
     setSolicitudSeleccionada({ solicitud, aspirantes: [] })
     setCargarAspirantes(true)
-
+    setMostrarPerfil(true)
   }
 
   const onVerSolicitud = (solicitud: Solicitud) => {
     setSolicitudSeleccionada({ solicitud, aspirantes: [] })
     setMostrarSolicitud(true)
+
   }
 
 
   useEffect(() => {
+    console.log('solicitudSeleccionada', solicitudSeleccionada, cargarAspirantes)
     if (solicitudSeleccionada && cargarAspirantes) {
-      getAspirantesPorSolicitud(solicitudSeleccionada.id).then((data) => {
+      getAspirantesASolicitud(solicitudSeleccionada.solicitud.id).then((data) => {
+        console.log('data', data)
         setSolicitudSeleccionada({
           ...solicitudSeleccionada,
           aspirantes: data
@@ -126,7 +129,7 @@ export const PracticasPage = () => {
           <AsignacionPracticasComponent
             solicitud={solicitudSeleccionada}
             setMostrarPerfil={setMostrarPerfil}
-            getAspirantesASolicitud={getAspirantesASolicitud}
+
           />
         }
         title=""
@@ -146,7 +149,7 @@ export const PracticasPage = () => {
         <div className="flex divide-x">
           <ul role="list" className="divide-y divide-gray-100 overflow-scroll max-h-screen w-full">
             {
-              solicitudes.map((solicitud) => (
+              solicitudes.filter(v => !v.fechaEliminacion).map((solicitud) => (
                 <li
                   key={solicitud.id}
                   className="flex justify-between gap-x-6 py-5">
@@ -171,7 +174,7 @@ export const PracticasPage = () => {
 
 
                       <p className="mt-1 truncate text-xs leading-5 text-gray-500">
-                        {solicitud.cantidadPracticantes} {solicitud.cantidadPracticantes > 1 ? 'practicantes' : 'practicante'} - {solicitud.remunerado ? 'Remunerado' : 'No remunerado'}
+                        {solicitud.cantidadPracticantes} {solicitud.cantidadPracticantes > 1 ? 'practicantes' : 'practicante'} - {solicitud.esRenumerado ? 'Remunerado' : 'No remunerado'}
                       </p>
                     </div>
                   </div>

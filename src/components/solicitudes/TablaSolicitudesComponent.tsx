@@ -29,7 +29,7 @@ export const TablaSolicitudesComponent = ({
                 onClick={() => onMostrarSolicitud(solicitud)}
                 className="flex min-w-0 gap-x-4 cursor-pointer">
                 {
-                  solicitud?.asignaciones.length === solicitud?.cantidadPracticantes ? (
+                  solicitud?.asignaciones?.length === solicitud?.cantidadPracticantes ? (
                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true" className="h-10 w-10 text-green-400">
                       <title>Solicitud aprobada</title>
                       <BiCheckCircle />

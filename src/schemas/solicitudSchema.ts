@@ -1,3 +1,4 @@
+import { Herramienta } from "../interfaces/herramienta.interface";
 
 /**
  * @interface SolicitudPracticante
@@ -21,17 +22,8 @@ export interface SolicitudPracticante {
 }
  
 export interface EstudianteAspirante { 
-  id: string
-  nombre: string
-  codigo: string
-  puntaje: string
-  perfil: {
-    puntaje: number
-    nombre: string
-    habilidades: string[]
-    herramientas: string[]
-    
-  }[]
+  estudiante: Estudiante;
+  score: number;
   
 }
 
@@ -77,29 +69,36 @@ export interface Asignacion {
   estudiante:         Estudiante;
   tutor:              null;
 }
-
+export interface EstudianteAreaIntere {
+  id: string;
+  nivelInteres: number;
+  areaInteres: Herramienta;
+}
 export interface Estudiante {
-  id:                          string;
-  fechaCreacion:               Date;
-  fechaActualizacion:          Date;
-  primerNombre:                string;
-  segundoNombre:               string;
-  primerApellido:              string;
-  segundoApellido:             string;
-  genero:                      string;
-  direccionResidencia:         string;
-  telefono:                    string;
-  grupoMatriculado:            string;
-  fechaNacimiento:             Date;
-  numeroDocumento:             string;
-  fechaExpedicionDocumento:    Date;
-  fechaAfiliacionEps:          Date;
-  semestreMatriculado:         number;
+  id: string;
+  fechaCreacion: Date;
+  fechaActualizacion: Date;
+  primerNombre: string;
+  segundoNombre: string;
+  primerApellido: string;
+  segundoApellido: string;
+  genero: string;
+  direccionResidencia: string;
+  telefono: string;
+  grupoMatriculado: string;
+  fechaNacimiento: Date;
+  numeroDocumento: string;
+  fechaExpedicionDocumento: Date;
+  fechaAfiliacionEps: Date;
+  semestreMatriculado: number;
   certificadoAfiliacionEpsUrl: string;
-  documentoIdentidadUrl:       string;
-  hojaDeVidaUrl:               string;
-  horarioClaseUrl:             string;
-  codigo:                      number;
+  documentoIdentidadUrl: string;
+  hojaDeVidaUrl: string;
+  horarioClaseUrl: string;
+  codigo: number;
+  semestres?: Semestre[];
+  estudianteAreaInteres?: EstudianteAreaIntere[];
+  herramientas?: Herramienta[];
 }
 
 export interface Empresa {

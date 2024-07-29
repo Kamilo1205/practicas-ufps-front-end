@@ -66,7 +66,7 @@ const getCalendario = (semestre: Semestre) => {
 
   ]
 }
-
+/* 
 const guardarCambios = async (items: TimelineItem[]): Promise<ApiResponse> => {
   return new Promise((resolve,) => {
     console.log('Guardando cambios', items)
@@ -77,7 +77,7 @@ const guardarCambios = async (items: TimelineItem[]): Promise<ApiResponse> => {
       })
     }, 2000)
   })
-}
+} */
 
 const LoadingItemsComponent = () => {
   return <div className="flex justify-center items-center h-screen content-center">
@@ -97,10 +97,10 @@ interface EstadoFechas {
 
 export const CalendarioPage = () => {
 
-  const { semestre, loading } = useSemestre()
+  const { semestre, loading, guardarCambiosDeFechas: guardarCambios } = useSemestre()
   const [items, setItems] = useState<TimelineItem[]>([])
   const [edicion, setEdicion] = useState<EstadoFechas[]>([])
-
+  console.log(semestre)
   useEffect(() => {
     if (semestre) {
       setItems(getCalendario(semestre))
@@ -113,6 +113,7 @@ export const CalendarioPage = () => {
           valorEditadoFechaInicial: '',
           valorEditadoFechaFinal: '',
           valorEditadoPrimerEncuentro: ''
+
         }
       }))
     }
@@ -173,6 +174,15 @@ export const CalendarioPage = () => {
     nuevoEstado[index].fechaFinal = !nuevoEstado[index].fechaFinal
     if (!nuevoEstado[index].fechaFinal) {
       nuevoEstado[index].valorEditadoFechaFinal = items[index].fechaFinal
+    }
+    setEdicion(nuevoEstado)
+  }
+
+  const onChangeEditarPrimerEncuentro = (index: number) => {
+    const nuevoEstado = [...edicion]
+    nuevoEstado[index].fechaPrimerEncuentro = !nuevoEstado[index].fechaPrimerEncuentro
+    if (!nuevoEstado[index].fechaPrimerEncuentro) {
+      nuevoEstado[index].valorEditadoPrimerEncuentro = items[index].fechaInicial
     }
     setEdicion(nuevoEstado)
   }
@@ -340,21 +350,21 @@ export const CalendarioPage = () => {
                                             id={`${index}-fechaEncuentroEdit`}
                                             name={`${index}-fechaEncuentroEdit`}
                                             type="checkbox"
-                                            checked={edicion[index].fechaFinal}
-                                            onChange={() => onChangeEditarFechaFinal(index)}
+                                            checked={edicion[index].fechaPrimerEncuentro}
+                                            onChange={(e) => onChangeEditarPrimerEncuentro(index, e.target.value)}
                                             className="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-600" />
                                         </div>
 
                                       </div>
                                       <input
                                         type="date"
-                                        disabled={!edicion[index].fechaFinal}
+                                        disabled={!edicion[index].fechaPrimerEncuentro}
                                         className={`cursor-pointer border-0 ${!edicion[index].fechaInicial ? 'text-gray-500' : ''}`}
-                                        value={edicion[index].valorEditadoFechaFinal}
-                                        onChange={(e) => onChangeValorEditadoFechaFinal(index, e.target.value)}
+                                        value={edicion[index].valorEditadoPrimerEncuentro}
+                                        onChange={(e) => onChangePrimerEncuentro(index, e.target.value)}
                                       />
                                       {
-                                        edicion[index].fechaFinal &&
+                                        edicion[index].fechaPrimerEncuentro &&
                                         <button type="button"
                                           className="rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">
                                           <BiCheck className="size-5 fill-white" />

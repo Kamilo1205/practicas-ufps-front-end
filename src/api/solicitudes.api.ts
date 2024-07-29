@@ -2,6 +2,7 @@ import axios from "./axios";
 
 
 import {  SolicitudRequest, SolicitudesResponse } from "../schemas/solicitudSchema";
+import Swal from "sweetalert2";
 
 const SOLICITUDES_URL_COORDINADOR = '/empresas-solicitudes'
 const SOLICITUDES_URL_EMPRESA = '/empresas-solicitudes/empresa'
@@ -25,7 +26,14 @@ export const getSolicitudPorIdApi = async (solicitudId: string) => {
 }
 
 export const createSolicitudApi = async (solicitud: SolicitudRequest) => { 
-  const response = await axios.post(SOLICITUDES_URL_COORDINADOR, solicitud)
+  const response = await axios.post(SOLICITUDES_URL_COORDINADOR, solicitud).catch((error) => { 
+    Swal.fire({
+      title: 'Error',
+      text: 'No se pudo crear la solicitud',
+      icon: 'error',
+    })
+  })
+  console.log('response', response.data)
   return response.data
 }
 

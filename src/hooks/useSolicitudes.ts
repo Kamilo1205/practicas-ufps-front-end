@@ -50,7 +50,18 @@ export const useSolicitudes = () => {
     if (esEmpresa) {
       // Crear solicitud para empresa
       const peticion = await createSolicitudApi(nuevaSolicitud)
-      console.log(peticion)
+      
+      console.log('pp',peticion)
+      if (!peticion) {
+        setError('No se pudo crear la solicitud')
+        Swal.fire({
+          title: 'Error',
+          text: 'No se pudo crear la solicitud',
+          icon: 'error',
+          confirmButtonText: 'Aceptar'
+        })
+        return;
+      }
       setSolicitudes([...solicitudes, peticion])
       Swal.fire({
         title: 'Solicitud creada',
@@ -60,6 +71,12 @@ export const useSolicitudes = () => {
       })
     }
     else {
+      Swal.fire({
+        title: 'Error',
+        text: 'No se puede crear una solicitud si el usuario no es una empresa.',
+        icon: 'error',
+        confirmButtonText: 'Aceptar'
+      })
       setError('No se puede crear una solicitud si el usuario no es una empresa.')
     }
   }
@@ -89,9 +106,19 @@ export const useSolicitudes = () => {
   }
 
   const getAspirantesASolicitud = async (solicitudId: string) => { 
-
-    const resp = await getAspirantesASolicitudApi(solicitudId)
-    console.log('aspirantes', resp)
+    try {
+      console.log('solicitudId', solicitudId)
+      const resp = await getAspirantesASolicitudApi(solicitudId)
+      console.log('aspirantes', resp)
+      return resp
+    } catch (error) {
+      Swal.fire({
+        title: 'Error',
+        text: 'No se pudieron obtener los aspirantes',
+        icon: 'error',
+        confirmButtonText: 'Aceptar'
+      })
+    }
   }
 
   return {
