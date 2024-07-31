@@ -7,6 +7,7 @@ import Swal from "sweetalert2";
 const SOLICITUDES_URL_COORDINADOR = '/empresas-solicitudes'
 const SOLICITUDES_URL_EMPRESA = '/empresas-solicitudes/empresa'
 const URL_EMPRESA_ASPIRANTES = '/mejores-estudiantes'
+const URL_ASIGNACION = '/asignacion'
 
 const getUrlParaSolicitudDeEmpresa = (solicitudId: string) => `empresas-solicitudes/${solicitudId}/empresa`
 
@@ -46,3 +47,8 @@ export const getAspirantesASolicitudApi = async (solicitudId: string) => {
   const response = await axios.get(`${SOLICITUDES_URL_COORDINADOR}/${solicitudId}${URL_EMPRESA_ASPIRANTES}`)
   return response.data
  }
+
+export const asignarPracticanteApi = async (solicitudId: string, estudianteId: string) => { 
+  const response = await axios.post(`${URL_ASIGNACION}`, { solicitudId, estudianteId })
+  return response.data
+}

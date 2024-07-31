@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useState } from "react"
 
 import { Solicitud,  SolicitudRequest } from "../schemas/solicitudSchema"
-import { createSolicitudApi, eliminarSolicitudApi, fetchSolicitudesApi, fetchSolicitudesEmpresaApi, getAspirantesASolicitudApi } from "../api/solicitudes.api"
+import { asignarPracticanteApi, createSolicitudApi, eliminarSolicitudApi, fetchSolicitudesApi, fetchSolicitudesEmpresaApi, getAspirantesASolicitudApi } from "../api/solicitudes.api"
 import { useAuth } from "../contexts"
 import { roles } from "../interfaces/rol.interface"
 import Swal from "sweetalert2"
@@ -121,13 +121,29 @@ export const useSolicitudes = () => {
     }
   }
 
+  const asignarEstudiante = async (solicitudId: string, estudianteId: string) => {
+    try {
+      const resp = await asignarPracticanteApi(solicitudId, estudianteId)
+      console.log('asignacion', resp)
+      return resp
+    } catch (error) {
+      Swal.fire({
+        title: 'Error',
+        text: 'No se pudo asignar el practicante',
+        icon: 'error',
+        confirmButtonText: 'Aceptar'
+      })
+    }
+   }
+
   return {
     error,
     solicitudes,
     totalSolictudes,
     createSolicitud,
     eliminarSolicitud,
-    getAspirantesASolicitud
+    getAspirantesASolicitud,
+    asignarEstudiante
     
   }
  } 

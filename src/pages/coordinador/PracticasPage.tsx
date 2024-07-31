@@ -69,7 +69,7 @@ interface SolicitudPracticante {
 
 export const PracticasPage = () => {
 
-  const { solicitudes, getAspirantesASolicitud } = useSolicitudes()
+  const { solicitudes, getAspirantesASolicitud, asignarEstudiante } = useSolicitudes()
   // const [solicitudes, setSolicitudes] = useState<SolicitudPracticante[]>([])
   //const [loading, setLoading] = useState(false)
   const [solicitudSeleccionada, setSolicitudSeleccionada] = useState<SolicitudPracticante | null>(null)
@@ -129,6 +129,7 @@ export const PracticasPage = () => {
           <AsignacionPracticasComponent
             solicitud={solicitudSeleccionada}
             setMostrarPerfil={setMostrarPerfil}
+            asignarEstudiante={asignarEstudiante}
 
           />
         }

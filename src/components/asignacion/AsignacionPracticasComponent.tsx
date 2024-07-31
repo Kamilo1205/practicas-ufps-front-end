@@ -15,10 +15,11 @@ interface AsignacionPracticasComponentProps {
   solicitud: SolicitudPracticante
   setMostrarPerfil: (mostrar: boolean) => void
   getAspirantesASolicitud?: (idSolicitud: string) => Promise<any[]>
+  asignarEstudiante: (solicitudId: string, estudianteId: string) => Promise<any>
 
 }
 
-export const AsignacionPracticasComponent = ({ solicitud, setMostrarPerfil, }: AsignacionPracticasComponentProps) => {
+export const AsignacionPracticasComponent = ({ solicitud, setMostrarPerfil, asignarEstudiante }: AsignacionPracticasComponentProps) => {
 
 
   console.log('solicitud', solicitud)
@@ -35,12 +36,22 @@ export const AsignacionPracticasComponent = ({ solicitud, setMostrarPerfil, }: A
       cancelButtonText: 'No',
 
     }).then((result) => {
-      if (result.isConfirmed) {
-        Swal.fire({
-          title: 'Practicante asignado',
-          text: `El practicante ${nombrePracticante} ha sido asignado a la solicitud`,
-          icon: 'success',
-          confirmButtonText: 'Aceptar',
+      if (result.isConfirmed && perfilSeleccionado) {
+        asignarEstudiante(solicitudState.id, perfilSeleccionado.estudiante.id).then(() => {
+          Swal.fire({
+            title: 'Practicante asignado',
+            text: `El practicante ${nombrePracticante} ha sido asignado a la solicitud`,
+            icon: 'success',
+            confirmButtonText: 'Aceptar',
+          })
+          setMostrarPerfil(false)
+        }).catch(() => {
+          Swal.fire({
+            title: 'Error',
+            text: 'No se pudo asignar el practicante',
+            icon: 'error',
+            confirmButtonText: 'Aceptar',
+          })
         })
 
         setMostrarPerfil(false)
@@ -79,13 +90,18 @@ export const AsignacionPracticasComponent = ({ solicitud, setMostrarPerfil, }: A
                 solicitudState.asignaciones && solicitudState.asignaciones.map((estudiante) => (
                   <li
                     key={estudiante.id}
-                    onClick={() => setPerfilSeleccionado(estudiante)}
+                    onClick={() => setPerfilSeleccionado({
+                      estudiante: estudiante.estudiante,
+                      score: 15
+                    })}
                     className={`flex cursor-pointer ${perfilSeleccionado && estudiante.id === perfilSeleccionado?.estudiante.id && 'bg-slate-100'} justify-between rounded-md w-72 pr-5 hover:bg-slate-100`}>
                     <div className="flex space-x-1">
                       <div>
                         <AvatarScore score={Number(estudiante?.puntaje)} />
                       </div>
-                      <span className="font-normal text-sm text-gray-600 self-center">{estudiante.nombre}</span>
+                      <span className="font-normal text-sm text-gray-600 self-center">{`
+                      ${estudiante.estudiante.codigo}-${estudiante.estudiante.primerNombre} ${estudiante.estudiante.primerApellido}
+                      `}</span>
                     </div>
 
                     <div
@@ -173,11 +189,11 @@ export const AsignacionPracticasComponent = ({ solicitud, setMostrarPerfil, }: A
                       solicitudState?.herramientas?.map(herramienta => (
 
                         perfilSeleccionado?.estudiante?.herramientas?.find(h => h.id === herramienta.id) ? <span
-                          key={`${herramienta}`}
+                          key={`${herramienta.id}`}
                           className="text-sm bg-red-100 text-gray-600 px-1 py-0.5 rounded-md">{herramienta?.nombre}</span>
                           :
                           <span
-                            key={`${herramienta}`}
+                            key={`${herramienta.id}`}
                             className="text-sm bg-green-100 text-gray-600 px-1 py-0.5 rounded-md" > {herramienta?.nombre}
                           </span>
 
@@ -189,8 +205,9 @@ export const AsignacionPracticasComponent = ({ solicitud, setMostrarPerfil, }: A
                 </div>
                 <div className="mt-3">
                   <Button
-                    disabled={solicitudState?.asignaciones?.length === 0 || solicitudState.asignaciones.length === solicitudState.cantidadPracticantes}
-                    onClick={() => onAsignarPracticante('1152004 - Jeison Omar Ferrer Ortega')}>Asignar practicante</Button>
+                    disabled={solicitudState.asignaciones.length === solicitudState.cantidadPracticantes}
+                    onClick={() => onAsignarPracticante(`${perfilSeleccionado.estudiante.codigo}-${perfilSeleccionado.estudiante.primerNombre}`)}>
+                    Asignar practicante</Button>
                 </div>
               </div>
             </div>
