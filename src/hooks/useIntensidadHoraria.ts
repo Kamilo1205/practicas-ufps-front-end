@@ -13,9 +13,7 @@ type UseIntensidadReturn = {
   createIntensidad: (
     newIntensidad: Omit<IntensidadHoraria, "id">
   ) => Promise<void>;
-  updateIntensidad: (
-    updatedIntensidad: Omit<IntensidadHoraria, "id">
-  ) => Promise<void>;
+  updateIntensidad: (updatedIntensidad: IntensidadHoraria) => Promise<void>;
 };
 
 const useIntensidad = (): UseIntensidadReturn => {
@@ -23,8 +21,7 @@ const useIntensidad = (): UseIntensidadReturn => {
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<AxiosError | null>(null);
 
-  const createIntensidad = async (
-    newIntensidad: Omit<IntensidadHoraria, "id">
+  const createIntensidad = async (newIntensidad: Omit<IntensidadHoraria, "id">
   ) => {
     setLoading(true);
     try {
@@ -38,9 +35,7 @@ const useIntensidad = (): UseIntensidadReturn => {
     }
   };
 
-  const updateIntensidad = async (
-    updatedIntensidad: Omit<IntensidadHoraria, "id">
-  ) => {
+  const updateIntensidad = async (updatedIntensidad: IntensidadHoraria) => {
     setLoading(true);
     try {
       const data = await updateIntensidadaAPI(updatedIntensidad);

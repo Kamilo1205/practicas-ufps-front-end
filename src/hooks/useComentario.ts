@@ -4,6 +4,7 @@ import {
   createComentario as createComentarioAPI,
   deleteObjetivoComentario as deleteObjetivoComentarioAPI,
   deleteActividadComentario as deleteActividadComentarioAPI,
+  updateComentario as updateComentarioAPI,
 } from "../api/comentario.apis";
 import { Comentario } from "../interfaces";
 
@@ -14,6 +15,7 @@ type UseComentarioReturn = {
   createComentario: (newComentario: Omit<Comentario, "id">) => Promise<void>;
   deleteObjComentario: (objetivoId: string) => Promise<void>;
   deleteActComentario: (actividadId: string) => Promise<void>;
+  updateComentario: (comentario: Comentario) => Promise<void>;
 };
 
 const useComentario = (): UseComentarioReturn => {
@@ -60,6 +62,19 @@ const useComentario = (): UseComentarioReturn => {
     }
   };
 
+  const updateComentario = async (comentario: Comentario) => {
+    setLoading(true);
+    try {
+      const data = await updateComentarioAPI(comentario);
+      setComentario(data);
+      setError(null);
+    } catch (err) {
+      setError(err as AxiosError);
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return {
     comentario,
     loading,
@@ -67,6 +82,7 @@ const useComentario = (): UseComentarioReturn => {
     createComentario,
     deleteObjComentario,
     deleteActComentario,
+    updateComentario,
   };
 };
 

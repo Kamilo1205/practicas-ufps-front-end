@@ -9,9 +9,16 @@ import PlanDeTrabajoVista from "./../components/PlanDeTrabajo/Coordinador-Empres
 import InformeParcialVista from "../components/VistasCoorDTutor/InformeParcialVista";
 import InformeFinalVista from "../components/VistasCoorDTutor/InformeFinalVista";
 import EvaluacionEstudianteVista from "../components/VistasCoorDTutor/EvaluacionPracticaVista";
+import { useEffect } from "react";
+import useEstudiantes from "../hooks/useEstudiantes";
 
 export const EstudianteRouter = () => {
   const { user } = useAuth();
+  const { estudiante, fetchEstudiante } = useEstudiantes();
+  useEffect(() => {
+    if (!estudiante) fetchEstudiante();
+  }, [estudiante]);
+
   return (
     <Routes>
       {user?.estaRegistrado ? (
@@ -23,29 +30,30 @@ export const EstudianteRouter = () => {
               path="plantrabajo"
               element={
                 <PlanDeTrabajoVista
-                  rol="ESTUDIANTE"
+                  rol="estudiante"
                   initialOpen={false}
-                //isTutor={true}
+                  estudiante={estudiante}
+                  //isTutor={true}
                 />
               }
             />
             <Route
               path="informeparcial"
               element={
-                <InformeParcialVista rol={"ESTUDIANTE"} initialOpen={false} /> //TRUE=== ESTUDIANTE SINO POS FALSE
+                <InformeParcialVista rol={"estudiante"} initialOpen={false} /> //TRUE=== ESTUDIANTE SINO POS FALSE
               }
             />
             <Route
               path="informefinal"
               element={
-                <InformeFinalVista rol={"ESTUDIANTE"} initialOpen={false} /> //TRUE=== ESTUDIANTE SINO POS FALSE
+                <InformeFinalVista rol={"estudiante"} initialOpen={false} /> //TRUE=== ESTUDIANTE SINO POS FALSE
               }
             />
             <Route
               path="evaluacionestudiante"
               element={
                 <EvaluacionEstudianteVista
-                  rol={"ESTUDIANTE"}
+                  rol={"estudiante"}
                   initialOpen={false}
                 />
               }

@@ -9,8 +9,8 @@ import { Resultado } from "./resultado.interface";
 export interface PlanDeTrabajo {
   estudiante: Estudiante;
   empresa: Empresa;
-  intensidadHorario: IntensidadHoraria;
-  objetivoSeccion: {
+  intensidadHoraria: IntensidadHoraria;
+  objetivo: {
     objetivos: Objetivos;
     comentarios: Comentario[];
   };

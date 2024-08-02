@@ -1,7 +1,11 @@
+import { Comentario } from "./comentarios.interface";
+
 export interface Objetivos {
-  Objpractica: string;
-  ObjPrincipal: string;
-  ObjEspecificos: string;
+  id?: string;
+  objetivoPractica: string;
+  objetivoPrincipal: string;
+  objetivoEspecial: string;
   justificacion: string;
   alcance: string;
+  comentario?: Comentario[];
 }

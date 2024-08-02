@@ -52,8 +52,6 @@ export const Activity: React.FC<ActivityProps> = ({
 
   const InicioDateAdjusted = new Date(InicioDate.getTime());
   InicioDateAdjusted.setDate(InicioDateAdjusted.getDate() + 1);
-  console.log(activity.description);
-  console.log(description);
   const FinDateAdjusted = new Date(FinDate.getTime());
   FinDateAdjusted.setDate(FinDateAdjusted.getDate() + 1);
 

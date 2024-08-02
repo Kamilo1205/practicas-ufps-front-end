@@ -1,4 +1,4 @@
-import axios from "axios";
+import axios from "./axios";
 import { PlanDeTrabajo } from "../interfaces/plantrabajo.interface";
 
 //APIS ADMINISTRADOR
@@ -30,13 +30,15 @@ export const fetchMisPlanTrabajoEstudiante = async (): Promise<
   return response.data;
 };
 //(estudiante) para obtener el plan del semestre actual
-export const fetchMiPlanTrabajoActualEstudiante = async (): Promise<PlanDeTrabajo> => {
+export const fetchMiPlanTrabajoActualEstudiante =
+  async (): Promise<PlanDeTrabajo> => {
     const response = await axios.get("/plan-trabajo/estudiante/mi-plan/actual");
     return response.data;
   };
+
 //(estudiante) para obtener plan del estudiante por id
 export const fetchPlanTrabajoByIdEstudiante = async (
-  id: string
+  id?: string
 ): Promise<PlanDeTrabajo> => {
   const response = await axios.get(`/plan-trabajo/estudiante/mi-plan/${id}`);
   return response.data;

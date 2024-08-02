@@ -18,7 +18,7 @@ const InformeParcialVista: FC<ParcialProps> = ({
   const [open, setOpen] = useState<boolean>(initialOpen);
   return (
     <>
-      {rol === "ESTUDIANTE" ? (
+      {rol === "estudiante" ? (
         <InformeParicialPage rol={true} />
       ) : (
         <DialogComponent
