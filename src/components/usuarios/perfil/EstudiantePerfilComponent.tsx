@@ -52,23 +52,25 @@ const getDownloadFileUrl = async (fileId: string,) => {
 
 export const EstudiantePerfilComponent = ({ estudiante, rol = '' }: EstudiantePerfilProps) => {
 
-  console.log('aaa', estudiante)
   const puedeActivarDesactivar = permisos.activacion.includes(rol)
   //const puedeEditar = permisos.edicion.includes(rol)
   const soloVista = permisos.soloVista.includes(rol)
 
   const [tab, setTab] = useState(0)
+  const [loadingDocs, setLoadingDocs] = useState(false)
   const [documentosUrls, setDocumentosUrls] = useState({
     certificadoAfiliacionEpsUrl: '',
     documentoIdentidadUrl: '',
     hojaDeVidaUrl: ''
   })
+  console.log('aaa', documentosUrls)
 
   useEffect(() => {
     if (estudiante &&
       estudiante?.certificadoAfiliacionEpsUrl &&
       estudiante?.documentoIdentidadUrl &&
       estudiante?.hojaDeVidaUrl) {
+      setLoadingDocs(true)
       Promise.all([
         getDownloadFileUrl(estudiante?.certificadoAfiliacionEpsUrl),
         getDownloadFileUrl(estudiante?.documentoIdentidadUrl),
@@ -79,6 +81,7 @@ export const EstudiantePerfilComponent = ({ estudiante, rol = '' }: EstudiantePe
           documentoIdentidadUrl: urls[1] || '',
           hojaDeVidaUrl: urls[2] || ''
         })
+        setLoadingDocs(false)
       })
     }
   }, [])
@@ -352,18 +355,23 @@ export const EstudiantePerfilComponent = ({ estudiante, rol = '' }: EstudiantePe
                               estudiante?.certificadoAfiliacionEpsUrl ? `certificado-afiliacion-eps-${estudiante?.codigo}.pdf` : 'No hay documento'
                             }
                           </span>
-                          <span className="flex-shrink-0 text-gray-400">2.4mb</span>
                         </div>
                       </div>
                       <div className="ml-4 flex-shrink-0">
                         {
-                          estudiante?.certificadoAfiliacionEpsUrl ? (
-                            <a className="font-medium text-indigo-600 hover:text-indigo-500"
-                              href={documentosUrls.certificadoAfiliacionEpsUrl}
-                              download={`certificado-afiliacion-eps-${estudiante?.codigo}.pdf`}
-                            >Descargar</a>
-                          ) :
-                            <span className="font-medium text-gray-400">No hay documento</span>
+                          loadingDocs ?
+                            <div className=" bg-white">
+                              <div className="flex justify-center items-center h-full">
+                                <img className="h-5 w-5" src="https://icons8.com/preloaders/preloaders/1488/Iphone-spinner-2.gif" alt="" />
+                              </div>
+                            </div> :
+                            estudiante?.certificadoAfiliacionEpsUrl ? (
+                              <a className="font-medium text-indigo-600 hover:text-indigo-500"
+                                href={documentosUrls.certificadoAfiliacionEpsUrl}
+                                download={`certificado-afiliacion-eps-${estudiante?.codigo}.pdf`}
+                              >Descargar</a>
+                            ) :
+                              <span className="font-medium text-gray-400">No hay documento</span>
                         }
                       </div>
                     </li>
@@ -386,17 +394,22 @@ export const EstudiantePerfilComponent = ({ estudiante, rol = '' }: EstudiantePe
                               estudiante?.documentoIdentidadUrl ? `documento-identidad-${estudiante?.codigo}.pdf` : 'No hay documento'
                             }
                           </span>
-                          <span className="flex-shrink-0 text-gray-400">2.4mb</span>
                         </div>
                       </div>
                       <div className="ml-4 flex-shrink-0">
                         {
-                          estudiante?.documentoIdentidadUrl ? (
-                            <a href={documentosUrls.documentoIdentidadUrl}
-                              download={`documento-identidad-${estudiante?.codigo}.pdf`}
-                              target="_blank" className="font-medium text-indigo-600 hover:text-indigo-500">Descargar</a>
-                          ) :
-                            <span className="font-medium text-gray-400">No hay documento</span>
+                          loadingDocs ?
+                            <div className=" bg-white">
+                              <div className="flex justify-center items-center h-full">
+                                <img className="h-5 w-5" src="https://icons8.com/preloaders/preloaders/1488/Iphone-spinner-2.gif" alt="" />
+                              </div>
+                            </div> :
+                            estudiante?.documentoIdentidadUrl ? (
+                              <a href={documentosUrls.documentoIdentidadUrl}
+                                download={`documento-identidad-${estudiante?.codigo}.pdf`}
+                                target="_blank" className="font-medium text-indigo-600 hover:text-indigo-500">Descargar</a>
+                            ) :
+                              <span className="font-medium text-gray-400">No hay documento</span>
                         }
                       </div>
                     </li>
@@ -417,17 +430,23 @@ export const EstudiantePerfilComponent = ({ estudiante, rol = '' }: EstudiantePe
                           <span className="truncate font-medium">{
                             estudiante?.hojaDeVidaUrl ? `hoja-vida-${estudiante?.codigo}.pdf` : 'No hay documento'
                           }</span>
-                          <span className="flex-shrink-0 text-gray-400">2.4mb</span>
                         </div>
                       </div>
                       <div className="ml-4 flex-shrink-0">
+
                         {
-                          estudiante?.hojaDeVidaUrl ? (
-                            <a href={documentosUrls.hojaDeVidaUrl}
-                              download={`hoja-vida-${estudiante?.codigo}.pdf`}
-                              target="_blank" className="font-medium text-indigo-600 hover:text-indigo-500">Descargar</a>
-                          ) :
-                            <span className="font-medium text-gray-400">No hay documento</span>
+                          loadingDocs ?
+                            <div className=" bg-white">
+                              <div className="flex justify-center items-center h-full">
+                                <img className="h-5 w-5" src="https://icons8.com/preloaders/preloaders/1488/Iphone-spinner-2.gif" alt="" />
+                              </div>
+                            </div>
+                            : estudiante?.hojaDeVidaUrl ? (
+                              <a href={documentosUrls.hojaDeVidaUrl}
+                                download={`hoja-vida-${estudiante?.codigo}.pdf`}
+                                target="_blank" className="font-medium text-indigo-600 hover:text-indigo-500">Descargar</a>
+                            ) :
+                              <span className="font-medium text-gray-400">No hay documento</span>
                         }
                       </div>
                     </li>
