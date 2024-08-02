@@ -55,7 +55,7 @@ export const EstudiantePerfilComponent = ({ estudiante, rol = '' }: EstudiantePe
   const puedeActivarDesactivar = permisos.activacion.includes(rol)
   //const puedeEditar = permisos.edicion.includes(rol)
   const soloVista = permisos.soloVista.includes(rol)
-
+  console.log('estudiante', estudiante)
   const [tab, setTab] = useState(0)
   const [loadingDocs, setLoadingDocs] = useState(false)
   const [documentosUrls, setDocumentosUrls] = useState({
@@ -63,7 +63,7 @@ export const EstudiantePerfilComponent = ({ estudiante, rol = '' }: EstudiantePe
     documentoIdentidadUrl: '',
     hojaDeVidaUrl: ''
   })
-  console.log('aaa', documentosUrls)
+
 
   useEffect(() => {
     if (estudiante &&

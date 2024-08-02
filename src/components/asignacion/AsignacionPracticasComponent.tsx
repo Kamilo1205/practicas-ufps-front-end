@@ -97,7 +97,7 @@ export const AsignacionPracticasComponent = ({ solicitud, setMostrarPerfil, asig
                     className={`flex cursor-pointer ${perfilSeleccionado && estudiante.id === perfilSeleccionado?.estudiante.id && 'bg-slate-100'} justify-between rounded-md w-72 pr-5 hover:bg-slate-100`}>
                     <div className="flex space-x-1">
                       <div>
-                        <AvatarScore score={Number(estudiante?.puntaje)} />
+                        <AvatarScore score={Number(perfilSeleccionado?.score)} />
                       </div>
                       <span className="font-normal text-sm text-gray-600 self-center">{`
                       ${estudiante.estudiante.codigo}-${estudiante.estudiante.primerNombre} ${estudiante.estudiante.primerApellido}

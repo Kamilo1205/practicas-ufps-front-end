@@ -32,7 +32,7 @@ export const Layout = () => {
         <div>
           <Menu>
             <MenuButton className="flex items-center p-1.5 -m-1.5">
-              <span className="hidden md:flex text-gray-900 leading-6 font-semibold text-sm mr-4">{user?.displayName}</span>
+              <span className="hidden md:flex text-gray-900 leading-6 font-semibold text-sm mr-4">{user?.displayName || user?.email}</span>
               <div className="w-9 h-9">
                 <Avatar url={user?.imagenUrl} />
               </div>

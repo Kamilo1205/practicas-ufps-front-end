@@ -1,10 +1,10 @@
 import { useEffect } from 'react';
-import { useAuth } from '../../contexts';
+
 import useEstudiantes from '../../hooks/useEstudiantes';
 import { EstudiantePerfilComponent } from '../../components/usuarios/perfil/EstudiantePerfilComponent';
 
 export const PerfilPage = () => {
-  const { user } = useAuth();
+
   const { estudiante, fetchEstudiante } = useEstudiantes();
 
   useEffect(() => {
@@ -13,8 +13,8 @@ export const PerfilPage = () => {
 
   return (
     <div>
-      { estudiante && <EstudiantePerfilComponent estudiante={estudiante} />}
-     
+      {estudiante && <EstudiantePerfilComponent estudiante={estudiante} />}
+
     </div>
   )
 }
