@@ -1,17 +1,17 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { MdCleaningServices } from "react-icons/md";
 import { TfiSave } from "react-icons/tfi";
 import Swal from "sweetalert2";
+import { IntensidadHoraria } from "../../interfaces";
+import useIntensidad from "../../hooks/useIntensidadHoraria";
 
 interface Intensidad {
   rol: boolean;
-  intensidadHoras: [];
-  numSemanas: number;
+  intensidadHoras?: IntensidadHoraria;
 }
 const IntensidadHorariaTable: React.FC<Intensidad> = ({
   rol,
   intensidadHoras,
-  numSemanas,
 }) => {
   const days = ["Lunes", "Martes", "Miércoles", "Jueves", "Viernes", "Sábado"];
   const hours = [
@@ -24,14 +24,28 @@ const IntensidadHorariaTable: React.FC<Intensidad> = ({
     "3 a 4",
     "4 a 5",
   ];
+  const { createIntensidad, updateIntensidad } = useIntensidad();
 
-  const [selectedHours, setSelectedHours] = useState<boolean[][]>(
+  const initialHours =
+    intensidadHoras?.horario ||
     Array(hours.length)
       .fill(null)
-      .map(() => Array(days.length).fill(false))
-  );
+      .map(() => Array(days.length).fill(false));
+  const [selectedHours, setSelectedHours] = useState<boolean[][]>(initialHours);
   const [weeks, setWeeks] = useState<number>(1);
-  console.log(selectedHours);
+  useEffect(() => {
+    if (intensidadHoras) {
+      // Actualizar selectedHours si intensidadHoras.horario está definido
+      if (intensidadHoras.horario) {
+        setSelectedHours(intensidadHoras.horario);
+      }
+
+      // Actualizar weeks si intensidadHoras.cantidadSemanas está definido
+      if (intensidadHoras.cantidadSemanas != null) {
+        setWeeks(intensidadHoras.cantidadSemanas);
+      }
+    }
+  }, [intensidadHoras]);
 
   const toggleHour = (hourIndex: number, dayIndex: number) => {
     const newSelectedHours = [...selectedHours];
@@ -45,12 +59,52 @@ const IntensidadHorariaTable: React.FC<Intensidad> = ({
     setWeeks(value > 0 ? value : 0);
   };
   const handleSave = () => {
-    Swal.fire({
-      title: "Información guardada",
-      text: "Los datos han sido guardados correctamente.",
-      icon: "success",
-      confirmButtonText: "OK",
-    });
+    if (intensidadHoras?.id != null) {
+      const intensidad: IntensidadHoraria = {
+        id: intensidadHoras?.id,
+        horario: selectedHours,
+        cantidadSemanas: Number(weeks),
+      };
+      updateIntensidad(intensidad)
+        .then(() => {
+          Swal.fire({
+            title: "Información guardada",
+            text: "Los datos han sido guardados correctamente.",
+            icon: "success",
+            confirmButtonText: "Aceptar",
+          });
+        })
+        .catch(() => {
+          Swal.fire({
+            title: "Ha ocurrido un error",
+            text: "No se guardo la Información",
+            icon: "error",
+            confirmButtonText: "Aceptar",
+          });
+        });
+    } else {
+      const intensidad: IntensidadHoraria = {
+        horario: selectedHours,
+        cantidadSemanas: Number(weeks),
+      };
+      createIntensidad(intensidad)
+        .then(() => {
+          Swal.fire({
+            title: "Información guardada",
+            text: "Los datos han sido guardados correctamente.",
+            icon: "success",
+            confirmButtonText: "Aceptar",
+          });
+        })
+        .catch(() => {
+          Swal.fire({
+            title: "Ha ocurrido un error",
+            text: "No se guardo la Información",
+            icon: "error",
+            confirmButtonText: "Aceptar",
+          });
+        });
+    }
   };
 
   const totalSelectedHours = selectedHours.flat().filter(Boolean).length;

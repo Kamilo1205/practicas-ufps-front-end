@@ -1,5 +1,5 @@
 export interface IntensidadHoraria {
-  id: string;
-  horario: boolean[];
+  id?: string;
+  horario: boolean[][];
   cantidadSemanas: number;
 }

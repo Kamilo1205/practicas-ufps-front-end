@@ -117,16 +117,15 @@ const usePlantrabajo = (): UsePlantrabajoReturn => {
   };
 
   useEffect(() => {
-    fetchPlanTrabajoActual();
-    fetchAllPlanTrabajo();
-    fetchMisPlanTrabajoEstudiante();
-    fetchMiPlanTrabajoActualEstudiante();
-  }, [
-    fetchPlanTrabajoActual,
-    fetchAllPlanTrabajo,
-    fetchMisPlanTrabajoEstudiante,
-    fetchMiPlanTrabajoActualEstudiante,
-  ]);
+    const fetchData = async () => {
+      await fetchPlanTrabajoActual();
+      await fetchAllPlanTrabajo();
+      await fetchMisPlanTrabajoEstudiante();
+      await fetchMiPlanTrabajoActualEstudiante();
+    };
+
+    fetchData();
+  }, []);
 
   return {
     allplanestrabajo,

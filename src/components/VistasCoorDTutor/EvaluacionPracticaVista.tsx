@@ -19,7 +19,7 @@ const EvaluacionEstudianteVista: FC<EvaluacionProps> = ({
   const [open, setOpen] = useState<boolean>(initialOpen);
   return (
     <>
-      {rol === "ESTUDIANTE" ? (
+      {rol === "estudiante" ? (
         <EvaluacionEstudiante rol={true} />
       ) : (
         <DialogComponent

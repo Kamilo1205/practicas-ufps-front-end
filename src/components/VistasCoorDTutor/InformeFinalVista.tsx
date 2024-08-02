@@ -19,7 +19,7 @@ const InformeFinalVista: FC<FinalProps> = ({
   const [open, setOpen] = useState<boolean>(initialOpen);
   return (
     <>
-      {rol === "ESTUDIANTE" ? (
+      {rol === "estudiante" ? (
         <InformeFinalPage rol={true} />
       ) : (
         <DialogComponent

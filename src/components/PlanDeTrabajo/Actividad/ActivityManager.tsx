@@ -139,7 +139,7 @@ export const ActivityManager: React.FC<ActivityProps> = ({
       </div>
 
       {isFormVisible && <ActivityForm addActivity={addActivity} />}
-      <div className="space-y-4">
+       <div className="space-y-4">
         {activities.map((activity) => (
           <Activity
             key={activity.id}
@@ -162,7 +162,7 @@ export const ActivityManager: React.FC<ActivityProps> = ({
             </div>
           </div>
         )}
-      </div>
+      </div> 
     </div>
   );
 };
