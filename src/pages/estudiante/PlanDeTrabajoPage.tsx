@@ -14,6 +14,10 @@ import { IntensidadHoraria } from "./../../interfaces/intensidad.interface";
 import { Input, Label, TextArea } from "../../components/ui";
 import useComentario from "../../hooks/useComentario";
 import { Comentario } from "../../interfaces";
+import CollapseObj from "../../components/ui/Button/CollapseObj";
+import CollapseAct from "../../components/ui/Button/CollapseAct";
+import { useAuth } from "./../../contexts/AuthContext";
+import usePlantrabajo from "../../hooks/usePlanTrabajo";
 
 interface PlanTrabProps {
   estudiante: Estudiante;
@@ -36,27 +40,24 @@ const PlanDeTrabajoPage: React.FC<PlanTrabProps> = ({
   coordApru,
   setCoorApru,
 }) => {
-  const {
-    comentario,
-    createComentario,
-    deleteActComentario,
-    deleteObjComentario,
-    updateComentario,
-  } = useComentario();
-
   const [comments, setComments] = useState(comentarios);
+  const { aprobarPlanEmpresa, aprobarPlanTutor } = usePlantrabajo();
   const handleCheckboxChange = (checked: boolean) => {
     console.log("Checkbox is now", checked ? "checked" : "unchecked");
     if (isTutor) {
+      aprobarPlanTutor(planTrabajo?.id).then((response) => {
+        console.log(response);
+      });
       Swal.fire({
-        title: "Información Guardada TUTOR",
+        title: "Información Guardada",
         text: "Los datos han sido guardados correctamente.",
         icon: "success",
         confirmButtonText: "OK",
       });
     } else {
+      aprobarPlanEmpresa(planTrabajo.id);
       Swal.fire({
-        title: "Información Guardada COORDINADOR",
+        title: "Información Guardada",
         text: "Los datos han sido guardados correctamente.",
         icon: "success",
         confirmButtonText: "OK",
@@ -64,14 +65,23 @@ const PlanDeTrabajoPage: React.FC<PlanTrabProps> = ({
     }
   };
 
-  console.log(planTrabajo);
+  const [comentarioObj, setComentarioObj] = useState<Comentario[]>([]);
+  const [comentarioAct, setComentarioAct] = useState<Comentario[]>([]);
 
   useEffect(() => {
-    if (comentario != null) {
-      setComments(comentario);
+    if (planTrabajo != null) {
+      if (planTrabajo.seccionActividades != null) {
+        if (planTrabajo.seccionActividades.comentarios != null) {
+          setComentarioAct(planTrabajo.seccionActividades.comentarios);
+        }
+      }
+      if (planTrabajo.objetivo != null) {
+        if (planTrabajo.objetivo.comentarios != null) {
+          setComentarioObj(planTrabajo.objetivo.comentarios);
+        }
+      }
     }
-  }, [comentario]);
-
+  }, [planTrabajo]);
   return (
     <>
       <Title titulo="Plan de Trabajo" />
@@ -125,30 +135,36 @@ const PlanDeTrabajoPage: React.FC<PlanTrabProps> = ({
           intensidadHoras={planTrabajo?.intensidadHoraria}
         />
       </Collapse>
-      <Collapse
+      <CollapseObj
         rol={rol}
         title="Objetivos"
-        comments={comments}
-        setComments={setComments}
+        comments={comentarioObj}
+        setComments={setComentarioObj}
+        obj={planTrabajo?.objetivo}
         autor="TUTOR"
       >
         <Objetivo rol={rol} obj={planTrabajo?.objetivo} />
-      </Collapse>
-      <Collapse
+      </CollapseObj>
+      <CollapseAct
         rol={rol}
         title="Actividades"
-        comments={comments}
-        setComments={setComments}
+        comments={comentarioAct}
+        setComments={setComentarioAct}
+        act={planTrabajo?.seccionActividades}
         autor="TUTOR"
       >
-        <ActivityManager rol={rol} />
-      </Collapse>
+        <ActivityManager
+          rol={rol}
+          actividades={planTrabajo?.seccionActividades?.actividades}
+        />
+      </CollapseAct>
       <Collapse
         rol={rol}
         title="Requerimientos/Resultados"
         comments={comments}
         setComments={setComments}
         autor="TUTOR"
+        isComment={false}
       >
         <RRForm rol={rol} />
       </Collapse>

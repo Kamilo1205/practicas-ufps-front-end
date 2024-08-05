@@ -12,8 +12,8 @@ type UseIntensidadReturn = {
   error: AxiosError | null;
   createIntensidad: (
     newIntensidad: Omit<IntensidadHoraria, "id">
-  ) => Promise<void>;
-  updateIntensidad: (updatedIntensidad: IntensidadHoraria) => Promise<void>;
+  ) => Promise<string>;
+  updateIntensidad: (updatedIntensidad: IntensidadHoraria) => Promise<string>;
 };
 
 const useIntensidad = (): UseIntensidadReturn => {
@@ -28,8 +28,10 @@ const useIntensidad = (): UseIntensidadReturn => {
       const data = await createIntensidadAPI(newIntensidad);
       setIntensidad(data);
       setError(null);
+      return "ok"
     } catch (err) {
       setError(err as AxiosError);
+      return "mal"
     } finally {
       setLoading(false);
     }
@@ -41,8 +43,10 @@ const useIntensidad = (): UseIntensidadReturn => {
       const data = await updateIntensidadaAPI(updatedIntensidad);
       setIntensidad(data);
       setError(null);
+      return "ok"
     } catch (err) {
       setError(err as AxiosError);
+      return "mal"
     } finally {
       setLoading(false);
     }

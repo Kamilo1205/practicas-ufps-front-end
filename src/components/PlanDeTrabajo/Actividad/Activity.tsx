@@ -19,11 +19,15 @@ import NumberSlider from "../../ui/Input/NumberSlider";
 import { RiEyeCloseFill } from "react-icons/ri";
 import { BiShowAlt } from "react-icons/bi";
 import PopOverViewInfo from "./../../ui/Dialog/PopOverViewInfo";
+import { Actividad, SubActividad } from "../../../interfaces";
+import useSubActividad from "../../../hooks/useSubActividad";
+import Swal from "sweetalert2";
 
 interface ActivityProps {
-  activity: ActivityType;
-  updateActivity: (activity: ActivityType) => void;
-  deleteActivity: (id: number) => void;
+  activity: Actividad;
+  updateActivity: (activity: Actividad) => void;
+  deleteActivity: (id: string) => void;
+  actualizarLista: (activity: Actividad) => void;
   rol: boolean;
   informeP?: boolean;
 }
@@ -33,22 +37,37 @@ export const Activity: React.FC<ActivityProps> = ({
   updateActivity,
   deleteActivity,
   rol,
+  actualizarLista,
   informeP = false,
 }) => {
   const [isExpanded, setIsExpanded] = useState(false);
-  const [totalHours, setTotalHours] = useState(0);
-  const [percentageComplete, setPercentageComplete] = useState(0);
+  const [totalHours, setTotalHours] = useState(Number(activity?.totalHoras));
+  const [percentageComplete, setPercentageComplete] = useState(
+    Number(activity.porcentajeCompletado)
+  );
   const [isEditing, setIsEditing] = useState(false);
   const [isSubFormVisible, setIsSubFormVisible] = useState(false);
-  const [title, setTitle] = useState(activity.title);
-  const [startDate, setStartDate] = useState(activity.startDate);
-  const [endDate, setEndDate] = useState(activity.endDate);
-  const [description, setDescription] = useState(activity.description);
+  const [titulo, settitulo] = useState(activity.titulo);
+  const [fechaInicio, setfechaInicio] = useState(activity.fechaInicio);
+  const [fechFin, setfechFin] = useState(activity.fechFin);
+  const [descripcion, setDescripcion] = useState(activity.descripcion);
   const [OpenView, setOpenView] = useState(false);
   const [OpenInfo, setOpenInfo] = useState(false);
-  const InicioDate = new Date(activity.startDate);
 
-  const FinDate = new Date(activity.endDate);
+  const [estrategia, setEstrategia] = useState(
+    activity?.estrategiaDesarrollo || ""
+  );
+  const [recursos, setRecursos] = useState(activity?.recursosUtilizados || "");
+  const [resultados, setResultados] = useState(
+    activity?.resultadosObtenidos || ""
+  );
+
+  const { createSubActividad, deleteSubActividad, updateSubActividad } =
+    useSubActividad();
+
+  const InicioDate = new Date(activity.fechaInicio);
+
+  const FinDate = new Date(activity.fechFin);
 
   const InicioDateAdjusted = new Date(InicioDate.getTime());
   InicioDateAdjusted.setDate(InicioDateAdjusted.getDate() + 1);
@@ -56,12 +75,12 @@ export const Activity: React.FC<ActivityProps> = ({
   FinDateAdjusted.setDate(FinDateAdjusted.getDate() + 1);
 
   // Formatear las fechas ajustadas
-  const formattedStartDate = new Intl.DateTimeFormat("es-ES", {
+  const formattedfechaInicio = new Intl.DateTimeFormat("es-ES", {
     month: "short",
     day: "numeric",
   }).format(InicioDateAdjusted);
 
-  const formattedEndDate = new Intl.DateTimeFormat("es-ES", {
+  const formattedfechFin = new Intl.DateTimeFormat("es-ES", {
     month: "short",
     day: "numeric",
   }).format(FinDateAdjusted);
@@ -76,65 +95,142 @@ export const Activity: React.FC<ActivityProps> = ({
     setIsEditing(!isEditing);
   };
 
-  const addSubActivity = (subActivity: SubActivityType) => {
-    const updatedActivity = {
-      ...activity,
-      subActivities: [...activity.subActivities, subActivity],
-    };
-    updateActivity(updatedActivity);
+  const addSubActivity = (subActivity: SubActividad) => {
+    const sub = { ...subActivity, actividadId: activity?.id };
+    createSubActividad(sub).then((response) => {
+      if (response.ok === "ok") {
+        Swal.fire({
+          title: "Información guardada",
+          text: "Los datos han sido guardados correctamente.",
+          icon: "success",
+          confirmButtonText: "Aceptar",
+        });
+        const updatedActivity = {
+          ...activity,
+          subActividades: [...(activity?.subActividades || []), response.data],
+        };
+        actualizarLista(updatedActivity);
+      } else {
+        Swal.fire({
+          title: "Ha ocurrido un error",
+          text: "No se guardo la Información",
+          icon: "error",
+          confirmButtonText: "Aceptar",
+        });
+      }
+    });
     setIsSubFormVisible(false); // Ocultar el formulario después de agregar una subactividad
   };
 
-  const updateSubActivity = (updatedSubActivity: SubActivityType) => {
-    const updatedSubActivities = activity.subActivities.map((subActivity) =>
-      subActivity.id === updatedSubActivity.id
-        ? updatedSubActivity
-        : subActivity
+  const updateSubActivity = (updatedSubActivity: SubActividad) => {
+    updateSubActividad(updatedSubActivity?.id, updatedSubActivity).then(
+      (response) => {
+        if (response.ok === "ok") {
+          Swal.fire({
+            title: "Información guardada",
+            text: "Los datos han sido guardados correctamente.",
+            icon: "success",
+            confirmButtonText: "Aceptar",
+          });
+          const updatedsubActividades = activity?.subActividades?.map(
+            (subActivity) =>
+              subActivity.id === updatedSubActivity.id
+                ? updatedSubActivity
+                : subActivity
+          );
+
+          const updatedActivity = {
+            ...activity,
+            subActividades: updatedsubActividades,
+          };
+
+          actualizarLista(updatedActivity);
+        } else {
+          Swal.fire({
+            title: "Ha ocurrido un error",
+            text: "No se guardo la Información",
+            icon: "error",
+            confirmButtonText: "Aceptar",
+          });
+        }
+      }
     );
-    const updatedActivity = {
-      ...activity,
-      subActivities: updatedSubActivities,
-    };
-    updateActivity(updatedActivity);
   };
 
-  const deleteSubActivity = (id: number) => {
-    const updatedSubActivities = activity.subActivities.filter(
+  const deleteSubActivity = (id: string) => {
+    const updatedsubActividades = activity?.subActividades?.filter(
       (subActivity) => subActivity.id !== id
     );
     const updatedActivity = {
       ...activity,
-      subActivities: updatedSubActivities,
+      subActividades: updatedsubActividades,
     };
-    updateActivity(updatedActivity);
+    deleteSubActividad(id).then((response) => {
+      if (response === "ok") {
+        Swal.fire({
+          title: "Información guardada",
+          text: "Los datos han sido guardados correctamente.",
+          icon: "success",
+          confirmButtonText: "Aceptar",
+        });
+        actualizarLista(updatedActivity);
+      } else {
+        Swal.fire({
+          title: "Ha ocurrido un error",
+          text: "No se guardo la Información",
+          icon: "error",
+          confirmButtonText: "Aceptar",
+        });
+      }
+    });
   };
 
   const handleEdit = () => {
     const updatedActivity = {
       ...activity,
-      title,
-      startDate,
-      endDate,
+      titulo,
+      fechaInicio,
+      fechFin,
+      descripcion: descripcion || " ",
+      totalHoras: String(totalHours),
+      porcentajeCompletado: String(percentageComplete),
     };
     updateActivity(updatedActivity);
     setIsEditing(false);
   };
 
+  const saveInforme = () => {
+    const updateAct = {
+      ...activity,
+      resultadosObtenidos: resultados,
+      recursosUtilizados: recursos,
+      estrategiaDesarrollo: estrategia,
+    };
+    updateActivity(updateAct);
+  };
   const togglePopover = () => {
     setOpenView(!OpenView);
   };
   useEffect(() => {
-    const hours = activity.subActivities.reduce(
-      (acc, sub) => acc + sub.hours,
-      0
-    );
-    const progress = activity.subActivities.length
-      ? activity.subActivities.reduce((acc, sub) => acc + sub.progress, 0) /
-        activity.subActivities.length
-      : 0;
+    const hours =
+      activity?.subActividades?.length || activity?.subActividades != null
+        ? activity?.subActividades.reduce(
+            (acc, sub) => acc + Number(sub.totalHoras),
+            0
+          )
+        : Number(activity?.totalHoras);
+
+    const progress =
+      activity?.subActividades?.length || activity?.subActividades != null
+        ? activity?.subActividades.reduce(
+            (acc, sub) => acc + Number(sub.porcentajeCompletado),
+            0
+          ) / activity?.subActividades.length
+        : Number(activity?.porcentajeCompletado);
+
     setTotalHours(hours);
     setPercentageComplete(progress);
-  }, [activity.subActivities]);
+  }, [activity?.subActividades]);
   return (
     <div className="border-b mb-2">
       <div className="flex justify-between items-center py-2">
@@ -147,13 +243,13 @@ export const Activity: React.FC<ActivityProps> = ({
             <div className="w-full flex-1">
               <Label>Título</Label>
               <textarea
-                value={title}
+                value={titulo}
                 style={{
                   border: "1px solid rgb(209 213 219 )",
                   borderRadius: "0.375rem", // Equivale a rounded
                   padding: "0.30rem 0.5rem", // Equivale a px-2 py-1
                 }}
-                onChange={(e) => setTitle(e.target.value)}
+                onChange={(e) => settitulo(e.target.value)}
                 className="px-2 py-1 w-full"
                 disabled={informeP}
               />
@@ -164,7 +260,7 @@ export const Activity: React.FC<ActivityProps> = ({
               className="w-full cursor-pointer"
               style={{ fontWeight: "bold" }}
             >
-              {activity.title}
+              {activity.titulo}
             </span>
           )}
         </div>
@@ -175,9 +271,9 @@ export const Activity: React.FC<ActivityProps> = ({
               style={{ borderRadius: "15px", border: "1px solid gray" }}
             >
               <FaRegCalendar className="mt-1 mr-1 " />
-              <span className="xl:hidden">{formattedEndDate}</span>
+              <span className="xl:hidden">{formattedfechFin}</span>
               <span className="hidden xl:inline">
-                {formattedStartDate} - {formattedEndDate}
+                {formattedfechaInicio} - {formattedfechFin}
               </span>
             </div>
             <div
@@ -213,9 +309,9 @@ export const Activity: React.FC<ActivityProps> = ({
                         }}
                       >
                         <FaRegCalendar className="mt-1 mr-1" />
-                        <span className="xl:hidden">{formattedEndDate}</span>
+                        <span className="xl:hidden">{formattedfechFin}</span>
                         <span className="hidden xl:inline">
-                          {formattedStartDate} - {formattedEndDate}
+                          {formattedfechaInicio} - {formattedfechFin}
                         </span>
                       </div>
                       <div
@@ -257,7 +353,7 @@ export const Activity: React.FC<ActivityProps> = ({
                   )}
                 </button>
               </div>
-              {informeP && activity.subActivities.length !== 0 ? (
+              {informeP && activity?.subActividades?.length !== 0 ? (
                 <></>
               ) : (
                 <button
@@ -284,9 +380,11 @@ export const Activity: React.FC<ActivityProps> = ({
 
               {informeP ? (
                 <></>
+              ) : activity?.subActividades?.length > 0 ? (
+                <></>
               ) : (
                 <button
-                  onClick={() => deleteActivity(activity.id)}
+                  onClick={() => deleteActivity(activity?.id)}
                   className=" cursor-pointer
               hover:scale-105
               active:scale-95
@@ -315,9 +413,9 @@ export const Activity: React.FC<ActivityProps> = ({
                         }}
                       >
                         <FaRegCalendar className="mt-1 mr-1" />
-                        <span className="xl:hidden">{formattedEndDate}</span>
+                        <span className="xl:hidden">{formattedfechFin}</span>
                         <span className="hidden xl:inline">
-                          {formattedStartDate} - {formattedEndDate}
+                          {formattedfechaInicio} - {formattedfechFin}
                         </span>
                       </div>
                       <div
@@ -366,12 +464,14 @@ export const Activity: React.FC<ActivityProps> = ({
 
       {isEditing && (
         <div className="w-full">
-          {activity.subActivities.length === 0 ? (
+          {activity?.subActividades?.length === 0 ||
+          activity?.subActividades === null ||
+          activity?.subActividades === undefined ? (
             <div className="w-full pl-6">
               <Label>Descripción</Label>
               <TextArea
-                value={description}
-                onChange={(e) => setDescription(e.target.value)}
+                value={descripcion}
+                onChange={(e) => setDescripcion(e.target.value)}
                 disabled={informeP}
               />
             </div>
@@ -383,13 +483,13 @@ export const Activity: React.FC<ActivityProps> = ({
               <Label>Inicio</Label>
               <input
                 type="date"
-                value={startDate}
+                value={fechaInicio}
                 style={{
                   border: "1px solid rgb(209 213 219)",
                   borderRadius: "0.375rem",
                   padding: "0.30rem 0.5rem",
                 }}
-                onChange={(e) => setStartDate(e.target.value)}
+                onChange={(e) => setfechaInicio(e.target.value)}
                 className="border rounded px-2 py-1 w-full md:w-auto"
                 disabled={informeP}
               />
@@ -398,19 +498,20 @@ export const Activity: React.FC<ActivityProps> = ({
               <Label>Fin</Label>
               <input
                 type="date"
-                min={startDate}
-                value={endDate}
+                min={fechaInicio}
+                value={fechFin}
                 style={{
                   border: "1px solid rgb(209 213 219)",
                   borderRadius: "0.375rem",
                   padding: "0.30rem 0.5rem",
                 }}
-                onChange={(e) => setEndDate(e.target.value)}
+                onChange={(e) => setfechFin(e.target.value)}
                 className="border rounded px-2 py-1 w-full md:w-auto"
                 disabled={informeP}
               />
             </div>
-            {activity.subActivities.length !== 0 ? (
+            {activity?.subActividades?.length ||
+            activity?.subActividades != null ? (
               <></>
             ) : (
               <div className="w-full flex flex-col md:flex-row mb-2 md:mb-0 md:mr-4">
@@ -463,14 +564,16 @@ export const Activity: React.FC<ActivityProps> = ({
       )}
       {isExpanded && (
         <div className="pl-6">
-          {activity.subActivities.length === 0 ? (
-            <div className="w-full mb-5">{description}</div>
+          {activity?.subActividades?.length === 0 ||
+          activity?.subActividades == null ? (
+            <div className="w-full mb-5">{descripcion}</div>
           ) : (
             <></>
           )}
-          {activity.subActivities.map((subActivity) => (
+
+          {activity?.subActividades?.map((subActivity) => (
             <SubActivity
-              key={subActivity.id}
+              key={subActivity.id?.toString() || subActivity.titulo}
               subActivity={subActivity}
               updateSubActivity={updateSubActivity}
               deleteSubActivity={deleteSubActivity}
@@ -601,100 +704,114 @@ export const Activity: React.FC<ActivityProps> = ({
                   Informe de Actividades
                 </div>
                 <table className="table-auto border-collapse border border-gray-400 w-full rounded-lg">
-                  {!rol ? (
-                    <>
-                      <tr className="w-full">
-                        <th className="border border-gray-300 p-2">
-                          Estrategia de Desarrollo
-                        </th>
-                        <td className="border border-gray-300 p-2">
-                          <TextArea
-                            rows={3}
-                            disabled={!rol}
-                            style={{ minWidth: "150px" }}
-                          ></TextArea>
-                        </td>
-                      </tr>
-                      <tr>
-                        <th className="border border-gray-300 p-2">
-                          Recursos Utilizados
-                        </th>
-                        <td className="border border-gray-300 p-2">
-                          <TextArea rows={3} disabled={!rol}></TextArea>
-                        </td>
-                      </tr>
-                      <tr>
-                        <th className="border border-gray-300 p-2">
-                          Resultados Obtenidos
-                        </th>
-                        <td className="border border-gray-300 p-2">
-                          <TextArea rows={3} disabled={!rol}></TextArea>
-                        </td>
-                      </tr>
-                    </>
-                  ) : (
-                    <>
-                      <tr className="w-full">
-                        <th className="border border-gray-300 p-2">
-                          Estrategia de Desarrollo
-                        </th>
-                        <td className="border border-gray-300 p-2">
-                          <TextArea
-                            rows={3}
-                            disabled={informeP}
-                            style={{ minWidth: "150px" }}
-                          ></TextArea>
-                        </td>
-                      </tr>
-                      <tr>
-                        <th className="border border-gray-300 p-2">
-                          Recursos Utilizados
-                        </th>
-                        <td className="border border-gray-300 p-2">
-                          <TextArea rows={3} disabled={informeP}></TextArea>
-                        </td>
-                      </tr>
-                      <tr>
-                        <th className="border border-gray-300 p-2">
-                          Resultados Obtenidos
-                        </th>
-                        <td className="border border-gray-300 p-2">
-                          <TextArea rows={3} disabled={informeP}></TextArea>
-                        </td>
-                      </tr>
-                    </>
-                  )}
+                  <tbody>
+                    {!rol ? (
+                      <>
+                        <tr className="w-full">
+                          <th className="border border-gray-300 p-2">
+                            Estrategia de Desarrollo
+                          </th>
+                          <td className="border border-gray-300 p-2">
+                            <TextArea
+                              rows={3}
+                              disabled={!rol}
+                              style={{ minWidth: "150px" }}
+                            ></TextArea>
+                          </td>
+                        </tr>
+                        <tr>
+                          <th className="border border-gray-300 p-2">
+                            Recursos Utilizados
+                          </th>
+                          <td className="border border-gray-300 p-2">
+                            <TextArea rows={3} disabled={!rol}></TextArea>
+                          </td>
+                        </tr>
+                        <tr>
+                          <th className="border border-gray-300 p-2">
+                            Resultados Obtenidos
+                          </th>
+                          <td className="border border-gray-300 p-2">
+                            <TextArea rows={3} disabled={!rol}></TextArea>
+                          </td>
+                        </tr>
+                      </>
+                    ) : (
+                      <>
+                        <tr className="w-full">
+                          <th className="border border-gray-300 p-2">
+                            Estrategia de Desarrollo
+                          </th>
+                          <td className="border border-gray-300 p-2">
+                            <TextArea
+                              rows={3}
+                              disabled={informeP}
+                              value={estrategia}
+                              onChange={(e) => setEstrategia(e.target.value)}
+                              style={{ minWidth: "150px" }}
+                            ></TextArea>
+                          </td>
+                        </tr>
+                        <tr>
+                          <th className="border border-gray-300 p-2">
+                            Recursos Utilizados
+                          </th>
+                          <td className="border border-gray-300 p-2">
+                            <TextArea
+                              rows={3}
+                              disabled={informeP}
+                              value={recursos}
+                              onChange={(e) => setRecursos(e.target.value)}
+                            ></TextArea>
+                          </td>
+                        </tr>
+                        <tr>
+                          <th className="border border-gray-300 p-2">
+                            Resultados Obtenidos
+                          </th>
+                          <td className="border border-gray-300 p-2">
+                            <TextArea
+                              rows={3}
+                              disabled={informeP}
+                              value={resultados}
+                              onChange={(e) => setResultados(e.target.value)}
+                            ></TextArea>
+                          </td>
+                        </tr>
+                      </>
+                    )}
 
-                  {informeP ? (
-                    <>
-                      <tr>
-                        <th className="border border-gray-300 p-2 w-[30%]">
-                          Impactos percibidos por el estudiante
-                        </th>
-                        <td className="border border-gray-300 p-2 w-[70%]">
-                          <TextArea
-                            rows={3}
-                            disabled={!rol}
-                            placeholder="Describa los aportes y beneficios, que la realización de la actividad o subactividad le aportó a usted a nivel personal, académico y laboral"
-                          ></TextArea>
-                        </td>
-                      </tr>
-                      <tr>
-                        <th className="border border-gray-300 p-2 w-[30%]">
-                          Limitaciones
-                        </th>
-                        <td className="border border-gray-300 p-2 w-[70%]">
-                          <TextArea
-                            rows={3}
-                            disabled={!rol}
-                            placeholder="Relacione las situaciones presentadas durante el desarrollo de la práctica que de un modo u otro retrasaron o limitaron el logro de los objetivos trazados inicialmente."
-                          ></TextArea>
-                        </td>
-                      </tr>
-                    </>
-                  ) : (
-                    <></>
-                  )}
+                    {informeP ? (
+                      <>
+                        <tr>
+                          <th className="border border-gray-300 p-2 w-[30%]">
+                            Impactos percibidos por el estudiante
+                          </th>
+                          <td className="border border-gray-300 p-2 w-[70%]">
+                            <TextArea
+                              rows={3}
+                              disabled={!rol}
+                              placeholder="Describa los aportes y beneficios, que la realización de la actividad o subactividad le aportó a usted a nivel personal, académico y laboral"
+                            ></TextArea>
+                          </td>
+                        </tr>
+                        <tr>
+                          <th className="border border-gray-300 p-2 w-[30%]">
+                            Limitaciones
+                          </th>
+                          <td className="border border-gray-300 p-2 w-[70%]">
+                            <TextArea
+                              rows={3}
+                              disabled={!rol}
+                              placeholder="Relacione las situaciones presentadas durante el desarrollo de la práctica que de un modo u otro retrasaron o limitaron el logro de los objetivos trazados inicialmente."
+                            ></TextArea>
+                          </td>
+                        </tr>
+                      </>
+                    ) : (
+                      <></>
+                    )}
+                  </tbody>
                 </table>
               </div>
               <div className="flex w-full justify-end px-4">
@@ -710,6 +827,7 @@ export const Activity: React.FC<ActivityProps> = ({
               ease-in-out
               bg-blue-500
               text-white p-2 mb-2 rounded flex"
+                    onClick={saveInforme}
                   >
                     <TfiSave className="mt-1 mr-1" />
                     Guardar

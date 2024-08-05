@@ -63,23 +63,23 @@ const Objetivo: FC<Obj> = ({ rol, obj }) => {
         justificacion: justificacion,
         alcance: alcance,
       };
-      updateObjetivo(objetivo)
-        .then(() => {
+      updateObjetivo(objetivo).then((response) => {
+        if (response === "ok") {
           Swal.fire({
             title: "Información guardada",
             text: "Los datos han sido guardados correctamente.",
             icon: "success",
             confirmButtonText: "Aceptar",
           });
-        })
-        .catch(() => {
+        } else {
           Swal.fire({
             title: "Ha ocurrido un error",
             text: "No se guardo la Información",
             icon: "error",
             confirmButtonText: "Aceptar",
           });
-        });
+        }
+      });
     } else {
       const objetivo: Objetivos = {
         objetivoPractica: objPractica,
@@ -89,23 +89,23 @@ const Objetivo: FC<Obj> = ({ rol, obj }) => {
         alcance: alcance,
       };
       console.log(objetivo);
-      createObjetivo(objetivo)
-        .then(() => {
+      createObjetivo(objetivo).then(() => {
+        if (response === "ok") {
           Swal.fire({
             title: "Información guardada",
             text: "Los datos han sido guardados correctamente.",
             icon: "success",
             confirmButtonText: "Aceptar",
           });
-        })
-        .catch(() => {
+        } else {
           Swal.fire({
             title: "Ha ocurrido un error",
             text: "No se guardo la Información",
             icon: "error",
             confirmButtonText: "Aceptar",
           });
-        });
+        }
+      });
     }
   };
 

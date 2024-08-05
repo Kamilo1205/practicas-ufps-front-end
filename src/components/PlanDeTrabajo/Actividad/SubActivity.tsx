@@ -13,11 +13,12 @@ import NumberSlider from "../../ui/Input/NumberSlider";
 import PopOverViewInfo from "../../ui/Dialog/PopOverViewInfo";
 import { RiEyeCloseFill } from "react-icons/ri";
 import { BiShowAlt } from "react-icons/bi";
+import { SubActividad } from "../../../interfaces";
 
 interface SubActivityProps {
-  subActivity: SubActivityType;
-  updateSubActivity: (subActivity: SubActivityType) => void;
-  deleteSubActivity: (id: number) => void;
+  subActivity: SubActividad;
+  updateSubActivity: (subActivity: SubActividad) => void;
+  deleteSubActivity: (id: string) => void;
   rol: boolean;
   informeP: boolean;
 }
@@ -30,16 +31,18 @@ export const SubActivity: React.FC<SubActivityProps> = ({
   informeP = false,
 }) => {
   const [isEditing, setIsEditing] = useState(false);
-  const [title, setTitle] = useState(subActivity.title);
-  const [description, setDescription] = useState(subActivity.description);
-  const [startDate, setStartDate] = useState(subActivity.startDate);
-  const [endDate, setEndDate] = useState(subActivity.endDate);
-  const [hours, setHours] = useState(subActivity.hours);
-  const [progress, setProgress] = useState(subActivity.progress);
+  const [titulo, settitulo] = useState(subActivity.titulo);
+  const [descripcion, setdescripcion] = useState(subActivity.descripcion);
+  const [fechaInicio, setfechaInicio] = useState(subActivity.fechaInicio);
+  const [fechFin, setfechFin] = useState(subActivity.fechFin);
+  const [totalHoras, settotalHoras] = useState(Number(subActivity.totalHoras));
+  const [porcentajeCompletado, setporcentajeCompletado] = useState(
+    Number(subActivity.porcentajeCompletado)
+  );
   const [OpenView, setOpenView] = useState(false);
-  const InicioDate = new Date(subActivity.startDate);
+  const InicioDate = new Date(subActivity.fechaInicio);
 
-  const FinDate = new Date(subActivity.endDate);
+  const FinDate = new Date(subActivity.fechFin);
 
   const InicioDateAdjusted = new Date(InicioDate.getTime());
   InicioDateAdjusted.setDate(InicioDateAdjusted.getDate() + 1);
@@ -48,25 +51,25 @@ export const SubActivity: React.FC<SubActivityProps> = ({
   FinDateAdjusted.setDate(FinDateAdjusted.getDate() + 1);
 
   // Formatear las fechas ajustadas
-  const formattedStartDate = new Intl.DateTimeFormat("es-ES", {
+  const formattedfechaInicio = new Intl.DateTimeFormat("es-ES", {
     month: "short",
     day: "numeric",
   }).format(InicioDateAdjusted);
 
-  const formattedEndDate = new Intl.DateTimeFormat("es-ES", {
+  const formattedfechFin = new Intl.DateTimeFormat("es-ES", {
     month: "short",
     day: "numeric",
   }).format(FinDateAdjusted);
-
+  console.log(subActivity);
   const handleEdit = () => {
     const updatedSubActivity = {
       ...subActivity,
-      title,
-      description,
-      startDate,
-      endDate,
-      hours,
-      progress,
+      titulo,
+      descripcion,
+      fechaInicio,
+      fechFin,
+      totalHoras: String(totalHoras),
+      porcentajeCompletado: String(porcentajeCompletado),
     };
     updateSubActivity(updatedSubActivity);
     setIsEditing(false);
@@ -91,11 +94,11 @@ export const SubActivity: React.FC<SubActivityProps> = ({
             <div className="col-span-1 lg:col-span-6 flex flex-col">
               <Label>Título de Subactividad</Label>
               <input
-                id="title"
+                id="titulo"
                 type="text"
                 disabled={informeP}
-                value={title}
-                onChange={(e) => setTitle(e.target.value)}
+                value={titulo}
+                onChange={(e) => settitulo(e.target.value)}
                 className="border rounded px-3 py-2 w-full"
                 required
               />
@@ -106,9 +109,9 @@ export const SubActivity: React.FC<SubActivityProps> = ({
               <input
                 id="start-date"
                 type="date"
-                value={startDate}
+                value={fechaInicio}
                 disabled={informeP}
-                onChange={(e) => setStartDate(e.target.value)}
+                onChange={(e) => setfechaInicio(e.target.value)}
                 className="border rounded px-3 py-2 w-full"
                 required
               />
@@ -119,10 +122,10 @@ export const SubActivity: React.FC<SubActivityProps> = ({
               <input
                 id="end-date"
                 type="date"
-                min={startDate}
+                min={fechaInicio}
                 disabled={informeP}
-                value={endDate}
-                onChange={(e) => setEndDate(e.target.value)}
+                value={fechFin}
+                onChange={(e) => setfechFin(e.target.value)}
                 className="border rounded px-3 py-2 w-full"
                 required
               />
@@ -130,10 +133,10 @@ export const SubActivity: React.FC<SubActivityProps> = ({
             <div className="col-span-1 lg:col-span-9 flex flex-col">
               <Label>Descripción de la Subactividad</Label>
               <textarea
-                id="description"
-                value={description}
+                id="descripcion"
+                value={descripcion}
                 disabled={informeP}
-                onChange={(e) => setDescription(e.target.value)}
+                onChange={(e) => setdescripcion(e.target.value)}
                 className="border rounded px-3 py-2 w-full resize-none"
                 rows={6}
                 required
@@ -144,19 +147,22 @@ export const SubActivity: React.FC<SubActivityProps> = ({
               <div>
                 <Label>Horas</Label>
                 <input
-                  id="hours"
+                  id="totalHoras"
                   min={0}
                   type="number"
                   placeholder="Horas"
                   disabled={informeP}
-                  value={hours}
-                  onChange={(e) => setHours(Number(e.target.value))}
+                  value={totalHoras}
+                  onChange={(e) => settotalHoras(Number(e.target.value))}
                   className="border rounded px-3 py-2 w-full"
                   required
                 />
               </div>
               <div className="mt-1 mb-1">
-                <NumberSlider progreso={progress} setProgreso={setProgress} />
+                <NumberSlider
+                  progreso={porcentajeCompletado}
+                  setProgreso={setporcentajeCompletado}
+                />
               </div>
               <button
                 onClick={handleEdit}
@@ -181,7 +187,7 @@ export const SubActivity: React.FC<SubActivityProps> = ({
           <div className="flex w-full">
             <div className="flex  w-full ">
               <div style={{ fontWeight: 600 }} className="mt-2">
-                <span>{subActivity.title}</span>
+                <span>{subActivity.titulo}</span>
               </div>
               <div
                 className="flex w-full justify-end"
@@ -192,9 +198,9 @@ export const SubActivity: React.FC<SubActivityProps> = ({
                   style={{ borderRadius: "15px", border: "1px solid gray" }}
                 >
                   <FaRegCalendar className="mt-1 mr-1 " />
-                  <span className="xl:hidden">{formattedEndDate}</span>
+                  <span className="xl:hidden">{formattedfechFin}</span>
                   <span className="hidden xl:inline">
-                    {formattedStartDate} - {formattedEndDate}
+                    {formattedfechaInicio} - {formattedfechFin}
                   </span>
                 </div>
                 <div
@@ -202,14 +208,14 @@ export const SubActivity: React.FC<SubActivityProps> = ({
                   style={{ borderRadius: "15px", border: "1px solid gray" }}
                 >
                   <GoClock className="mt-1 mr-1" />
-                  {subActivity.hours}
+                  {subActivity.totalHoras}
                 </div>
                 <div
                   className="flex px-2 py-1 hidden md:flex"
                   style={{ borderRadius: "15px", border: "1px solid gray" }}
                 >
                   <GiProgression className="mt-1 mr-1" />
-                  {`${subActivity.progress.toFixed(0)}%`}
+                  {`${Number(subActivity?.porcentajeCompletado).toFixed(0)}%`}
                 </div>
               </div>
               {rol ? (
@@ -230,10 +236,10 @@ export const SubActivity: React.FC<SubActivityProps> = ({
                           >
                             <FaRegCalendar className="mt-1 mr-1 " />
                             <span className="xl:hidden">
-                              {formattedEndDate}
+                              {formattedfechFin}
                             </span>
                             <span className="hidden xl:inline">
-                              {formattedStartDate} - {formattedEndDate}
+                              {formattedfechaInicio} - {formattedfechFin}
                             </span>
                           </div>
                           <div
@@ -244,7 +250,7 @@ export const SubActivity: React.FC<SubActivityProps> = ({
                             }}
                           >
                             <GoClock className="mt-1 mr-1" />
-                            {hours}
+                            {totalHoras}
                           </div>
                           <div
                             className="flex px-2 py-1"
@@ -254,7 +260,7 @@ export const SubActivity: React.FC<SubActivityProps> = ({
                             }}
                           >
                             <GiProgression className="mt-1 mr-1" />
-                            {`${progress.toFixed(0)}%`}
+                            {`${porcentajeCompletado.toFixed(0)}%`}
                           </div>
                         </div>
                       }
@@ -301,7 +307,7 @@ export const SubActivity: React.FC<SubActivityProps> = ({
                     <></>
                   ) : (
                     <button
-                      onClick={() => deleteSubActivity(subActivity.id)}
+                      onClick={() => deleteSubActivity(subActivity?.id)}
                       className=" cursor-pointer
               hover:scale-105
               active:scale-95
@@ -331,9 +337,9 @@ export const SubActivity: React.FC<SubActivityProps> = ({
                           }}
                         >
                           <FaRegCalendar className="mt-1 mr-1 " />
-                          <span className="xl:hidden">{formattedEndDate}</span>
+                          <span className="xl:hidden">{formattedfechFin}</span>
                           <span className="hidden xl:inline">
-                            {formattedStartDate} - {formattedEndDate}
+                            {formattedfechaInicio} - {formattedfechFin}
                           </span>
                         </div>
                         <div
@@ -344,7 +350,7 @@ export const SubActivity: React.FC<SubActivityProps> = ({
                           }}
                         >
                           <GoClock className="mt-1 mr-1" />
-                          {hours}
+                          {totalHoras}
                         </div>
                         <div
                           className="flex px-2 py-1"
@@ -354,7 +360,7 @@ export const SubActivity: React.FC<SubActivityProps> = ({
                           }}
                         >
                           <GiProgression className="mt-1 mr-1" />
-                          {`${progress.toFixed(0)}%`}
+                          {`${porcentajeCompletado.toFixed(0)}%`}
                         </div>
                       </div>
                     }
@@ -381,7 +387,7 @@ export const SubActivity: React.FC<SubActivityProps> = ({
             </div>
           </div>
           <div className="mt-3">
-            <span>{subActivity.description}</span>
+            <span>{subActivity.descripcion}</span>
           </div>
         </div>
       )}

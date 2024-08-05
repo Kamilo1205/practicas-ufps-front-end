@@ -15,12 +15,12 @@ type UseSubActividadReturn = {
   fetchSubActividadById: (id: string) => Promise<SubActividad | null>;
   createSubActividad: (
     nuevoActividad: Omit<SubActividad, "id">
-  ) => Promise<void>;
+  ) => Promise<{ ok: string; data: SubActividad }>;
   updateSubActividad: (
     id: string,
-    actividadActualizado: Omit<SubActividad, "id">
-  ) => Promise<void>;
-  deleteSubActividad: (id: string) => Promise<void>;
+    actividadActualizado: SubActividad
+  ) => Promise<{ ok: string; data: SubActividad }>;
+  deleteSubActividad: (id: string) => Promise<string>;
 };
 
 const useSubActividad = (): UseSubActividadReturn => {
@@ -44,16 +44,16 @@ const useSubActividad = (): UseSubActividadReturn => {
     }
   };
 
-  const createSubActividad = async (
-    nuevaSubActividad: Omit<SubActividad, "id">
-  ) => {
+  const createSubActividad = async (nuevaSubActividad: SubActividad) => {
     setCargando(true);
     try {
       const data = await createSubactAPI(nuevaSubActividad);
       setSubActividad(data);
       setError(null);
+      return { ok: "ok", data: data };
     } catch (err) {
       setError(err as AxiosError);
+      return "mal";
     } finally {
       setCargando(false);
     }
@@ -68,8 +68,10 @@ const useSubActividad = (): UseSubActividadReturn => {
       const data = await updateSubactAPI(id, subActividadActualizada);
       setSubActividad(data);
       setError(null);
+      return { ok: "ok", data: data };
     } catch (err) {
       setError(err as AxiosError);
+      return "mal";
     } finally {
       setCargando(false);
     }
@@ -81,8 +83,10 @@ const useSubActividad = (): UseSubActividadReturn => {
       await deleteSubactAPI(id);
       setSubActividad(null);
       setError(null);
+      return "ok";
     } catch (err) {
       setError(err as AxiosError);
+      return "mal";
     } finally {
       setCargando(false);
     }

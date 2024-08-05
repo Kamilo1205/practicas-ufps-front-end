@@ -13,12 +13,12 @@ type UseActividadReturn = {
   cargando: boolean;
   error: AxiosError | null;
   fetchActividadById: (id: string) => Promise<Actividad | null>;
-  createActividad: (nuevoActividad: Omit<Actividad, "id">) => Promise<void>;
+  createActividad: (nuevoActividad: Omit<Actividad, "id">) => Promise<string>;
   updateActividad: (
-    id: string,
-    actividadActualizado: Omit<Actividad, "id">
-  ) => Promise<void>;
-  deleteActividad: (id: string) => Promise<void>;
+    id?: string,
+    actividadActualizado?: Actividad
+  ) => Promise<string>;
+  deleteActividad: (id: string) => Promise<string>;
 };
 
 const useActividad = (): UseActividadReturn => {
@@ -46,8 +46,10 @@ const useActividad = (): UseActividadReturn => {
       const data = await createActAPI(nuevaActividad);
       setActividad(data);
       setError(null);
+      return "ok";
     } catch (err) {
       setError(err as AxiosError);
+      return "mal";
     } finally {
       setCargando(false);
     }
@@ -61,9 +63,11 @@ const useActividad = (): UseActividadReturn => {
     try {
       const data = await updateActAPI(id, actividadActualizada);
       setActividad(data);
+      return "ok";
       setError(null);
     } catch (err) {
       setError(err as AxiosError);
+      return "mal";
     } finally {
       setCargando(false);
     }
@@ -75,8 +79,10 @@ const useActividad = (): UseActividadReturn => {
       await deleteActAPI(id);
       setActividad(null);
       setError(null);
+      return "ok";
     } catch (err) {
       setError(err as AxiosError);
+      return "mal";
     } finally {
       setCargando(false);
     }

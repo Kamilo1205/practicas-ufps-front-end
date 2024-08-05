@@ -14,6 +14,7 @@ interface PlanProps {
   rol: string;
   isTutor?: boolean;
   estudiante?: Estudiante;
+  plantrabajo2?: PlanDeTrabajo;
 }
 
 const estudiante2 = {
@@ -24,6 +25,7 @@ const PlanDeTrabajoVista: FC<PlanProps> = ({
   isTutor,
   rol,
   estudiante,
+  plantrabajo2,
 }) => {
   const [open, setOpen] = useState<boolean>(initialOpen);
   const [tutorApru, setTutorApru] = useState<boolean>(false);
@@ -42,7 +44,7 @@ const PlanDeTrabajoVista: FC<PlanProps> = ({
         });
     }
   }, [estudiante?.id]);
-
+  console.log(estudiante);
   return (
     <>
       {rol === "estudiante" ? (
@@ -62,7 +64,7 @@ const PlanDeTrabajoVista: FC<PlanProps> = ({
             <PlanDeTrabajoPage
               rol={false}
               estudiante={estudiante}
-              planTrabajo={planTrabajo}
+              planTrabajo={planTrabajo} //plantrabajo2
               isTutor={isTutor}
               coordApru={coordApru}
               setCoorApru={setCoorApru}

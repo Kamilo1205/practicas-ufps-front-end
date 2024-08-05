@@ -33,7 +33,7 @@ export const EstudianteRouter = () => {
                   rol="estudiante"
                   initialOpen={false}
                   estudiante={estudiante}
-                  //isTutor={true}
+                  isTutor={false}
                 />
               }
             />

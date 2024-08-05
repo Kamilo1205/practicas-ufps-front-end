@@ -1,12 +1,13 @@
-import { Actividad } from "./actvidad.interface";
 import { Comentario } from "./comentarios.interface";
 import { Empresa } from "./empresa.interface";
 import { Estudiante } from "./estudiante.interface";
 import { IntensidadHoraria } from "./intensidad.interface";
 import { Objetivos } from "./objetivos.interface";
 import { Resultado } from "./resultado.interface";
+import { SeccionActividades } from "./seccionActividades";
 
 export interface PlanDeTrabajo {
+  id: string;
   estudiante: Estudiante;
   empresa: Empresa;
   intensidadHoraria: IntensidadHoraria;
@@ -14,13 +15,9 @@ export interface PlanDeTrabajo {
     objetivos: Objetivos;
     comentarios: Comentario[];
   };
-  actividadeSeccion: {
-    actividades: Actividad[];
-    comentarios: Comentario[];
-  };
+  seccionActividades: SeccionActividades;
   requerimientosSeccion: {
     requirimientoTecnico: string;
     resultados: Resultado[];
-    comentarios: Comentario[];
   };
 }

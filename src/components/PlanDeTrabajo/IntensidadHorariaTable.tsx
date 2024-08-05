@@ -65,45 +65,45 @@ const IntensidadHorariaTable: React.FC<Intensidad> = ({
         horario: selectedHours,
         cantidadSemanas: Number(weeks),
       };
-      updateIntensidad(intensidad)
-        .then(() => {
+      updateIntensidad(intensidad).then((response) => {
+        if (response === "ok") {
           Swal.fire({
             title: "Información guardada",
             text: "Los datos han sido guardados correctamente.",
             icon: "success",
             confirmButtonText: "Aceptar",
           });
-        })
-        .catch(() => {
+        } else {
           Swal.fire({
             title: "Ha ocurrido un error",
             text: "No se guardo la Información",
             icon: "error",
             confirmButtonText: "Aceptar",
           });
-        });
+        }
+      });
     } else {
       const intensidad: IntensidadHoraria = {
         horario: selectedHours,
         cantidadSemanas: Number(weeks),
       };
-      createIntensidad(intensidad)
-        .then(() => {
+      createIntensidad(intensidad).then((response) => {
+        if (response === "ok") {
           Swal.fire({
             title: "Información guardada",
             text: "Los datos han sido guardados correctamente.",
             icon: "success",
             confirmButtonText: "Aceptar",
           });
-        })
-        .catch(() => {
+        } else {
           Swal.fire({
             title: "Ha ocurrido un error",
             text: "No se guardo la Información",
             icon: "error",
             confirmButtonText: "Aceptar",
           });
-        });
+        }
+      });
     }
   };
 

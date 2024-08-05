@@ -10,8 +10,8 @@ type UseObjetivosReturn = {
   objetivos?: Objetivos;
   loading: boolean;
   error: AxiosError | null;
-  createObjetivo: (newObj: Omit<Objetivos, "id">) => Promise<void>;
-  updateObjetivo: (updatedObjt: Objetivos) => Promise<void>;
+  createObjetivo: (newObj: Omit<Objetivos, "id">) => Promise<string>;
+  updateObjetivo: (updatedObjt: Objetivos) => Promise<string>;
 };
 
 const useObjetivos = (): UseObjetivosReturn => {
@@ -25,8 +25,10 @@ const useObjetivos = (): UseObjetivosReturn => {
       const data = await createObjAPI(newObj);
       setObjs(data);
       setError(null);
+      return "ok"
     } catch (err) {
       setError(err as AxiosError);
+      return "mal"
     } finally {
       setLoading(false);
     }
@@ -38,8 +40,10 @@ const useObjetivos = (): UseObjetivosReturn => {
       const data = await updateObjAPI(updatedObj);
       setObjs(data);
       setError(null);
+      return "ok"
     } catch (err) {
       setError(err as AxiosError);
+      return "mal"
     } finally {
       setLoading(false);
     }

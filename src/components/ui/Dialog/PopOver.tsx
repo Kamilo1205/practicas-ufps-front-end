@@ -1,13 +1,16 @@
 import { useRef, useEffect, FC, useState } from "react";
-import { Comment } from "../../PlanDeTrabajo/Actividad/types";
 import { IoClose } from "react-icons/io5";
+import { Comentario, Usuario } from "../../../interfaces";
+import Swal from "sweetalert2";
+import { useAuth } from "./../../../contexts/AuthContext";
 
 interface PopoverProps {
   isOpen: boolean;
   setIsOpen: (isOpen: boolean) => void;
   rol?: boolean;
-  comment?: Comment[];
-  setComments: React.Dispatch<React.SetStateAction<Comment[]>>;
+  comment?: Comentario[];
+  setComments: React.Dispatch<React.SetStateAction<Comentario[]>>;
+  deleteComentario: (id: string) => void;
 }
 const Popover: FC<PopoverProps> = ({
   isOpen,
@@ -15,6 +18,7 @@ const Popover: FC<PopoverProps> = ({
   rol = false,
   comment,
   setComments,
+  deleteComentario,
 }) => {
   const popoverRef = useRef<HTMLDivElement>(null);
 
@@ -22,8 +26,40 @@ const Popover: FC<PopoverProps> = ({
     setIsOpen(!isOpen);
   };
 
-  const deleteItem = () => {
-    setComments([]);
+  const { user } = useAuth();
+  const deleteItem = (comentario: Comentario) => {
+    if (comentario.id) {
+      deleteComentario(comentario.id).then((response) => {
+        if (response === "ok") {
+          Swal.fire({
+            title: "Información guardada",
+            text: "Los datos han sido guardados correctamente.",
+            icon: "success",
+            confirmButtonText: "Aceptar",
+          });
+
+          const newComen = comment?.filter(
+            (comen) => comen.autor?.id !== comentario.autor?.id
+          );
+
+          if (newComen) setComments(newComen);
+        } else {
+          Swal.fire({
+            title: "Ha ocurrido un error",
+            text: "No se guardo la Información",
+            icon: "error",
+            confirmButtonText: "Aceptar",
+          });
+        }
+      });
+    } else {
+      Swal.fire({
+        title: "Ha ocurrido un error",
+        text: "El ID del comentario no está definido",
+        icon: "error",
+        confirmButtonText: "Aceptar",
+      });
+    }
   };
 
   useEffect(() => {
@@ -85,7 +121,7 @@ const Popover: FC<PopoverProps> = ({
             className="h-full"
             style={{ width: pos, overflowY: "auto", overflowX: "hidden" }}
           >
-            {comment?.length == 0 ? (
+            {comment?.length == 0 || comment == null ? (
               <div
                 className="w-full h-full flex justify-center text-gray-400"
                 style={{ alignItems: "center" }}
@@ -96,19 +132,28 @@ const Popover: FC<PopoverProps> = ({
               <>
                 {comment?.map((c) => (
                   <div
+                    key={c.id || c.objetivoId}
                     style={{ borderRadius: "5px" }}
                     className="p-2 border mb-2 mr-1"
                   >
                     {!rol ? (
-                      <div className="w-full flex justify-end text-red-500">
-                        <button onClick={deleteItem}>
-                          <IoClose />
-                        </button>
-                      </div>
+                      c.autor?.id === user?.id ? (
+                        <div className="w-full flex justify-end text-red-500">
+                          <button onClick={() => deleteItem(c)}>
+                            <IoClose />
+                          </button>
+                        </div>
+                      ) : (
+                        <></>
+                      )
                     ) : (
                       <></>
                     )}
-                    <p style={{ fontWeight: "bold" }}>{c.autor}</p>
+                    {
+                      <p style={{ fontWeight: "bold" }}>
+                        {c.autor?.roles[0].nombre}
+                      </p>
+                    }
                     <p style={{ fontWeight: "lighter" }}>{c.comentario}</p>
                   </div>
                 ))}

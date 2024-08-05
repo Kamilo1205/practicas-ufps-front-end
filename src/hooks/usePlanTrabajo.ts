@@ -7,6 +7,8 @@ import {
   fetchMisPlanTrabajoEstudiante as fecthMisPlanesEstudianteAPI,
   fetchMiPlanTrabajoActualEstudiante as fecthPlanActualEstudianteAPI,
   fetchPlanTrabajoByIdEstudiante as fecthPlanByIdEstudianteAPI,
+  aprobarPlanEmpresa as aprobarEmpresaAPI,
+  aprobarPlanTutor as aprobarPlanTutorAPI,
 } from "../api/plantrabajo.api";
 import { PlanDeTrabajo } from "../interfaces/plantrabajo.interface";
 
@@ -20,6 +22,8 @@ type UsePlantrabajoReturn = {
   fetchPlanTrabajoByIdEstudiante: (id: string) => Promise<PlanDeTrabajo>;
   fetchMisPlanTrabajoEstudiante: () => Promise<void>;
   fetchMiPlanTrabajoActualEstudiante: () => Promise<PlanDeTrabajo>;
+  aprobarPlanEmpresa: (id: string) => Promise<PlanDeTrabajo>;
+  aprobarPlanTutor: (id: string) => Promise<PlanDeTrabajo>;
 };
 
 const usePlantrabajo = (): UsePlantrabajoReturn => {
@@ -116,6 +120,34 @@ const usePlantrabajo = (): UsePlantrabajoReturn => {
     }
   };
 
+  const aprobarPlanEmpresa = async (id: string): Promise<PlanDeTrabajo> => {
+    setLoading(true);
+    try {
+      const data = await aprobarEmpresaAPI(id);
+      setError(null);
+      return data; // Devuelve `PlanDeTrabajo`
+    } catch (err) {
+      setError(err as AxiosError);
+      throw err; // Lanza el error para que sea manejado por el llamador si es necesario
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const aprobarPlanTutor = async (id: string): Promise<PlanDeTrabajo> => {
+    setLoading(true);
+    try {
+      const data = await aprobarPlanTutorAPI(id);
+      setError(null);
+      return data; // Devuelve `PlanDeTrabajo`
+    } catch (err) {
+      setError(err as AxiosError);
+      throw err; // Lanza el error para que sea manejado por el llamador si es necesario
+    } finally {
+      setLoading(false);
+    }
+  };
+
   useEffect(() => {
     const fetchData = async () => {
       await fetchPlanTrabajoActual();
@@ -137,6 +169,8 @@ const usePlantrabajo = (): UsePlantrabajoReturn => {
     fetchMiPlanTrabajoActualEstudiante,
     fetchPlanTrabajoByIdEstudiante,
     fetchPlanTrabajoById,
+    aprobarPlanEmpresa,
+    aprobarPlanTutor,
   };
 };
 

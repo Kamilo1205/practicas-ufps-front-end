@@ -2,8 +2,7 @@ import { useState } from "react";
 import { AxiosError } from "axios";
 import {
   createComentario as createComentarioAPI,
-  deleteObjetivoComentario as deleteObjetivoComentarioAPI,
-  deleteActividadComentario as deleteActividadComentarioAPI,
+  deleteComentario as deleteComentarioAPI,
   updateComentario as updateComentarioAPI,
 } from "../api/comentario.apis";
 import { Comentario } from "../interfaces";
@@ -12,10 +11,13 @@ type UseComentarioReturn = {
   comentario: Comentario | null;
   loading: boolean;
   error: AxiosError | null;
-  createComentario: (newComentario: Omit<Comentario, "id">) => Promise<void>;
-  deleteObjComentario: (objetivoId: string) => Promise<void>;
-  deleteActComentario: (actividadId: string) => Promise<void>;
-  updateComentario: (comentario: Comentario) => Promise<void>;
+  createComentario: (
+    newComentario: Comentario
+  ) => Promise<{ ok: string; data: Comentario }>;
+  deleteComentario: (Id?: string) => string;
+  updateComentario: (
+    comentario: Comentario
+  ) => Promise<{ ok: string; data: Comentario }>;
 };
 
 const useComentario = (): UseComentarioReturn => {
@@ -23,53 +25,50 @@ const useComentario = (): UseComentarioReturn => {
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<AxiosError | null>(null);
 
-  const createComentario = async (newComentario: Omit<Comentario, "id">) => {
+  const createComentario = async (
+    newComentario: Comentario
+  ): Promise<{ ok: string; data: Comentario } | string> => {
     setLoading(true);
     try {
       const data = await createComentarioAPI(newComentario);
       setComentario(data);
       setError(null);
+      return { data: data, ok: "ok" };
     } catch (err) {
       setError(err as AxiosError);
+      return "mal";
     } finally {
       setLoading(false);
     }
   };
 
-  const deleteObjComentario = async (objetivoId: string) => {
+  const deleteComentario = async (Id?: string) => {
     setLoading(true);
     try {
-      await deleteObjetivoComentarioAPI(objetivoId);
+      await deleteComentarioAPI(Id);
       setComentario(null);
       setError(null);
+      return "ok";
     } catch (err) {
       setError(err as AxiosError);
+      return "mal";
     } finally {
       setLoading(false);
     }
   };
 
-  const deleteActComentario = async (actividadId: string) => {
-    setLoading(true);
-    try {
-      await deleteActividadComentarioAPI(actividadId);
-      setComentario(null);
-      setError(null);
-    } catch (err) {
-      setError(err as AxiosError);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const updateComentario = async (comentario: Comentario) => {
+  const updateComentario = async (
+    comentario: Comentario
+  ): Promise<{ ok: string; data: Comentario } | string> => {
     setLoading(true);
     try {
       const data = await updateComentarioAPI(comentario);
       setComentario(data);
       setError(null);
+      return { data: data, ok: "ok" };
     } catch (err) {
       setError(err as AxiosError);
+      return "mal";
     } finally {
       setLoading(false);
     }
@@ -80,8 +79,7 @@ const useComentario = (): UseComentarioReturn => {
     loading,
     error,
     createComentario,
-    deleteObjComentario,
-    deleteActComentario,
+    deleteComentario,
     updateComentario,
   };
 };

@@ -43,3 +43,16 @@ export const fetchPlanTrabajoByIdEstudiante = async (
   const response = await axios.get(`/plan-trabajo/estudiante/mi-plan/${id}`);
   return response.data;
 };
+export const aprobarPlanTutor = async (idPlan: string) => {
+  const response = await axios.patch(
+    `/plan-trabajo/${idPlan}/aprobacion-tutor-institucional`
+  );
+  return response.data;
+};
+
+export const aprobarPlanEmpresa = async (idPlan: string) => {
+  const response = await axios.patch(
+    `/plan-trabajo/${idPlan}/aprobacion-tutor-empresarial`
+  );
+  return response.data;
+};

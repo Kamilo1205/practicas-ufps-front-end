@@ -6,10 +6,10 @@ import { Label } from "../../ui";
 
 interface ActivityFormProps {
   addActivity: (
-    title: string,
-    description: string,
-    startDate: string,
-    endDate: string
+    titulo: string,
+    descripcion: string,
+    fechaInicio: string,
+    fechaFin: string
   ) => void;
 }
 

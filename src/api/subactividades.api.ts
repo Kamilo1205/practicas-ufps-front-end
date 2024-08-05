@@ -2,7 +2,7 @@ import axios from "./axios";
 import { SubActividad } from "../interfaces";
 
 export const createSubActividad = async (
-  newSubActividad: Omit<SubActividad, "id">
+  newSubActividad: SubActividad
 ): Promise<SubActividad> => {
   const response = await axios.post("/sub-actividades/", newSubActividad);
   return response.data;

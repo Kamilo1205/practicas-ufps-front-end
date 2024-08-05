@@ -1,99 +1,126 @@
 // src/components/ActivityManager.tsx
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { ActivityForm } from "./ActivityForm";
 import { Activity } from "./Activity";
-import { Activity as ActivityType } from "../types";
 import { MdLibraryAddCheck } from "react-icons/md";
 import { VscChromeClose } from "react-icons/vsc";
 import { BsEmojiAstonished } from "react-icons/bs";
 import { Label } from "./../../ui/Label/Label";
+import { Actividad } from "../../../interfaces";
+import useActividad from "../../../hooks/useActividad";
+import Swal from "sweetalert2";
 
-const initialActivities: ActivityType[] = [
-  {
-    id: 1,
-    title: "Actividad 1",
-    description: "Descripcion de las actividades",
-    startDate: "2024-05-30",
-    endDate: "2024-05-30",
-    totalHours: 20,
-    percentageComplete: 0,
-    subActivities: [
-      {
-        id: 2,
-        title: "subactivities1",
-        description: "descripcion de subactivida",
-        startDate: "2024-04-30",
-        endDate: "2024-04-30",
-        hours: 10,
-        progress: 20,
-      },
-      {
-        id: 3,
-        title: "subactivities1",
-        description: "descripcion de subactivida",
-        startDate: "2024-04-30",
-        endDate: "2024-04-30",
-        hours: 10,
-        progress: 30,
-      },
-    ],
-  },
-  {
-    id: 2,
-    title: "Actividad 2",
-    description: "Descripcion de las actividades 2",
-    startDate: "2024-05-30",
-    endDate: "2024-05-30",
-    totalHours: 20,
-    percentageComplete: 0,
-    subActivities: [],
-  },
-];
 interface ActivityProps {
   rol: boolean;
   estudiante: {};
   informeP?: boolean;
+  actividades?: Actividad[];
 }
 export const ActivityManager: React.FC<ActivityProps> = ({
   rol,
   informeP = false,
+  actividades,
 }) => {
-  const [activities, setActivities] =
-    useState<ActivityType[]>(initialActivities);
+  const [activities, setActivities] = useState<Actividad[]>([]);
   const [isFormVisible, setIsFormVisible] = useState(false);
 
   const addActivity = (
-    title: string,
-    description: string,
-    startDate: string,
-    endDate: string
+    titulo: string,
+    descripcion: string,
+    fechaInicio: string,
+    fechFin: string
   ) => {
-    const newActivity: ActivityType = {
-      id: Date.now(),
-      title,
-      description,
-      startDate,
-      endDate,
-      totalHours: 0,
-      percentageComplete: 0,
-      subActivities: [],
+    const newActivity: Actividad = {
+      titulo,
+      descripcion,
+      fechaInicio,
+      fechFin,
+      totalHoras: String(0),
+      porcentajeCompletado: String(0),
+      subactividades: [],
     };
-    setActivities([...activities, newActivity]);
+    createActividad(newActivity).then((response) => {
+      if (response === "ok") {
+        Swal.fire({
+          title: "Información guardada",
+          text: "Los datos han sido guardados correctamente.",
+          icon: "success",
+          confirmButtonText: "Aceptar",
+        });
+        setActivities([...activities, newActivity]);
+      } else {
+        Swal.fire({
+          title: "Ha ocurrido un error",
+          text: "No se guardo la Información",
+          icon: "error",
+          confirmButtonText: "Aceptar",
+        });
+      }
+    });
+
     setIsFormVisible(false); // Ocultar el formulario después de agregar una actividad
   };
 
-  const updateActivity = (updatedActivity: ActivityType) => {
+  const { createActividad, deleteActividad, updateActividad } = useActividad();
+
+  const actualizarLista = (updatedActivity: Actividad) => {
     const newActivities = activities.map((activity) =>
       activity.id === updatedActivity.id ? updatedActivity : activity
     );
     setActivities(newActivities);
   };
-
-  const deleteActivity = (id: number) => {
-    const newActivities = activities.filter((activity) => activity.id !== id);
-    setActivities(newActivities);
+  const updateActivity = (updatedActivity: Actividad) => {
+    const newActivities = activities.map((activity) =>
+      activity.id === updatedActivity.id ? updatedActivity : activity
+    );
+    console.log(updatedActivity);
+    updateActividad(updatedActivity?.id, updatedActivity).then((response) => {
+      if (response === "ok") {
+        Swal.fire({
+          title: "Información guardada",
+          text: "Los datos han sido guardados correctamente.",
+          icon: "success",
+          confirmButtonText: "Aceptar",
+        });
+        setActivities(newActivities);
+      } else {
+        Swal.fire({
+          title: "Ha ocurrido un error",
+          text: "No se guardo la Información",
+          icon: "error",
+          confirmButtonText: "Aceptar",
+        });
+      }
+    });
   };
 
+  const deleteActivity = (id: string) => {
+    const newActivities = activities.filter((activity) => activity.id !== id);
+    deleteActividad(id).then((response) => {
+      if (response === "ok") {
+        Swal.fire({
+          title: "Información guardada",
+          text: "Los datos han sido guardados correctamente.",
+          icon: "success",
+          confirmButtonText: "Aceptar",
+        });
+        setActivities(newActivities);
+      } else {
+        Swal.fire({
+          title: "Ha ocurrido un error",
+          text: "No se guardo la Información",
+          icon: "error",
+          confirmButtonText: "Aceptar",
+        });
+      }
+    });
+  };
+
+  useEffect(() => {
+    if (actividades != null) {
+      setActivities(actividades);
+    }
+  }, [actividades]);
   return (
     <div className="p-4">
       <div className="p-0 flex w-full mb-6" style={{ alignItems: "center" }}>
@@ -139,18 +166,19 @@ export const ActivityManager: React.FC<ActivityProps> = ({
       </div>
 
       {isFormVisible && <ActivityForm addActivity={addActivity} />}
-       <div className="space-y-4">
+      <div className="space-y-4">
         {activities.map((activity) => (
           <Activity
-            key={activity.id}
+            key={activity.id?.toString() || activity.titulo}
             activity={activity}
             updateActivity={updateActivity}
             deleteActivity={deleteActivity}
+            actualizarLista={actualizarLista}
             rol={rol}
             informeP={informeP}
           />
         ))}
-        {activities.length === 0 && !isFormVisible && (
+        {activities != null && activities.length === 0 && !isFormVisible && (
           <div className="w-full mt-20 mb-20">
             <div className="flex " style={{ justifyContent: "center" }}>
               <BsEmojiAstonished style={{ width: "150px", height: "150px" }} />
@@ -162,7 +190,7 @@ export const ActivityManager: React.FC<ActivityProps> = ({
             </div>
           </div>
         )}
-      </div> 
+      </div>
     </div>
   );
 };

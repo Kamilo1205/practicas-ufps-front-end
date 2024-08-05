@@ -4,40 +4,39 @@ import { SubActivity as SubActivityType } from "../types";
 import { IoMdAdd } from "react-icons/io";
 import { Label } from "../../ui";
 import NumberSlider from "../../ui/Input/NumberSlider";
-
+import { SubActividad } from "../../../interfaces";
 
 interface SubActivityFormProps {
-  addSubActivity: (subActivity: SubActivityType) => void;
+  addSubActivity: (subActivity: SubActividad) => void;
 }
 
 export const SubActivityForm: React.FC<SubActivityFormProps> = ({
   addSubActivity,
 }) => {
-  const [title, setTitle] = useState("");
-  const [description, setDescription] = useState("");
-  const [startDate, setStartDate] = useState("");
-  const [endDate, setEndDate] = useState("");
-  const [hours, setHours] = useState(0);
-  const [progress, setProgress] = useState(0);
+  const [titulo, settitulo] = useState("");
+  const [descripcion, setdescripcion] = useState("");
+  const [fechaInicio, setfechaInicio] = useState("");
+  const [fechFin, setfechFin] = useState("");
+  const [totalHoras, settotalHoras] = useState(0);
+  const [porcentajeCompletado, setporcentajeCompletado] = useState(0);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     const newSubActivity: SubActivityType = {
-      id: Date.now(),
-      title,
-      description,
-      startDate,
-      endDate,
-      hours,
-      progress,
+      titulo,
+      descripcion,
+      fechaInicio,
+      fechFin,
+      totalHoras: String(totalHoras),
+      porcentajeCompletado: String(porcentajeCompletado),
     };
     addSubActivity(newSubActivity);
-    setTitle("");
-    setDescription("");
-    setStartDate("");
-    setEndDate("");
-    setHours(0);
-    setProgress(0);
+    settitulo("");
+    setdescripcion("");
+    setfechaInicio("");
+    setfechFin("");
+    settotalHoras(0);
+    setporcentajeCompletado(0);
   };
 
   return (
@@ -48,10 +47,10 @@ export const SubActivityForm: React.FC<SubActivityFormProps> = ({
       <div className="col-span-1 lg:col-span-6 flex flex-col">
         <Label>Título de Subactividad</Label>
         <input
-          id="title"
+          id="titulo"
           type="text"
-          value={title}
-          onChange={(e) => setTitle(e.target.value)}
+          value={titulo}
+          onChange={(e) => settitulo(e.target.value)}
           className="border rounded px-3 py-2 w-full"
           required
         />
@@ -62,8 +61,8 @@ export const SubActivityForm: React.FC<SubActivityFormProps> = ({
         <input
           id="start-date"
           type="date"
-          value={startDate}
-          onChange={(e) => setStartDate(e.target.value)}
+          value={fechaInicio}
+          onChange={(e) => setfechaInicio(e.target.value)}
           className="border rounded px-3 py-2 w-full"
           required
         />
@@ -74,9 +73,9 @@ export const SubActivityForm: React.FC<SubActivityFormProps> = ({
         <input
           id="end-date"
           type="date"
-          min={startDate}
-          value={endDate}
-          onChange={(e) => setEndDate(e.target.value)}
+          min={fechaInicio}
+          value={fechFin}
+          onChange={(e) => setfechFin(e.target.value)}
           className="border rounded px-3 py-2 w-full"
           required
         />
@@ -85,9 +84,9 @@ export const SubActivityForm: React.FC<SubActivityFormProps> = ({
       <div className="col-span-1 lg:col-span-9 flex flex-col">
         <Label>Descripción de la Subactividad</Label>
         <textarea
-          id="description"
-          value={description}
-          onChange={(e) => setDescription(e.target.value)}
+          id="descripcion"
+          value={descripcion}
+          onChange={(e) => setdescripcion(e.target.value)}
           className="border rounded px-3 py-2 w-full resize-none"
           rows={6}
           required
@@ -98,18 +97,21 @@ export const SubActivityForm: React.FC<SubActivityFormProps> = ({
         <div>
           <Label>Horas</Label>
           <input
-            id="hours"
+            id="totalHoras"
             min={0}
             type="number"
             placeholder="Horas"
-            value={hours}
-            onChange={(e) => setHours(Number(e.target.value))}
+            value={totalHoras}
+            onChange={(e) => settotalHoras(Number(e.target.value))}
             className="border rounded px-3 py-2 w-full"
             required
           />
         </div>
         <div>
-          <NumberSlider progreso={progress} setProgreso={setProgress} />
+          <NumberSlider
+            progreso={porcentajeCompletado}
+            setProgreso={setporcentajeCompletado}
+          />
         </div>
         <button
           type="submit"

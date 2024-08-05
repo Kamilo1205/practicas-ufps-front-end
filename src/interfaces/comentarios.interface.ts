@@ -1,6 +1,9 @@
+import { Usuario } from "./usuario.interface";
+
 export interface Comentario {
-  id: string;
-  texto: string;
+  id?: string;
+  comentario: string;
   objetivoId?: string;
   seccionActividadesId?: string;
+  autor?: Usuario;
 }
