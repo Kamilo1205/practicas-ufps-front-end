@@ -97,6 +97,11 @@ export const Activity: React.FC<ActivityProps> = ({
     setIsEditing(!isEditing);
   };
 
+
+
+
+
+  
   const addSubActivity = (subActivity: SubActividad) => {
     const sub = { ...subActivity, actividadId: activity?.id };
     createSubActividad(sub).then((response) => {
