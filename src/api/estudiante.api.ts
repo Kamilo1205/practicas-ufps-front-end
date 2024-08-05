@@ -21,13 +21,13 @@ export const fetchEstudiante = async (): Promise<Estudiante> => {
 export const fetchEstudiantes = async (page: number = 1, limit: number = 10, grupo: string = '', search: string = ''): Promise<EstudiantesResponse> => {
   //console.log(page, limit, grupo, search)
   const filtros = {
-    grupoFiltro: grupo && grupo !== '' && grupo !== 'inactivo' ? `&filter.grupoMatriculado=${grupo}&filter.usuario.estaActivo=$eq:true` : '',
+    grupoFiltro: grupo && grupo !== '' && grupo !== 'inactivo' ? `&filter.grupoMatriculado.nombre=${grupo}&filter.usuario.estaActivo=$eq:true` : '',
     estaInactivoFiltro: grupo === 'inactivo' ? `&filter.usuario.estaActivo=$eq:false` : '',
 
   }
   const response = await axios.get(`/estudiantes?page=${page}&limit=${limit}${filtros.grupoFiltro}${filtros.estaInactivoFiltro}&search=${search}`);
   //TODO: Tengo sospechas de que el search no está funcionando correctamente.
- //console.log(response.data);
+ console.log(response.data);
   return response.data;
 };
 

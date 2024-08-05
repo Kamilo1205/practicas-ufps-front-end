@@ -1,10 +1,12 @@
+import { useEffect, useState } from "react"
+
 import Swal from "sweetalert2"
 import { Button } from "../ui"
 import { BiSearch } from "react-icons/bi"
 import AvatarScore from "../ui/Avatar/AvatarScoreComponent"
 import { IoChevronForward, IoClose } from "react-icons/io5"
 import { EstudianteAspirante, Solicitud, } from "../../schemas/solicitudSchema"
-import { useEffect, useState } from "react"
+
 
 interface SolicitudPracticante {
   solicitud: Solicitud
@@ -25,6 +27,9 @@ export const AsignacionPracticasComponent = ({ solicitud, setMostrarPerfil, asig
   console.log('solicitud', solicitud)
   const [solicitudState,] = useState<Solicitud>(solicitud.solicitud)
   const [perfilSeleccionado, setPerfilSeleccionado] = useState<EstudianteAspirante | null>(null)
+  const [filtro, setFiltro] = useState<string>('')
+  const [perfilesAspirantesFiltrado, setPerfilesAspirantesFiltrado] = useState<EstudianteAspirante[]>([])
+
   console.log('perfilSeleccionado', perfilSeleccionado)
   const onAsignarPracticante = (nombrePracticante: string) => {
     Swal.fire({
@@ -61,9 +66,17 @@ export const AsignacionPracticasComponent = ({ solicitud, setMostrarPerfil, asig
   }
 
   useEffect(() => {
-    console.log('perfil seleccionado',)
-
   }, [])
+
+  useEffect(() => {
+    if (filtro === '') return setPerfilesAspirantesFiltrado(solicitud.aspirantes)
+    setPerfilesAspirantesFiltrado(
+      solicitud.aspirantes.filter(
+        aspirante =>
+          aspirante.estudiante.primerNombre.toUpperCase().includes(filtro.toUpperCase())
+          || aspirante.estudiante.primerApellido.toUpperCase().includes(filtro.toUpperCase())
+          || String(aspirante.estudiante.codigo).includes(filtro)))
+  }, [filtro])
 
   return (<>
     <div className="flex flex-col divide-y rounded-md">
@@ -74,7 +87,9 @@ export const AsignacionPracticasComponent = ({ solicitud, setMostrarPerfil, asig
               <BiSearch className="text-gray-500" />
             </span>
           </div>
-          <input type="text" name="price" id="price" className="block w-full border-0 py-1.5 pl-7  text-gray-900 ring-0 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-inset focus:ring-0 sm:text-sm sm:leading-6" placeholder="Busqueda por nombre o código del estudiante" />
+          <input type="text" name="price" id="price"
+            onChange={(e) => setFiltro(e.target.value)}
+            className="block w-full border-0 py-1.5 pl-7 text-gray-900 ring-0 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-inset focus:ring-0 sm:text-sm sm:leading-6" placeholder="Busqueda por nombre o código del estudiante" />
 
         </div>
       </div>
@@ -120,7 +135,7 @@ export const AsignacionPracticasComponent = ({ solicitud, setMostrarPerfil, asig
             <ul className="mt-2 overflow-y-scroll max-h-52">
               {
 
-                solicitud?.aspirantes && solicitud?.aspirantes.map((aspirante) =>
+                solicitud?.aspirantes && perfilesAspirantesFiltrado.map((aspirante) =>
                   <li
                     key={JSON.stringify(aspirante)}
                     onClick={() => setPerfilSeleccionado(aspirante)}
@@ -204,10 +219,12 @@ export const AsignacionPracticasComponent = ({ solicitud, setMostrarPerfil, asig
 
                 </div>
                 <div className="mt-3">
-                  <Button
-                    disabled={solicitudState.asignaciones.length === solicitudState.cantidadPracticantes}
-                    onClick={() => onAsignarPracticante(`${perfilSeleccionado.estudiante.codigo}-${perfilSeleccionado.estudiante.primerNombre}`)}>
-                    Asignar practicante</Button>
+                  {
+                    !solicitudState.asignaciones.find(a => a.estudiante.id === perfilSeleccionado.estudiante.id) && <Button
+                      disabled={solicitudState.asignaciones.length === solicitudState.cantidadPracticantes}
+                      onClick={() => onAsignarPracticante(`${perfilSeleccionado.estudiante.codigo}-${perfilSeleccionado.estudiante.primerNombre}`)}>
+                      Asignar practicante</Button>
+                  }
                 </div>
               </div>
             </div>

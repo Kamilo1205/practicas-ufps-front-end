@@ -30,39 +30,39 @@ export const TutoresPage = () => {
   //const [tutores, setTutores] = useState<Tutor[]>([])
   const [currentPage, setCurrentPage] = useState<number>(1)
   const [itemsPerPage] = useState<number>(5)
-  const [totalItems, ] = useState<number>(0)
+  const [totalItems,] = useState<number>(0)
   const [mostrarSolicitud, setMostrarSolicitud] = useState(false)
   const [tutorSeleccionado, setTutorSeleccionado] = useState<Tutor | null>(null)
   const form = useForm({
     resolver: zodResolver(tutorSchema)
   });
 
-  const {tutores, addTutorToEmpresaActual, getTutoresDeEmpresaActual} = useEmpresas()
-
+  const { tutores, addTutorToEmpresaActual, getTutoresDeEmpresaActual } = useEmpresas()
+  console.log('tutores', tutores)
   //console.log(form.getValues())
 
-  const onSubmit = (data: FieldValues) => { 
+  const onSubmit = (data: FieldValues) => {
     console.log('data', data)
-    const {nombre, apellido, email, telefono, direccion} = data
+    const { nombre, apellido, email, telefono, direccion } = data
     addTutorToEmpresaActual({
       nombre,
       apellidos: apellido,
       email,
       telefono,
       direccionTrabajo: direccion
-    
+
     })
   }
 
-  const onEditTutor = (tutor:Tutor) => {
+  const onEditTutor = (tutor: Tutor) => {
     setTutorSeleccionado(tutor)
     setMostrarSolicitud(true)
   }
 
-  useEffect(() => { 
+  useEffect(() => {
     getTutoresDeEmpresaActual()
   }, [])
-  
+
 
   return (
     <>
@@ -72,15 +72,15 @@ export const TutoresPage = () => {
         content={
           tutorSeleccionado ? <TutoresPerfilComponent
             tutor={tutorSeleccionado}
-          />:
-          <div>Selecciona un tutor</div>
+          /> :
+            <div>Selecciona un tutor</div>
         }
         title=""
         size="lg"
       />
       <div className="mb-10">
         <div className="text-gray-600 font-bold text-2xl mb-3">Administración de tutores</div>
-        
+
       </div>
       <TabComponent
         activeTab={tab}
@@ -94,7 +94,7 @@ export const TutoresPage = () => {
               {
                 tutores.length === 0 ? (
                   <EmptyStateMessage
-                    
+
                     message="No hay tutores registrados en la empresa."
                     showButton={false}
                   />
@@ -155,14 +155,14 @@ export const TutoresPage = () => {
                       </table>
                     </div>
                     <Pagination currentPage={currentPage} itemsPerPage={itemsPerPage} totalItems={totalItems} paginate={setCurrentPage} />
-                    
+
                   </>
               }
 
-              
+
             </>
           )
-          
+
         }
         {
           tab === 1 && (
@@ -199,8 +199,8 @@ export const TutoresPage = () => {
                         {
                           form.formState.errors.apellido &&
                           <p className="text-red-500 text-sm mt-1">
-                              {form.formState.errors.apellido?.message?.toString()}
-                            </p>
+                            {form.formState.errors.apellido?.message?.toString()}
+                          </p>
                         }
                       </div>
 
@@ -234,7 +234,7 @@ export const TutoresPage = () => {
                         />
                       </div>
 
-                     
+
                       <div className="col-span-6">
                         <label htmlFor="street-address" className="block text-sm font-medium leading-6 text-gray-900">Dirección de trabajo</label>
                         <div className="mt-2">
@@ -251,8 +251,8 @@ export const TutoresPage = () => {
                       </div>
 
 
-                      
-                      
+
+
                     </div>
                   </div>
                   <div className="mt-6 flex items-center justify-end gap-x-6 w-full">
@@ -260,7 +260,7 @@ export const TutoresPage = () => {
                   </div>
                 </form>
               </Form>
-              
+
             </>
           )
         }

@@ -6,32 +6,33 @@ import { UsuariosPage } from '../pages/coordinador/UsuariosPage';
 import { RegistroLayout } from '../layouts/RegistroLayout';
 import { SolicitudesPracticantes } from '../pages/empresa/SolicitudesPracticantes';
 import { TutoresPage } from '../pages/empresa/TutoresPage';
+import { PracticantesPage } from '../pages/empresa/PracticantesPage';
 
 export const EmpresaRouter = () => {
   const { user } = useAuth();
   return (
     <Routes>
-        {
-          user?.estaRegistrado ?
-            (
-              <>
+      {
+        user?.estaRegistrado ?
+          (
+            <>
               <Route path='/' element={<Layout />}>
                 <Route path='solicitudes' element={<SolicitudesPracticantes />} />
                 <Route path='tutores' element={<TutoresPage />} />
 
-                  <Route path='practicantes' element={<UsuariosPage />} />
-                  <Route path="*" element={<Navigate to="/empresa" replace />} />
-                </Route>
-              </>
-            )
-            :
-            (
-              <Route element={<RegistroLayout />}>
-                <Route index path='/' element={<RegistroPage />} />
+                <Route path='practicantes' element={<PracticantesPage />} />
                 <Route path="*" element={<Navigate to="/empresa" replace />} />
               </Route>
-            )   
-        }
+            </>
+          )
+          :
+          (
+            <Route element={<RegistroLayout />}>
+              <Route index path='/' element={<RegistroPage />} />
+              <Route path="*" element={<Navigate to="/empresa" replace />} />
+            </Route>
+          )
+      }
     </Routes>
   );
 }

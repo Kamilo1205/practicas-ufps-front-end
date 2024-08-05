@@ -120,6 +120,7 @@ export interface Empresa {
 
 export interface Semestre {
   id:                       string;
+  actual: boolean;
   fechaCreacion:            Date;
   fechaActualizacion:       Date;
   semestre:                 number;

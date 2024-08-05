@@ -49,7 +49,8 @@ export const SolicitudesPracticantes = () => {
   const [tab, setTab] = useState(0)
   const [mostrarSolicitud, setMostrarSolicitud] = useState(false)
   const [solicitudSeleccionada, setSolicitudSeleccionada] = useState<Solicitud | null>(null)
-  const cantidadPracticantes = solicitudes.reduce((acumulador, numPracticantes) => acumulador + numPracticantes.cantidadPracticantes, 0)
+  const cantidadPracticantes = solicitudes.reduce((acumulador, numPracticantes) =>
+    acumulador + numPracticantes.cantidadPracticantes, 0)
   console.log('solicitudes', solicitudes)
 
   const { areas } = useAreasDeInteres()

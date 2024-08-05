@@ -38,7 +38,8 @@ interface Tutor {
 }
 export interface Asignacion {
   solicitud: Solicitud
-  tutor: Tutor
+  tutor: Tutor,
+  planDeTrabajo: any | null
 }
 export interface Estudiante {
   id: string;

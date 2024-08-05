@@ -249,8 +249,8 @@ export const DocentesYCursosSettingComponent = () => {
     <div>
       <ul role="list" className="divide-y divide-gray-100">
         {
-          docentes.map((docente) => (
-            <li key={`doc-list-${docente.email}`} className="flex justify-between gap-x-6 py-5">
+          docentes.map((docente, index) => (
+            <li key={`${index}-doc-list-${docente.email}`} className="flex justify-between gap-x-6 py-5">
               <div className="flex min-w-0 gap-x-4">
                 {
                   docente.fotoUrl ? (

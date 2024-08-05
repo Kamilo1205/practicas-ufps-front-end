@@ -95,7 +95,7 @@ export const EstudiantesPage = () => {
           const t = {
             id: grupo.id,
             name: grupo.nombre,
-            grupo: grupo.nombre.replace(/\s+/g, '')
+            grupo: grupo.nombre
           }
           return t
         }),
@@ -242,11 +242,20 @@ export const EstudiantesPage = () => {
                     {
                       //TODO: Diferenciar cuando el plan está completo o no.
                       //TODO: Implementar vizualización del plan de trabajo.
+                      !estudiante.asignacion?.planDeTrabajo ? (
+                        <div className="flex justify-center pr-6">
+                          <IoAlertCircle className="text-yellow-500 w-5 h-5" />
+                          <span>Pendiente</span>
+                        </div>
+                      ) : (
+                        <div>
+                          <BiCheck className="text-green-500 w-5 h-5" />
+                          <span className="text-blue-400 flex">Ver <span className="self-center"><BiArrowToRight /></span></span>
+
+                        </div>
+                      )
                     }
-                    <div>
-                      <BiCheck className="text-green-500 w-5 h-5" />
-                    </div>
-                    <span className="text-blue-400 flex">Ver <span className="self-center"><BiArrowToRight /></span></span>
+
                   </div>,
                   <div className="flex justify-center pr-6">
                     <IoAlertCircle className="text-yellow-500 w-5 h-5" />

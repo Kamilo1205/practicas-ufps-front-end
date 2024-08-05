@@ -57,9 +57,9 @@ interface DatosFormularioTutor {
 }
 // Agregar un tutor a una empresa
 export const addTutorEmpresa = async (createTutorDto: DatosFormularioTutor): Promise<Tutor> => {
-  const response = await axios.post(`/empresas/tutores`, createTutorDto);
+  const response = await axios.post(`/tutores`, createTutorDto);
   return response.data;
-}
+  }
 
 // Agregar un tutor a una empresa
 export const addTutorToEmpresaById = async (empresaId : string, createTutorDto: Partial<Omit<Tutor, 'id'>>): Promise<Tutor> => {

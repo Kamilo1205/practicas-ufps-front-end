@@ -150,7 +150,7 @@ export const PracticasPage = () => {
         <div className="flex divide-x">
           <ul role="list" className="divide-y divide-gray-100 overflow-scroll max-h-screen w-full">
             {
-              solicitudes.filter(v => !v.fechaEliminacion).map((solicitud) => (
+              solicitudes.filter(v => !v.fechaEliminacion && v.semestre.actual).map((solicitud) => (
                 <li
                   key={solicitud.id}
                   className="flex justify-between gap-x-6 py-5">
