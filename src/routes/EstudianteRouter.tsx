@@ -36,6 +36,7 @@ export const EstudianteRouter = () => {
                   isTutor={false}
                 />
               }
+              
             />
             <Route
               path="informeparcial"
