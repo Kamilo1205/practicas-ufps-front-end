@@ -28,6 +28,7 @@ interface ActivityProps {
   updateActivity: (activity: Actividad) => void;
   deleteActivity: (id: string) => void;
   actualizarLista: (activity: Actividad) => void;
+  updateActivityReset: (activity: Actividad) => void;
   rol: boolean;
   informeP?: boolean;
 }
@@ -36,6 +37,7 @@ export const Activity: React.FC<ActivityProps> = ({
   activity,
   updateActivity,
   deleteActivity,
+  updateActivityReset,
   rol,
   actualizarLista,
   informeP = false,
@@ -195,6 +197,7 @@ export const Activity: React.FC<ActivityProps> = ({
       totalHoras: String(totalHours),
       porcentajeCompletado: String(percentageComplete),
     };
+
     updateActivity(updatedActivity);
     setIsEditing(false);
   };
@@ -213,7 +216,7 @@ export const Activity: React.FC<ActivityProps> = ({
   };
   useEffect(() => {
     const hours =
-      activity?.subActividades?.length || activity?.subActividades != null
+      activity?.subActividades?.length > 0
         ? activity?.subActividades.reduce(
             (acc, sub) => acc + Number(sub.totalHoras),
             0
@@ -221,7 +224,7 @@ export const Activity: React.FC<ActivityProps> = ({
         : Number(activity?.totalHoras);
 
     const progress =
-      activity?.subActividades?.length || activity?.subActividades != null
+      activity?.subActividades?.length > 0
         ? activity?.subActividades.reduce(
             (acc, sub) => acc + Number(sub.porcentajeCompletado),
             0
@@ -510,8 +513,7 @@ export const Activity: React.FC<ActivityProps> = ({
                 disabled={informeP}
               />
             </div>
-            {activity?.subActividades?.length ||
-            activity?.subActividades != null ? (
+            {activity?.subActividades?.length > 0 ? (
               <></>
             ) : (
               <div className="w-full flex flex-col md:flex-row mb-2 md:mb-0 md:mr-4">

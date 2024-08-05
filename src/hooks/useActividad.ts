@@ -13,7 +13,9 @@ type UseActividadReturn = {
   cargando: boolean;
   error: AxiosError | null;
   fetchActividadById: (id: string) => Promise<Actividad | null>;
-  createActividad: (nuevoActividad: Omit<Actividad, "id">) => Promise<string>;
+  createActividad: (
+    nuevoActividad: Omit<Actividad, "id">
+  ) => Promise<{ ok: string; data: Actividad }>;
   updateActividad: (
     id?: string,
     actividadActualizado?: Actividad
@@ -46,7 +48,7 @@ const useActividad = (): UseActividadReturn => {
       const data = await createActAPI(nuevaActividad);
       setActividad(data);
       setError(null);
-      return "ok";
+      return { ok: "ok", data: data };
     } catch (err) {
       setError(err as AxiosError);
       return "mal";
@@ -63,8 +65,8 @@ const useActividad = (): UseActividadReturn => {
     try {
       const data = await updateActAPI(id, actividadActualizada);
       setActividad(data);
-      return "ok";
       setError(null);
+      return "ok";
     } catch (err) {
       setError(err as AxiosError);
       return "mal";

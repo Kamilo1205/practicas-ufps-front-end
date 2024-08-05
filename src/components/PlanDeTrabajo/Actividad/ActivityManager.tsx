@@ -37,17 +37,17 @@ export const ActivityManager: React.FC<ActivityProps> = ({
       fechFin,
       totalHoras: String(0),
       porcentajeCompletado: String(0),
-      subactividades: [],
+      subActividades: [],
     };
     createActividad(newActivity).then((response) => {
-      if (response === "ok") {
+      if (response.ok === "ok") {
         Swal.fire({
           title: "Información guardada",
           text: "Los datos han sido guardados correctamente.",
           icon: "success",
           confirmButtonText: "Aceptar",
         });
-        setActivities([...activities, newActivity]);
+        setActivities([...activities, response.data]);
       } else {
         Swal.fire({
           title: "Ha ocurrido un error",
@@ -70,10 +70,6 @@ export const ActivityManager: React.FC<ActivityProps> = ({
     setActivities(newActivities);
   };
   const updateActivity = (updatedActivity: Actividad) => {
-    const newActivities = activities.map((activity) =>
-      activity.id === updatedActivity.id ? updatedActivity : activity
-    );
-    console.log(updatedActivity);
     updateActividad(updatedActivity?.id, updatedActivity).then((response) => {
       if (response === "ok") {
         Swal.fire({
@@ -82,7 +78,7 @@ export const ActivityManager: React.FC<ActivityProps> = ({
           icon: "success",
           confirmButtonText: "Aceptar",
         });
-        setActivities(newActivities);
+        actualizarLista(updatedActivity);
       } else {
         Swal.fire({
           title: "Ha ocurrido un error",
@@ -169,11 +165,12 @@ export const ActivityManager: React.FC<ActivityProps> = ({
       <div className="space-y-4">
         {activities.map((activity) => (
           <Activity
-            key={activity.id?.toString() || activity.titulo}
+            key={Math.floor(Math.random() * 10000000000)}
             activity={activity}
             updateActivity={updateActivity}
             deleteActivity={deleteActivity}
             actualizarLista={actualizarLista}
+            updateActivityReset={updateActivityReset}
             rol={rol}
             informeP={informeP}
           />
