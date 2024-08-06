@@ -10,7 +10,7 @@ export const fetchSemestreApi = async ():Promise<Semestre> => {
   return data
 }
 
-export const updateSemestreApi = async (semestre: Semestre): Promise<Semestre> => { 
+export const updateSemestreApi = async (semestre: Omit<Semestre,'id'>): Promise<Semestre> => { 
   const { data } = await axios.patch(URL, semestre)
   return data
 }

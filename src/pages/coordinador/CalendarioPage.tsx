@@ -101,6 +101,8 @@ export const CalendarioPage = () => {
   const [items, setItems] = useState<TimelineItem[]>([])
   const [edicion, setEdicion] = useState<EstadoFechas[]>([])
   console.log(semestre)
+  console.log(items)
+  console.log(edicion)
   useEffect(() => {
     if (semestre) {
       setItems(getCalendario(semestre))
@@ -129,9 +131,20 @@ export const CalendarioPage = () => {
   }*/
 
   const saveChanges = async () => {
-    //console.log('Guardando cambios')
+    console.log('Guardando cambios')
     try {
-      const response = await guardarCambios(items)
+      const semestreActualizado = {
+        ...semestre,
+        fechaInicio: edicion[0].valorEditadoFechaInicial !== '' ? edicion[0].valorEditadoFechaInicial : semestre?.fechaInicio,
+        fechaFin: edicion[0].valorEditadoFechaFinal !== '' ? edicion[0].valorEditadoFechaFinal : semestre?.fechaFin,
+        fechaInicioPlanDeTrabajo: edicion[2].valorEditadoFechaInicial !== '' ? edicion[2].valorEditadoFechaInicial : semestre?.fechaInicioPlanDeTrabajo,
+        fechaFinPlanDeTrabajo: edicion[2].valorEditadoFechaFinal !== '' ? edicion[2].valorEditadoFechaFinal : semestre?.fechaFinPlanDeTrabajo,
+        fechaInicioPrimerInforme: edicion[3].valorEditadoFechaInicial !== '' ? edicion[3].valorEditadoFechaInicial : semestre?.fechaInicioPrimerInforme,
+        fechaFinPrimerInforme: edicion[3].valorEditadoFechaFinal !== '' ? edicion[3].valorEditadoFechaFinal : semestre?.fechaFinPrimerInforme,
+        fechaInicioInformeFinal: edicion[4].valorEditadoFechaInicial !== '' ? edicion[4].valorEditadoFechaInicial : semestre?.fechaInicioInformeFinal,
+        fechaFinInformeFinal: edicion[4].valorEditadoFechaFinal !== '' ? edicion[4].valorEditadoFechaFinal : semestre?.fechaFinInformeFinal,
+      }
+      const response = await guardarCambios(semestreActualizado)
       if (!response.ok) throw new Error(response.message)
       const Toast = Swal.mixin({
         toast: true,

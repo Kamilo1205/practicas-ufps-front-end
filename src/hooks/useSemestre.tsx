@@ -9,10 +9,10 @@ export const useSemestre = () => {
   const [loading, setLoading] = useState(false)
 
 
-  const guardarCambiosDeFechas = async (semestre: Semestre) => {
+  const guardarCambiosDeFechas = async (pSemestre: Omit<Semestre, 'id'>) => {
     try {
-      await updateSemestreApi(semestre)
-      setSemestre(semestre)
+      await updateSemestreApi(pSemestre)
+      setSemestre({ ...pSemestre, id: semestre?.id })
       Swal.fire({
         icon: 'success',
         title: '¡Listo!',

@@ -9,16 +9,16 @@ import { Avatar } from '../Avatar/Avatar';
 import { useAuth } from '../../../contexts';
 import { Logo } from '../../logo';
 
-interface SidebarProps extends HTMLAttributes<HTMLDivElement> {}
+interface SidebarProps extends HTMLAttributes<HTMLDivElement> { }
 
 export const Sidebar: FC<SidebarProps> = () => {
   const { user, logout } = useAuth();
- 
+
   return (
     <div className="hidden lg:flex lg:flex-col lg:w-72 lg:z-10 lg:fixed lg:inset-y-0">
       <div className="flex flex-col flex-grow gap-y-5 px-6 border-r border-gray-200 overflow-y-auto">
         <div className="flex flex-col pt-6 pb-4 items-start text-base font-semibold flex-shrink-0">
-          <Logo to="/"/>
+          <Logo to="/" />
         </div>
 
         <nav className="flex flex-column flex-1">
@@ -32,7 +32,7 @@ export const Sidebar: FC<SidebarProps> = () => {
                   <div className="w-9">
                     <Avatar url={user?.imagenUrl} />
                   </div>
-                  {user?.displayName}
+                  {user?.displayName || <>{user?.email}</>}
                 </MenuButton>
                 <Transition
                   enter="transition ease-out duration-75"
@@ -48,16 +48,16 @@ export const Sidebar: FC<SidebarProps> = () => {
                   >
                     <MenuItem>
                       <Link to={'perfil'} className="group flex w-full items-center gap-2 rounded-lg py-1.5 px-3">
-                        <CgProfile className="w-5 h-5 text-gray-400/90"/>
+                        <CgProfile className="w-5 h-5 text-gray-400/90" />
                         Ver perfil
                       </Link>
                     </MenuItem>
                     <MenuItem>
-                      <button 
+                      <button
                         className="group flex w-full items-center gap-2 rounded-lg py-1.5 px-3"
-                        onClick={logout} 
+                        onClick={logout}
                       >
-                        <HiArrowLeftStartOnRectangle className="w-5 h-5 text-gray-400/90"/>
+                        <HiArrowLeftStartOnRectangle className="w-5 h-5 text-gray-400/90" />
                         Cerrar sesión
                       </button>
                     </MenuItem>
