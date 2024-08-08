@@ -6,7 +6,6 @@ import Objetivo from "./../../components/PlanDeTrabajo/Objetivos";
 import { ActivityManager } from "./../../components/PlanDeTrabajo/Actividad/ActivityManager";
 import RRForm from "./../../components/PlanDeTrabajo/RRForm";
 import { Comment } from "../../components/PlanDeTrabajo/Actividad/types";
-import Checkbox from "../../components/ui/Input/Checkbox";
 import Swal from "sweetalert2";
 import { Estudiante } from "../../interfaces/estudiante.interface";
 import { PlanDeTrabajo } from "../../interfaces/plantrabajo.interface";
@@ -18,16 +17,16 @@ import CollapseObj from "../../components/ui/Button/CollapseObj";
 import CollapseAct from "../../components/ui/Button/CollapseAct";
 import { useAuth } from "./../../contexts/AuthContext";
 import usePlantrabajo from "../../hooks/usePlanTrabajo";
+import { Resultado } from "../../interfaces/resultado.interface";
+import { string } from "zod";
+import Checkbox from "./../../components/ui/Input/Checkbox";
+import FileUpload from "./../../components/PlanDeTrabajo/FileUpload";
 
 interface PlanTrabProps {
   estudiante: Estudiante;
   planTrabajo: PlanDeTrabajo;
   rol: boolean;
   isTutor?: boolean;
-  tutorApru?: boolean;
-  setTutorApru?: React.Dispatch<React.SetStateAction<boolean>>;
-  coordApru?: boolean;
-  setCoorApru?: React.Dispatch<React.SetStateAction<boolean>>;
 }
 const comentarios: Comment[] = [];
 const PlanDeTrabajoPage: React.FC<PlanTrabProps> = ({
@@ -35,36 +34,71 @@ const PlanDeTrabajoPage: React.FC<PlanTrabProps> = ({
   planTrabajo,
   rol,
   isTutor,
-  tutorApru,
-  setTutorApru,
-  coordApru,
-  setCoorApru,
 }) => {
   const [comments, setComments] = useState(comentarios);
-  const { aprobarPlanEmpresa, aprobarPlanTutor } = usePlantrabajo();
-  const handleCheckboxChange = (checked: boolean) => {
-    console.log("Checkbox is now", checked ? "checked" : "unchecked");
-    if (isTutor) {
-      aprobarPlanTutor(planTrabajo?.id).then((response) => {
-        console.log(response);
-      });
-      Swal.fire({
-        title: "Información Guardada",
-        text: "Los datos han sido guardados correctamente.",
-        icon: "success",
-        confirmButtonText: "OK",
-      });
-    } else {
-      aprobarPlanEmpresa(planTrabajo.id);
-      Swal.fire({
-        title: "Información Guardada",
-        text: "Los datos han sido guardados correctamente.",
-        icon: "success",
-        confirmButtonText: "OK",
-      });
-    }
+  const {
+    aprobarPlanEmpresa,
+    aprobarPlanTutor,
+    updatedRequerimientos,
+    updatedResultado,
+  } = usePlantrabajo();
+
+  const { user } = useAuth();
+  const roles = user?.roles;
+  const rolesNecesarios = ["tutor", "coordinador"];
+
+  const esEstudiante = roles?.some((role) => role.nombre === "estudiante");
+  const esTutorYEmpresa = rolesNecesarios.every((rolNecesario) =>
+    roles?.some((role) => role.nombre === rolNecesario)
+  );
+  const esOnlyTutor = roles?.some((role) => role.nombre === "tutor");
+  const esOnlyCoodinador = roles?.some((role) => role.nombre === "coordinador");
+
+  const [aprobacionTutor, setAprobacionTutor] = useState(false);
+  const [aprobacionCoordinador, setAprobacionCoordinador] = useState(false);
+
+  const handleCheckboxChangeTutor = () => {
+    aprobarPlanTutor(planTrabajo?.id).then((response) => {
+      console.log(response);
+      setAprobacionTutor(true);
+    });
   };
 
+  const handleCheckboxChangeCoordinador = () => {
+    aprobarPlanEmpresa(planTrabajo.id).then((response) => {
+      console.log(response);
+      setAprobacionCoordinador(true);
+    });
+  };
+
+  const updatedReque = (idPlan: string, reque: string) => {
+    updatedRequerimientos(idPlan, reque).then((response) => {
+      if (response === "mal") {
+        return "mal";
+      }
+    });
+    return "ok";
+  };
+  const updatedResul = (idPlan: string, rows: Resultado[], ok: string) => {
+    console.log(ok);
+    updatedResultado(idPlan, rows).then((response) => {
+      if (response == "ok" && ok == "ok") {
+        Swal.fire({
+          title: "Información guardada",
+          text: "Los datos han sido guardados correctamente.",
+          icon: "success",
+          confirmButtonText: "Aceptar",
+        });
+      } else {
+        Swal.fire({
+          title: "Ha ocurrido un error",
+          text: "No se guardo la Información",
+          icon: "error",
+          confirmButtonText: "Aceptar",
+        });
+      }
+    });
+  };
   const [comentarioObj, setComentarioObj] = useState<Comentario[]>([]);
   const [comentarioAct, setComentarioAct] = useState<Comentario[]>([]);
 
@@ -82,22 +116,117 @@ const PlanDeTrabajoPage: React.FC<PlanTrabProps> = ({
       }
     }
   }, [planTrabajo]);
+  console.log(planTrabajo);
+  useEffect(() => {
+    if (planTrabajo?.tutorEmpresaID != null) {
+      setAprobacionTutor(true);
+    }
+    if (planTrabajo?.tutorInstitucionalID != null) {
+      setAprobacionCoordinador(true);
+    }
+  }, [planTrabajo?.tutorEmpresaID, planTrabajo?.tutorInstitucionalID]);
   return (
     <>
       <Title titulo="Plan de Trabajo" />
-      {!rol && (
-        <div className="w-full flex rounded border mb-4">
-          <div className="w-full flex justify-start mt-3">
-            <div className="text-xl mb-4 ml-2 font-light">
-              Aprobar Plan de Trabajo
+
+      {esEstudiante && (
+        <div>
+          <div className="w-full flex rounded border mb-4">
+            <div className="w-full flex justify-start mt-3">
+              <div className="text-xl mb-4 ml-2 font-light">
+                Aprobación de Tutor Empresa
+              </div>
+            </div>
+            <div className="w-full flex justify-end">
+              <Checkbox checked={aprobacionTutor} isEstudiante={true} />
             </div>
           </div>
-          <div className="w-full flex justify-end">
-            <Checkbox onChange={handleCheckboxChange} />
+          <div className="w-full flex rounded border mb-4">
+            <div className="w-full flex justify-start mt-3">
+              <div className="text-xl mb-4 ml-2 font-light">
+                Aprobación de Tutor Practicas
+              </div>
+            </div>
+            <div className="w-full flex justify-end">
+              <Checkbox checked={aprobacionCoordinador} isEstudiante={true} />
+            </div>
           </div>
         </div>
       )}
-
+      {esTutorYEmpresa ? (
+        <div>
+          <div className="w-full flex rounded border mb-4">
+            <div className="w-full flex justify-start mt-3">
+              <div className="text-xl mb-4 ml-2 font-light">
+                Aprobación de Tutor Empresa
+              </div>
+            </div>
+            <div className="w-full flex justify-end">
+              <Checkbox
+                onChange={handleCheckboxChangeTutor}
+                checked={aprobacionTutor}
+              />
+            </div>
+          </div>
+          <div className="w-full flex rounded border mb-4">
+            <div className="w-full flex justify-start mt-3">
+              <div className="text-xl mb-4 ml-2 font-light">
+                Aprobación de Tutor Practicas
+              </div>
+            </div>
+            <div className="w-full flex justify-end">
+              <Checkbox
+                onChange={handleCheckboxChangeCoordinador}
+                checked={aprobacionCoordinador}
+              />
+            </div>
+          </div>
+        </div>
+      ) : esOnlyTutor ? (
+        <div>
+          <div className="w-full flex rounded border mb-4">
+            <div className="w-full flex justify-start mt-3">
+              <div className="text-xl mb-4 ml-2 font-light">
+                Aprobación de Tutor Empresa
+              </div>
+            </div>
+            <div className="w-full flex justify-end">
+              <Checkbox
+                onChange={handleCheckboxChangeCoordinador}
+                checked={aprobacionTutor}
+              />
+            </div>
+          </div>
+        </div>
+      ) : esOnlyCoodinador ? (
+        <div>
+          <div className="w-full flex rounded border mb-4">
+            <div className="w-full flex justify-start mt-3">
+              <div className="text-xl mb-4 ml-2 font-light">
+                Aprobación de Tutor Empresa
+              </div>
+            </div>
+            <div className="w-full flex justify-end">
+              <Checkbox isEstudiante={true} checked={aprobacionTutor} />
+            </div>
+          </div>
+          <div className="w-full flex rounded border mb-4">
+            <div className="w-full flex justify-start mt-3">
+              <div className="text-xl mb-4 ml-2 font-light">
+                Aprobación de Tutor Practicas
+              </div>
+            </div>
+            <div className="w-full flex justify-end">
+              <Checkbox
+                onChange={handleCheckboxChangeCoordinador}
+                checked={aprobacionCoordinador}
+              />
+            </div>
+          </div>
+        </div>
+      ) : (
+        <></>
+      )}
       <Collapse rol={rol} isShow={false} title="Estudiante" isComment={false}>
         <div className="w-full flex flex-wrap">
           <div className="p-2 rounded border w-full mb-2 mr-2 ">
@@ -166,7 +295,27 @@ const PlanDeTrabajoPage: React.FC<PlanTrabProps> = ({
         autor="TUTOR"
         isComment={false}
       >
-        <RRForm rol={rol} />
+        <RRForm
+          rol={rol}
+          updatedReque={updatedReque}
+          updatedResul={updatedResul}
+          resultado={planTrabajo?.resultados}
+          reques={planTrabajo?.requerimientosTecnicos}
+          idPlan={planTrabajo?.id}
+        />
+      </Collapse>
+      <Collapse
+        rol={rol}
+        title="Diagrama de Grantt"
+        comments={comments}
+        setComments={setComments}
+        autor="TUTOR"
+        isComment={false}
+      >
+        <div className="w-full flex">
+          <FileUpload rol={rol} />
+          <div className="w-full"></div>
+        </div>
       </Collapse>
     </>
   );

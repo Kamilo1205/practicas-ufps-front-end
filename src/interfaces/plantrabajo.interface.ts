@@ -16,8 +16,11 @@ export interface PlanDeTrabajo {
     comentarios: Comentario[];
   };
   seccionActividades: SeccionActividades;
-  requerimientosSeccion: {
-    requirimientoTecnico: string;
-    resultados: Resultado[];
-  };
+  requerimientosTecnicos: string;
+  resultados: Resultado[];
+  informeFinal: informeFinal;
+  primerInforme: primerInforme;
+  tutorEmpresaID?: string;
+  tutorInstitucionalID?: string;
+  evaluacion: Evaluacion
 }

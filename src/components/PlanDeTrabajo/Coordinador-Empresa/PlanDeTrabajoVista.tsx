@@ -28,10 +28,10 @@ const PlanDeTrabajoVista: FC<PlanProps> = ({
   plantrabajo2,
 }) => {
   const [open, setOpen] = useState<boolean>(initialOpen);
-  const [tutorApru, setTutorApru] = useState<boolean>(false);
-  const [coordApru, setCoorApru] = useState<boolean>(false);
   const [planTrabajo, setPlanTrabajo] = useState<PlanDeTrabajo>();
-  const { fetchMiPlanTrabajoActualEstudiante } = usePlantrabajo();
+  const [planTrabajo2, setPlanTrabajo2] = useState<PlanDeTrabajo>();
+  const { fetchMiPlanTrabajoActualEstudiante, fetchPlanTrabajoById } =
+    usePlantrabajo();
   const { user } = useAuth();
   useEffect(() => {
     if (estudiante?.id) {
@@ -42,9 +42,17 @@ const PlanDeTrabajoVista: FC<PlanProps> = ({
         .catch((error) => {
           console.error("Error fetching plan de trabajo:", error);
         });
+
+      fetchPlanTrabajoById(plantrabajo2?.id)
+        .then((result) => {
+          setPlanTrabajo2(result);
+        })
+        .catch((error) => {
+          console.error("Error fetching plan de trabajo:", error);
+        });
     }
   }, [estudiante?.id]);
-  console.log(estudiante);
+
   return (
     <>
       {rol === "estudiante" ? (
@@ -64,12 +72,8 @@ const PlanDeTrabajoVista: FC<PlanProps> = ({
             <PlanDeTrabajoPage
               rol={false}
               estudiante={estudiante}
-              planTrabajo={planTrabajo} //plantrabajo2
+              planTrabajo={planTrabajo2} //plantrabajo2
               isTutor={isTutor}
-              coordApru={coordApru}
-              setCoorApru={setCoorApru}
-              tutorApru={tutorApru}
-              setTutorApru={setTutorApru}
             />
           }
           title=""

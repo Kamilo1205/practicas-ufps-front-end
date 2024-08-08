@@ -1,5 +1,6 @@
 import axios from "./axios";
 import { PlanDeTrabajo } from "../interfaces/plantrabajo.interface";
+import { Resultado } from "../interfaces/resultado.interface";
 
 //APIS ADMINISTRADOR
 
@@ -53,6 +54,43 @@ export const aprobarPlanTutor = async (idPlan: string) => {
 export const aprobarPlanEmpresa = async (idPlan: string) => {
   const response = await axios.patch(
     `/plan-trabajo/${idPlan}/aprobacion-tutor-empresarial`
+  );
+  return response.data;
+};
+
+export const updateResultados = async (
+  idPlan: string,
+  resultados: Resultado[]
+) => {
+  const response = await axios.patch(
+    `/plan-trabajo/${idPlan}/agregar-resultados`,
+    { resultados: resultados }
+  );
+  return response.data;
+};
+
+export const updateRequerimiento = async (
+  idPlan: string,
+  reque: string
+): Promise<PlanDeTrabajo> => {
+  const response = await axios.patch(`/plan-trabajo/${idPlan}`, {
+    requerimientosTecnicos: reque,
+  });
+  return response.data;
+};
+
+export const evaluacionCreateEstudiante = async (evaluacion: Evaluacion) => {
+  const response = await axios.post(
+    `plan-trabajo/evaluacion-estudiante/`,
+    evaluacion
+  );
+  return response.data;
+};
+
+export const evaluacionUpdateEstudiante = async (evaluacion: Evaluacion) => {
+  const response = await axios.patch(
+    `plan-trabajo/evaluacion-estudiante/${evaluacion.id}`,
+    evaluacion
   );
   return response.data;
 };

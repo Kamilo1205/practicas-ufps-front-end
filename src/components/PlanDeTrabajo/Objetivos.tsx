@@ -31,6 +31,11 @@ const Objetivo: FC<Obj> = ({ rol, obj }) => {
     setIsEditing(true);
   };
   const handleNoEdit = () => {
+        setObjPrinc(obj?.objetivoPrincipal || ""|| "");
+        setObjPrac(obj?.objetivoPractica|| "");
+        setObjEsp(obj?.objetivoEspecial|| "");
+        setJustificacion(obj?.justificacion|| "");
+        setAlcance(obj?.alcance|| "");
     setIsEditing(false);
   };
   const validarInputs = () => {
