@@ -227,6 +227,7 @@ const PlanDeTrabajoPage: React.FC<PlanTrabProps> = ({
       ) : (
         <></>
       )}
+      
       <Collapse rol={rol} isShow={false} title="Estudiante" isComment={false}>
         <div className="w-full flex flex-wrap">
           <div className="p-2 rounded border w-full mb-2 mr-2 ">
