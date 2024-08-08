@@ -17,7 +17,7 @@ import { useConfigNotificaciones } from '../hooks/useConfigNotificaciones';
 export const Layout = () => {
   const { user, logout } = useAuth();
   const [open, setOpen] = useState<boolean>(false);
-  console.log('user', user)
+
   useConfigNotificaciones()
 
   return (

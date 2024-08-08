@@ -10,9 +10,14 @@ import {
     fetchTutoresByEmpresaId as fetchTutoresByEmpresaIdAPI,
     addTutorToEmpresaById as addTutorToEmpresaByIdAPI,
     getTutoresEmpresa as getTutoresEmpresaAPI,
-    addTutorEmpresa as addTutorToEmpresaAPI
+    addTutorEmpresa as addTutorToEmpresaAPI,
+    getPracticantesDeEmpresaApi,
+    asignarTutorEmpresaApi,
+    deshabilitarTutorEmpresaApi,
+    habilitarTutorEmpresaApi
 } from '../api/empresa.api';
 import { Empresa, Tutor } from '../interfaces';
+import Swal from 'sweetalert2';
 
 
 interface DatosFormularioTutor {
@@ -42,7 +47,11 @@ type UseEmpresasReturn = {
   getTutoresDeEmpresaActual: () => Promise<void>;
   getTodosLosTutores: () => Promise<Tutor[]>;
   getTutorById: ({ empresaId, tutorId }: { empresaId: string, tutorId: string }) => Promise<any>
-  getPracticantesPorTutorId: (tutorId:string) => Promise<any>
+  getPracticantesPorTutorId: (tutorId: string) => Promise<any>
+  getPracticantesDeEmpresa: (idEmpresa: string) => Promise<void>
+  asignarTutorAsignacion: (asignacionId: string, tutorId: string) => Promise<void>
+  deshabilitarTutorEmpresa: (tutorId: string) => Promise<void>
+  habilitarTutorEmpresa: (tutorId: string) => Promise<void>
 };
 
 const useEmpresas = (): UseEmpresasReturn => {
@@ -264,6 +273,78 @@ const useEmpresas = (): UseEmpresasReturn => {
       }
   }
 
+  const getPracticantesDeEmpresa = async (idEmpresa:string) => { 
+    setCargando(true);
+    try {
+      const data = await getPracticantesDeEmpresaApi(idEmpresa);
+      setError(null);
+      return data
+
+      
+    } catch (err) {
+      setError(err as AxiosError);
+    } finally {
+      setCargando(false);
+    }
+  }
+
+  const asignarTutorAsignacion = async (asignacionId: string, tutorId: string) => { 
+    setCargando(true);
+    try {
+        await asignarTutorEmpresaApi(asignacionId, tutorId).then((data) => { 
+          Swal.fire('Tutor asignado', 'El tutor ha sido asignado correctamente', 'success').then(() => { 
+            setError(null);
+            location.reload();
+          })
+      })
+    } catch (err) { 
+      setError(err as AxiosError);
+    }
+    finally {
+      setCargando(false);
+    }
+  }
+
+  const deshabilitarTutorEmpresa = async (tutorId: string) => { 
+    setCargando(true);
+    try {
+      deshabilitarTutorEmpresaApi(tutorId).then((data) => {
+        Swal.fire('Tutor deshabilitado', 'El tutor ha sido deshabilitado correctamente', 'success').then(() => {
+          setError(null);
+          location.reload();
+        })
+      }).catch((err) => { 
+        Swal.fire('Error', 'No se ha podido deshabilitar el tutor', 'error') 
+      })
+    }
+    catch (err) { 
+      setError(err as AxiosError);
+    }
+    finally {
+      setCargando(false);
+    }
+  }
+
+  const habilitarTutorEmpresa = async (tutorId: string) => {
+    setCargando(true);
+    try {
+      habilitarTutorEmpresaApi(tutorId).then((data) => {
+        Swal.fire('Tutor habilitado', 'El tutor ha sido habilitado correctamente', 'success').then(() => {
+          setError(null);
+          location.reload();
+        })
+      }).catch((err) => { 
+        Swal.fire('Error', 'No se ha podido habilitar el tutor', 'error')
+      }) 
+    }
+    catch (err) {
+      setError(err as AxiosError);
+    }
+    finally {
+      setCargando(false);
+    }
+   }
+
   return { 
     empresas, 
     empresa, 
@@ -282,7 +363,11 @@ const useEmpresas = (): UseEmpresasReturn => {
     addTutorToEmpresaActual,
     getTodosLosTutores,
     getTutorById,
-    getPracticantesPorTutorId
+    getPracticantesPorTutorId,
+    getPracticantesDeEmpresa,
+    asignarTutorAsignacion,
+    deshabilitarTutorEmpresa,
+    habilitarTutorEmpresa
   };
 };
 

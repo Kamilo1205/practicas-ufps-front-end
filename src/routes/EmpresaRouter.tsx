@@ -2,7 +2,7 @@ import { Navigate, Route, Routes } from 'react-router-dom';
 import { RegistroPage } from '../pages/empresa';
 import { useAuth } from '../contexts';
 import { Layout } from '../layouts/Layout';
-import { UsuariosPage } from '../pages/coordinador/UsuariosPage';
+
 import { RegistroLayout } from '../layouts/RegistroLayout';
 import { SolicitudesPracticantes } from '../pages/empresa/SolicitudesPracticantes';
 import { TutoresPage } from '../pages/empresa/TutoresPage';
@@ -21,7 +21,7 @@ export const EmpresaRouter = () => {
                 <Route path='tutores' element={<TutoresPage />} />
 
                 <Route path='practicantes' element={<PracticantesPage />} />
-                <Route path="*" element={<Navigate to="/empresa" replace />} />
+                <Route path="*" element={<Navigate to="/practicantes" replace />} />
               </Route>
             </>
           )

@@ -48,7 +48,7 @@ export const AppRouter = () => {
         isAuthenticated && user && user.roles?.some(rol => rol.nombre == roles.empresa) && (
           <>
             <Route path='empresa/*' element={<EmpresaRouter />} />
-            <Route path='*' element={<Navigate to="/empresa" />} />
+            <Route path='*' element={<Navigate to="/empresa/practicantes" />} />
           </>
         )
       }

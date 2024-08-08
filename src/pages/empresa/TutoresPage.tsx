@@ -11,6 +11,7 @@ import { TutoresPerfilComponent } from "../../components/usuarios/perfil/Tutores
 import useEmpresas from "../../hooks/useEmpresas"
 import { Tutor } from "../../interfaces"
 import { EmptyStateMessage } from "../../components/estudiantes"
+import Swal from "sweetalert2"
 
 
 const tabsList = [
@@ -37,7 +38,7 @@ export const TutoresPage = () => {
     resolver: zodResolver(tutorSchema)
   });
 
-  const { tutores, addTutorToEmpresaActual, getTutoresDeEmpresaActual } = useEmpresas()
+  const { tutores, addTutorToEmpresaActual, getTutoresDeEmpresaActual, deshabilitarTutorEmpresa, habilitarTutorEmpresa } = useEmpresas()
   console.log('tutores', tutores)
   //console.log(form.getValues())
 
@@ -51,14 +52,37 @@ export const TutoresPage = () => {
       telefono,
       direccionTrabajo: direccion
 
+    }).then(() => {
+      Swal.fire({
+        icon: 'success',
+        title: '¡Listo!',
+        text: 'Tutor registrado'
+      }).finally(() => {
+        location.reload()
+      })
+    }).catch(() => {
+      Swal.fire({
+        icon: 'error',
+        title: 'Oops...',
+        text: 'Ha ocurrido un error! No se pudo registrar al tutor'
+      })
     })
   }
 
-  const onEditTutor = (tutor: Tutor) => {
+  const onDeshabilitarTutor = (tutor: Tutor) => {
     setTutorSeleccionado(tutor)
     setMostrarSolicitud(true)
-  }
+    deshabilitarTutorEmpresa(tutor.id).then(() => {
 
+    })
+  }
+  const onHabilitarTutor = (tutor: Tutor) => {
+    setTutorSeleccionado(tutor)
+    setMostrarSolicitud(true)
+    habilitarTutorEmpresa(tutor.id).then(() => {
+
+    })
+  }
   useEffect(() => {
     getTutoresDeEmpresaActual()
   }, [])
@@ -66,18 +90,7 @@ export const TutoresPage = () => {
 
   return (
     <>
-      <DialogComponent
-        isOpen={mostrarSolicitud}
-        onClose={() => setMostrarSolicitud(false)}
-        content={
-          tutorSeleccionado ? <TutoresPerfilComponent
-            tutor={tutorSeleccionado}
-          /> :
-            <div>Selecciona un tutor</div>
-        }
-        title=""
-        size="lg"
-      />
+
       <div className="mb-10">
         <div className="text-gray-600 font-bold text-2xl mb-3">Administración de tutores</div>
 
@@ -123,7 +136,7 @@ export const TutoresPage = () => {
                                     </div>
                                     <div className="ml-4">
                                       <div className="text-gray-900 font-medium">{`${usuario.nombre} ${usuario.apellidos}` || 'Nombre aun no registrado'}</div>
-                                      <div className="text-gray-500 mt-1">{usuario.email}</div>
+                                      <div className="text-gray-500 mt-1">{usuario?.usuario?.email}</div>
                                     </div>
                                   </div>
                                 </td>
@@ -143,9 +156,22 @@ export const TutoresPage = () => {
                                   }
                                 </td>
                                 <td className="text-sm whitespace-nowrap pl-0 pr-3 py-5">
-                                  <button
-                                    onClick={() => onEditTutor(usuario)}
-                                    className="text-indigo-600 hover:text-indigo-900">Editar</button>
+                                  {
+                                    usuario.usuario && usuario.usuario?.estaActivo ?
+                                      <button
+                                        onClick={() => onDeshabilitarTutor(usuario)}
+                                        className="text-indigo-600 hover:text-indigo-900">
+                                        Dehabilitar
+                                      </button>
+                                      :
+                                      <button
+                                        onClick={() => onHabilitarTutor(usuario)}
+                                        className="text-green-600 hover:text-green-900">
+                                        Habilitar
+                                      </button>
+
+                                  }
+
                                 </td>
 
                               </tr>
@@ -256,7 +282,9 @@ export const TutoresPage = () => {
                     </div>
                   </div>
                   <div className="mt-6 flex items-center justify-end gap-x-6 w-full">
-                    <button type="submit" className="rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">Registrar</button>
+                    <button type="submit" className="rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">
+                      Registrar
+                    </button>
                   </div>
                 </form>
               </Form>
@@ -270,3 +298,17 @@ export const TutoresPage = () => {
 }
 
 
+/**
+ * <DialogComponent
+        isOpen={mostrarSolicitud}
+        onClose={() => setMostrarSolicitud(false)}
+        content={
+          tutorSeleccionado ? <TutoresPerfilComponent
+            tutor={tutorSeleccionado}
+          /> :
+            <div>Selecciona un tutor</div>
+        }
+        title=""
+        size="lg"
+      />
+ */

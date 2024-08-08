@@ -118,7 +118,7 @@ export const EstudiantesPage = () => {
       //TODO: Implementar peti para que solo traiga inactivos.
       //const {data,total} = await fetchGetEstudiantes(currentPage,itemsPerPage,Tabs[tab].grupo, filtro);
       const data = await fetchGetEstudiantes(currentPage, itemsPerPage, Tabs[tab].grupo ? Tabs[tab].grupo : '', filtro);
-      console.log(data)
+      console.log('d', data)
       setTotalItems(data.meta.totalItems);
       setEstudiantes({
         estudiantes: data.data || [],

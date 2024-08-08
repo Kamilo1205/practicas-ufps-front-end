@@ -60,6 +60,7 @@ export const fetchEstudianteById = async (id: string): Promise<Estudiante> => {
 export const createEstudiantesPorCSV = async (file: File,grupoId:string): Promise<Estudiante[]> => {
   const URL = `/csv/estudiantes/${grupoId}`;
   const formData = new FormData();
+  console.log('csv',file);
   formData.append('file', file);
   console.log('csv',formData);
   const response = await axios.post(URL, formData);

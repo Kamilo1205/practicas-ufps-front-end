@@ -33,12 +33,28 @@ export const AgregarEstudianteForm = ({
     console.log(grupoSeleccionado);
     console.log(archivo);
     if (grupoSeleccionado.id !== '0' && archivo !== null) {
+      Swal.fire({
+        title: 'Cargando...',
+        text: 'Por favor, espere.',
+        allowOutsideClick: false,
+        didOpen: () => {
+          Swal.showLoading();
+        }
+      });
       cargarEstudiantesCsvAGrupo(archivo, grupoSeleccionado.id)
         .then(() => {
-          dispararCargaEstidiantes();
+          dispararCargaEstidiantes()
           onClose();
+          Swal.close();
         })
-        .catch((err) => console.error(err));
+        .catch((err) => {
+          console.error(err)
+          Swal.fire({
+            icon: 'error',
+            title: 'Error al registrar los estudiantes',
+            text: 'Por favor, intenta de nuevo o contacta a soporte.',
+          });
+        });
     }
     else {
       Swal.fire({

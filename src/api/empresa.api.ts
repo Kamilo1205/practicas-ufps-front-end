@@ -89,4 +89,27 @@ export const getTodosLosTutores = async (): Promise<Tutor[]> => {
   const response = await axios.get(`/tutores`);
   console.log(response.data);
   return response.data;
- }
+}
+ 
+export const getPracticantesDeEmpresaApi = async (empresaId: string): Promise<any> => {
+  const response = await axios.get(`/empresas/${empresaId}/practicantes`);
+  console.log(response.data);
+  return response.data;
+}
+
+export const asignarTutorEmpresaApi = async (asignacionId: string, tutorId: string): Promise<any> => {
+  const response = await axios.patch(`/asignacion/${asignacionId}/asignar-tutor`, {  tutorId });
+  console.log(response.data);
+  return response.data;
+}
+
+export const deshabilitarTutorEmpresaApi = async (tutorId: string): Promise<any> => { 
+  const response = await axios.patch(`empresas/deshabilitar-tutor/${tutorId}`);
+  console.log(response.data);
+  return response.data;
+}
+export const habilitarTutorEmpresaApi = async (tutorId: string): Promise<any> => { 
+  const response = await axios.patch(`empresas/habilitar-tutor/${tutorId}`);
+  console.log(response.data);
+  return response.data;
+}
