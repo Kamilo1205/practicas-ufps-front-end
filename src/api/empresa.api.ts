@@ -113,3 +113,9 @@ export const habilitarTutorEmpresaApi = async (tutorId: string): Promise<any> =>
   console.log(response.data);
   return response.data;
 }
+
+export const registrarDependenciaApi = async (dependencia: any): Promise<any> => { 
+  const response = await axios.post(`dependencias`, dependencia);
+  console.log(response.data);
+  return response.data;
+}

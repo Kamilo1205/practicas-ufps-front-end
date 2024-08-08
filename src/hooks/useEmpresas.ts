@@ -14,7 +14,8 @@ import {
     getPracticantesDeEmpresaApi,
     asignarTutorEmpresaApi,
     deshabilitarTutorEmpresaApi,
-    habilitarTutorEmpresaApi
+    habilitarTutorEmpresaApi,
+    registrarDependenciaApi
 } from '../api/empresa.api';
 import { Empresa, Tutor } from '../interfaces';
 import Swal from 'sweetalert2';
@@ -52,6 +53,7 @@ type UseEmpresasReturn = {
   asignarTutorAsignacion: (asignacionId: string, tutorId: string) => Promise<void>
   deshabilitarTutorEmpresa: (tutorId: string) => Promise<void>
   habilitarTutorEmpresa: (tutorId: string) => Promise<void>
+  registrarDependencia: (data: any) => Promise<void>
 };
 
 const useEmpresas = (): UseEmpresasReturn => {
@@ -343,7 +345,36 @@ const useEmpresas = (): UseEmpresasReturn => {
     finally {
       setCargando(false);
     }
-   }
+  }
+  
+  const registrarDependencia = async (data: any) => { 
+    setCargando(true);
+    try {
+      Swal.fire({
+        title: 'Cargando...',
+        text: 'Por favor, espere.',
+        allowOutsideClick: false,
+        didOpen: () => {
+          Swal.showLoading();
+        }
+      });
+      registrarDependenciaApi(data).then((data) => {
+        Swal.close(); 
+        Swal.fire('Dependencia registrada', 'La dependencia ha sido registrada correctamente', 'success').then(() => {
+          setError(null);
+          location.reload();
+        })
+      }).catch((err) => { 
+        Swal.fire('Error', 'No se ha podido registrar la dependencia', 'error')
+      })
+    }
+    catch (err) { 
+      setError(err as AxiosError);
+    }
+    finally {
+      setCargando(false);
+    }
+  }
 
   return { 
     empresas, 
@@ -367,7 +398,8 @@ const useEmpresas = (): UseEmpresasReturn => {
     getPracticantesDeEmpresa,
     asignarTutorAsignacion,
     deshabilitarTutorEmpresa,
-    habilitarTutorEmpresa
+    habilitarTutorEmpresa,
+    registrarDependencia
   };
 };
 

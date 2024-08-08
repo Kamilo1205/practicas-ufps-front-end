@@ -14,6 +14,7 @@ import { FileInput } from '../../components/ui/Input/FileInput';
 import { useNavigate } from 'react-router-dom';
 import { useState } from 'react';
 import { DialogComponent } from '../../components/ui/Dialog/DialogComponent';
+import { RegistroDependencia } from './RegistroDependencia';
 
 export const RegistroPage = () => {
   const form: UseFormReturn<EmpresaSchema> = useForm<EmpresaSchema>({
@@ -103,7 +104,9 @@ export const RegistroPage = () => {
       {
         esDependencia !== null && <>
           {
-            esDependencia ? (<></>) : (<>
+            esDependencia ? (<>
+              <RegistroDependencia />
+            </>) : (<>
 
               <Form {...form}>
                 <form onSubmit={form.handleSubmit(onSubmit)}>
