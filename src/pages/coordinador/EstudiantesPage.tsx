@@ -68,6 +68,7 @@ export const EstudiantesPage = () => {
     total: 0,
 
   });
+  //console.log('a', estudiantes.estudiantes[0]?.asignaciones?.find((a) => a.solicitud.semestre.actual))
   console.log(estudiantes)
   const [totalItems, setTotalItems] = useState<number>(0); // Número total de ítems
   const [currentPage, setCurrentPage] = useState<number>(1);
@@ -242,7 +243,7 @@ export const EstudiantesPage = () => {
                     {
                       //TODO: Diferenciar cuando el plan está completo o no.
                       //TODO: Implementar vizualización del plan de trabajo.
-                      !estudiante.asignacion?.planDeTrabajo ? (
+                      !estudiante?.asignaciones?.find((a) => a.solicitud.semestre.actual)?.planDeTrabajo ? (
                         <div className="flex justify-center pr-6">
                           <IoAlertCircle className="text-yellow-500 w-5 h-5" />
                           <span>Pendiente</span>
