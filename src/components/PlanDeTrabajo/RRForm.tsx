@@ -7,39 +7,51 @@ import { FaTrash } from "react-icons/fa";
 import { IoMdAdd } from "react-icons/io";
 import { Label, TextArea } from "../ui";
 import { BsEmojiAstonished } from "react-icons/bs";
-
-interface TableRow {
-  resultado: string;
-  indicador: string;
-}
+import { Resultado } from "../../interfaces/resultado.interface";
 
 interface RRFormProps {
+  idPlan: string;
   rol: boolean;
-  resultado: [{}];
-  requerimiento_tecnicos: "";
+  resultado?: Resultado[];
+  reques: string;
+  updatedReque: (plantrabajoId: string, updatedRequerimiento: string) => void;
+  updatedResul: (IdPlan: string, resultado: Resultado[], ok: string) => void;
 }
 
-const RRForm: FC<RRFormProps> = ({ rol }) => {
+const RRForm: FC<RRFormProps> = ({
+  rol,
+  resultado,
+  idPlan,
+  updatedReque,
+  updatedResul,
+  reques,
+}) => {
   const [isEditing, setIsEditing] = useState(false);
+  const [rows, setRows] = useState<Resultado[]>([]);
+  const [reque, setReque] = useState("");
 
   const handleEdit = () => {
     setIsEditing(true);
   };
   const handleNoEdit = () => {
+    const initialRows = resultado?.map((res) => ({
+      resultado: res.resultado,
+      indicador: res.indicador,
+    }));
+    setRows(initialRows || []);
+    setReque(reques || "");
     setIsEditing(false);
   };
 
   const handleSave = () => {
     setIsEditing(false);
-    Swal.fire({
-      title: "Información guardada",
-      text: "Los datos han sido guardados correctamente.",
-      icon: "success",
-      confirmButtonText: "OK",
-    });
+    const resultados = rows.filter(
+      (item) => item.resultado !== "" || item.indicador !== ""
+    );
+    setRows(resultados);
+    const ok = updatedReque(idPlan, reque);
+    updatedResul(idPlan, resultados, ok);
   };
-
-  const [rows, setRows] = useState<TableRow[]>([]);
 
   const addRow = () => {
     setRows([...rows, { resultado: "", indicador: "" }]);
@@ -76,7 +88,21 @@ const RRForm: FC<RRFormProps> = ({ rol }) => {
       }
     });
   }, [rows]);
+  useEffect(() => {
+    if (resultado && resultado.length > 0) {
+      const initialRows = resultado.map((res) => ({
+        resultado: res.resultado,
+        indicador: res.indicador,
+      }));
+      setRows(initialRows);
+    }
+  }, [resultado]);
 
+  useEffect(() => {
+    if (reques != null) {
+      setReque(reques);
+    }
+  }, [reques]);
   return (
     <div className="mb-10">
       <div className="flex w-full">
@@ -115,7 +141,14 @@ const RRForm: FC<RRFormProps> = ({ rol }) => {
       </div>
 
       <Label>Requerimiento Técnicos</Label>
-      <TextArea rows={5} disabled={!isEditing} />
+      <TextArea
+        rows={5}
+        disabled={!isEditing}
+        value={reque}
+        onChange={(e) => {
+          setReque(e.target.value);
+        }}
+      />
 
       <div className="mt-3 mb-4 overflow-auto">
         <table className="min-w-full border border-gray-300 bg-white text-left">

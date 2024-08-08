@@ -28,7 +28,6 @@ interface ActivityProps {
   updateActivity: (activity: Actividad) => void;
   deleteActivity: (id: string) => void;
   actualizarLista: (activity: Actividad) => void;
-  updateActivityReset: (activity: Actividad) => void;
   rol: boolean;
   informeP?: boolean;
 }
@@ -37,7 +36,6 @@ export const Activity: React.FC<ActivityProps> = ({
   activity,
   updateActivity,
   deleteActivity,
-  updateActivityReset,
   rol,
   actualizarLista,
   informeP = false,
@@ -63,6 +61,9 @@ export const Activity: React.FC<ActivityProps> = ({
   const [resultados, setResultados] = useState(
     activity?.resultadosObtenidos || ""
   );
+
+  const [impactos, setImpactos] = useState(activity?.impactosPercibidos || "");
+  const [limitaciones, setLimitaciones] = useState(activity?.limitaciones || "");
 
   const { createSubActividad, deleteSubActividad, updateSubActividad } =
     useSubActividad();
@@ -97,11 +98,6 @@ export const Activity: React.FC<ActivityProps> = ({
     setIsEditing(!isEditing);
   };
 
-
-
-
-
-  
   const addSubActivity = (subActivity: SubActividad) => {
     const sub = { ...subActivity, actividadId: activity?.id };
     createSubActividad(sub).then((response) => {
@@ -208,13 +204,25 @@ export const Activity: React.FC<ActivityProps> = ({
   };
 
   const saveInforme = () => {
-    const updateAct = {
-      ...activity,
-      resultadosObtenidos: resultados,
-      recursosUtilizados: recursos,
-      estrategiaDesarrollo: estrategia,
-    };
-    updateActivity(updateAct);
+    if (informeP) {
+      const updateAct = {
+        ...activity,
+        resultadosObtenidos: resultados,
+        recursosUtilizados: recursos,
+        estrategiaDesarrollo: estrategia,
+        limitaciones: limitaciones,
+        impactosPercibidos: impactos,
+      };
+      updateActivity(updateAct);
+    } else {
+      const updateAct = {
+        ...activity,
+        resultadosObtenidos: resultados,
+        recursosUtilizados: recursos,
+        estrategiaDesarrollo: estrategia,
+      };
+      updateActivity(updateAct);
+    }
   };
   const togglePopover = () => {
     setOpenView(!OpenView);
@@ -798,6 +806,8 @@ export const Activity: React.FC<ActivityProps> = ({
                             <TextArea
                               rows={3}
                               disabled={!rol}
+                              value={impactos}
+                              onChange={(e) => setImpactos(e.target.value)}
                               placeholder="Describa los aportes y beneficios, que la realización de la actividad o subactividad le aportó a usted a nivel personal, académico y laboral"
                             ></TextArea>
                           </td>
@@ -810,6 +820,8 @@ export const Activity: React.FC<ActivityProps> = ({
                             <TextArea
                               rows={3}
                               disabled={!rol}
+                              value={limitaciones}
+                              onChange={(e) => setLimitaciones(e.target.value)}
                               placeholder="Relacione las situaciones presentadas durante el desarrollo de la práctica que de un modo u otro retrasaron o limitaron el logro de los objetivos trazados inicialmente."
                             ></TextArea>
                           </td>

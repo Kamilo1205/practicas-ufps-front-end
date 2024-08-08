@@ -36,18 +36,25 @@ export const EstudianteRouter = () => {
                   isTutor={false}
                 />
               }
-              
             />
             <Route
               path="informeparcial"
               element={
-                <InformeParcialVista rol={"estudiante"} initialOpen={false} /> //TRUE=== ESTUDIANTE SINO POS FALSE
+                <InformeParcialVista
+                  rol={"estudiante"}
+                  initialOpen={false}
+                  estudiante={estudiante}
+                /> //TRUE=== ESTUDIANTE SINO POS FALSE
               }
             />
             <Route
               path="informefinal"
               element={
-                <InformeFinalVista rol={"estudiante"} initialOpen={false} /> //TRUE=== ESTUDIANTE SINO POS FALSE
+                <InformeFinalVista
+                  rol={"estudiante"}
+                  initialOpen={false}
+                  estudiante={estudiante}
+                /> //TRUE=== ESTUDIANTE SINO POS FALSE
               }
             />
             <Route
@@ -56,9 +63,11 @@ export const EstudianteRouter = () => {
                 <EvaluacionEstudianteVista
                   rol={"estudiante"}
                   initialOpen={false}
+                  estudiante={estudiante}
                 />
               }
             />
+
             <Route path="*" element={<Navigate to="/estudiante" replace />} />
           </Route>
         </>

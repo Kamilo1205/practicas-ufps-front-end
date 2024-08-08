@@ -4,9 +4,10 @@ interface CheckboxProps {
   label: string;
   checked?: boolean;
   onChange?: (checked: boolean) => void;
+  isEstudiante:boolean;
 }
 
-const Checkbox: React.FC<CheckboxProps> = ({ checked = false, onChange }) => {
+const Checkbox: React.FC<CheckboxProps> = ({ checked = false, onChange, isEstudiante}) => {
   const [isChecked, setIsChecked] = useState(checked);
 
   const handleChange = () => {
@@ -24,7 +25,7 @@ const Checkbox: React.FC<CheckboxProps> = ({ checked = false, onChange }) => {
         style={{ width: "20px", height: "20px" }}
         checked={isChecked}
         onChange={handleChange}
-        disabled={isChecked}
+        disabled={isChecked || isEstudiante}
       />
     </label>
   );

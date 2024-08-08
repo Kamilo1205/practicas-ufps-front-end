@@ -1,25 +1,47 @@
-import { FC, useState } from "react";
+import { FC, useEffect, useState } from "react";
 import InformeParicialPage from "../../pages/estudiante/InformeParicialPage";
 import { DialogComponent } from "../ui/Dialog/DialogComponent";
 import { IoCloseSharp } from "react-icons/io5";
+import { Estudiante } from "../../interfaces/estudiante.interface";
+import { PlanDeTrabajo } from "../../interfaces/plantrabajo.interface";
+import usePlantrabajo from "../../hooks/usePlanTrabajo";
+import { useAuth } from "../../contexts";
 
 interface ParcialProps {
   initialOpen: boolean;
   idPlanTrabajo?: number;
   rol: string;
   isTutor?: boolean;
+  estudiante?: Estudiante;
+  plantrabajo2?: PlanDeTrabajo;
 }
 
 const InformeParcialVista: FC<ParcialProps> = ({
   initialOpen,
   rol,
   idPlanTrabajo,
+  estudiante,
+  plantrabajo2,
 }) => {
   const [open, setOpen] = useState<boolean>(initialOpen);
+  const [planTrabajo, setPlanTrabajo] = useState<PlanDeTrabajo>();
+  const { fetchMiPlanTrabajoActualEstudiante } = usePlantrabajo();
+  const { user } = useAuth();
+  useEffect(() => {
+    if (estudiante?.id) {
+      fetchMiPlanTrabajoActualEstudiante()
+        .then((result) => {
+          setPlanTrabajo(result);
+        })
+        .catch((error) => {
+          console.error("Error fetching plan de trabajo:", error);
+        });
+    }
+  }, [estudiante?.id]);
   return (
     <>
       {rol === "estudiante" ? (
-        <InformeParicialPage rol={true} />
+        <InformeParicialPage rol={true} plantrabajo={planTrabajo} />
       ) : (
         <DialogComponent
           isOpen={open}
@@ -32,7 +54,7 @@ const InformeParcialVista: FC<ParcialProps> = ({
                   <IoCloseSharp style={{ width: "30px", height: "30px" }} />
                 </button>
               </div>
-              <InformeParicialPage rol={false} />{" "}
+              <InformeParicialPage rol={false} plantrabajo={planTrabajo} />
             </div>
           }
           title=""

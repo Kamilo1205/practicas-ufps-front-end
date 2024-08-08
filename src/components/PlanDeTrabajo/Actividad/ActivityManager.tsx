@@ -170,7 +170,6 @@ export const ActivityManager: React.FC<ActivityProps> = ({
             updateActivity={updateActivity}
             deleteActivity={deleteActivity}
             actualizarLista={actualizarLista}
-            updateActivityReset={updateActivityReset}
             rol={rol}
             informeP={informeP}
           />

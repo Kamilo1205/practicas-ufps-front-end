@@ -1,4 +1,4 @@
-import { FC, useState } from "react";
+import { FC, useEffect, useState } from "react";
 import { ActivityManager } from "../../components/PlanDeTrabajo/Actividad/ActivityManager";
 import { TextArea } from "../../components/ui";
 import { Label } from "./../../components/ui/Label/Label";
@@ -6,31 +6,129 @@ import { TiInfoLarge } from "react-icons/ti";
 import { TiInfoLargeOutline } from "react-icons/ti";
 import { TfiSave } from "react-icons/tfi";
 import Swal from "sweetalert2";
-import ComentariosComponent from "../../components/PlanDeTrabajo/ComentariosComponent";
-import { Comment } from "../../components/PlanDeTrabajo/Actividad/types";
+import { PlanDeTrabajo } from "../../interfaces/plantrabajo.interface";
+import usePlantrabajo from "../../hooks/usePlanTrabajo";
+import { useAuth } from "../../contexts";
+import { Checkbox } from "@headlessui/react";
 
 interface InfoProps {
   rol: boolean;
+  plantrabajo: PlanDeTrabajo;
 }
-const InformeFinalPage: FC<InfoProps> = ({ rol }) => {
+const InformeFinalPage: FC<InfoProps> = ({ rol, plantrabajo }) => {
   const [OpenView, setOpenView] = useState(false);
+  const [id, setID] = useState("");
   const [adap, setAdap] = useState("");
   const [tol, setTol] = useState("");
   const [nueR, setNuer] = useState("");
   const [fuer, setFuer] = useState("");
   const [comp, setComp] = useState("");
   const [concl, setConcl] = useState("");
+  const {
+    createInformeFinal,
+    updateInformeFinal,
+    aprobarPlanEmpresa,
+    aprobarPlanTutor,
+  } = usePlantrabajo();
+  const { user } = useAuth();
+  const roles = user?.roles;
+  const rolesNecesarios = ["tutor", "coordinador"];
 
-  const [comments, setComments] = useState<Comment[]>([]);
+  const esEstudiante = roles?.some((role) => role.nombre === "estudiante");
+  const esTutorYEmpresa = rolesNecesarios.every((rolNecesario) =>
+    roles?.some((role) => role.nombre === rolNecesario)
+  );
+  const esOnlyTutor = roles?.some((role) => role.nombre === "tutor");
+  const esOnlyCoodinador = roles?.some((role) => role.nombre === "coordinador");
 
-  const saveDoc = () => {
-    Swal.fire({
-      title: "Información Guardada",
-      text: "Los datos han sido guardados correctamente.",
-      icon: "success",
-      confirmButtonText: "OK",
+  const [aprobacionTutor, setAprobacionTutor] = useState(false);
+  const [aprobacionCoordinador, setAprobacionCoordinador] = useState(false);
+
+  const handleCheckboxChangeTutor = () => {
+    aprobarPlanTutor(plantrabajo?.id).then((response) => {
+      console.log(response);
+      setAprobacionTutor(true);
     });
   };
+
+  const handleCheckboxChangeCoordinador = () => {
+    aprobarPlanEmpresa(plantrabajo.id).then((response) => {
+      console.log(response);
+      setAprobacionCoordinador(true);
+    });
+  };
+
+  const saveDoc = () => {
+    if (!plantrabajo.informeFinal) {
+      const informe: informeFinal = {
+        adaptacion: adap || " ",
+        compromisoEficiencia: comp || " ",
+        conclusion: concl || " ",
+        fueronAsumidas: fuer || " ",
+        tolerancia: tol || " ",
+        nuevasResponsabilidades: nueR || " ",
+      };
+
+      createInformeFinal(informe).then((response) => {
+        if (response.ok === "ok") {
+          Swal.fire({
+            title: "Información guardada",
+            text: "Los datos han sido guardados correctamente.",
+            icon: "success",
+            confirmButtonText: "Aceptar",
+          });
+          if (response.data.id) setID(response.data.id);
+        } else {
+          Swal.fire({
+            title: "Ha ocurrido un error",
+            text: "No se guardo la Información",
+            icon: "error",
+            confirmButtonText: "Aceptar",
+          });
+        }
+      });
+    } else {
+      const informe: informeFinal = {
+        id: id,
+        adaptacion: adap || " ",
+        compromisoEficiencia: comp || " ",
+        conclusion: concl || " ",
+        fueronAsumidas: fuer || " ",
+        tolerancia: tol || " ",
+        nuevasResponsabilidades: nueR || " ",
+      };
+
+      updateInformeFinal(id, informe).then((response) => {
+        if (response === "ok") {
+          Swal.fire({
+            title: "Información guardada",
+            text: "Los datos han sido guardados correctamente.",
+            icon: "success",
+            confirmButtonText: "Aceptar",
+          });
+        } else {
+          Swal.fire({
+            title: "Ha ocurrido un error",
+            text: "No se guardo la Información",
+            icon: "error",
+            confirmButtonText: "Aceptar",
+          });
+        }
+      });
+    }
+  };
+
+  useEffect(() => {
+    if (plantrabajo?.informeFinal != null) {
+      setID(plantrabajo?.informeFinal?.id);
+      setAdap(plantrabajo?.informeFinal?.adaptacion);
+      setTol(plantrabajo?.informeFinal?.tolerancia);
+      setNuer(plantrabajo?.informeFinal?.nuevasResponsabilidades);
+      setComp(plantrabajo?.informeFinal?.compromisoEficiencia);
+      setFuer(plantrabajo?.informeFinal?.fueronAsumidas);
+      setConcl(plantrabajo?.informeFinal?.conclusion);
+    }
+  }, [plantrabajo?.informeFinal]);
 
   return (
     <>
@@ -38,8 +136,110 @@ const InformeFinalPage: FC<InfoProps> = ({ rol }) => {
         <div className="text-gray-600 font-bold text-2xl mb-2 mt-2 flex justify-center">
           Informe Final
         </div>
+        {esEstudiante && (
+          <div>
+            <div className="w-full flex rounded border mb-4">
+              <div className="w-full flex justify-start mt-3">
+                <div className="text-xl mb-4 ml-2 font-light">
+                  Aprobación de Tutor Empresa
+                </div>
+              </div>
+              <div className="w-full flex justify-end">
+                <Checkbox checked={aprobacionTutor} isEstudiante={true} />
+              </div>
+            </div>
+            <div className="w-full flex rounded border mb-4">
+              <div className="w-full flex justify-start mt-3">
+                <div className="text-xl mb-4 ml-2 font-light">
+                  Aprobación de Tutor Practicas
+                </div>
+              </div>
+              <div className="w-full flex justify-end">
+                <Checkbox checked={aprobacionCoordinador} isEstudiante={true} />
+              </div>
+            </div>
+          </div>
+        )}
+        {esTutorYEmpresa && (
+          <div>
+            <div className="w-full flex rounded border mb-4">
+              <div className="w-full flex justify-start mt-3">
+                <div className="text-xl mb-4 ml-2 font-light">
+                  Aprobación de Tutor Empresa
+                </div>
+              </div>
+              <div className="w-full flex justify-end">
+                <Checkbox
+                  onChange={handleCheckboxChangeTutor}
+                  checked={aprobacionTutor}
+                />
+              </div>
+            </div>
+            <div className="w-full flex rounded border mb-4">
+              <div className="w-full flex justify-start mt-3">
+                <div className="text-xl mb-4 ml-2 font-light">
+                  Aprobación de Tutor Practicas
+                </div>
+              </div>
+              <div className="w-full flex justify-end">
+                <Checkbox
+                  onChange={handleCheckboxChangeCoordinador}
+                  checked={aprobacionCoordinador}
+                />
+              </div>
+            </div>
+          </div>
+        )}
+        {esOnlyTutor && (
+          <div>
+            <div className="w-full flex rounded border mb-4">
+              <div className="w-full flex justify-start mt-3">
+                <div className="text-xl mb-4 ml-2 font-light">
+                  Aprobación de Tutor Empresa
+                </div>
+              </div>
+              <div className="w-full flex justify-end">
+                <Checkbox
+                  onChange={handleCheckboxChangeCoordinador}
+                  checked={aprobacionTutor}
+                />
+              </div>
+            </div>
+          </div>
+        )}
+        {esOnlyCoodinador && (
+          <div>
+            <div className="w-full flex rounded border mb-4">
+              <div className="w-full flex justify-start mt-3">
+                <div className="text-xl mb-4 ml-2 font-light">
+                  Aprobación de Tutor Empresa
+                </div>
+              </div>
+              <div className="w-full flex justify-end">
+                <Checkbox isEstudiante={true} checked={aprobacionTutor} />
+              </div>
+            </div>
+            <div className="w-full flex rounded border mb-4">
+              <div className="w-full flex justify-start mt-3">
+                <div className="text-xl mb-4 ml-2 font-light">
+                  Aprobación de Tutor Practicas
+                </div>
+              </div>
+              <div className="w-full flex justify-end">
+                <Checkbox
+                  onChange={handleCheckboxChangeCoordinador}
+                  checked={aprobacionCoordinador}
+                />
+              </div>
+            </div>
+          </div>
+        )}
         <div className="border" />
-        <ActivityManager rol={rol} informeP={true} />
+        <ActivityManager
+          rol={rol}
+          informeP={true}
+          actividades={plantrabajo?.seccionActividades?.actividades}
+        />
         <div className="border" />
         <div className="mt-2 p-2">
           <Label>Adaptación</Label>
@@ -193,15 +393,6 @@ const InformeFinalPage: FC<InfoProps> = ({ rol }) => {
           </div>
         </div>
         <div className="border mt-5 mb-3" />
-        <div className="flex w-full justify-end">
-          <ComentariosComponent
-            rol={rol}
-            isShow={true}
-            comments={comments}
-            setComments={setComments}
-            autor={"TUTOR"}
-          />
-        </div>
       </div>
     </>
   );

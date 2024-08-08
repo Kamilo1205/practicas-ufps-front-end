@@ -12,7 +12,7 @@ export interface Actividad {
   estrategiaDesarrollo?: string;
   recursosUtilizados?: string;
   resultadosObtenidos?: string;
-  impactos?: string;
+  impactosPercibidos?: string;
   limitaciones?: string;
   subActividades?: SubActividad[];
 }

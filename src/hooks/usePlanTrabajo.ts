@@ -9,8 +9,19 @@ import {
   fetchPlanTrabajoByIdEstudiante as fecthPlanByIdEstudianteAPI,
   aprobarPlanEmpresa as aprobarEmpresaAPI,
   aprobarPlanTutor as aprobarPlanTutorAPI,
+  updateResultados as updateResultadosAPI,
+  updateRequerimiento as updatedRequeAPI,
+  evaluacionCreateEstudiante as evaluacionCreateAPI,
+  evaluacionUpdateEstudiante as evaluacionUpdateAPI,
 } from "../api/plantrabajo.api";
 import { PlanDeTrabajo } from "../interfaces/plantrabajo.interface";
+import { Resultado } from "../interfaces/resultado.interface";
+import {
+  createPrimerInforme as createprimerInformeAPI,
+  createFinalInforme as createinformeFinalAPI,
+  updateInformeFinal as updateinformeFinalAPI,
+  updateInformePrimer as updateprimerInformeAPI,
+} from "../api/Informes.api";
 
 type UsePlantrabajoReturn = {
   allplanestrabajo: PlanDeTrabajo[] | null;
@@ -24,6 +35,28 @@ type UsePlantrabajoReturn = {
   fetchMiPlanTrabajoActualEstudiante: () => Promise<PlanDeTrabajo>;
   aprobarPlanEmpresa: (id: string) => Promise<PlanDeTrabajo>;
   aprobarPlanTutor: (id: string) => Promise<PlanDeTrabajo>;
+  updatedRequerimientos: (
+    plantrabajoId: string,
+    updatedRequerimiento: string
+  ) => string;
+  updatedResultado: (idPlan: string, resultados: Resultado[]) => string;
+  createPrimerInforme: (newInforme: primerInforme) => Promise<{
+    ok: string;
+    data: primerInforme;
+  }>;
+  createInformeFinal: (
+    newInforme: informeFinal
+  ) => Promise<{ ok: string; data: informeFinal }>;
+  updateInformePrimer: (
+    idPlan: string,
+    informe: primerInforme
+  ) => Promise<string>;
+  updateInformeFinal: (
+    idPlan: string,
+    informe: informeFinal
+  ) => Promise<string>;
+  evaluacionCreateEstudiante: (evaluacion: Evaluacion) => Promise<string>;
+  evaluacionUpdateEstudiante: (evaluacion: Evaluacion) => Promise<string>;
 };
 
 const usePlantrabajo = (): UsePlantrabajoReturn => {
@@ -148,6 +181,125 @@ const usePlantrabajo = (): UsePlantrabajoReturn => {
     }
   };
 
+  const updatedRequerimientos = async (
+    plantrabajoId: string,
+    updatedRequerimiento: string
+  ) => {
+    setLoading(true);
+    try {
+      await updatedRequeAPI(plantrabajoId, updatedRequerimiento);
+      setError(null);
+      return "ok";
+    } catch (err) {
+      setError(err as AxiosError);
+      return "mal";
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const updatedResultado = async (idPlan: string, resultados: Resultado[]) => {
+    setLoading(true);
+    try {
+      await updateResultadosAPI(idPlan, resultados);
+      setError(null);
+      return "ok";
+    } catch (err) {
+      setError(err as AxiosError);
+      return "mal";
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const createPrimerInforme = async (newInforme: primerInforme) => {
+    setLoading(true);
+    try {
+      const data = await createprimerInformeAPI(newInforme);
+      setError(null);
+      return { ok: "ok", data: data };
+    } catch (err) {
+      setError(err as AxiosError);
+      return "mal";
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const createInformeFinal = async (newInforme: informeFinal) => {
+    setLoading(true);
+    try {
+      const data = await createinformeFinalAPI(newInforme);
+      setError(null);
+      return { ok: "ok", data: data };
+    } catch (err) {
+      setError(err as AxiosError);
+      return "mal";
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const updateInformePrimer = async (
+    idInforme: string,
+    informe: primerInforme
+  ) => {
+    setLoading(true);
+    try {
+      await updateprimerInformeAPI(idInforme, informe);
+      setError(null);
+      return "ok";
+    } catch (err) {
+      setError(err as AxiosError);
+      return "mal";
+    } finally {
+      setLoading(false);
+    }
+  };
+  const updateInformeFinal = async (
+    idInforme: string,
+    informe: informeFinal
+  ) => {
+    setLoading(true);
+    try {
+      await updateinformeFinalAPI(idInforme, informe);
+      setError(null);
+      return "ok";
+    } catch (err) {
+      setError(err as AxiosError);
+      return "mal";
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const evaluacionCreateEstudiante = async (evaluacion: Evaluacion) => {
+    setLoading(true);
+    try {
+      await evaluacionCreateAPI(evaluacion);
+      setError(null);
+      return "ok";
+    } catch (err) {
+      setError(err as AxiosError);
+      return "mal";
+    } finally {
+      setLoading(false);
+    }
+  };
+  const evaluacionUpdateEstudiante = async (evaluacion: Evaluacion) => {
+    setLoading(true);
+    try {
+      await evaluacionUpdateAPI(evaluacion);
+      setError(null);
+      return "ok";
+    } catch (err) {
+      setError(err as AxiosError);
+      return "mal";
+    } finally {
+      setLoading(false);
+    }
+  };
+
   useEffect(() => {
     const fetchData = async () => {
       await fetchPlanTrabajoActual();
@@ -171,6 +323,14 @@ const usePlantrabajo = (): UsePlantrabajoReturn => {
     fetchPlanTrabajoById,
     aprobarPlanEmpresa,
     aprobarPlanTutor,
+    updatedRequerimientos,
+    updatedResultado,
+    createPrimerInforme,
+    createInformeFinal,
+    updateInformeFinal,
+    updateInformePrimer,
+    evaluacionCreateEstudiante,
+    evaluacionUpdateEstudiante,
   };
 };
 

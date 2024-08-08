@@ -1,16 +1,24 @@
-import { useState } from "react";
+import { FC, useEffect, useState } from "react";
 import TablaGestion from "./../../components/ui/Table/TablaGestion";
-import Title from "../../components/ui/Tittle/Title";
 import { TextArea } from "./../../components/ui/Input/TextArea";
-import { MdEdit, MdModeEditOutline } from "react-icons/md";
+import { MdEdit } from "react-icons/md";
 import { VscChromeClose } from "react-icons/vsc";
 import { TfiSave } from "react-icons/tfi";
 import Swal from "sweetalert2";
+import { PlanDeTrabajo } from "./../../interfaces/plantrabajo.interface";
 
 interface EvaluacionProp {
   rol: boolean;
+  planTrabajo?: PlanDeTrabajo;
+  evaluacionCreate: (evaluacionCreate: Evaluacion) => void;
+  evaluacionUpdate: (evaluacionUpdate: Evaluacion) => void;
 }
-const EvaluacionEstudiante = ({ rol = true }) => {
+const EvaluacionEstudiante: FC<EvaluacionProp> = ({
+  rol = true,
+  planTrabajo,
+  evaluacionCreate,
+  evaluacionUpdate,
+}) => {
   const eval1 = [
     "1. Asesoría en el inicio del proceso de práctica profesional",
     "2. Gestión para ayudar a conseguir la práctica profesional",
@@ -65,6 +73,32 @@ const EvaluacionEstudiante = ({ rol = true }) => {
 
   const [isEditing, setIsEditing] = useState(false);
   const [comentarios, setComentarios] = useState("");
+  const save = () => {
+    setIsEditing(!isEditing);
+
+    const evaluacionUpdat: Evaluacion = {
+      id: planTrabajo?.evaluacion?.id,
+      procesoDeGestion: evaluacion1,
+      jefeInmediato: evaluacion2,
+      empresa: evaluacion3,
+      aporteRealizacion: evaluacion4,
+      comentarios: comentarios || " ",
+    };
+
+    const evaluacionCrear: Evaluacion = {
+      procesoDeGestion: evaluacion1,
+      jefeInmediato: evaluacion2,
+      empresa: evaluacion3,
+      aporteRealizacion: evaluacion4,
+      comentarios: comentarios || " ",
+    };
+
+    if (planTrabajo?.evaluacion != null) {
+      evaluacionUpdate(evaluacionUpdat);
+    } else {
+      evaluacionCreate(evaluacionCrear);
+    }
+  };
   const handleCerrar = () => {
     Swal.fire({
       title: "¿Estás seguro que deseas salir?",
@@ -76,22 +110,37 @@ const EvaluacionEstudiante = ({ rol = true }) => {
     }).then((result) => {
       if (result.isConfirmed) {
         setEvaluacion1(
-          Array(eval1.length).fill(Array(columnas.length).fill(false))
+          planTrabajo?.evaluacion?.procesoDeGestion ||
+            Array(eval1.length).fill(Array(columnas.length).fill(false))
         );
         setEvaluacion2(
-          Array(eval2.length).fill(Array(columnas.length).fill(false))
+          planTrabajo?.evaluacion?.jefeInmediato ||
+            Array(eval2.length).fill(Array(columnas.length).fill(false))
         );
         setEvaluacion3(
-          Array(eval3.length).fill(Array(columnas.length).fill(false))
+          planTrabajo?.evaluacion?.empresa ||
+            Array(eval3.length).fill(Array(columnas.length).fill(false))
         );
         setEvaluacion4(
-          Array(eval4.length).fill(Array(columnas.length).fill(false))
+          planTrabajo?.evaluacion?.aporteRealizacion ||
+            Array(eval4.length).fill(Array(columnas.length).fill(false))
         );
-        setComentarios("");
+        setComentarios(planTrabajo?.evaluacion?.comentarios || "");
         setIsEditing(false);
       }
     });
   };
+
+  useEffect(() => {
+    if (planTrabajo?.evaluacion != null) {
+      setEvaluacion1(planTrabajo?.evaluacion?.procesoDeGestion);
+      setEvaluacion2(planTrabajo?.evaluacion?.jefeInmediato);
+      setEvaluacion3(planTrabajo?.evaluacion?.empresa);
+      setEvaluacion4(planTrabajo?.evaluacion?.aporteRealizacion);
+      setComentarios(planTrabajo?.evaluacion?.comentarios);
+    }
+  }, [planTrabajo?.evaluacion]);
+
   return (
     <div>
       <div className="flex w-full mb-10">
@@ -209,7 +258,7 @@ const EvaluacionEstudiante = ({ rol = true }) => {
                 transition-transform 
                 duration-150 
                 ease-in-out"
-              onClick={() => setIsEditing(!isEditing)}
+              onClick={save}
             >
               <TfiSave className="mt-1 mr-1" />
               Guardar
