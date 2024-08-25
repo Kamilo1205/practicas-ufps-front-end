@@ -26,19 +26,29 @@ const InformeFinalVista: FC<FinalProps> = ({
 }) => {
   const [open, setOpen] = useState<boolean>(initialOpen);
   const [planTrabajo, setPlanTrabajo] = useState<PlanDeTrabajo>();
-  const { fetchMiPlanTrabajoActualEstudiante } = usePlantrabajo();
+  const [planTrabajo2, setPlanTrabajo2] = useState<PlanDeTrabajo>();
+  const { fetchMiPlanTrabajoActualEstudiante, fetchPlanTrabajoById } =
+    usePlantrabajo();
   const { user } = useAuth();
-  useEffect(() => {
-    if (estudiante?.id) {
-      fetchMiPlanTrabajoActualEstudiante()
-        .then((result) => {
-          setPlanTrabajo(result);
-        })
-        .catch((error) => {
-          console.error("Error fetching plan de trabajo:", error);
-        });
-    }
-  }, [estudiante?.id]);
+ useEffect(() => {
+   if (estudiante?.id) {
+     fetchMiPlanTrabajoActualEstudiante()
+       .then((result) => {
+         setPlanTrabajo(result);
+       })
+       .catch((error) => {
+         console.error("Error fetching plan de trabajo:", error);
+       });
+
+     fetchPlanTrabajoById(plantrabajo2?.id)
+       .then((result) => {
+         setPlanTrabajo2(result);
+       })
+       .catch((error) => {
+         console.error("Error fetching plan de trabajo:", error);
+       });
+   }
+ }, [estudiante?.id]);
   return (
     <>
       {rol === "estudiante" ? (
@@ -55,7 +65,7 @@ const InformeFinalVista: FC<FinalProps> = ({
                   <IoCloseSharp style={{ width: "30px", height: "30px" }} />
                 </button>
               </div>
-              <InformeFinalPage rol={false} plantrabajo={planTrabajo} />
+              <InformeFinalPage rol={false} plantrabajo={planTrabajo2} />
             </div>
           }
           title=""

@@ -9,7 +9,7 @@ import Swal from "sweetalert2";
 import { PlanDeTrabajo } from "../../interfaces/plantrabajo.interface";
 import usePlantrabajo from "../../hooks/usePlanTrabajo";
 import { useAuth } from "../../contexts";
-import { Checkbox } from "@headlessui/react";
+import Checkbox from "../../components/ui/Input/Checkbox";
 
 interface InfoProps {
   rol: boolean;
@@ -27,8 +27,8 @@ const InformeFinalPage: FC<InfoProps> = ({ rol, plantrabajo }) => {
   const {
     createInformeFinal,
     updateInformeFinal,
-    aprobarPlanEmpresa,
-    aprobarPlanTutor,
+    aprobarInformeEmpresa,
+    aprobarInformeTutor,
   } = usePlantrabajo();
   const { user } = useAuth();
   const roles = user?.roles;
@@ -45,16 +45,33 @@ const InformeFinalPage: FC<InfoProps> = ({ rol, plantrabajo }) => {
   const [aprobacionCoordinador, setAprobacionCoordinador] = useState(false);
 
   const handleCheckboxChangeTutor = () => {
-    aprobarPlanTutor(plantrabajo?.id).then((response) => {
-      console.log(response);
-      setAprobacionTutor(true);
+    aprobarInformeTutor(plantrabajo?.informeFinal?.id).then((response) => {
+      if (response === "ok") {
+        setAprobacionTutor(true);
+      } else {
+        Swal.fire({
+          title: "Ha ocurrido un error",
+          text: "No se guardo la Información",
+          icon: "error",
+          confirmButtonText: "Aceptar",
+        });
+      }
     });
   };
 
   const handleCheckboxChangeCoordinador = () => {
-    aprobarPlanEmpresa(plantrabajo.id).then((response) => {
+    aprobarInformeEmpresa(plantrabajo?.informeFinal?.id).then((response) => {
       console.log(response);
-      setAprobacionCoordinador(true);
+      if (response === "ok") {
+        setAprobacionCoordinador(true);
+      } else {
+        Swal.fire({
+          title: "Ha ocurrido un error",
+          text: "No se guardo la Información",
+          icon: "error",
+          confirmButtonText: "Aceptar",
+        });
+      }
     });
   };
 
@@ -117,7 +134,6 @@ const InformeFinalPage: FC<InfoProps> = ({ rol, plantrabajo }) => {
       });
     }
   };
-
   useEffect(() => {
     if (plantrabajo?.informeFinal != null) {
       setID(plantrabajo?.informeFinal?.id);
@@ -129,7 +145,16 @@ const InformeFinalPage: FC<InfoProps> = ({ rol, plantrabajo }) => {
       setConcl(plantrabajo?.informeFinal?.conclusion);
     }
   }, [plantrabajo?.informeFinal]);
-
+  useEffect(() => {
+    if (plantrabajo?.informeFinal.tutorEmpresarialAprobo != null) {
+      setAprobacionCoordinador(true);
+    }
+  }, [plantrabajo?.informeFinal?.tutorEmpresarialAprobo]);
+  useEffect(() => {
+    if (plantrabajo?.informeFinal.tutorInstitucionalAprobo != null) {
+      setAprobacionTutor(true);
+    }
+  }, [plantrabajo?.informeFinal?.tutorInstitucionalAprobo]);
   return (
     <>
       <div className="border rounded p-3">
@@ -160,7 +185,7 @@ const InformeFinalPage: FC<InfoProps> = ({ rol, plantrabajo }) => {
             </div>
           </div>
         )}
-        {esTutorYEmpresa && (
+        {esTutorYEmpresa ? (
           <div>
             <div className="w-full flex rounded border mb-4">
               <div className="w-full flex justify-start mt-3">
@@ -189,8 +214,7 @@ const InformeFinalPage: FC<InfoProps> = ({ rol, plantrabajo }) => {
               </div>
             </div>
           </div>
-        )}
-        {esOnlyTutor && (
+        ) : esOnlyTutor ? (
           <div>
             <div className="w-full flex rounded border mb-4">
               <div className="w-full flex justify-start mt-3">
@@ -206,8 +230,7 @@ const InformeFinalPage: FC<InfoProps> = ({ rol, plantrabajo }) => {
               </div>
             </div>
           </div>
-        )}
-        {esOnlyCoodinador && (
+        ) : esOnlyCoodinador ? (
           <div>
             <div className="w-full flex rounded border mb-4">
               <div className="w-full flex justify-start mt-3">
@@ -233,6 +256,8 @@ const InformeFinalPage: FC<InfoProps> = ({ rol, plantrabajo }) => {
               </div>
             </div>
           </div>
+        ) : (
+          <></>
         )}
         <div className="border" />
         <ActivityManager

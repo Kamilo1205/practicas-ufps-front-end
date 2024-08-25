@@ -42,6 +42,7 @@ const PlanDeTrabajoPage: React.FC<PlanTrabProps> = ({
     updatedRequerimientos,
     updatedResultado,
   } = usePlantrabajo();
+  console.log(planTrabajo)
 
   const { user } = useAuth();
   const roles = user?.roles;
@@ -56,18 +57,33 @@ const PlanDeTrabajoPage: React.FC<PlanTrabProps> = ({
 
   const [aprobacionTutor, setAprobacionTutor] = useState(false);
   const [aprobacionCoordinador, setAprobacionCoordinador] = useState(false);
-
   const handleCheckboxChangeTutor = () => {
     aprobarPlanTutor(planTrabajo?.id).then((response) => {
-      console.log(response);
-      setAprobacionTutor(true);
+      if (response != "ok") {
+        setAprobacionTutor(true);
+      } else {
+        Swal.fire({
+          title: "Ha ocurrido un error",
+          text: "No se guardo la Información",
+          icon: "error",
+          confirmButtonText: "Aceptar",
+        });
+      }
     });
   };
 
   const handleCheckboxChangeCoordinador = () => {
     aprobarPlanEmpresa(planTrabajo.id).then((response) => {
-      console.log(response);
-      setAprobacionCoordinador(true);
+      if (response != "ok") {
+        setAprobacionCoordinador(true);
+      } else {
+        Swal.fire({
+          title: "Ha ocurrido un error",
+          text: "No se guardo la Información",
+          icon: "error",
+          confirmButtonText: "Aceptar",
+        });
+      }
     });
   };
 
@@ -116,15 +132,16 @@ const PlanDeTrabajoPage: React.FC<PlanTrabProps> = ({
       }
     }
   }, [planTrabajo]);
-  console.log(planTrabajo);
   useEffect(() => {
-    if (planTrabajo?.tutorEmpresaID != null) {
-      setAprobacionTutor(true);
-    }
-    if (planTrabajo?.tutorInstitucionalID != null) {
+    if (planTrabajo?.tutorInstitucional !== null) {
       setAprobacionCoordinador(true);
     }
-  }, [planTrabajo?.tutorEmpresaID, planTrabajo?.tutorInstitucionalID]);
+  }, [planTrabajo?.tutorInstitucional]);
+  useEffect(() => {
+    if (planTrabajo?.tutorEmpresarial !== null) {
+      setAprobacionTutor(true);
+    }
+  }, [planTrabajo?.tutorEmpresarial]);
   return (
     <>
       <Title titulo="Plan de Trabajo" />
@@ -227,7 +244,7 @@ const PlanDeTrabajoPage: React.FC<PlanTrabProps> = ({
       ) : (
         <></>
       )}
-      
+
       <Collapse rol={rol} isShow={false} title="Estudiante" isComment={false}>
         <div className="w-full flex flex-wrap">
           <div className="p-2 rounded border w-full mb-2 mr-2 ">

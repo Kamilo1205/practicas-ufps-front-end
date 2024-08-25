@@ -13,6 +13,8 @@ import {
   updateRequerimiento as updatedRequeAPI,
   evaluacionCreateEstudiante as evaluacionCreateAPI,
   evaluacionUpdateEstudiante as evaluacionUpdateAPI,
+  aprobarInformeEmpresa as aprobarInformeEmpresaAPI,
+  aprobarInformeTutor as aprobarInformeTutorAPI,
 } from "../api/plantrabajo.api";
 import { PlanDeTrabajo } from "../interfaces/plantrabajo.interface";
 import { Resultado } from "../interfaces/resultado.interface";
@@ -33,8 +35,6 @@ type UsePlantrabajoReturn = {
   fetchPlanTrabajoByIdEstudiante: (id: string) => Promise<PlanDeTrabajo>;
   fetchMisPlanTrabajoEstudiante: () => Promise<void>;
   fetchMiPlanTrabajoActualEstudiante: () => Promise<PlanDeTrabajo>;
-  aprobarPlanEmpresa: (id: string) => Promise<PlanDeTrabajo>;
-  aprobarPlanTutor: (id: string) => Promise<PlanDeTrabajo>;
   updatedRequerimientos: (
     plantrabajoId: string,
     updatedRequerimiento: string
@@ -57,6 +57,10 @@ type UsePlantrabajoReturn = {
   ) => Promise<string>;
   evaluacionCreateEstudiante: (evaluacion: Evaluacion) => Promise<string>;
   evaluacionUpdateEstudiante: (evaluacion: Evaluacion) => Promise<string>;
+  aprobarInformeEmpresa: (id: string) => Promise<string>;
+  aprobarInformeTutor: (id: string) => Promise<string>;
+  aprobarPlanEmpresa: (id: string) => Promise<string>;
+  aprobarPlanTutor: (id: string) => Promise<string>;
 };
 
 const usePlantrabajo = (): UsePlantrabajoReturn => {
@@ -153,29 +157,30 @@ const usePlantrabajo = (): UsePlantrabajoReturn => {
     }
   };
 
-  const aprobarPlanEmpresa = async (id: string): Promise<PlanDeTrabajo> => {
+  const aprobarPlanEmpresa = async (id: string): Promise<string> => {
     setLoading(true);
     try {
-      const data = await aprobarEmpresaAPI(id);
+      await aprobarEmpresaAPI(id);
       setError(null);
-      return data; // Devuelve `PlanDeTrabajo`
+      return "ok"; // Devuelve `PlanDeTrabajo`
     } catch (err) {
       setError(err as AxiosError);
-      throw err; // Lanza el error para que sea manejado por el llamador si es necesario
+      return "false";
+      // Lanza el error para que sea manejado por el llamador si es necesario
     } finally {
       setLoading(false);
     }
   };
 
-  const aprobarPlanTutor = async (id: string): Promise<PlanDeTrabajo> => {
+  const aprobarPlanTutor = async (id: string): Promise<string> => {
     setLoading(true);
     try {
-      const data = await aprobarPlanTutorAPI(id);
+      await aprobarPlanTutorAPI(id);
       setError(null);
-      return data; // Devuelve `PlanDeTrabajo`
+      return "ok"; // Devuelve `PlanDeTrabajo`
     } catch (err) {
       setError(err as AxiosError);
-      throw err; // Lanza el error para que sea manejado por el llamador si es necesario
+      return "false"; // Lanza el error para que sea manejado por el llamador si es necesario
     } finally {
       setLoading(false);
     }
@@ -300,6 +305,34 @@ const usePlantrabajo = (): UsePlantrabajoReturn => {
     }
   };
 
+  const aprobarInformeEmpresa = async (id: string): Promise<string> => {
+    setLoading(true);
+    try {
+      await aprobarInformeEmpresaAPI(id);
+      setError(null);
+      return "ok"; // Devuelve `PlanDeTrabajo`
+    } catch (err) {
+      setError(err as AxiosError);
+      return "false"; // Lanza el error para que sea manejado por el llamador si es necesario
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const aprobarInformeTutor = async (id: string): Promise<string> => {
+    setLoading(true);
+    try {
+      await aprobarInformeTutorAPI(id);
+      setError(null);
+      return "ok"; // Devuelve `PlanDeTrabajo`
+    } catch (err) {
+      setError(err as AxiosError);
+      return "false"; // Lanza el error para que sea manejado por el llamador si es necesario
+    } finally {
+      setLoading(false);
+    }
+  };
+
   useEffect(() => {
     const fetchData = async () => {
       await fetchPlanTrabajoActual();
@@ -331,6 +364,8 @@ const usePlantrabajo = (): UsePlantrabajoReturn => {
     updateInformePrimer,
     evaluacionCreateEstudiante,
     evaluacionUpdateEstudiante,
+    aprobarInformeEmpresa,
+    aprobarInformeTutor,
   };
 };
 

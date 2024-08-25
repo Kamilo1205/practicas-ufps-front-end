@@ -1,3 +1,4 @@
+import { TutorSchema } from "../schemas/tutorSchema";
 import { Comentario } from "./comentarios.interface";
 import { Empresa } from "./empresa.interface";
 import { Estudiante } from "./estudiante.interface";
@@ -5,6 +6,7 @@ import { IntensidadHoraria } from "./intensidad.interface";
 import { Objetivos } from "./objetivos.interface";
 import { Resultado } from "./resultado.interface";
 import { SeccionActividades } from "./seccionActividades";
+import { Tutor } from "./tutor.interface";
 
 export interface PlanDeTrabajo {
   id: string;
@@ -20,7 +22,7 @@ export interface PlanDeTrabajo {
   resultados: Resultado[];
   informeFinal: informeFinal;
   primerInforme: primerInforme;
-  tutorEmpresaID?: string;
-  tutorInstitucionalID?: string;
-  evaluacion: Evaluacion
+  tutorEmpresarial?: TutorSchema;
+  tutorInstitucional?: Tutor;
+  evaluacion: Evaluacion;
 }

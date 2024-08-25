@@ -17,6 +17,8 @@ import { roles } from "../../interfaces/rol.interface";
 import { useAuth } from "../../contexts";
 import { useGrupos } from "../../hooks/useGrupos";
 import PlanDeTrabajoVista from "./../../components/PlanDeTrabajo/Coordinador-Empresa/PlanDeTrabajoVista";
+import InformeParcialVista from './../../components/VistasCoorDTutor/InformeParcialVista';
+import InformeFinalVista from "../../components/VistasCoorDTutor/InformeFinalVista";
 
 /*
 const Tabs = [
@@ -82,6 +84,8 @@ export const EstudiantesPage = () => {
   const [estudiantesCargados, setEstudiantesCargados] =
     useState<boolean>(false);
   const [openPlan, setOpenPlan] = useState(false);
+  const [openInfoP, setOpenInfoP] = useState(false);
+  const [openInfoF, setOpenInfoF] = useState(false);
   //const navigate = useNavigate();
   //const location = useLocation();
 
@@ -284,13 +288,71 @@ export const EstudiantesPage = () => {
                     )
                   }
                 </div>,
-                <div className="flex justify-center pr-6">
-                  <IoAlertCircle className="text-yellow-500 w-5 h-5" />
-                  <span>Pendiente</span>
+                <div className="flex justify-center cursor-pointer w-full pr-6">
+                  {!estudiante?.asignaciones?.find(
+                    (a) => a.solicitud.semestre.actual
+                  )?.planDeTrabajo.primerInforme ? (
+                    <div className="flex justify-center pr-6">
+                      <IoAlertCircle className="text-yellow-500 w-5 h-5" />
+                      <span>Pendiente</span>
+                    </div>
+                  ) : (
+                    <div onClick={() => setOpenInfoP(!openInfoP)}>
+                      <BiCheck className="text-green-500 w-5 h-5" />
+                      <span className="text-blue-400 flex">
+                        Ver
+                        <span className="self-center">
+                          <BiArrowToRight />
+                        </span>
+                        {openInfoP && (
+                          <InformeParcialVista
+                            rol="coordinador"
+                            initialOpen={true}
+                            estudiante={estudiante}
+                            plantrabajo2={
+                              estudiante?.asignaciones?.find(
+                                (a) => a.solicitud.semestre.actual
+                              )?.planDeTrabajo
+                            }
+                            isTutor={true}
+                          />
+                        )}
+                      </span>
+                    </div>
+                  )}
                 </div>,
-                <div className="flex justify-center pr-6">
-                  <IoAlertCircle className="text-yellow-500 w-5 h-5" />
-                  <span>Pendiente</span>
+                <div className="flex justify-center cursor-pointer w-full pr-6">
+                  {!estudiante?.asignaciones?.find(
+                    (a) => a.solicitud.semestre.actual
+                  )?.planDeTrabajo.informeFinal ? (
+                    <div className="flex justify-center pr-6">
+                      <IoAlertCircle className="text-yellow-500 w-5 h-5" />
+                      <span>Pendiente</span>
+                    </div>
+                  ) : (
+                    <div onClick={() => setOpenInfoF(!openInfoF)}>
+                      <BiCheck className="text-green-500 w-5 h-5" />
+                      <span className="text-blue-400 flex">
+                        Ver
+                        <span className="self-center">
+                          <BiArrowToRight />
+                        </span>
+                        {openInfoF && (
+                          <InformeFinalVista
+                            rol="coordinador"
+                            initialOpen={true}
+                            estudiante={estudiante}
+                            plantrabajo2={
+                              estudiante?.asignaciones?.find(
+                                (a) => a.solicitud.semestre.actual
+                              )?.planDeTrabajo
+                            }
+                            isTutor={true}
+                          />
+                        )}
+                      </span>
+                    </div>
+                  )}
                 </div>,
                 estudiante?.usuario?.estaActivo ? (
                   <span className="text-green-700 font-medium text-xs py-1 px-2 ring-1 ring-green-600/20 bg-green-100 rounded-md items-center inline-flex border-green-600 ring-inset">

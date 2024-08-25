@@ -71,18 +71,18 @@ export const EstudiantePerfilComponent = ({ estudiante, rol = '' }: EstudiantePe
       estudiante?.documentoIdentidadUrl &&
       estudiante?.hojaDeVidaUrl) {
       setLoadingDocs(true)
-      Promise.all([
-        getDownloadFileUrl(estudiante?.certificadoAfiliacionEpsUrl),
-        getDownloadFileUrl(estudiante?.documentoIdentidadUrl),
-        getDownloadFileUrl(estudiante?.hojaDeVidaUrl)
-      ]).then((urls) => {
-        setDocumentosUrls({
-          certificadoAfiliacionEpsUrl: urls[0] || '',
-          documentoIdentidadUrl: urls[1] || '',
-          hojaDeVidaUrl: urls[2] || ''
-        })
-        setLoadingDocs(false)
-      })
+      // Promise.all([
+      //   getDownloadFileUrl(estudiante?.certificadoAfiliacionEpsUrl),
+      //   getDownloadFileUrl(estudiante?.documentoIdentidadUrl),
+      //   getDownloadFileUrl(estudiante?.hojaDeVidaUrl)
+      // ]).then((urls) => {
+      //   setDocumentosUrls({
+      //     certificadoAfiliacionEpsUrl: urls[0] || '',
+      //     documentoIdentidadUrl: urls[1] || '',
+      //     hojaDeVidaUrl: urls[2] || ''
+      //   })
+      //   setLoadingDocs(false)
+      // })
     }
   }, [])
 

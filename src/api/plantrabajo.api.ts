@@ -45,6 +45,7 @@ export const fetchPlanTrabajoByIdEstudiante = async (
   return response.data;
 };
 export const aprobarPlanTutor = async (idPlan: string) => {
+  console.log(idPlan);
   const response = await axios.patch(
     `/plan-trabajo/${idPlan}/aprobacion-tutor-institucional`
   );
@@ -52,6 +53,7 @@ export const aprobarPlanTutor = async (idPlan: string) => {
 };
 
 export const aprobarPlanEmpresa = async (idPlan: string) => {
+  console.log(idPlan)
   const response = await axios.patch(
     `/plan-trabajo/${idPlan}/aprobacion-tutor-empresarial`
   );
@@ -91,6 +93,20 @@ export const evaluacionUpdateEstudiante = async (evaluacion: Evaluacion) => {
   const response = await axios.patch(
     `plan-trabajo/evaluacion-estudiante/${evaluacion.id}`,
     evaluacion
+  );
+  return response.data;
+};
+
+export const aprobarInformeTutor = async (id: string) => {
+  const response = await axios.patch(
+    `/informe/${id}/aprobacion-tutor-institucional`
+  );
+  return response.data;
+};
+
+export const aprobarInformeEmpresa = async (id: string) => {
+  const response = await axios.patch(
+    `/informe/${id}/aprobacion-tutor-empresarial`
   );
   return response.data;
 };
