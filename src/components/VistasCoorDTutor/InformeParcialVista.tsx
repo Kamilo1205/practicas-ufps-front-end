@@ -74,4 +74,7 @@ const InformeParcialVista: FC<ParcialProps> = ({
   );
 };
 
+
+
+
 export default InformeParcialVista;
