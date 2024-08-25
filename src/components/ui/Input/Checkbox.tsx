@@ -1,19 +1,28 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 
 interface CheckboxProps {
-  label: string;
+  label?: string;
   checked?: boolean;
   onChange?: (checked: boolean) => void;
-  isEstudiante:boolean;
+  isEstudiante: boolean;
 }
 
-const Checkbox: React.FC<CheckboxProps> = ({ checked = false, onChange, isEstudiante}) => {
+const Checkbox: React.FC<CheckboxProps> = ({
+  checked,
+  onChange,
+  isEstudiante,
+}) => {
   const [isChecked, setIsChecked] = useState(checked);
 
+  useEffect(() => {
+    setIsChecked(checked);
+  }, [checked]);
+
   const handleChange = () => {
-    setIsChecked(!isChecked);
+    const newChecked = !isChecked;
+    setIsChecked(newChecked);
     if (onChange) {
-      onChange(!isChecked);
+      onChange(newChecked);
     }
   };
 

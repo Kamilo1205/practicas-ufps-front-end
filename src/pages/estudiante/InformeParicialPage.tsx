@@ -27,39 +27,52 @@ const InformeParicialPage: FC<InfoProps> = ({ rol, plantrabajo }) => {
   const {
     createPrimerInforme,
     updateInformePrimer,
-    aprobarPlanEmpresa,
-    aprobarPlanTutor,
+    aprobarInformeEmpresa,
+    aprobarInformeTutor,
   } = usePlantrabajo();
 
-   const { user } = useAuth();
-   const roles = user?.roles;
-   const rolesNecesarios = ["tutor", "coordinador"];
+  const { user } = useAuth();
+  const roles = user?.roles;
+  const rolesNecesarios = ["tutor", "coordinador"];
 
-   const esEstudiante = roles?.some((role) => role.nombre === "estudiante");
-   const esTutorYEmpresa = rolesNecesarios.every((rolNecesario) =>
-     roles?.some((role) => role.nombre === rolNecesario)
-   );
-   const esOnlyTutor = roles?.some((role) => role.nombre === "tutor");
-   const esOnlyCoodinador = roles?.some(
-     (role) => role.nombre === "coordinador"
-   );
+  const esEstudiante = roles?.some((role) => role.nombre === "estudiante");
+  const esTutorYEmpresa = rolesNecesarios.every((rolNecesario) =>
+    roles?.some((role) => role.nombre === rolNecesario)
+  );
+  const esOnlyTutor = roles?.some((role) => role.nombre === "tutor");
+  const esOnlyCoodinador = roles?.some((role) => role.nombre === "coordinador");
 
-   const [aprobacionTutor, setAprobacionTutor] = useState(false);
-   const [aprobacionCoordinador, setAprobacionCoordinador] = useState(false);
+  const [aprobacionTutor, setAprobacionTutor] = useState(false);
+  const [aprobacionCoordinador, setAprobacionCoordinador] = useState(false);
 
-   const handleCheckboxChangeTutor = () => {
-     aprobarPlanTutor(plantrabajo?.id).then((response) => {
-       console.log(response);
-       setAprobacionTutor(true);
-     });
-   };
-
-   const handleCheckboxChangeCoordinador = () => {
-     aprobarPlanEmpresa(plantrabajo.id).then((response) => {
-       console.log(response);
-       setAprobacionCoordinador(true);
-     });
-   };
+  const handleCheckboxChangeTutor = () => {
+    aprobarInformeTutor(plantrabajo?.primerInforme?.id).then((response) => {
+      if (response === "ok") {
+        setAprobacionTutor(true);
+      } else {
+        Swal.fire({
+          title: "Ha ocurrido un error",
+          text: "No se guardo la Información",
+          icon: "error",
+          confirmButtonText: "Aceptar",
+        });
+      }
+    });
+  };
+  const handleCheckboxChangeCoordinador = () => {
+    aprobarInformeEmpresa(plantrabajo?.primerInforme?.id).then((response) => {
+      if (response === "ok") {
+        setAprobacionCoordinador(true);
+      } else {
+        Swal.fire({
+          title: "Ha ocurrido un error",
+          text: "No se guardo la Información",
+          icon: "error",
+          confirmButtonText: "Aceptar",
+        });
+      }
+    });
+  };
 
   const saveDoc = () => {
     if (!plantrabajo.primerInforme) {
@@ -121,8 +134,8 @@ const InformeParicialPage: FC<InfoProps> = ({ rol, plantrabajo }) => {
     }
   };
 
-  useEffect(()=>{
-    if(plantrabajo?.primerInforme != null){
+  useEffect(() => {
+    if (plantrabajo?.primerInforme != null) {
       setID(plantrabajo?.primerInforme?.id);
       setAdap(plantrabajo?.primerInforme?.adaptacion);
       setTol(plantrabajo?.primerInforme?.tolerancia);
@@ -131,7 +144,20 @@ const InformeParicialPage: FC<InfoProps> = ({ rol, plantrabajo }) => {
       setFuer(plantrabajo?.primerInforme?.fueronAsumidas);
       setConcl(plantrabajo?.primerInforme?.conclusion);
     }
-  },[plantrabajo?.primerInforme])
+  }, [plantrabajo?.primerInforme]);
+
+  useEffect(() => {
+    if (plantrabajo?.primerInforme?.tutorEmpresarialAprobo != null) {
+      setAprobacionCoordinador(true);
+    }
+  }, [plantrabajo?.primerInforme?.tutorEmpresarialAprobo]);
+
+  useEffect(() => {
+    if (plantrabajo?.primerInforme?.tutorInstitucionalAprobo != null) {
+      setAprobacionTutor(true);
+    }
+  }, [plantrabajo?.primerInforme?.tutorInstitucionalAprobo]);
+
   return (
     <>
       <div className="border rounded p-3">
@@ -162,7 +188,7 @@ const InformeParicialPage: FC<InfoProps> = ({ rol, plantrabajo }) => {
             </div>
           </div>
         )}
-        {esTutorYEmpresa && (
+        {esTutorYEmpresa ? (
           <div>
             <div className="w-full flex rounded border mb-4">
               <div className="w-full flex justify-start mt-3">
@@ -191,8 +217,7 @@ const InformeParicialPage: FC<InfoProps> = ({ rol, plantrabajo }) => {
               </div>
             </div>
           </div>
-        )}
-        {esOnlyTutor && (
+        ) : esOnlyTutor ? (
           <div>
             <div className="w-full flex rounded border mb-4">
               <div className="w-full flex justify-start mt-3">
@@ -208,8 +233,7 @@ const InformeParicialPage: FC<InfoProps> = ({ rol, plantrabajo }) => {
               </div>
             </div>
           </div>
-        )}
-        {esOnlyCoodinador && (
+        ) : esOnlyCoodinador ? (
           <div>
             <div className="w-full flex rounded border mb-4">
               <div className="w-full flex justify-start mt-3">
@@ -235,6 +259,8 @@ const InformeParicialPage: FC<InfoProps> = ({ rol, plantrabajo }) => {
               </div>
             </div>
           </div>
+        ) : (
+          <></>
         )}
         <div className="border" />
         <ActivityManager

@@ -1,3 +1,6 @@
+import { TutorSchema } from "../schemas/tutorSchema";
+import { Tutor } from "./tutor.interface";
+
 interface primerInforme {
   id?: string;
   adaptacion: string;
@@ -6,5 +9,6 @@ interface primerInforme {
   conclusion: string;
   nuevasResponsabilidades: string;
   fueronAsumidas: string;
+  tutorEmpresarialAprobo?: TutorSchema;
+  tutorInstitucionalAprobo?: Tutor;
 }
-
