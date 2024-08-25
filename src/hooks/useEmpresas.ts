@@ -15,7 +15,8 @@ import {
     asignarTutorEmpresaApi,
     deshabilitarTutorEmpresaApi,
     habilitarTutorEmpresaApi,
-    registrarDependenciaApi
+    registrarDependenciaApi,
+    subirConvenio
 } from '../api/empresa.api';
 import { Empresa, Tutor } from '../interfaces';
 import Swal from 'sweetalert2';
@@ -54,6 +55,7 @@ type UseEmpresasReturn = {
   deshabilitarTutorEmpresa: (tutorId: string) => Promise<void>
   habilitarTutorEmpresa: (tutorId: string) => Promise<void>
   registrarDependencia: (data: any) => Promise<void>
+  registrarConvenio: (file: any,empresaId:string) => Promise<void>
 };
 
 const useEmpresas = (): UseEmpresasReturn => {
@@ -376,6 +378,35 @@ const useEmpresas = (): UseEmpresasReturn => {
     }
   }
 
+  const registrarConvenio = async (file: any,empresaId) => { 
+    setCargando(true);
+    try { 
+      Swal.fire({
+        title: 'Cargando...',
+        text: 'Por favor, espere.',
+        allowOutsideClick: false,
+        didOpen: () => {
+          Swal.showLoading();
+        }
+      });
+      subirConvenio(file,empresaId).then((data) => { 
+        Swal.close();
+        Swal.fire('Convenio subido', 'El convenio ha sido subido correctamente', 'success').then(() => { 
+          setError(null);
+          location.reload();
+        })
+      }).catch((err) => { 
+        Swal.fire('Error', 'No se ha podido subir el convenio', 'error')
+      })
+    }
+    catch (err) { 
+      setError(err as AxiosError);
+    }
+    finally {
+      setCargando(false);
+    }
+  }
+
   return { 
     empresas, 
     empresa, 
@@ -399,7 +430,8 @@ const useEmpresas = (): UseEmpresasReturn => {
     asignarTutorAsignacion,
     deshabilitarTutorEmpresa,
     habilitarTutorEmpresa,
-    registrarDependencia
+    registrarDependencia,
+    registrarConvenio
   };
 };
 

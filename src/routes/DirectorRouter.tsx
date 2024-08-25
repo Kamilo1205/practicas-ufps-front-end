@@ -7,6 +7,7 @@ import { RegistroPage } from "../pages/auth";
 import { EstudiantesPage } from "../pages/coordinador/EstudiantesPage";
 import { PracticasPage } from "../pages/coordinador/PracticasPage";
 import { DirectorEmpresasPage } from "../pages/director/EmpresasPage";
+import { ReportesPage } from "../pages/coordinador/ReportesPage";
 
 
 export const DirectorRouter = () => {
@@ -20,8 +21,9 @@ export const DirectorRouter = () => {
               <Route path='/' element={<Layout />}>
                 <Route path='empresas' element={<DirectorEmpresasPage />} />
                 <Route path='estudiantes' element={<EstudiantesPage />} />
-
                 <Route path='practicas' element={<PracticasPage />} />
+                <Route path='reportes' element={<ReportesPage />} />
+
                 <Route path="*" element={<Navigate to="/director/empresas" replace />} />
               </Route>
             </>

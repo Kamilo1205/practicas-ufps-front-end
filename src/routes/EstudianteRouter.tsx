@@ -11,6 +11,7 @@ import InformeFinalVista from "../components/VistasCoorDTutor/InformeFinalVista"
 import EvaluacionEstudianteVista from "../components/VistasCoorDTutor/EvaluacionPracticaVista";
 import { useEffect } from "react";
 import useEstudiantes from "../hooks/useEstudiantes";
+import { SolicitudCambio } from "../pages/estudiante/SolicitudCambioPlanTrabajo";
 
 export const EstudianteRouter = () => {
   const { user } = useAuth();
@@ -67,7 +68,16 @@ export const EstudianteRouter = () => {
                 />
               }
             />
-
+            <Route
+              path="solicitud-cambio"
+              element={
+                <SolicitudCambio
+                  rol={"estudiante"}
+                  initialOpen={false}
+                  estudiante={estudiante}
+                />
+              }
+            />
             <Route path="*" element={<Navigate to="/estudiante" replace />} />
           </Route>
         </>

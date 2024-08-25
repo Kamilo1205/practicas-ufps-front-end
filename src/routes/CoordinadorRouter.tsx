@@ -14,6 +14,7 @@ import { GestionTutoresPage } from '../pages/coordinador/GestionTutoresPage';
 import { ConfiguracionesPage } from '../pages/coordinador/ConfiguracionPage';
 import { ArlPage } from '../pages/coordinador/ArlPage';
 import { IntroduccionPage } from '../pages/coordinador/IntroduccionPage';
+import { ReportesPage } from '../pages/coordinador/ReportesPage';
 //import { roles } from '../interfaces/rol.interface';
 
 export const CoordinadorRouter = () => {
@@ -25,13 +26,14 @@ export const CoordinadorRouter = () => {
         <Route path='ARL' element={<ArlPage />} />
         <Route path='usuarios' element={<UsuariosPage />} />
         <Route path='empresas' element={<EmpresaPage />} />
-        <Route path='estudiantes' element={<EstudiantesPage  />} />
-        <Route path='documentos' element={<DocumentosPage />} /> 
+        <Route path='estudiantes' element={<EstudiantesPage />} />
+        <Route path='documentos' element={<DocumentosPage />} />
         <Route path='calendario' element={<CalendarioPage />} />
         <Route path='configuracion/*' element={<ConfiguracionRouter />} />
         <Route path='practicas' element={<PracticasPage />} />
         <Route path='tutores' element={<GestionTutoresPage />} />
         <Route path='configuraciones' element={<ConfiguracionesPage />} />
+        <Route path='reportes' element={<ReportesPage />} />
         <Route path="*" element={<Navigate to="/coordinador/primerospasos" replace />} />
       </Route>
     </Routes>

@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useState } from "react"
 
 import { Solicitud,  SolicitudRequest } from "../schemas/solicitudSchema"
-import { asignarPracticanteApi, createSolicitudApi, eliminarSolicitudApi, fetchSolicitudesApi, fetchSolicitudesEmpresaApi, getAspirantesASolicitudApi } from "../api/solicitudes.api"
+import { asignarPracticanteApi, createSolicitudApi, desasignarPracticanteApi, eliminarSolicitudApi, fetchSolicitudesApi, fetchSolicitudesEmpresaApi, getAspirantesASolicitudApi } from "../api/solicitudes.api"
 import { useAuth } from "../contexts"
 import { roles } from "../interfaces/rol.interface"
 import Swal from "sweetalert2"
@@ -136,6 +136,34 @@ export const useSolicitudes = () => {
     }
    }
 
+  const desasignarEstudiante = async (solicitudId: string, estudianteId: string) => {
+    try {
+      const resp = await desasignarPracticanteApi(solicitudId, estudianteId)
+      console.log('asignacion', resp)
+      
+      const nuevaSolicitudes = solicitudes.map(solicitud => {
+        if (solicitud.id === solicitudId) {
+          solicitud.asignaciones = solicitud.asignaciones.filter(asignacion => asignacion.estudiante.id !== estudianteId)
+        }
+        return solicitud
+      })
+      setSolicitudes(nuevaSolicitudes)
+      Swal.fire({
+        title: 'Asignación eliminada',
+        text: 'La asignación ha sido eliminada exitosamente',
+        icon: 'success',
+        confirmButtonText: 'Aceptar'
+      })
+      return resp
+    } catch (error) {
+      Swal.fire({
+        title: 'Error',
+        text: 'No se pudo asignar el practicante',
+        icon: 'error',
+        confirmButtonText: 'Aceptar'
+      })
+    }
+  }
   return {
     error,
     solicitudes,
@@ -143,7 +171,8 @@ export const useSolicitudes = () => {
     createSolicitud,
     eliminarSolicitud,
     getAspirantesASolicitud,
-    asignarEstudiante
+    asignarEstudiante,
+    desasignarEstudiante
     
   }
  } 

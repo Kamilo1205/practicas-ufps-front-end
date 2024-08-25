@@ -15,6 +15,7 @@ import { useNavigate } from 'react-router-dom';
 import { useState } from 'react';
 import { DialogComponent } from '../../components/ui/Dialog/DialogComponent';
 import { RegistroDependencia } from './RegistroDependencia';
+import Swal from 'sweetalert2';
 
 export const RegistroPage = () => {
   const form: UseFormReturn<EmpresaSchema> = useForm<EmpresaSchema>({
@@ -27,14 +28,24 @@ export const RegistroPage = () => {
   const [openDialog, setOpenDialog] = useState(true);
   const [esDependencia, setEsDependencia] = useState<boolean | null>(null);
 
-  const navigate = useNavigate();
+
   const onSubmit = async (data: EmpresaSchema) => {
     setLoading(true);
+    Swal.fire({
+      title: 'Cargando...',
+      text: 'Por favor, espere.',
+      allowOutsideClick: false,
+      didOpen: () => {
+        Swal.showLoading();
+      }
+    });
     const response = await fetchPostEmpresa(data);
     if (response) {
       toast.success("Empresa registrada correctamente");
       setLoading(false);
-      navigate('/auth/login')
+      Swal.close();
+      location.reload();
+
     }
   };
 

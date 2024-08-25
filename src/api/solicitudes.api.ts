@@ -52,3 +52,9 @@ export const asignarPracticanteApi = async (solicitudId: string, estudianteId: s
   const response = await axios.post(`${URL_ASIGNACION}`, { solicitudId, estudianteId })
   return response.data
 }
+
+export const desasignarPracticanteApi = async (estudianteId: string, solicitudId: string) => { 
+  console.log('desasignarPracticanteApi', estudianteId, solicitudId)
+  const response = await axios.delete(`${URL_ASIGNACION}/desasignar`,{data:{estudianteId,solicitudId}})
+  return response.data
+}

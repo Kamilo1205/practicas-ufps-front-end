@@ -26,6 +26,7 @@ import { FileInput } from '../../components/ui/Input/FileInput';
 import { AreasDeInteresForm, } from '../../components/area-interes';
 import { HerramientasFormRegistro } from '../../components/area-interes/HerramientasFormRegistro';
 import useAreasDeInteres from '../../hooks/useAreasInteres';
+import Swal from 'sweetalert2';
 
 export const RegistroPage = () => {
   const form = useForm({
@@ -53,10 +54,18 @@ export const RegistroPage = () => {
         })),
         herramientas: data.herramientas,
       };
-
+      Swal.fire({
+        title: 'Cargando...',
+        text: 'Por favor, espere.',
+        allowOutsideClick: false,
+        didOpen: () => {
+          Swal.showLoading();
+        }
+      });
       const response = await createEstudiante(formattedData, 'reload');
-      console.log(response);
 
+      console.log(response);
+      Swal.close();
     } catch (error) {
       console.log(error);
       alert("Ocurrio un error:" + error);

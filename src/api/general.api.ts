@@ -27,7 +27,9 @@ export const postDirectorApi = async (data: Omit<Director, 'id'>) => {
  }
 
 export const actualizarDecanoApi = async (data: Decano) => {
-  const response = await axios.patch(URL_DECANO, data)
+  console.log(data)
+  const response = await axios.patch(`${URL_DECANO}/${data?.id}`, data)
+  console
   return response.data
 }
 

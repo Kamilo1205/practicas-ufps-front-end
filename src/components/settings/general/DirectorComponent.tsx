@@ -13,7 +13,8 @@ export const DirectorSetttingComponent = ({ director, crearDirector }: Props) =>
   const [editar, setEditar] = useState({
     email: false,
     nombres: false,
-    apellidos: false
+    apellidos: false,
+    codigo: false
   })
 
   const form = useForm({
@@ -26,12 +27,15 @@ export const DirectorSetttingComponent = ({ director, crearDirector }: Props) =>
       }),
       apellidos: z.string({
         required_error: 'El apellido es requerido'
+      }),
+      codigo: z.string({
+        required_error: 'El código es requerido'
       })
 
     }))
   })
 
-
+  console.log('dd', director)
   const onSubmit: SubmitHandler<FieldValues> = (data) => {
     console.log(data)
     crearDirector({
@@ -52,10 +56,10 @@ export const DirectorSetttingComponent = ({ director, crearDirector }: Props) =>
       <form
         onSubmit={form.handleSubmit(onSubmit)}
         className="space-y-2">
-        <div className="flex justify-between">
+        <div className="flex justify-between ">
 
           {
-            !editar.nombres && (director.nombres ? (<span>{director.nombres}</span>)
+            !editar.nombres && (director?.nombres ? (<span>{director?.nombres}</span>)
               :
               (
                 <span>Nombre aún sin registrar</span>
@@ -67,9 +71,9 @@ export const DirectorSetttingComponent = ({ director, crearDirector }: Props) =>
                 <div>
                   <input
                     type="text"
-                    defaultValue={director.nombres}
+                    defaultValue={director?.nombres}
                     className="block w-full rounded-md border-0 py-1.5 pl-3 text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-base sm:leading-6"
-                    placeholder="Nombre del director"
+                    placeholder="Nombre del director?"
                     {...form.register('nombres')}
                   />
                   <div className="text-red-500 text-sm">
@@ -103,7 +107,7 @@ export const DirectorSetttingComponent = ({ director, crearDirector }: Props) =>
         <div className="flex justify-between">
 
           {
-            !editar.apellidos && (director.apellidos ? (<span>{director.apellidos}</span>)
+            !editar.apellidos && (director?.apellidos ? (<span>{director?.apellidos}</span>)
               :
               (
                 <span>Nombre aún sin registrar</span>
@@ -115,7 +119,7 @@ export const DirectorSetttingComponent = ({ director, crearDirector }: Props) =>
                 <div>
                   <input
                     type="text"
-                    defaultValue={director.apellidos}
+                    defaultValue={director?.apellidos}
                     className="block w-full rounded-md border-0 py-1.5 pl-3 text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-base sm:leading-6"
                     placeholder="Apellidos del director"
                     {...form.register('apellidos')}
@@ -136,7 +140,7 @@ export const DirectorSetttingComponent = ({ director, crearDirector }: Props) =>
 
         <div className="flex justify-between">
           {
-            !editar.email && (director.email ? (<span>{director.email}</span>)
+            !editar.email && (director?.usuario?.email ? (<span>{director?.usuario?.email}</span>)
               :
               (
                 <span>Email aún sin registrar</span>
@@ -149,7 +153,7 @@ export const DirectorSetttingComponent = ({ director, crearDirector }: Props) =>
                 <div>
                   <input
                     type="email"
-                    defaultValue={director.email}
+                    defaultValue={director?.email}
                     className="block w-full rounded-md border-0 py-1.5 pl-3 text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-base sm:leading-6"
                     placeholder="director@ufps.edu.co"
                     {...form.register('email')}
@@ -166,6 +170,40 @@ export const DirectorSetttingComponent = ({ director, crearDirector }: Props) =>
               </div>
             )
           }
+          <div className="flex justify-between">
+            {
+              !editar.codigo && (director?.usuario?.codigo ? (<span>{director?.usuario?.email}</span>)
+                :
+                (
+                  <span>Código aún sin registrar</span>
+                )
+              )
+            }
+            {
+              editar.email ? (
+                <div className="flex">
+                  <div className="flex " >
+                    <input
+                      type="number"
+                      defaultValue={director?.email}
+                      className="block w-full rounded-md border-0 py-1.5 pl-3 text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-base sm:leading-6"
+                      placeholder="director@ufps.edu.co"
+                      {...
+                      form.register('email')}
+                    />
+                    <div className="text-red-500 text-sm">
+                      {form.formState.errors.codigo?.message?.toString()}
+                    </div>
+                  </div>
+
+                </div>
+              ) : (
+                <div>
+
+                </div>
+              )
+            }
+          </div>
 
         </div>
       </form>

@@ -29,6 +29,7 @@ export const MenuList = () => {
     { to: '/estudiante/informeparcial', text: 'Informe Parcial', icon: HiOutlineUsers, roles: [roles.estudiante] },
     { to: '/estudiante/informefinal', text: 'Informe Final', icon: HiOutlineUsers, roles: [roles.estudiante] },
     { to: '/estudiante/evaluacionestudiante', text: 'Evaluacion Estudiante', icon: HiOutlineUsers, roles: [roles.estudiante] },
+    { to: '/estudiante/solicitud-cambio', text: 'Solicitudes de cambio del plan de trabajo', icon: HiOutlineUsers, roles: [roles.estudiante] },
     { to: '/tutor/perfil', text: 'Datos del tutor', icon: HiOutlineUsers, roles: [roles.tutor] },
     { to: '/tutor/practicantes', text: 'Practicantes', icon: HiOutlineUsers, roles: [roles.tutor] },
     { to: '/director/practicas', text: 'Solicitudes', icon: HiOutlineUser, roles: [roles.director] },

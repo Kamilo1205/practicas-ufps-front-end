@@ -19,7 +19,7 @@ export const RegistroDependencia = () => {
     },
     resolver: zodResolver(z.object({
       nombre: z.string().min(1, 'El nombre de la dependencia es obligatorio').default(''),
-      nombrePersonaACargo: z.string().min(1, 'El nombre de la persona a cargo es obligatorio').default(''),
+      personaACargo: z.string().min(1, 'El nombre de la persona a cargo es obligatorio').default(''),
       codigo: z.string().min(1, 'El código de la dependencia es obligatorio').default(''),
     }))
   })
@@ -52,7 +52,7 @@ export const RegistroDependencia = () => {
             {/* Nombre Legal */}
             <div className="sm:col-span-3">
               <FormField
-                name="nombrePersonaACargo"
+                name="personaACargo"
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel>Nombre de la persona a cargo</FormLabel>

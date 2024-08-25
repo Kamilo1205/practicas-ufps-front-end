@@ -20,6 +20,7 @@ export const fetchGetEmpresa = async (): Promise<Empresa> => {
 // Obtener una lista paginada de empresas
 export const fetchGetEmpresas = async (page: number = 1, limit: number = 10):Promise<EmpresasResponse>  => {
   const response = await axios.get(`/empresas?page=${page}&limit=${limit}`);
+  console.log(response.data);
   return response.data;
 }
 
@@ -116,6 +117,16 @@ export const habilitarTutorEmpresaApi = async (tutorId: string): Promise<any> =>
 
 export const registrarDependenciaApi = async (dependencia: any): Promise<any> => { 
   const response = await axios.post(`dependencias`, dependencia);
+  console.log(response.data);
+  return response.data;
+}
+
+
+export const subirConvenio = async (file: any,empresaId:string): Promise<any> => { 
+
+  const formData = new FormData();
+  formData.append('file', file);
+  const response = await axios.post(`empresas/${empresaId}/subir-convenio`, formData);
   console.log(response.data);
   return response.data;
 }

@@ -48,7 +48,9 @@ const useEstudiantes = (): UseEstudiantesReturn => {
   const fetchEstudiante = async (): Promise<Estudiante | null> => {
     setCargando(true);
     try {
+      console.log('fetchEstudiante');
       const data = await fetchEstudianteAPI();
+      console.log(data);
       setEstudiante(data);
       setError(null);
       return data;

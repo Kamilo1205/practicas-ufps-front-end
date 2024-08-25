@@ -12,10 +12,11 @@ import { zodResolver } from "@hookform/resolvers/zod"
 import useEmpresas from "../../hooks/useEmpresas"
 
 interface ConvenioFormProps {
-  empresa: Empresa
+  empresa: Empresa,
+  registrarConvenio: (convenioFile: File, empresaId) => void
 
 }
-const ConvenioForm = ({ empresa }: ConvenioFormProps) => {
+const ConvenioForm = ({ empresa, registrarConvenio }: ConvenioFormProps) => {
 
 
   console.log(empresa)
@@ -27,13 +28,16 @@ const ConvenioForm = ({ empresa }: ConvenioFormProps) => {
 
   console.log(form.formState.errors)
   const onSubmit: SubmitHandler<FieldValues> = (data) => {
-    console.log(data)
+    const convenioFile = data.convenio[0]
+    registrarConvenio(convenioFile, empresa.id)
   }
   return (
     <form onSubmit={form.handleSubmit(onSubmit)} className="space-x-2">
       <input type="file"
         accept=".pdf, .doc, .docx"
-        {...form.register('convenio')} />
+        {...form.register('convenio')}
+
+      />
       <button type="submit" className="text-indigo-500">
         Registrar
       </button>
@@ -44,7 +48,7 @@ const ConvenioForm = ({ empresa }: ConvenioFormProps) => {
 
 export const DirectorEmpresasPage = () => {
 
-  const { empresas } = useEmpresas()
+  const { empresas, fetchEmpresas, registrarConvenio } = useEmpresas()
 
   const [filtro, setFiltro] = useState('')
   const [selected, setSelected] = useState(null)
@@ -54,12 +58,21 @@ export const DirectorEmpresasPage = () => {
     itemsPerPage: 5
   })
 
+  console.log(empresas)
 
+  useEffect(() => {
+    if (!empresas || empresas.length === 0) {
+      fetchEmpresas()
+    }
+  }, [])
 
   useEffect(() => {
     if (filtro !== '') setEmpresasFiltradas(empresas.filter((empresa) => {
       return empresa.nombreLegal.toLowerCase().includes(filtro.toLowerCase()) || empresa.nit.includes(filtro)
     }))
+    else {
+      setEmpresasFiltradas(empresas)
+    }
   }, [filtro, empresas])
   // const empresasFiltradas:Empresa[] = 
   console.log(empresasFiltradas)
@@ -132,7 +145,7 @@ export const DirectorEmpresasPage = () => {
                   <BiCheck className="text-green-500 w-5 h-5" />
                 </div>) :
                   <div>
-                    <ConvenioForm empresa={empresa} />
+                    <ConvenioForm empresa={empresa} registrarConvenio={registrarConvenio} />
 
                   </div>
               }

@@ -18,10 +18,10 @@ interface AsignacionPracticasComponentProps {
   setMostrarPerfil: (mostrar: boolean) => void
   getAspirantesASolicitud?: (idSolicitud: string) => Promise<any[]>
   asignarEstudiante: (solicitudId: string, estudianteId: string) => Promise<any>
-
+  desasignarEstudiante: (solicitudId: string, estudianteId: string) => Promise<any>
 }
 
-export const AsignacionPracticasComponent = ({ solicitud, setMostrarPerfil, asignarEstudiante }: AsignacionPracticasComponentProps) => {
+export const AsignacionPracticasComponent = ({ solicitud, setMostrarPerfil, asignarEstudiante, desasignarEstudiante }: AsignacionPracticasComponentProps) => {
 
 
   console.log('solicitud', solicitud)
@@ -64,7 +64,36 @@ export const AsignacionPracticasComponent = ({ solicitud, setMostrarPerfil, asig
 
     })
   }
+  const onDesasignarPracticante = (estudianteId: string) => {
 
+    Swal.fire({
+      title: 'Desasignar practicante',
+      text: `¿Estás seguro de desasignar a ${perfilSeleccionado?.estudiante.primerNombre} de esta solicitud?`,
+      icon: 'question',
+      showCancelButton: true,
+      confirmButtonText: 'Sí',
+      cancelButtonText: 'No',
+    }).then((result) => {
+      if (result.isConfirmed && perfilSeleccionado) {
+        desasignarEstudiante(solicitudState.id, estudianteId).then(() => {
+          Swal.fire({
+            title: 'Practicante desasignado',
+            text: `El practicante ${perfilSeleccionado.estudiante.primerNombre} ha sido desasignado de la solicitud`,
+            icon: 'success',
+            confirmButtonText: 'Aceptar',
+          })
+          setMostrarPerfil(false)
+        }).catch(() => {
+          Swal.fire({
+            title: 'Error',
+            text: 'No se pudo desasignar el practicante',
+            icon: 'error',
+            confirmButtonText: 'Aceptar',
+          })
+        })
+      }
+    })
+  }
   useEffect(() => {
   }, [])
 
@@ -120,7 +149,7 @@ export const AsignacionPracticasComponent = ({ solicitud, setMostrarPerfil, asig
                     </div>
 
                     <div
-
+                      onClick={() => onDesasignarPracticante(estudiante.estudiante.id)}
                       className="self-center cursor-pointer">
                       <IoClose className="text-red-500 w-7 h-7" />
                     </div>
