@@ -133,7 +133,7 @@ export const subirConvenio = async (file: any,empresaId:string): Promise<any> =>
 
 
 export const getEstudiantesAsignadosATutorApi = async (): Promise<any> => {
-  console.log("getEstudiantesAsignadosATutorApi")
+  //console.log("getEstudiantesAsignadosATutorApi")
   const response = await axios.get(`asignacion/tutor/semestre-actual`);
   console.log(response.data);
   return response.data;

@@ -2,6 +2,13 @@ import { useEffect, useState } from "react"
 import { EmptyStateMessage } from "../../components/estudiantes"
 import { TablaPaginadaComponent } from "../../components/ui/Table/TablaPaginadaComponent"
 import useEmpresas from "../../hooks/useEmpresas"
+import { IoAlertCircle } from "react-icons/io5"
+import { BiArrowToRight, BiCheck } from "react-icons/bi"
+import PlanDeTrabajoVista from "../../components/PlanDeTrabajo/Coordinador-Empresa/PlanDeTrabajoVista"
+import InformeParcialVista from "../../components/VistasCoorDTutor/InformeParcialVista"
+import InformeFinalVista from "../../components/VistasCoorDTutor/InformeFinalVista"
+import { Avatar } from "../../components/ui"
+import { EstudianteI } from "../../interfaces/responses.interface";
 
 
 
@@ -15,6 +22,15 @@ export const PracticantesPage = () => {
   const [currentPage, setCurrentPage] = useState<number>(1);
   const [itemsPerPage] = useState<number>(5); // Suponiendo que el backend maneja 10 ítems por página
   const [filtro, setFiltro] = useState<string>("");
+
+  const [estudianteSeleccionado, setEstudianteSeleccionado] =
+    useState<EstudianteI | null>(null);
+  const [estudiantesCargados, setEstudiantesCargados] =
+    useState<boolean>(false);
+  const [openPlan, setOpenPlan] = useState(false);
+  const [openInfoP, setOpenInfoP] = useState(false);
+  const [openInfoF, setOpenInfoF] = useState(false);
+
   console.log(practicantes)
   useEffect(() => {
     getPracticantesAsignadosATutor().then((res) => {
