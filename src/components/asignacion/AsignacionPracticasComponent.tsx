@@ -24,7 +24,7 @@ interface AsignacionPracticasComponentProps {
 export const AsignacionPracticasComponent = ({ solicitud, setMostrarPerfil, asignarEstudiante, desasignarEstudiante }: AsignacionPracticasComponentProps) => {
 
 
-  console.log('solicitud', solicitud)
+  console.log('solicitud', solicitud.solicitud.asignaciones)
   const [solicitudState,] = useState<Solicitud>(solicitud.solicitud)
   const [perfilSeleccionado, setPerfilSeleccionado] = useState<EstudianteAspirante | null>(null)
   const [filtro, setFiltro] = useState<string>('')
@@ -42,7 +42,16 @@ export const AsignacionPracticasComponent = ({ solicitud, setMostrarPerfil, asig
 
     }).then((result) => {
       if (result.isConfirmed && perfilSeleccionado) {
+        Swal.fire({
+          title: 'Cargando los aspirantes a la solicitud...',
+          text: 'Por favor, espere.',
+          allowOutsideClick: false,
+          didOpen: () => {
+            Swal.showLoading();
+          }
+        });
         asignarEstudiante(solicitudState.id, perfilSeleccionado.estudiante.id).then(() => {
+          Swal.close()
           Swal.fire({
             title: 'Practicante asignado',
             text: `El practicante ${nombrePracticante} ha sido asignado a la solicitud`,
@@ -51,6 +60,7 @@ export const AsignacionPracticasComponent = ({ solicitud, setMostrarPerfil, asig
           })
           setMostrarPerfil(false)
         }).catch(() => {
+          Swal.close()
           Swal.fire({
             title: 'Error',
             text: 'No se pudo asignar el practicante',
@@ -65,25 +75,37 @@ export const AsignacionPracticasComponent = ({ solicitud, setMostrarPerfil, asig
     })
   }
   const onDesasignarPracticante = (estudianteId: string) => {
-
+    console.log(perfilSeleccionado)
+    const estudianteAsignado = solicitudState.asignaciones.find(a => a.estudiante.id === estudianteId)
     Swal.fire({
       title: 'Desasignar practicante',
-      text: `¿Estás seguro de desasignar a ${perfilSeleccionado?.estudiante.primerNombre} de esta solicitud?`,
+      text: `¿Estás seguro de desasignar a ${estudianteAsignado?.estudiante.primerNombre} de esta solicitud?`,
       icon: 'question',
       showCancelButton: true,
       confirmButtonText: 'Sí',
       cancelButtonText: 'No',
     }).then((result) => {
-      if (result.isConfirmed && perfilSeleccionado) {
+      if (result.isConfirmed && estudianteId) {
+        console.log('perfilSeleccionado', perfilSeleccionado)
+        Swal.fire({
+          title: 'Desasignando practicante...',
+          text: 'Por favor, espere.',
+          allowOutsideClick: false,
+          didOpen: () => {
+            Swal.showLoading();
+          }
+        })
         desasignarEstudiante(solicitudState.id, estudianteId).then(() => {
+          Swal.close()
           Swal.fire({
             title: 'Practicante desasignado',
-            text: `El practicante ${perfilSeleccionado.estudiante.primerNombre} ha sido desasignado de la solicitud`,
+            text: `El practicante ${estudianteAsignado?.estudiante.primerNombre} ha sido desasignado de la solicitud`,
             icon: 'success',
             confirmButtonText: 'Aceptar',
           })
           setMostrarPerfil(false)
         }).catch(() => {
+          Swal.close()
           Swal.fire({
             title: 'Error',
             text: 'No se pudo desasignar el practicante',
@@ -95,7 +117,7 @@ export const AsignacionPracticasComponent = ({ solicitud, setMostrarPerfil, asig
     })
   }
   useEffect(() => {
-  }, [])
+  }, [solicitud])
 
   useEffect(() => {
     if (filtro === '') return setPerfilesAspirantesFiltrado(solicitud.aspirantes)

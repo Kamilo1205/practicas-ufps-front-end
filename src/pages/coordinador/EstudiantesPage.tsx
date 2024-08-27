@@ -149,19 +149,19 @@ export const EstudiantesPage = () => {
       </div>
       {(userRoles?.includes(roles.coordinador) ||
         userRoles?.includes(roles.administrador)) && (
-        <DialogComponent
-          isOpen={agregarEstudiante}
-          onClose={() => setAgregarEstudiante(false)}
-          content={
-            <AgregarEstudianteForm
-              grupos={grupos}
-              dispararCargaEstidiantes={() => setEstudiantesCargados(true)}
-              onClose={() => setAgregarEstudiante(false)}
-            />
-          }
-          title="Agregar estudiantes"
-        />
-      )}
+          <DialogComponent
+            isOpen={agregarEstudiante}
+            onClose={() => setAgregarEstudiante(false)}
+            content={
+              <AgregarEstudianteForm
+                grupos={grupos}
+                dispararCargaEstidiantes={() => setEstudiantesCargados(true)}
+                onClose={() => setAgregarEstudiante(false)}
+              />
+            }
+            title="Agregar estudiantes"
+          />
+        )}
       <DialogComponent
         isOpen={mostrarPerfil}
         onClose={() => setMostrarPerfil(false)}
@@ -172,16 +172,16 @@ export const EstudiantesPage = () => {
                 userRoles?.includes(roles.administrador)
                   ? roles.administrador
                   : userRoles?.includes(roles.coordinador)
-                  ? roles.coordinador
-                  : userRoles?.includes(roles.director)
-                  ? roles.director
-                  : userRoles?.includes(roles.estudiante)
-                  ? roles.estudiante
-                  : userRoles?.includes(roles.tutor)
-                  ? roles.tutor
-                  : userRoles?.includes(roles.empresa)
-                  ? roles.empresa
-                  : ""
+                    ? roles.coordinador
+                    : userRoles?.includes(roles.director)
+                      ? roles.director
+                      : userRoles?.includes(roles.estudiante)
+                        ? roles.estudiante
+                        : userRoles?.includes(roles.tutor)
+                          ? roles.tutor
+                          : userRoles?.includes(roles.empresa)
+                            ? roles.empresa
+                            : ""
               }
               estudiante={estudianteSeleccionado}
             />
@@ -192,22 +192,22 @@ export const EstudiantesPage = () => {
       />
       {(userRoles?.includes(roles.coordinador) ||
         userRoles?.includes(roles.administrador)) && (
-        <div className="overflow-x-auto mb-4">
-          <ul role="list" className="divide-y divide-gray-100">
-            <li className="flex justify-between gap-x-6 py-2">
-              <div className="flex min-w-0 gap-x-4">
-                <div className="min-w-0 flex-auto"></div>
-              </div>
-              <div className="hidden shrink-0 sm:flex sm:flex-col sm:items-end">
-                <Button onClick={() => setAgregarEstudiante(true)}>
-                  <HiOutlineUserPlus className="size-5 mr-2" />
-                  Agregar estudiantes
-                </Button>
-              </div>
-            </li>
-          </ul>
-        </div>
-      )}
+          <div className="overflow-x-auto mb-4">
+            <ul role="list" className="divide-y divide-gray-100">
+              <li className="flex justify-between gap-x-6 py-2">
+                <div className="flex min-w-0 gap-x-4">
+                  <div className="min-w-0 flex-auto"></div>
+                </div>
+                <div className="hidden shrink-0 sm:flex sm:flex-col sm:items-end">
+                  <Button onClick={() => setAgregarEstudiante(true)}>
+                    <HiOutlineUserPlus className="size-5 mr-2" />
+                    Agregar estudiantes
+                  </Button>
+                </div>
+              </li>
+            </ul>
+          </div>
+        )}
       <TabComponent tabListI={Tabs} activeTab={tab} setTab={setTab} />
       {estudiantes.estudiantes.length == 0 && filtro && filtro === "" ? (
         <EmptyStateMessage setOpen={setAgregarEstudiante} />
@@ -291,7 +291,7 @@ export const EstudiantesPage = () => {
                 <div className="flex justify-center cursor-pointer w-full pr-6">
                   {!estudiante?.asignaciones?.find(
                     (a) => a.solicitud.semestre.actual
-                  )?.planDeTrabajo.primerInforme ? (
+                  )?.planDeTrabajo?.primerInforme ? (
                     <div className="flex justify-center pr-6">
                       <IoAlertCircle className="text-yellow-500 w-5 h-5" />
                       <span>Pendiente</span>
@@ -324,7 +324,7 @@ export const EstudiantesPage = () => {
                 <div className="flex justify-center cursor-pointer w-full pr-6">
                   {!estudiante?.asignaciones?.find(
                     (a) => a.solicitud.semestre.actual
-                  )?.planDeTrabajo.informeFinal ? (
+                  )?.planDeTrabajo?.informeFinal ? (
                     <div className="flex justify-center pr-6">
                       <IoAlertCircle className="text-yellow-500 w-5 h-5" />
                       <span>Pendiente</span>

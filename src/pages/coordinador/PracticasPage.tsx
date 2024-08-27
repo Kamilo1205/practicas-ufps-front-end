@@ -6,6 +6,7 @@ import { SolicitudComponent } from "../../components/solicitudes/SolicitudCompon
 import { AsignacionPracticasComponent } from "../../components/asignacion/AsignacionPracticasComponent"
 import { EstudianteAspirante, Solicitud, } from "../../schemas/solicitudSchema"
 import { useSolicitudes } from "../../hooks/useSolicitudes"
+import Swal from "sweetalert2"
 
 
 const Tabs = [
@@ -81,7 +82,7 @@ export const PracticasPage = () => {
   const onAsignarPracticantes = (solicitud: Solicitud) => {
     setSolicitudSeleccionada({ solicitud, aspirantes: [] })
     setCargarAspirantes(true)
-    setMostrarPerfil(true)
+
   }
 
   const onVerSolicitud = (solicitud: Solicitud) => {
@@ -93,7 +94,16 @@ export const PracticasPage = () => {
 
   useEffect(() => {
     console.log('solicitudSeleccionada', solicitudSeleccionada, cargarAspirantes)
+
     if (solicitudSeleccionada && cargarAspirantes) {
+      Swal.fire({
+        title: 'Cargando los aspirantes a la solicitud...',
+        text: 'Por favor, espere.',
+        allowOutsideClick: false,
+        didOpen: () => {
+          Swal.showLoading();
+        }
+      });
       getAspirantesASolicitud(solicitudSeleccionada.solicitud.id).then((data) => {
         console.log('data', data)
         setSolicitudSeleccionada({
@@ -102,6 +112,14 @@ export const PracticasPage = () => {
         })
         setCargarAspirantes(false)
         setMostrarPerfil(true)
+        Swal.close()
+      }).catch((error) => {
+        Swal.close()
+        Swal.fire({
+          icon: 'error',
+          title: 'Error al cargar los aspirantes',
+          text: 'Por favor, intente de nuevo',
+        })
       })
     }
   }, [cargarAspirantes, solicitudSeleccionada])

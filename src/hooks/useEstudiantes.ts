@@ -84,6 +84,7 @@ const useEstudiantes = (): UseEstudiantesReturn => {
       setEstudiantes((prev) => [...prev, data]);
       setEstudiante(data);
       setError(null);
+      Swal.close();
       Swal.fire({
         icon: 'success',
         title: 'Estudiante registrado',

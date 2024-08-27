@@ -295,13 +295,24 @@ const useEmpresas = (): UseEmpresasReturn => {
   const asignarTutorAsignacion = async (asignacionId: string, tutorId: string) => { 
     setCargando(true);
     try {
-        await asignarTutorEmpresaApi(asignacionId, tutorId).then((data) => { 
+      Swal.fire({
+        title: 'Asignado tutor...',
+        text: 'Por favor, espere.',
+        allowOutsideClick: false,
+        didOpen: () => {
+          Swal.showLoading();
+        }
+      })
+      await asignarTutorEmpresaApi(asignacionId, tutorId).then((data) => { 
+          Swal.close();
           Swal.fire('Tutor asignado', 'El tutor ha sido asignado correctamente', 'success').then(() => { 
             setError(null);
             location.reload();
           })
+
       })
     } catch (err) { 
+      Swal.close()
       setError(err as AxiosError);
     }
     finally {

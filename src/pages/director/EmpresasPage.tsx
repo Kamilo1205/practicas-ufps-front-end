@@ -29,6 +29,7 @@ const ConvenioForm = ({ empresa, registrarConvenio }: ConvenioFormProps) => {
   console.log(form.formState.errors)
   const onSubmit: SubmitHandler<FieldValues> = (data) => {
     const convenioFile = data.convenio[0]
+    console.log(convenioFile)
     registrarConvenio(convenioFile, empresa.id)
   }
   return (

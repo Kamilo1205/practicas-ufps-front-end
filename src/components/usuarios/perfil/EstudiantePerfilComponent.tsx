@@ -64,6 +64,8 @@ export const EstudiantePerfilComponent = ({ estudiante, rol = '' }: EstudiantePe
     hojaDeVidaUrl: ''
   })
 
+  const asignacion = estudiante?.asignaciones.find(asignacion => asignacion.solicitud?.semestre?.actual)
+  console.log('asignacion', asignacion)
 
   useEffect(() => {
     if (estudiante &&
@@ -71,18 +73,18 @@ export const EstudiantePerfilComponent = ({ estudiante, rol = '' }: EstudiantePe
       estudiante?.documentoIdentidadUrl &&
       estudiante?.hojaDeVidaUrl) {
       setLoadingDocs(true)
-      // Promise.all([
-      //   getDownloadFileUrl(estudiante?.certificadoAfiliacionEpsUrl),
-      //   getDownloadFileUrl(estudiante?.documentoIdentidadUrl),
-      //   getDownloadFileUrl(estudiante?.hojaDeVidaUrl)
-      // ]).then((urls) => {
-      //   setDocumentosUrls({
-      //     certificadoAfiliacionEpsUrl: urls[0] || '',
-      //     documentoIdentidadUrl: urls[1] || '',
-      //     hojaDeVidaUrl: urls[2] || ''
-      //   })
-      //   setLoadingDocs(false)
-      // })
+      Promise.all([
+        getDownloadFileUrl(estudiante?.certificadoAfiliacionEpsUrl),
+        getDownloadFileUrl(estudiante?.documentoIdentidadUrl),
+        getDownloadFileUrl(estudiante?.hojaDeVidaUrl)
+      ]).then((urls) => {
+        setDocumentosUrls({
+          certificadoAfiliacionEpsUrl: urls[0] || '',
+          documentoIdentidadUrl: urls[1] || '',
+          hojaDeVidaUrl: urls[2] || ''
+        })
+        setLoadingDocs(false)
+      })
     }
   }, [])
 
@@ -187,152 +189,17 @@ export const EstudiantePerfilComponent = ({ estudiante, rol = '' }: EstudiantePe
                 <dd className="mt-1 text-sm leading-6 text-gray-700 sm:col-span-2 sm:mt-0">
                   {
                     //TODO Agregar la empresa asignada
-                    estudiante?.asignacion?.tutor ?
+                    asignacion?.tutor?.nombre ?
                       <a href=""><span className="text-blue-300">{
-                        `${estudiante?.asignacion?.tutor?.usuario?.displayName}`
+                        `${asignacion?.tutor?.nombre} ${asignacion?.tutor?.apellidos}`
                       }</span></a>
                       : 'No asignado'
 
                   }
                 </dd>
               </div>
-              <div className="px-4 py-3 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
-                <dt className="text-sm font-medium leading-6 text-gray-900">Plan de trabajo</dt>
-                <dd className="mt-1 text-sm leading-6 text-gray-700 sm:col-span-2 sm:mt-0">
-                  <ul role="list" className="divide-y divide-gray-100 rounded-md border border-gray-200">
-                    <li className="flex items-center justify-between pl-4 pr-5 text-sm leading-6">
-                      <div className="px-4 py-3 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0 w-full">
-                        <dt className="text-sm font-medium leading-6 text-gray-900">Entrega</dt>
-                        <dd className="mt-1 text-sm leading-6 text-gray-700 sm:col-span-2 sm:mt-0">
-                          <a href=""><span className="text-blue-300">Ver entrega</span></a>
-
-                        </dd>
-                      </div>
-
-                    </li>
-                    {
-                      !soloVista && (
-                        <li className="flex items-center justify-between pl-4 pr-5 text-sm leading-6">
-                          <div className="px-4 py-3 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0 w-full">
-                            <dt className="text-sm font-medium leading-6 text-gray-900">Aprovación del docente</dt>
-                            <dd className="mt-1 text-sm leading-6 text-gray-700 sm:col-span-2 sm:mt-0">
-                              {
-                                //TODO Calificación del plan de trabajo.
-                                `Pendiente por aprovación...`
-                              }
-
-                            </dd>
-                          </div>
-                        </li>
-                      )
-                    }
-                    <li className="flex items-center justify-between pl-4 pr-5 text-sm leading-6">
-                      <div className="px-4 py-3 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0 w-full">
-                        <dt className="text-sm font-medium leading-6 text-gray-900">Aprovación del Tutor</dt>
-                        <dd className="mt-1 text-sm leading-6 text-gray-700 sm:col-span-2 sm:mt-0">
-                          {
-                            //TODO Calificación del plan de trabajo.
-                            `Pendiente por aprovación...`
-                          }
-
-                        </dd>
-                      </div>
-                    </li>
-                  </ul>
-                </dd>
-              </div>
-              <div className="px-4 py-3 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
-                <dt className="text-sm font-medium leading-6 text-gray-900">Primer informe</dt>
-                <dd className="mt-1 text-sm leading-6 text-gray-700 sm:col-span-2 sm:mt-0">
-                  <ul role="list" className="divide-y divide-gray-100 rounded-md border border-gray-200">
-                    <li className="flex items-center justify-between pl-4 pr-5 text-sm leading-6">
-                      <div className="px-4 py-3 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0 w-full">
-                        <dt className="text-sm font-medium leading-6 text-gray-900">Entrega</dt>
-                        <dd className="mt-1 text-sm leading-6 text-gray-700 sm:col-span-2 sm:mt-0">
-                          <a href=""><span className="text-blue-300">Ver entrega</span></a>
 
 
-                        </dd>
-                      </div>
-
-                    </li>
-                    {
-                      !soloVista && (
-                        <li className="flex items-center justify-between pl-4 pr-5 text-sm leading-6">
-                          <div className="px-4 py-3 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0 w-full">
-                            <dt className="text-sm font-medium leading-6 text-gray-900">Aprovación del docente</dt>
-                            <dd className="mt-1 text-sm leading-6 text-gray-700 sm:col-span-2 sm:mt-0">
-                              {
-                                //TODO Calificación del plan de trabajo.
-                                `Pendiente por aprovación...`
-                              }
-
-                            </dd>
-                          </div>
-                        </li>
-                      )
-                    }
-                    <li className="flex items-center justify-between pl-4 pr-5 text-sm leading-6">
-                      <div className="px-4 py-3 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0 w-full">
-                        <dt className="text-sm font-medium leading-6 text-gray-900">Aprovación del Tutor</dt>
-                        <dd className="mt-1 text-sm leading-6 text-gray-700 sm:col-span-2 sm:mt-0">
-                          {
-                            //TODO Calificación del plan de trabajo.
-                            `Pendiente por aprovación...`
-                          }
-
-                        </dd>
-                      </div>
-                    </li>
-                  </ul>
-                </dd>
-              </div>
-              <div className="px-4 py-3 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
-                <dt className="text-sm font-medium leading-6 text-gray-900">Segundo informe</dt>
-                <dd className="mt-1 text-sm leading-6 text-gray-700 sm:col-span-2 sm:mt-0">
-                  <ul role="list" className="divide-y divide-gray-100 rounded-md border border-gray-200">
-                    <li className="flex items-center justify-between pl-4 pr-5 text-sm leading-6">
-                      <div className="px-4 py-3 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0 w-full">
-                        <dt className="text-sm font-medium leading-6 text-gray-900">Entrega</dt>
-                        <dd className="mt-1 text-sm leading-6 text-gray-700 sm:col-span-2 sm:mt-0">
-                          <a href=""><span className="text-blue-300">Ver entrega</span></a>
-
-
-                        </dd>
-                      </div>
-
-                    </li>
-                    {
-                      !soloVista && (
-                        <li className="flex items-center justify-between pl-4 pr-5 text-sm leading-6">
-                          <div className="px-4 py-3 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0 w-full">
-                            <dt className="text-sm font-medium leading-6 text-gray-900">Aprovación del docente</dt>
-                            <dd className="mt-1 text-sm leading-6 text-gray-700 sm:col-span-2 sm:mt-0">
-                              {
-                                //TODO Calificación del plan de trabajo.
-                                `Pendiente por aprovación...`
-                              }
-
-                            </dd>
-                          </div>
-                        </li>
-                      )
-                    }
-                    <li className="flex items-center justify-between pl-4 pr-5 text-sm leading-6">
-                      <div className="px-4 py-3 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0 w-full">
-                        <dt className="text-sm font-medium leading-6 text-gray-900">Aprovación del Tutor</dt>
-                        <dd className="mt-1 text-sm leading-6 text-gray-700 sm:col-span-2 sm:mt-0">
-                          {
-                            //TODO Calificación del plan de trabajo.
-                            `Pendiente por aprovación...`
-                          }
-
-                        </dd>
-                      </div>
-                    </li>
-                  </ul>
-                </dd>
-              </div>
             </>
 
           )
