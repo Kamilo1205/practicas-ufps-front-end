@@ -7,7 +7,7 @@ import { useAuth } from "../../../contexts";
 import { Estudiante } from "../../../interfaces/estudiante.interface";
 import { PlanDeTrabajo } from "../../../interfaces/plantrabajo.interface";
 import { fetchPlanTrabajoActual } from "./../../../api/plantrabajo.api";
-
+import { IoCloseSharp } from "react-icons/io5";
 interface PlanProps {
   initialOpen: boolean;
   idPlanTrabajo?: number;
@@ -69,12 +69,19 @@ const PlanDeTrabajoVista: FC<PlanProps> = ({
           size="xl"
           onClose={() => setOpen(false)}
           content={
-            <PlanDeTrabajoPage
-              rol={false}
-              estudiante={estudiante}
-              planTrabajo={planTrabajo2} //plantrabajo2
-              isTutor={isTutor}
-            />
+            <div className="w-full">
+              <div className="flex justify-end">
+                <button className="text-red-600" onClick={() => setOpen(!open)}>
+                  <IoCloseSharp style={{ width: "30px", height: "30px" }} />
+                </button>
+              </div>
+              <PlanDeTrabajoPage
+                rol={false}
+                estudiante={estudiante}
+                planTrabajo={planTrabajo2} //plantrabajo2
+                isTutor={isTutor}
+              />
+            </div>
           }
           title=""
         />

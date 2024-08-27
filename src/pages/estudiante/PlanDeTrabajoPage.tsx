@@ -21,6 +21,8 @@ import { Resultado } from "../../interfaces/resultado.interface";
 import { string } from "zod";
 import Checkbox from "./../../components/ui/Input/Checkbox";
 import FileUpload from "./../../components/PlanDeTrabajo/FileUpload";
+import LoadingSpinner from "../../components/ui/Pagination/LoadingSpiner";
+import FileUploadInforme from "../../components/PlanDeTrabajo/FileUploadInforme";
 
 interface PlanTrabProps {
   estudiante: Estudiante;
@@ -42,11 +44,11 @@ const PlanDeTrabajoPage: React.FC<PlanTrabProps> = ({
     updatedRequerimientos,
     updatedResultado,
   } = usePlantrabajo();
-  console.log(planTrabajo)
 
   const { user } = useAuth();
   const roles = user?.roles;
   const rolesNecesarios = ["tutor", "coordinador"];
+  const [loading, setLoading] = useState<boolean>(true);
 
   const esEstudiante = roles?.some((role) => role.nombre === "estudiante");
   const esTutorYEmpresa = rolesNecesarios.every((rolNecesario) =>
@@ -96,7 +98,6 @@ const PlanDeTrabajoPage: React.FC<PlanTrabProps> = ({
     return "ok";
   };
   const updatedResul = (idPlan: string, rows: Resultado[], ok: string) => {
-    console.log(ok);
     updatedResultado(idPlan, rows).then((response) => {
       if (response == "ok" && ok == "ok") {
         Swal.fire({
@@ -118,223 +119,244 @@ const PlanDeTrabajoPage: React.FC<PlanTrabProps> = ({
   const [comentarioObj, setComentarioObj] = useState<Comentario[]>([]);
   const [comentarioAct, setComentarioAct] = useState<Comentario[]>([]);
 
+
   useEffect(() => {
     if (planTrabajo != null) {
-      if (planTrabajo.seccionActividades != null) {
-        if (planTrabajo.seccionActividades.comentarios != null) {
-          setComentarioAct(planTrabajo.seccionActividades.comentarios);
-        }
+      setLoading(true);
+      // Verificar y establecer comentarios de la sección de actividades
+      const comentariosActividades =
+        planTrabajo.seccionActividades?.comentarios;
+      if (comentariosActividades != null) {
+        setComentarioAct(comentariosActividades);
       }
-      if (planTrabajo.objetivo != null) {
-        if (planTrabajo.objetivo.comentarios != null) {
-          setComentarioObj(planTrabajo.objetivo.comentarios);
-        }
+
+      // Verificar y establecer comentarios del objetivo
+      const comentariosObjetivo = planTrabajo.objetivo?.comentarios;
+      if (comentariosObjetivo != null) {
+        setComentarioObj(comentariosObjetivo);
       }
+
+      // Verificar la aprobación del tutor institucional
+      if (planTrabajo.tutorInstitucional != null) {
+        setAprobacionCoordinador(true);
+      }
+
+      // Verificar la aprobación del tutor empresarial
+      if (planTrabajo.tutorEmpresarial != null) {
+        setAprobacionTutor(true);
+      }
+
+      setLoading(false);
     }
   }, [planTrabajo]);
-  useEffect(() => {
-    if (planTrabajo?.tutorInstitucional !== null) {
-      setAprobacionCoordinador(true);
-    }
-  }, [planTrabajo?.tutorInstitucional]);
-  useEffect(() => {
-    if (planTrabajo?.tutorEmpresarial !== null) {
-      setAprobacionTutor(true);
-    }
-  }, [planTrabajo?.tutorEmpresarial]);
+  if (loading) {
+    return (
+      <div
+        style={{
+          height: "500px",
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+        }}
+      >
+        <LoadingSpinner />
+      </div>
+    );
+  }
   return (
     <>
-      <Title titulo="Plan de Trabajo" />
+      <div className="border rounded p-3">
+        <Title titulo="Plan de Trabajo" />
 
-      {esEstudiante && (
-        <div>
-          <div className="w-full flex rounded border mb-4">
-            <div className="w-full flex justify-start mt-3">
-              <div className="text-xl mb-4 ml-2 font-light">
-                Aprobación de Tutor Empresa
+        {esEstudiante && (
+          <div>
+            <div className="w-full flex rounded border mb-4">
+              <div className="w-full flex justify-start mt-3">
+                <div className="text-xl mb-4 ml-2 font-light">
+                  Aprobación de Tutor Empresa
+                </div>
+              </div>
+              <div className="w-full flex justify-end">
+                <Checkbox checked={aprobacionTutor} isEstudiante={true} />
               </div>
             </div>
-            <div className="w-full flex justify-end">
-              <Checkbox checked={aprobacionTutor} isEstudiante={true} />
-            </div>
-          </div>
-          <div className="w-full flex rounded border mb-4">
-            <div className="w-full flex justify-start mt-3">
-              <div className="text-xl mb-4 ml-2 font-light">
-                Aprobación de Tutor Practicas
+            <div className="w-full flex rounded border mb-4">
+              <div className="w-full flex justify-start mt-3">
+                <div className="text-xl mb-4 ml-2 font-light">
+                  Aprobación de Tutor Practicas
+                </div>
+              </div>
+              <div className="w-full flex justify-end">
+                <Checkbox checked={aprobacionCoordinador} isEstudiante={true} />
               </div>
             </div>
-            <div className="w-full flex justify-end">
-              <Checkbox checked={aprobacionCoordinador} isEstudiante={true} />
-            </div>
           </div>
-        </div>
-      )}
-      {esTutorYEmpresa ? (
-        <div>
-          <div className="w-full flex rounded border mb-4">
-            <div className="w-full flex justify-start mt-3">
-              <div className="text-xl mb-4 ml-2 font-light">
-                Aprobación de Tutor Empresa
+        )}
+        {esTutorYEmpresa ? (
+          <div>
+            <div className="w-full flex rounded border mb-4">
+              <div className="w-full flex justify-start mt-3">
+                <div className="text-xl mb-4 ml-2 font-light">
+                  Aprobación de Tutor Empresa
+                </div>
+              </div>
+              <div className="w-full flex justify-end">
+                <Checkbox
+                  onChange={handleCheckboxChangeTutor}
+                  checked={aprobacionTutor}
+                />
               </div>
             </div>
-            <div className="w-full flex justify-end">
-              <Checkbox
-                onChange={handleCheckboxChangeTutor}
-                checked={aprobacionTutor}
-              />
-            </div>
-          </div>
-          <div className="w-full flex rounded border mb-4">
-            <div className="w-full flex justify-start mt-3">
-              <div className="text-xl mb-4 ml-2 font-light">
-                Aprobación de Tutor Practicas
+            <div className="w-full flex rounded border mb-4">
+              <div className="w-full flex justify-start mt-3">
+                <div className="text-xl mb-4 ml-2 font-light">
+                  Aprobación de Tutor Practicas
+                </div>
+              </div>
+              <div className="w-full flex justify-end">
+                <Checkbox
+                  onChange={handleCheckboxChangeCoordinador}
+                  checked={aprobacionCoordinador}
+                />
               </div>
             </div>
-            <div className="w-full flex justify-end">
-              <Checkbox
-                onChange={handleCheckboxChangeCoordinador}
-                checked={aprobacionCoordinador}
-              />
-            </div>
           </div>
-        </div>
-      ) : esOnlyTutor ? (
-        <div>
-          <div className="w-full flex rounded border mb-4">
-            <div className="w-full flex justify-start mt-3">
-              <div className="text-xl mb-4 ml-2 font-light">
-                Aprobación de Tutor Empresa
+        ) : esOnlyTutor ? (
+          <div>
+            <div className="w-full flex rounded border mb-4">
+              <div className="w-full flex justify-start mt-3">
+                <div className="text-xl mb-4 ml-2 font-light">
+                  Aprobación de Tutor Empresa
+                </div>
+              </div>
+              <div className="w-full flex justify-end">
+                <Checkbox
+                  onChange={handleCheckboxChangeCoordinador}
+                  checked={aprobacionTutor}
+                />
               </div>
             </div>
-            <div className="w-full flex justify-end">
-              <Checkbox
-                onChange={handleCheckboxChangeCoordinador}
-                checked={aprobacionTutor}
-              />
-            </div>
           </div>
-        </div>
-      ) : esOnlyCoodinador ? (
-        <div>
-          <div className="w-full flex rounded border mb-4">
-            <div className="w-full flex justify-start mt-3">
-              <div className="text-xl mb-4 ml-2 font-light">
-                Aprobación de Tutor Empresa
+        ) : esOnlyCoodinador ? (
+          <div>
+            <div className="w-full flex rounded border mb-4">
+              <div className="w-full flex justify-start mt-3">
+                <div className="text-xl mb-4 ml-2 font-light">
+                  Aprobación de Tutor Empresa
+                </div>
+              </div>
+              <div className="w-full flex justify-end">
+                <Checkbox isEstudiante={true} checked={aprobacionTutor} />
               </div>
             </div>
-            <div className="w-full flex justify-end">
-              <Checkbox isEstudiante={true} checked={aprobacionTutor} />
-            </div>
-          </div>
-          <div className="w-full flex rounded border mb-4">
-            <div className="w-full flex justify-start mt-3">
-              <div className="text-xl mb-4 ml-2 font-light">
-                Aprobación de Tutor Practicas
+            <div className="w-full flex rounded border mb-4">
+              <div className="w-full flex justify-start mt-3">
+                <div className="text-xl mb-4 ml-2 font-light">
+                  Aprobación de Tutor Practicas
+                </div>
+              </div>
+              <div className="w-full flex justify-end">
+                <Checkbox
+                  onChange={handleCheckboxChangeCoordinador}
+                  checked={aprobacionCoordinador}
+                />
               </div>
             </div>
-            <div className="w-full flex justify-end">
-              <Checkbox
-                onChange={handleCheckboxChangeCoordinador}
-                checked={aprobacionCoordinador}
-              />
-            </div>
           </div>
-        </div>
-      ) : (
-        <></>
-      )}
+        ) : (
+          <></>
+        )}
 
-      <Collapse rol={rol} isShow={false} title="Estudiante" isComment={false}>
-        <div className="w-full flex flex-wrap">
-          <div className="p-2 rounded border w-full mb-2 mr-2 ">
-            <Label>Codigo</Label>
-            <p>{estudiante?.codigo}</p>
+        <Collapse rol={rol} isShow={false} title="Estudiante" isComment={false}>
+          <div className="w-full flex flex-wrap">
+            <div className="p-2 rounded border w-full mb-2 mr-2 ">
+              <Label>Codigo</Label>
+              <p>{estudiante?.codigo}</p>
+            </div>
+            <div className="p-2 rounded border w-full md:w-[calc(50%-0.5rem)] mb-2">
+              <Label>Nombre</Label>
+              <p>{estudiante?.primerNombre}</p>
+            </div>
+            <div className="p-2 rounded border w-full md:w-[calc(50%-0.5rem)] md:ml-2 mb-2">
+              <Label>Apellido</Label>
+              <p>{estudiante?.primerApellido}</p>
+            </div>
+            <div className="p-2 rounded border w-full md:w-[calc(50%-0.5rem)] mb-2">
+              <Label>Tipo de Documento</Label>
+              <p>{estudiante?.tipoDocumento?.nombre}</p>
+            </div>
+            <div className="p-2 rounded border w-full md:w-[calc(50%-0.5rem)] md:ml-2 mb-2 ">
+              <Label>Documento</Label>
+              <p>{estudiante?.numeroDocumento}</p>
+            </div>
           </div>
-          <div className="p-2 rounded border w-full md:w-[calc(50%-0.5rem)] mb-2">
-            <Label>Nombre</Label>
-            <p>{estudiante?.primerNombre}</p>
-          </div>
-          <div className="p-2 rounded border w-full md:w-[calc(50%-0.5rem)] md:ml-2 mb-2">
-            <Label>Apellido</Label>
-            <p>{estudiante?.primerApellido}</p>
-          </div>
-          <div className="p-2 rounded border w-full md:w-[calc(50%-0.5rem)] mb-2">
-            <Label>Tipo de Documento</Label>
-            <p>{estudiante?.tipoDocumento?.nombre}</p>
-          </div>
-          <div className="p-2 rounded border w-full md:w-[calc(50%-0.5rem)] md:ml-2 mb-2 ">
-            <Label>Documento</Label>
-            <p>{estudiante?.numeroDocumento}</p>
-          </div>
-        </div>
-      </Collapse>
-      <Collapse
-        rol={rol}
-        title="Intensidad Horaria"
-        comments={comments}
-        setComments={setComments}
-        autor="TUTOR"
-        isComment={false}
-      >
-        <IntensidadHorariaTable
+        </Collapse>
+        <Collapse
           rol={rol}
-          intensidadHoras={planTrabajo?.intensidadHoraria}
-        />
-      </Collapse>
-      <CollapseObj
-        rol={rol}
-        title="Objetivos"
-        comments={comentarioObj}
-        setComments={setComentarioObj}
-        obj={planTrabajo?.objetivo}
-        autor="TUTOR"
-      >
-        <Objetivo rol={rol} obj={planTrabajo?.objetivo} />
-      </CollapseObj>
-      <CollapseAct
-        rol={rol}
-        title="Actividades"
-        comments={comentarioAct}
-        setComments={setComentarioAct}
-        act={planTrabajo?.seccionActividades}
-        autor="TUTOR"
-      >
-        <ActivityManager
+          title="Intensidad Horaria"
+          comments={comments}
+          setComments={setComments}
+          autor="TUTOR"
+          isComment={false}
+        >
+          <IntensidadHorariaTable
+            rol={rol}
+            intensidadHoras={planTrabajo?.intensidadHoraria}
+          />
+        </Collapse>
+        <CollapseObj
           rol={rol}
-          actividades={planTrabajo?.seccionActividades?.actividades}
-        />
-      </CollapseAct>
-      <Collapse
-        rol={rol}
-        title="Requerimientos/Resultados"
-        comments={comments}
-        setComments={setComments}
-        autor="TUTOR"
-        isComment={false}
-      >
-        <RRForm
+          title="Objetivos"
+          comments={comentarioObj}
+          setComments={setComentarioObj}
+          obj={planTrabajo?.objetivo}
+          autor="TUTOR"
+        >
+          <Objetivo rol={rol} obj={planTrabajo?.objetivo} />
+        </CollapseObj>
+        <CollapseAct
           rol={rol}
-          updatedReque={updatedReque}
-          updatedResul={updatedResul}
-          resultado={planTrabajo?.resultados}
-          reques={planTrabajo?.requerimientosTecnicos}
-          idPlan={planTrabajo?.id}
-        />
-      </Collapse>
-      <Collapse
-        rol={rol}
-        title="Diagrama de Grantt"
-        comments={comments}
-        setComments={setComments}
-        autor="TUTOR"
-        isComment={false}
-      >
-        <div className="w-full flex">
-          <FileUpload rol={rol} />
-          <div className="w-full"></div>
-        </div>
-      </Collapse>
+          title="Actividades"
+          comments={comentarioAct}
+          setComments={setComentarioAct}
+          act={planTrabajo?.seccionActividades}
+          autor="TUTOR"
+        >
+          <ActivityManager
+            rol={rol}
+            actividades={planTrabajo?.seccionActividades?.actividades}
+          />
+        </CollapseAct>
+        <Collapse
+          rol={rol}
+          title="Requerimientos/Resultados"
+          comments={comments}
+          setComments={setComments}
+          autor="TUTOR"
+          isComment={false}
+        >
+          <RRForm
+            rol={rol}
+            updatedReque={updatedReque}
+            updatedResul={updatedResul}
+            resultado={planTrabajo?.resultados}
+            reques={planTrabajo?.requerimientosTecnicos}
+            idPlan={planTrabajo?.id}
+          />
+        </Collapse>
+        <Collapse
+          rol={rol}
+          title="Diagrama de Grantt"
+          comments={comments}
+          setComments={setComments}
+          autor="TUTOR"
+          isComment={false}
+        >
+          <div className="w-full flex">
+            <FileUpload rol={rol} urls={planTrabajo.diagramaGanttUrl} />
+          </div>
+        </Collapse>
+      </div>
     </>
   );
 };

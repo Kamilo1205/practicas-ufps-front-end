@@ -10,6 +10,9 @@ import { PlanDeTrabajo } from "../../interfaces/plantrabajo.interface";
 import usePlantrabajo from "../../hooks/usePlanTrabajo";
 import { useAuth } from "../../contexts";
 import Checkbox from "../../components/ui/Input/Checkbox";
+import LoadingSpinner from "../../components/ui/Pagination/LoadingSpiner";
+import FileUploadInforme from "../../components/PlanDeTrabajo/FileUploadInforme";
+import { primerInforme } from "../../interfaces/primerInforme";
 
 interface InfoProps {
   rol: boolean;
@@ -17,6 +20,7 @@ interface InfoProps {
 }
 const InformeParicialPage: FC<InfoProps> = ({ rol, plantrabajo }) => {
   const [OpenView, setOpenView] = useState(false);
+  const [loading, setLoading] = useState<boolean>(true);
   const [id, setID] = useState("");
   const [adap, setAdap] = useState("");
   const [tol, setTol] = useState("");
@@ -135,28 +139,44 @@ const InformeParicialPage: FC<InfoProps> = ({ rol, plantrabajo }) => {
   };
 
   useEffect(() => {
-    if (plantrabajo?.primerInforme != null) {
-      setID(plantrabajo?.primerInforme?.id);
-      setAdap(plantrabajo?.primerInforme?.adaptacion);
-      setTol(plantrabajo?.primerInforme?.tolerancia);
-      setNuer(plantrabajo?.primerInforme?.nuevasResponsabilidades);
-      setComp(plantrabajo?.primerInforme?.compromisoEficiencia);
-      setFuer(plantrabajo?.primerInforme?.fueronAsumidas);
-      setConcl(plantrabajo?.primerInforme?.conclusion);
+    const primerInforme = plantrabajo?.primerInforme;
+
+    if (primerInforme != null) {
+      setLoading(true);
+      setID(primerInforme.id);
+      setAdap(primerInforme.adaptacion);
+      setTol(primerInforme.tolerancia);
+      setNuer(primerInforme.nuevasResponsabilidades);
+      setComp(primerInforme.compromisoEficiencia);
+      setFuer(primerInforme.fueronAsumidas);
+      setConcl(primerInforme.conclusion);
+
+      // Verificar la aprobación del tutor empresarial
+      if (primerInforme.tutorEmpresarialAprobo != null) {
+        setAprobacionCoordinador(true);
+      }
+
+      // Verificar la aprobación del tutor institucional
+      if (primerInforme.tutorInstitucionalAprobo != null) {
+        setAprobacionTutor(true);
+      }
+      setLoading(false);
     }
   }, [plantrabajo?.primerInforme]);
-
-  useEffect(() => {
-    if (plantrabajo?.primerInforme?.tutorEmpresarialAprobo != null) {
-      setAprobacionCoordinador(true);
-    }
-  }, [plantrabajo?.primerInforme?.tutorEmpresarialAprobo]);
-
-  useEffect(() => {
-    if (plantrabajo?.primerInforme?.tutorInstitucionalAprobo != null) {
-      setAprobacionTutor(true);
-    }
-  }, [plantrabajo?.primerInforme?.tutorInstitucionalAprobo]);
+  if (loading) {
+    return (
+      <div
+        style={{
+          height: "500px",
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+        }}
+      >
+        <LoadingSpinner />
+      </div>
+    );
+  }
 
   return (
     <>
@@ -421,6 +441,20 @@ const InformeParicialPage: FC<InfoProps> = ({ rol, plantrabajo }) => {
           </div>
         </div>
         <div className="border mt-5 mb-3" />
+        {plantrabajo?.primerInforme?.id && (
+          <>
+            <Label>Diagrama de Grannt</Label>
+            <div className="mt-5 mb-3" />
+            <div className="w-full flex">
+              <FileUploadInforme
+                rol={rol}
+                id={plantrabajo?.primerInforme?.id}
+                urls={plantrabajo.primerInforme?.diagramaGanttUrl}
+              />
+            </div>
+            <div className="border mt-5 mb-3" />
+          </>
+        )}
       </div>
     </>
   );

@@ -15,6 +15,7 @@ import {
   evaluacionUpdateEstudiante as evaluacionUpdateAPI,
   aprobarInformeEmpresa as aprobarInformeEmpresaAPI,
   aprobarInformeTutor as aprobarInformeTutorAPI,
+  updateDiagrama,
 } from "../api/plantrabajo.api";
 import { PlanDeTrabajo } from "../interfaces/plantrabajo.interface";
 import { Resultado } from "../interfaces/resultado.interface";
@@ -23,7 +24,10 @@ import {
   createFinalInforme as createinformeFinalAPI,
   updateInformeFinal as updateinformeFinalAPI,
   updateInformePrimer as updateprimerInformeAPI,
+  updateDiagramaInforme,
 } from "../api/Informes.api";
+import { primerInforme } from "../interfaces/primerInforme";
+import { informeFinal } from "../interfaces/informeFinal";
 
 type UsePlantrabajoReturn = {
   allplanestrabajo: PlanDeTrabajo[] | null;
@@ -61,6 +65,8 @@ type UsePlantrabajoReturn = {
   aprobarInformeTutor: (id: string) => Promise<string>;
   aprobarPlanEmpresa: (id: string) => Promise<string>;
   aprobarPlanTutor: (id: string) => Promise<string>;
+  updateGranttPlan: (file: any) => Promise<any>;
+  updateGranttInforme: (file: any, id: string) => Promise<any>;
 };
 
 const usePlantrabajo = (): UsePlantrabajoReturn => {
@@ -333,6 +339,34 @@ const usePlantrabajo = (): UsePlantrabajoReturn => {
     }
   };
 
+  const updateGranttPlan = async (file: File): Promise<any> => {
+    setLoading(true);
+    try {
+      const data = await updateDiagrama(file);
+      setError(null);
+      return data;
+    } catch (err) {
+      setError(err as AxiosError);
+      return "false";
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const updateGranttInforme = async (file: File, id: string): Promise<any> => {
+    setLoading(true);
+    try {
+      const data = await updateDiagramaInforme(file,id);
+      setError(null);
+      return data;
+    } catch (err) {
+      setError(err as AxiosError);
+      return "false";
+    } finally {
+      setLoading(false);
+    }
+  };
+
   useEffect(() => {
     const fetchData = async () => {
       await fetchPlanTrabajoActual();
@@ -366,6 +400,8 @@ const usePlantrabajo = (): UsePlantrabajoReturn => {
     evaluacionUpdateEstudiante,
     aprobarInformeEmpresa,
     aprobarInformeTutor,
+    updateGranttPlan,
+    updateGranttInforme,
   };
 };
 

@@ -9,6 +9,7 @@ interface Intensidad {
   rol: boolean;
   intensidadHoras?: IntensidadHoraria;
 }
+
 const IntensidadHorariaTable: React.FC<Intensidad> = ({
   rol,
   intensidadHoras,

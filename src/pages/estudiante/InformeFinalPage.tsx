@@ -10,6 +10,9 @@ import { PlanDeTrabajo } from "../../interfaces/plantrabajo.interface";
 import usePlantrabajo from "../../hooks/usePlanTrabajo";
 import { useAuth } from "../../contexts";
 import Checkbox from "../../components/ui/Input/Checkbox";
+import LoadingSpinner from "../../components/ui/Pagination/LoadingSpiner";
+import FileUploadInforme from "../../components/PlanDeTrabajo/FileUploadInforme";
+import { informeFinal } from "../../interfaces/informeFinal";
 
 interface InfoProps {
   rol: boolean;
@@ -17,6 +20,7 @@ interface InfoProps {
 }
 const InformeFinalPage: FC<InfoProps> = ({ rol, plantrabajo }) => {
   const [OpenView, setOpenView] = useState(false);
+  const [loading, setLoading] = useState<boolean>(true);
   const [id, setID] = useState("");
   const [adap, setAdap] = useState("");
   const [tol, setTol] = useState("");
@@ -58,6 +62,7 @@ const InformeFinalPage: FC<InfoProps> = ({ rol, plantrabajo }) => {
       }
     });
   };
+
 
   const handleCheckboxChangeCoordinador = () => {
     aprobarInformeEmpresa(plantrabajo?.informeFinal?.id).then((response) => {
@@ -134,27 +139,45 @@ const InformeFinalPage: FC<InfoProps> = ({ rol, plantrabajo }) => {
       });
     }
   };
-  useEffect(() => {
-    if (plantrabajo?.informeFinal != null) {
-      setID(plantrabajo?.informeFinal?.id);
-      setAdap(plantrabajo?.informeFinal?.adaptacion);
-      setTol(plantrabajo?.informeFinal?.tolerancia);
-      setNuer(plantrabajo?.informeFinal?.nuevasResponsabilidades);
-      setComp(plantrabajo?.informeFinal?.compromisoEficiencia);
-      setFuer(plantrabajo?.informeFinal?.fueronAsumidas);
-      setConcl(plantrabajo?.informeFinal?.conclusion);
-    }
-  }, [plantrabajo?.informeFinal]);
-  useEffect(() => {
-    if (plantrabajo?.informeFinal.tutorEmpresarialAprobo != null) {
+
+  //console.log(plantrabajo.informeFinal.diagramaGanttUrl)
+useEffect(() => {
+  const informeFinal = plantrabajo?.informeFinal;
+
+  if (informeFinal != null) {
+    setLoading(true);
+    setID(informeFinal.id);
+    setAdap(informeFinal.adaptacion);
+    setTol(informeFinal.tolerancia);
+    setNuer(informeFinal.nuevasResponsabilidades);
+    setComp(informeFinal.compromisoEficiencia);
+    setFuer(informeFinal.fueronAsumidas);
+    setConcl(informeFinal.conclusion);
+
+    if (informeFinal?.tutorEmpresarialAprobo != null) {
       setAprobacionCoordinador(true);
     }
-  }, [plantrabajo?.informeFinal?.tutorEmpresarialAprobo]);
-  useEffect(() => {
-    if (plantrabajo?.informeFinal.tutorInstitucionalAprobo != null) {
+
+    if (informeFinal?.tutorInstitucionalAprobo != null) {
       setAprobacionTutor(true);
     }
-  }, [plantrabajo?.informeFinal?.tutorInstitucionalAprobo]);
+    setLoading(false);
+  }
+}, [plantrabajo?.informeFinal]);
+if (loading) {
+  return (
+    <div
+      style={{
+        height: "500px",
+        display: "flex",
+        justifyContent: "center",
+        alignItems: "center",
+      }}
+    >
+      <LoadingSpinner />
+    </div>
+  );
+}
   return (
     <>
       <div className="border rounded p-3">
@@ -291,7 +314,6 @@ const InformeFinalPage: FC<InfoProps> = ({ rol, plantrabajo }) => {
             disabled={!rol}
           />
         </div>
-
         <div className="border mb-4" />
         <div className="w-full flex" style={{ alignItems: "center" }}>
           <div className="w-full">
@@ -334,56 +356,60 @@ const InformeFinalPage: FC<InfoProps> = ({ rol, plantrabajo }) => {
             ""
           )}
           <table className="min-w-full border border-gray-300 bg-white text-left">
-            <tr className="bg-slate-100">
-              <th className="border border-gray-300 p-2">
-                <Label>
-                  Nuevas responsabilidades (Descripción de cada una de ellas)
-                </Label>
-              </th>
-            </tr>
-            <tr>
-              <td className="border border-gray-300 p-2">
-                <TextArea
-                  rows={4}
-                  value={nueR}
-                  onChange={(e) => setNuer(e.target.value)}
-                  disabled={!rol}
-                />
-              </td>
-            </tr>
-            <tr className="bg-slate-100">
-              <th className="border border-gray-300 p-2">
-                <Label>Fueron asumidas(Descripción de cada una de ellas)</Label>
-              </th>
-            </tr>
-            <tr>
-              <td className="border border-gray-300 p-2">
-                <TextArea
-                  rows={4}
-                  value={fuer}
-                  onChange={(e) => setFuer(e.target.value)}
-                  disabled={!rol}
-                />
-              </td>
-            </tr>
-            <tr className="bg-slate-100">
-              <th className="border border-gray-300 p-2">
-                <Label>
-                  Compromiso y eficiencia para el desarrollo de nuevas
-                  actividades desrrolladas
-                </Label>
-              </th>
-            </tr>
-            <tr>
-              <td className="border border-gray-300 p-2">
-                <TextArea
-                  rows={4}
-                  value={comp}
-                  onChange={(e) => setComp(e.target.value)}
-                  disabled={!rol}
-                />
-              </td>
-            </tr>
+            <tbody>
+              <tr className="bg-slate-100">
+                <th className="border border-gray-300 p-2">
+                  <Label>
+                    Nuevas responsabilidades (Descripción de cada una de ellas)
+                  </Label>
+                </th>
+              </tr>
+              <tr>
+                <td className="border border-gray-300 p-2">
+                  <TextArea
+                    rows={4}
+                    value={nueR}
+                    onChange={(e) => setNuer(e.target.value)}
+                    disabled={!rol}
+                  />
+                </td>
+              </tr>
+              <tr className="bg-slate-100">
+                <th className="border border-gray-300 p-2">
+                  <Label>
+                    Fueron asumidas (Descripción de cada una de ellas)
+                  </Label>
+                </th>
+              </tr>
+              <tr>
+                <td className="border border-gray-300 p-2">
+                  <TextArea
+                    rows={4}
+                    value={fuer}
+                    onChange={(e) => setFuer(e.target.value)}
+                    disabled={!rol}
+                  />
+                </td>
+              </tr>
+              <tr className="bg-slate-100">
+                <th className="border border-gray-300 p-2">
+                  <Label>
+                    Compromiso y eficiencia para el desarrollo de nuevas
+                    actividades desarrolladas
+                  </Label>
+                </th>
+              </tr>
+              <tr>
+                <td className="border border-gray-300 p-2">
+                  <TextArea
+                    rows={4}
+                    value={comp}
+                    onChange={(e) => setComp(e.target.value)}
+                    disabled={!rol}
+                  />
+                </td>
+              </tr>
+            </tbody>
           </table>
         </div>
         <div className="border mt-5 mb-3" />
@@ -418,6 +444,20 @@ const InformeFinalPage: FC<InfoProps> = ({ rol, plantrabajo }) => {
           </div>
         </div>
         <div className="border mt-5 mb-3" />
+        {plantrabajo?.informeFinal?.id && (
+          <>
+            <Label>Diagrama de Grannt</Label>
+            <div className="mt-5 mb-3" />
+            <div className="w-full flex">
+              <FileUploadInforme
+                rol={rol}
+                id={plantrabajo?.informeFinal?.id}
+                urls={plantrabajo?.informeFinal?.diagramaGanttUrl}
+              />
+            </div>
+            <div className="border mt-5 mb-3" />
+          </>
+        )}
       </div>
     </>
   );

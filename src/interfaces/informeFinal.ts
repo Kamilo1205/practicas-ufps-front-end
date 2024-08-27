@@ -1,7 +1,7 @@
 import { TutorSchema } from "../schemas/tutorSchema";
 import { Tutor } from "./tutor.interface";
 
-interface informeFinal {
+export interface informeFinal {
   id?: string;
   adaptacion: string;
   tolerancia: string;
@@ -11,4 +11,5 @@ interface informeFinal {
   fueronAsumidas: string;
   tutorEmpresarialAprobo?: TutorSchema;
   tutorInstitucionalAprobo?: Tutor;
+  diagramaGanttUrl?: string;
 }

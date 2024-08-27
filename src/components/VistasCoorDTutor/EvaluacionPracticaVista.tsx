@@ -7,6 +7,7 @@ import usePlantrabajo from "../../hooks/usePlanTrabajo";
 import { Estudiante } from "./../../schemas/solicitudSchema";
 import Swal from "sweetalert2";
 import { PlanDeTrabajo } from "../../interfaces/plantrabajo.interface";
+import Spinner from "../ui/Spinner"; // Importar un componente de carga, puede ser un Spinner
 
 interface EvaluacionProps {
   initialOpen: boolean;
@@ -24,8 +25,11 @@ const EvaluacionEstudianteVista: FC<EvaluacionProps> = ({
 }) => {
   const [open, setOpen] = useState<boolean>(initialOpen);
   const [planTrabajo, setPlanTrabajo] = useState<PlanDeTrabajo>();
-  const { fetchMiPlanTrabajoActualEstudiante, evaluacionCreateEstudiante, evaluacionUpdateEstudiante } =
-    usePlantrabajo();
+  const {
+    fetchMiPlanTrabajoActualEstudiante,
+    evaluacionCreateEstudiante,
+    evaluacionUpdateEstudiante,
+  } = usePlantrabajo();
 
   const evaluacionCreate = (evaluacionCreate: Evaluacion) => {
     evaluacionCreateEstudiante(evaluacionCreate).then((response) => {
@@ -46,6 +50,7 @@ const EvaluacionEstudianteVista: FC<EvaluacionProps> = ({
       }
     });
   };
+
   const evaluacionUpdate = (evaluacionUpdate: Evaluacion) => {
     evaluacionUpdateEstudiante(evaluacionUpdate).then((response) => {
       if (response === "ok") {
@@ -65,6 +70,7 @@ const EvaluacionEstudianteVista: FC<EvaluacionProps> = ({
       }
     });
   };
+
   useEffect(() => {
     if (estudiante != null) {
       fetchMiPlanTrabajoActualEstudiante()
@@ -73,12 +79,13 @@ const EvaluacionEstudianteVista: FC<EvaluacionProps> = ({
         })
         .catch((error) => {
           console.error("Error fetching plan de trabajo:", error);
-        });
+        })
     }
   }, [estudiante?.id]);
+
   return (
     <>
-      {rol === "estudiante" ? (
+      { rol === "estudiante" ? (
         <EvaluacionEstudiante
           rol={true}
           evaluacionCreate={evaluacionCreate}
