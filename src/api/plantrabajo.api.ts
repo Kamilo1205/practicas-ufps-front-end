@@ -110,3 +110,10 @@ export const aprobarInformeEmpresa = async (id: string) => {
   );
   return response.data;
 };
+
+export const updateDiagrama = async (file: File) => {
+   const formData = new FormData();
+   formData.append("file", file);
+  const response = await axios.post("plan-trabajo/diagrama-Gantt", formData);
+  return response.data;
+};

@@ -1,21 +1,25 @@
 import React, { FC, useState } from "react";
+import axios from "axios";
 import { BiArrowToRight, BiCheck } from "react-icons/bi";
 import usePlantrabajo from "../../hooks/usePlanTrabajo";
 import Swal from "sweetalert2";
+import { string } from "zod";
 import { FaCloudDownloadAlt, FaCloudUploadAlt } from "react-icons/fa";
 
 interface UploadedFile {
   name: string;
-  url?: string;
+  url: string;
 }
 interface props {
   rol?: boolean;
+  id: string;
   urls?: string;
 }
-const FileUpload: FC<props> = ({ rol = false, urls }) => {
+const FileUploadInforme: FC<props> = ({ rol = false, id, urls }) => {
   const [file, setFile] = useState<File | null>(null);
   const [uploadedFile, setUploadedFile] = useState<UploadedFile | null>(null);
-  const { updateGranttPlan } = usePlantrabajo();
+  const { updateGranttInforme } = usePlantrabajo();
+
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     if (event.target.files) {
       setFile(event.target.files[0]);
@@ -26,7 +30,7 @@ const FileUpload: FC<props> = ({ rol = false, urls }) => {
     if (!file) return;
 
     try {
-      updateGranttPlan(file).then((response) => {
+      updateGranttInforme(file, id).then((response) => {
         if (response == "false") {
           Swal.fire({
             title: "Ha ocurrido un error",
@@ -121,4 +125,4 @@ const FileUpload: FC<props> = ({ rol = false, urls }) => {
   );
 };
 
-export default FileUpload;
+export default FileUploadInforme;

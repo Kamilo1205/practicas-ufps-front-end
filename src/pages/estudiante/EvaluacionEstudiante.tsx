@@ -6,6 +6,7 @@ import { VscChromeClose } from "react-icons/vsc";
 import { TfiSave } from "react-icons/tfi";
 import Swal from "sweetalert2";
 import { PlanDeTrabajo } from "./../../interfaces/plantrabajo.interface";
+import LoadingSpinner from "../../components/ui/Pagination/LoadingSpiner";
 
 interface EvaluacionProp {
   rol: boolean;
@@ -70,7 +71,7 @@ const EvaluacionEstudiante: FC<EvaluacionProp> = ({
   const [evaluacion4, setEvaluacion4] = useState(
     Array(eval4.length).fill(Array(columnas.length).fill(false))
   );
-
+  const [loading, setLoading] = useState<boolean>(true);
   const [isEditing, setIsEditing] = useState(false);
   const [comentarios, setComentarios] = useState("");
   const save = () => {
@@ -133,14 +134,30 @@ const EvaluacionEstudiante: FC<EvaluacionProp> = ({
 
   useEffect(() => {
     if (planTrabajo?.evaluacion != null) {
+      setLoading(true);
       setEvaluacion1(planTrabajo?.evaluacion?.procesoDeGestion);
       setEvaluacion2(planTrabajo?.evaluacion?.jefeInmediato);
       setEvaluacion3(planTrabajo?.evaluacion?.empresa);
       setEvaluacion4(planTrabajo?.evaluacion?.aporteRealizacion);
       setComentarios(planTrabajo?.evaluacion?.comentarios);
+      setLoading(false);
     }
   }, [planTrabajo?.evaluacion]);
 
+  if (loading) {
+    return (
+      <div
+        style={{
+          height: "500px",
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+        }}
+      >
+        <LoadingSpinner />
+      </div>
+    );
+  }
   return (
     <div>
       <div className="flex w-full mb-10">

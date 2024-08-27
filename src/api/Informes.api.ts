@@ -1,3 +1,4 @@
+import { primerInforme } from "../interfaces/primerInforme";
 import axios from "./axios";
 
 export const createPrimerInforme = async (
@@ -27,5 +28,12 @@ export const updateInformePrimer = async (
   informe: primerInforme
 ): Promise<primerInforme> => {
   const response = await axios.patch(`/informe/${idInforme}`, informe);
+  return response.data;
+};
+
+export const updateDiagramaInforme = async (file: File, id: string) => {
+   const formData = new FormData();
+   formData.append("file", file);
+  const response = await axios.post(`informe/${id}/diagrama-Gantt`, formData);
   return response.data;
 };
