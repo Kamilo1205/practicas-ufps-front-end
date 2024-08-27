@@ -1,23 +1,36 @@
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { EmptyStateMessage } from "../../components/estudiantes"
 import { TablaPaginadaComponent } from "../../components/ui/Table/TablaPaginadaComponent"
+import useEmpresas from "../../hooks/useEmpresas"
 
 
 
 export const PracticantesPage = () => {
 
+
+
+  const { getPracticantesAsignadosATutor } = useEmpresas()
   const [practicantes, setPracticantes] = useState<any[]>([])
   const [totalItems, setTotalItems] = useState<number>(0); // Número total de ítems
   const [currentPage, setCurrentPage] = useState<number>(1);
   const [itemsPerPage] = useState<number>(5); // Suponiendo que el backend maneja 10 ítems por página
   const [filtro, setFiltro] = useState<string>("");
+  console.log(practicantes)
+  useEffect(() => {
+    getPracticantesAsignadosATutor().then((res) => {
+      console.log(res)
+      setPracticantes(res || [])
+      setTotalItems(res.length || 0)
+    })
+
+  }, [])
 
   return (<>
     <div className="mb-10">
       <div className="text-gray-600 font-bold text-2xl">Practicantes asignados</div>
     </div>
     {
-      practicantes.length === 0 ? (
+      practicantes && practicantes?.length === 0 ? (
         <EmptyStateMessage
           message="No hay practicantes asignados"
           submesage=""

@@ -18,7 +18,7 @@ interface AsignacionPracticasComponentProps {
   setMostrarPerfil: (mostrar: boolean) => void
   getAspirantesASolicitud?: (idSolicitud: string) => Promise<any[]>
   asignarEstudiante: (solicitudId: string, estudianteId: string) => Promise<any>
-  desasignarEstudiante: (solicitudId: string, estudianteId: string) => Promise<any>
+  desasignarEstudiante: (asignacionId: string) => Promise<any>
 }
 
 export const AsignacionPracticasComponent = ({ solicitud, setMostrarPerfil, asignarEstudiante, desasignarEstudiante }: AsignacionPracticasComponentProps) => {
@@ -86,16 +86,16 @@ export const AsignacionPracticasComponent = ({ solicitud, setMostrarPerfil, asig
       cancelButtonText: 'No',
     }).then((result) => {
       if (result.isConfirmed && estudianteId) {
-        console.log('perfilSeleccionado', perfilSeleccionado)
+        console.log('perfilSeleccionado', estudianteAsignado)
         Swal.fire({
-          title: 'Desasignando practicante...',
+          title: 'Des asignando practicante...',
           text: 'Por favor, espere.',
           allowOutsideClick: false,
           didOpen: () => {
             Swal.showLoading();
           }
         })
-        desasignarEstudiante(solicitudState.id, estudianteId).then(() => {
+        desasignarEstudiante(estudianteAsignado?.id).then(() => {
           Swal.close()
           Swal.fire({
             title: 'Practicante desasignado',

@@ -180,7 +180,7 @@ export const EstudiantePerfilComponent = ({ estudiante, rol = '' }: EstudiantePe
                 <dd className="mt-1 text-sm leading-6 text-gray-700 sm:col-span-2 sm:mt-0">
                   {
                     //TODO Agregar la empresa asignada
-                    estudiante?.asignacion?.solicitud?.empresa?.nombreLegal || 'No asignado'
+                    asignacion?.solicitud?.empresa?.nombreLegal || 'No asignado'
                   }
                 </dd>
               </div>

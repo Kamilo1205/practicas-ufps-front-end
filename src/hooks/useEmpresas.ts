@@ -16,7 +16,8 @@ import {
     deshabilitarTutorEmpresaApi,
     habilitarTutorEmpresaApi,
     registrarDependenciaApi,
-    subirConvenio
+    subirConvenio,
+    getEstudiantesAsignadosATutorApi
 } from '../api/empresa.api';
 import { Empresa, Tutor } from '../interfaces';
 import Swal from 'sweetalert2';
@@ -55,7 +56,8 @@ type UseEmpresasReturn = {
   deshabilitarTutorEmpresa: (tutorId: string) => Promise<void>
   habilitarTutorEmpresa: (tutorId: string) => Promise<void>
   registrarDependencia: (data: any) => Promise<void>
-  registrarConvenio: (file: any,empresaId:string) => Promise<void>
+  registrarConvenio: (file: any, empresaId: string) => Promise<void>
+  getPracticantesAsignadosATutor: () => Promise<any>
 };
 
 const useEmpresas = (): UseEmpresasReturn => {
@@ -418,6 +420,16 @@ const useEmpresas = (): UseEmpresasReturn => {
     }
   }
 
+
+  const getPracticantesAsignadosATutor = async () => {
+    try {
+      const response = await getEstudiantesAsignadosATutorApi();
+      return response;
+    } catch (error) {
+      Swal.fire('Error', 'No se han podido obtener los estudiantes asignados al tutor', 'error');
+    }
+   }
+
   return { 
     empresas, 
     empresa, 
@@ -442,7 +454,8 @@ const useEmpresas = (): UseEmpresasReturn => {
     deshabilitarTutorEmpresa,
     habilitarTutorEmpresa,
     registrarDependencia,
-    registrarConvenio
+    registrarConvenio,
+    getPracticantesAsignadosATutor
   };
 };
 

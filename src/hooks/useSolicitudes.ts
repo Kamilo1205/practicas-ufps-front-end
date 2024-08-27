@@ -136,9 +136,9 @@ export const useSolicitudes = () => {
     }
    }
 
-  const desasignarEstudiante = async (solicitudId: string, estudianteId: string) => {
+  const desasignarEstudiante = async (asignacionId:string) => {
     try {
-      const resp = await desasignarPracticanteApi(solicitudId, estudianteId)
+      const resp = await desasignarPracticanteApi(asignacionId)
       console.log('asignacion', resp)
       
       const nuevaSolicitudes = solicitudes.map(solicitud => {
