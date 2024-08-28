@@ -18,6 +18,7 @@ interface InfoProps {
   rol: boolean;
   plantrabajo: PlanDeTrabajo;
 }
+
 const InformeParicialPage: FC<InfoProps> = ({ rol, plantrabajo }) => {
   const [OpenView, setOpenView] = useState(false);
   const [loading, setLoading] = useState<boolean>(true);
