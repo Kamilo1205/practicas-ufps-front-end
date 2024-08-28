@@ -77,7 +77,7 @@ const InformeParicialPage: FC<InfoProps> = ({ rol, plantrabajo }) => {
       }
     });
   };
-
+  
   const saveDoc = () => {
     if (!plantrabajo.primerInforme) {
       const informe: primerInforme = {

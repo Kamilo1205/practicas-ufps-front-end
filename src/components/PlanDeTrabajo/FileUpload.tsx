@@ -3,6 +3,7 @@ import { BiArrowToRight, BiCheck } from "react-icons/bi";
 import usePlantrabajo from "../../hooks/usePlanTrabajo";
 import Swal from "sweetalert2";
 import { FaCloudDownloadAlt, FaCloudUploadAlt } from "react-icons/fa";
+import LoadingMini from "../ui/Pagination/LoadingMini";
 
 interface UploadedFile {
   name: string;
@@ -16,6 +17,7 @@ const FileUpload: FC<props> = ({ rol = false, urls }) => {
   const [file, setFile] = useState<File | null>(null);
   const [uploadedFile, setUploadedFile] = useState<UploadedFile | null>(null);
   const { updateGranttPlan } = usePlantrabajo();
+  const [isloading, setIsloading] = useState<boolean>(false);
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     if (event.target.files) {
       setFile(event.target.files[0]);
@@ -23,9 +25,17 @@ const FileUpload: FC<props> = ({ rol = false, urls }) => {
   };
 
   const handleUpload = async () => {
-    if (!file) return;
+    if (!file){
+      Swal.fire({
+        title: "Ha ocurrido un error",
+        text: "Selecciona un archivo",
+        icon: "error",
+        confirmButtonText: "Aceptar",
+      });
+      return;}
 
     try {
+      setIsloading(true);
       updateGranttPlan(file).then((response) => {
         if (response == "false") {
           Swal.fire({
@@ -46,9 +56,11 @@ const FileUpload: FC<props> = ({ rol = false, urls }) => {
             confirmButtonText: "Aceptar",
           });
         }
+        setIsloading(false);
       });
     } catch (error) {
       console.error("Error uploading file:", error);
+      setIsloading(false);
     }
   };
 
@@ -78,6 +90,9 @@ const FileUpload: FC<props> = ({ rol = false, urls }) => {
               >
                 <FaCloudUploadAlt className="h-5 w-5 mr-2" />
                 Subir
+                <div className="ml-2">
+                  {isloading ? <LoadingMini /> : <></>}
+                </div>
               </button>
               {urls || uploadedFile?.url ? (
                 <div>
