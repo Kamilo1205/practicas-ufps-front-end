@@ -20,7 +20,7 @@ interface InfoProps {
 }
 const InformeFinalPage: FC<InfoProps> = ({ rol, plantrabajo }) => {
   const [OpenView, setOpenView] = useState(false);
-  const [loading, setLoading] = useState<boolean>(true);
+  const [loading, setLoading] = useState<boolean>(false);
   const [id, setID] = useState("");
   const [adap, setAdap] = useState("");
   const [tol, setTol] = useState("");

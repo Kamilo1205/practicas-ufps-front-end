@@ -48,7 +48,7 @@ const PlanDeTrabajoPage: React.FC<PlanTrabProps> = ({
   const { user } = useAuth();
   const roles = user?.roles;
   const rolesNecesarios = ["tutor", "coordinador"];
-  const [loading, setLoading] = useState<boolean>(true);
+  const [loading, setLoading] = useState<boolean>(false);
 
   const esEstudiante = roles?.some((role) => role.nombre === "estudiante");
   const esTutorYEmpresa = rolesNecesarios.every((rolNecesario) =>

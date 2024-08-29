@@ -71,7 +71,7 @@ const EvaluacionEstudiante: FC<EvaluacionProp> = ({
   const [evaluacion4, setEvaluacion4] = useState(
     Array(eval4.length).fill(Array(columnas.length).fill(false))
   );
-  const [loading, setLoading] = useState<boolean>(true);
+  const [loading, setLoading] = useState<boolean>(false);
   const [isEditing, setIsEditing] = useState(false);
   const [comentarios, setComentarios] = useState("");
   const save = () => {
