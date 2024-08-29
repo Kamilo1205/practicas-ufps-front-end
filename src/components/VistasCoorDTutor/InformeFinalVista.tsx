@@ -79,4 +79,5 @@ const InformeFinalVista: FC<FinalProps> = ({
   );
 };
 
+
 export default InformeFinalVista;

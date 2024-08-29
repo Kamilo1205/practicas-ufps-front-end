@@ -20,7 +20,7 @@ interface InfoProps {
 }
 const InformeFinalPage: FC<InfoProps> = ({ rol, plantrabajo }) => {
   const [OpenView, setOpenView] = useState(false);
-  const [loading, setLoading] = useState<boolean>(false);
+  const [loading, setLoading] = useState<boolean>(true);
   const [id, setID] = useState("");
   const [adap, setAdap] = useState("");
   const [tol, setTol] = useState("");
@@ -62,7 +62,6 @@ const InformeFinalPage: FC<InfoProps> = ({ rol, plantrabajo }) => {
       }
     });
   };
-
 
   const handleCheckboxChangeCoordinador = () => {
     aprobarInformeEmpresa(plantrabajo?.informeFinal?.id).then((response) => {
@@ -141,43 +140,43 @@ const InformeFinalPage: FC<InfoProps> = ({ rol, plantrabajo }) => {
   };
 
   //console.log(plantrabajo.informeFinal.diagramaGanttUrl)
-useEffect(() => {
-  const informeFinal = plantrabajo?.informeFinal;
+  useEffect(() => {
+    const informeFinal = plantrabajo?.informeFinal;
+    if (plantrabajo === undefined) {
+      setLoading(true);
+    } else if (informeFinal != null) {
+      setID(informeFinal.id);
+      setAdap(informeFinal.adaptacion);
+      setTol(informeFinal.tolerancia);
+      setNuer(informeFinal.nuevasResponsabilidades);
+      setComp(informeFinal.compromisoEficiencia);
+      setFuer(informeFinal.fueronAsumidas);
+      setConcl(informeFinal.conclusion);
 
-  if (informeFinal != null) {
-    setLoading(true);
-    setID(informeFinal.id);
-    setAdap(informeFinal.adaptacion);
-    setTol(informeFinal.tolerancia);
-    setNuer(informeFinal.nuevasResponsabilidades);
-    setComp(informeFinal.compromisoEficiencia);
-    setFuer(informeFinal.fueronAsumidas);
-    setConcl(informeFinal.conclusion);
+      if (informeFinal?.tutorEmpresarialAprobo != null) {
+        setAprobacionCoordinador(true);
+      }
 
-    if (informeFinal?.tutorEmpresarialAprobo != null) {
-      setAprobacionCoordinador(true);
-    }
-
-    if (informeFinal?.tutorInstitucionalAprobo != null) {
-      setAprobacionTutor(true);
-    }
-    setLoading(false);
+      if (informeFinal?.tutorInstitucionalAprobo != null) {
+        setAprobacionTutor(true);
+      }
+      setLoading(false);
+    } else setLoading(false);
+  }, [plantrabajo?.informeFinal]);
+  if (loading) {
+    return (
+      <div
+        style={{
+          height: "500px",
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+        }}
+      >
+        <LoadingSpinner />
+      </div>
+    );
   }
-}, [plantrabajo?.informeFinal]);
-if (loading) {
-  return (
-    <div
-      style={{
-        height: "500px",
-        display: "flex",
-        justifyContent: "center",
-        alignItems: "center",
-      }}
-    >
-      <LoadingSpinner />
-    </div>
-  );
-}
   return (
     <>
       <div className="border rounded p-3">

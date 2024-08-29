@@ -48,7 +48,7 @@ const PlanDeTrabajoPage: React.FC<PlanTrabProps> = ({
   const { user } = useAuth();
   const roles = user?.roles;
   const rolesNecesarios = ["tutor", "coordinador"];
-  const [loading, setLoading] = useState<boolean>(false);
+  const [loading, setLoading] = useState<boolean>(true);
 
   const esEstudiante = roles?.some((role) => role.nombre === "estudiante");
   const esTutorYEmpresa = rolesNecesarios.every((rolNecesario) =>
@@ -119,9 +119,10 @@ const PlanDeTrabajoPage: React.FC<PlanTrabProps> = ({
   const [comentarioObj, setComentarioObj] = useState<Comentario[]>([]);
   const [comentarioAct, setComentarioAct] = useState<Comentario[]>([]);
 
-
   useEffect(() => {
-    if (planTrabajo != null) {
+    if (planTrabajo === undefined) {
+      setLoading(true);
+    } else if (planTrabajo != null) {
       setLoading(true);
       // Verificar y establecer comentarios de la sección de actividades
       const comentariosActividades =
@@ -145,9 +146,8 @@ const PlanDeTrabajoPage: React.FC<PlanTrabProps> = ({
       if (planTrabajo.tutorEmpresarial != null) {
         setAprobacionTutor(true);
       }
-
       setLoading(false);
-    }
+    } else setLoading(false);
   }, [planTrabajo]);
   if (loading) {
     return (
@@ -353,7 +353,7 @@ const PlanDeTrabajoPage: React.FC<PlanTrabProps> = ({
           isComment={false}
         >
           <div className="w-full flex">
-            <FileUpload rol={rol} urls={planTrabajo.diagramaGanttUrl} />
+            <FileUpload rol={rol} urls={planTrabajo?.diagramaGanttUrl} />
           </div>
         </Collapse>
       </div>
