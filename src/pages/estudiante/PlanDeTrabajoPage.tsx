@@ -45,6 +45,7 @@ const PlanDeTrabajoPage: React.FC<PlanTrabProps> = ({
     updatedResultado,
   } = usePlantrabajo();
 
+  
   const { user } = useAuth();
   const roles = user?.roles;
   const rolesNecesarios = ["tutor", "coordinador"];
