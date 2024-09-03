@@ -30,25 +30,29 @@ const InformeFinalVista: FC<FinalProps> = ({
   const { fetchMiPlanTrabajoActualEstudiante, fetchPlanTrabajoById } =
     usePlantrabajo();
   const { user } = useAuth();
- useEffect(() => {
-   if (estudiante?.id) {
-     fetchMiPlanTrabajoActualEstudiante()
-       .then((result) => {
-         setPlanTrabajo(result);
-       })
-       .catch((error) => {
-         console.error("Error fetching plan de trabajo:", error);
-       });
-
-     fetchPlanTrabajoById(plantrabajo2?.id)
-       .then((result) => {
-         setPlanTrabajo2(result);
-       })
-       .catch((error) => {
-         console.error("Error fetching plan de trabajo:", error);
-       });
-   }
- }, [estudiante?.id]);
+  const roles = user?.roles;
+  const esEstudiante = roles?.some((role) => role.nombre === "estudiante");
+  useEffect(() => {
+    if (estudiante?.id) {
+      if (esEstudiante) {
+        fetchMiPlanTrabajoActualEstudiante()
+          .then((result) => {
+            setPlanTrabajo(result);
+          })
+          .catch((error) => {
+            console.error("Error fetching plan de trabajo:", error);
+          });
+      } else {
+        fetchPlanTrabajoById(plantrabajo2?.id)
+          .then((result) => {
+            setPlanTrabajo2(result);
+          })
+          .catch((error) => {
+            console.error("Error fetching plan de trabajo:", error);
+          });
+      }
+    }
+  }, [estudiante?.id]);
   return (
     <>
       {rol === "estudiante" ? (
@@ -74,5 +78,6 @@ const InformeFinalVista: FC<FinalProps> = ({
     </>
   );
 };
+
 
 export default InformeFinalVista;

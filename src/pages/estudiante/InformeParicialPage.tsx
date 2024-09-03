@@ -18,6 +18,7 @@ interface InfoProps {
   rol: boolean;
   plantrabajo: PlanDeTrabajo;
 }
+
 const InformeParicialPage: FC<InfoProps> = ({ rol, plantrabajo }) => {
   const [OpenView, setOpenView] = useState(false);
   const [loading, setLoading] = useState<boolean>(true);
@@ -137,11 +138,11 @@ const InformeParicialPage: FC<InfoProps> = ({ rol, plantrabajo }) => {
       });
     }
   };
-
   useEffect(() => {
     const primerInforme = plantrabajo?.primerInforme;
-
-    if (primerInforme != null) {
+    if (plantrabajo === undefined) {
+      setLoading(true);
+    } else if (primerInforme != null) {
       setLoading(true);
       setID(primerInforme.id);
       setAdap(primerInforme.adaptacion);
@@ -161,7 +162,7 @@ const InformeParicialPage: FC<InfoProps> = ({ rol, plantrabajo }) => {
         setAprobacionTutor(true);
       }
       setLoading(false);
-    }
+    } else setLoading(false);
   }, [plantrabajo?.primerInforme]);
   if (loading) {
     return (

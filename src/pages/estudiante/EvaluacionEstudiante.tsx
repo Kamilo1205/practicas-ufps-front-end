@@ -133,7 +133,9 @@ const EvaluacionEstudiante: FC<EvaluacionProp> = ({
   };
 
   useEffect(() => {
-    if (planTrabajo?.evaluacion != null) {
+    if (planTrabajo?.evaluacion === undefined) {
+      setLoading(true);
+    } else if (planTrabajo?.evaluacion != null) {
       setLoading(true);
       setEvaluacion1(planTrabajo?.evaluacion?.procesoDeGestion);
       setEvaluacion2(planTrabajo?.evaluacion?.jefeInmediato);
@@ -141,7 +143,7 @@ const EvaluacionEstudiante: FC<EvaluacionProp> = ({
       setEvaluacion4(planTrabajo?.evaluacion?.aporteRealizacion);
       setComentarios(planTrabajo?.evaluacion?.comentarios);
       setLoading(false);
-    }
+    } else setLoading(false);
   }, [planTrabajo?.evaluacion]);
 
   if (loading) {
