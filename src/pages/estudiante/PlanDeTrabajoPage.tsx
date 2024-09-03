@@ -45,7 +45,7 @@ const PlanDeTrabajoPage: React.FC<PlanTrabProps> = ({
     updatedResultado,
   } = usePlantrabajo();
 
-  
+  console.log(planTrabajo)
   const { user } = useAuth();
   const roles = user?.roles;
   const rolesNecesarios = ["tutor", "coordinador"];
@@ -61,8 +61,8 @@ const PlanDeTrabajoPage: React.FC<PlanTrabProps> = ({
   const [aprobacionTutor, setAprobacionTutor] = useState(false);
   const [aprobacionCoordinador, setAprobacionCoordinador] = useState(false);
   const handleCheckboxChangeTutor = () => {
-    aprobarPlanTutor(planTrabajo?.id).then((response) => {
-      if (response != "ok") {
+    aprobarPlanEmpresa(planTrabajo?.id).then((response) => {
+      if (response == "ok") {
         setAprobacionTutor(true);
       } else {
         Swal.fire({
@@ -77,15 +77,10 @@ const PlanDeTrabajoPage: React.FC<PlanTrabProps> = ({
 
   const handleCheckboxChangeCoordinador = () => {
     aprobarPlanEmpresa(planTrabajo.id).then((response) => {
-      if (response != "ok") {
+      if (response == "ok") {
         setAprobacionCoordinador(true);
       } else {
-        Swal.fire({
-          title: "Ha ocurrido un error",
-          text: "No se guardo la Información",
-          icon: "error",
-          confirmButtonText: "Aceptar",
-        });
+        console.log("error");
       }
     });
   };

@@ -28,6 +28,7 @@ import {
 } from "../api/Informes.api";
 import { primerInforme } from "../interfaces/primerInforme";
 import { informeFinal } from "../interfaces/informeFinal";
+import Swal from "sweetalert2";
 
 type UsePlantrabajoReturn = {
   allplanestrabajo: PlanDeTrabajo[] | null;
@@ -166,10 +167,21 @@ const usePlantrabajo = (): UsePlantrabajoReturn => {
   const aprobarPlanEmpresa = async (id: string): Promise<string> => {
     setLoading(true);
     try {
+      Swal.fire({
+        title: 'Realizando aprobación...',
+        text: 'Por favor, espere.',
+        allowOutsideClick: false,
+        didOpen: () => {
+          Swal.showLoading();
+        }
+      });
       await aprobarEmpresaAPI(id);
+      Swal.close()
       setError(null);
       return "ok"; // Devuelve `PlanDeTrabajo`
     } catch (err) {
+      Swal.close()
+
       setError(err as AxiosError);
       return "false";
       // Lanza el error para que sea manejado por el llamador si es necesario

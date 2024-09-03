@@ -49,6 +49,7 @@ export const aprobarPlanTutor = async (idPlan: string) => {
   const response = await axios.patch(
     `/plan-trabajo/${idPlan}/aprobacion-tutor-institucional`
   );
+  console.log(response.data);
   return response.data;
 };
 
@@ -57,6 +58,7 @@ export const aprobarPlanEmpresa = async (idPlan: string) => {
   const response = await axios.patch(
     `/plan-trabajo/${idPlan}/aprobacion-tutor-empresarial`
   );
+  console.log(response.data)
   return response.data;
 };
 

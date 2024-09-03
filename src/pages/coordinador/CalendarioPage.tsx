@@ -105,22 +105,27 @@ export const CalendarioPage = () => {
   console.log(edicion)
   useEffect(() => {
     if (semestre) {
-      setItems(getCalendario(semestre))
-      setEdicion(items.map(() => {
-        return {
-          editar: false,
-          fechaPrimerEncuentro: false,
-          fechaInicial: false,
-          fechaFinal: false,
-          valorEditadoFechaInicial: '',
-          valorEditadoFechaFinal: '',
-          valorEditadoPrimerEncuentro: ''
+      const cal = getCalendario(semestre)
+      setItems(cal)
 
-        }
-      }))
+
     }
   }, [semestre])
 
+  useEffect(() => {
+    setEdicion(items.map((item) => {
+      return {
+        editar: false,
+        fechaPrimerEncuentro: false,
+        fechaInicial: false,
+        fechaFinal: false,
+        valorEditadoFechaInicial: item?.fechaInicial || '',
+        valorEditadoFechaFinal: item?.fechaFinal || '',
+        valorEditadoPrimerEncuentro: ''
+
+      }
+    }))
+  }, [items])
 
   /*
   const onFechaInicialChange = (date: string,index:number) => {
@@ -144,8 +149,9 @@ export const CalendarioPage = () => {
         fechaInicioInformeFinal: edicion[4].valorEditadoFechaInicial !== '' ? edicion[4].valorEditadoFechaInicial : semestre?.fechaInicioInformeFinal,
         fechaFinInformeFinal: edicion[4].valorEditadoFechaFinal !== '' ? edicion[4].valorEditadoFechaFinal : semestre?.fechaFinInformeFinal,
       }
+      console.log(semestreActualizado)
       const response = await guardarCambios(semestreActualizado)
-      if (!response.ok) throw new Error(response.message)
+
       const Toast = Swal.mixin({
         toast: true,
         position: "top-end",
