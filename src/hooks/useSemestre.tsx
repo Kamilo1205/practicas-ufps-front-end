@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react"
-import { fetchSemestreApi, updateSemestreApi } from "../api/semestre.api"
+import { fetchSemestreApi, fetchSemestresApi, updateSemestreApi } from "../api/semestre.api"
 import { Semestre } from "../schemas/semestreSchema"
 import Swal from "sweetalert2"
 
@@ -39,10 +39,17 @@ export const useSemestre = () => {
 
   }, [])
 
+  const getTodoslosSemestres = async () => {
+    const semestres = await fetchSemestresApi()
+    return semestres
+
+  }
+
   return {
     semestre,
     loading,
-    guardarCambiosDeFechas
+    guardarCambiosDeFechas,
+    getTodoslosSemestres
   }
 
 }

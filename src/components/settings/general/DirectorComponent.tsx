@@ -39,14 +39,17 @@ export const DirectorSetttingComponent = ({ director, crearDirector }: Props) =>
   const onSubmit: SubmitHandler<FieldValues> = (data) => {
     console.log(data)
     crearDirector({
+      id: director?.id,
       nombres: data.nombres,
       apellidos: data.apellidos,
-      email: data.email
+      email: data.email,
+      codigo: data.codigo
     })
     setEditar({
       email: false,
       nombres: false,
-      apellidos: false
+      apellidos: false,
+      codigo: false
     })
   }
 
@@ -86,7 +89,7 @@ export const DirectorSetttingComponent = ({ director, crearDirector }: Props) =>
                   Guardar
                 </button>
                 <button
-                  onClick={() => setEditar({ email: false, apellidos: false, nombres: false })}
+                  onClick={() => setEditar({ email: false, apellidos: false, nombres: false, codigo: false })}
                   className="text-white bg-red-500 hover:bg-red-700 px-2 rounded-md">
                   Cancelar
                 </button>
@@ -97,7 +100,8 @@ export const DirectorSetttingComponent = ({ director, crearDirector }: Props) =>
                   onClick={() => setEditar({
                     email: true,
                     nombres: true,
-                    apellidos: true
+                    apellidos: true,
+                    codigo: true
                   })}
                   className="text-blue-600">Editar</button>
               </div>
@@ -153,7 +157,7 @@ export const DirectorSetttingComponent = ({ director, crearDirector }: Props) =>
                 <div>
                   <input
                     type="email"
-                    defaultValue={director?.email}
+                    defaultValue={director?.usuario?.email}
                     className="block w-full rounded-md border-0 py-1.5 pl-3 text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-base sm:leading-6"
                     placeholder="director@ufps.edu.co"
                     {...form.register('email')}
@@ -170,41 +174,43 @@ export const DirectorSetttingComponent = ({ director, crearDirector }: Props) =>
               </div>
             )
           }
-          <div className="flex justify-between">
-            {
-              !editar.codigo && (director?.usuario?.codigo ? (<span>{director?.usuario?.email}</span>)
-                :
-                (
-                  <span>Código aún sin registrar</span>
-                )
+
+
+        </div>
+
+        <div className="flex justify-between">
+          {
+            !editar.codigo && (director?.codigo ? (<span>{director?.codigo}</span>)
+              :
+              (
+                <span>Código aún sin registrar</span>
               )
-            }
-            {
-              editar.email ? (
-                <div className="flex">
-                  <div className="flex " >
-                    <input
-                      type="number"
-                      defaultValue={director?.email}
-                      className="block w-full rounded-md border-0 py-1.5 pl-3 text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-base sm:leading-6"
-                      placeholder="director@ufps.edu.co"
-                      {...
-                      form.register('email')}
-                    />
-                    <div className="text-red-500 text-sm">
-                      {form.formState.errors.codigo?.message?.toString()}
-                    </div>
+            )
+          }
+          {
+            editar.codigo ? (
+              <div className="flex">
+                <div className="flex " >
+                  <input
+                    type="text"
+                    defaultValue={director?.codigo}
+                    className="block w-full rounded-md border-0 py-1.5 pl-3 text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-base sm:leading-6"
+                    placeholder="Código del director"
+                    {...
+                    form.register('codigo')}
+                  />
+                  <div className="text-red-500 text-sm">
+                    {form.formState.errors.codigo?.message?.toString()}
                   </div>
-
                 </div>
-              ) : (
-                <div>
 
-                </div>
-              )
-            }
-          </div>
+              </div>
+            ) : (
+              <div>
 
+              </div>
+            )
+          }
         </div>
       </form>
     </div >

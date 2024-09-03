@@ -302,13 +302,7 @@ export const CalendarioPage = () => {
                                       value={edicion[index].valorEditadoFechaInicial}
                                       onChange={(e) => onChangeValorEditadoFechaInicial(index, e.target.value)}
                                     />
-                                    {
-                                      edicion[index].fechaInicial &&
-                                      <button type="button"
-                                        className="rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">
-                                        <BiCheck className="size-5 fill-white" />
-                                      </button>
-                                    }
+
                                   </dd>
                                 </div>
                                 <div className="px-4 py-2 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
@@ -338,13 +332,7 @@ export const CalendarioPage = () => {
                                       value={edicion[index].valorEditadoFechaFinal}
                                       onChange={(e) => onChangeValorEditadoFechaFinal(index, e.target.value)}
                                     />
-                                    {
-                                      edicion[index].fechaFinal &&
-                                      <button type="button"
-                                        className="rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">
-                                        <BiCheck className="size-5 fill-white" />
-                                      </button>
-                                    }
+
                                   </dd>
                                 </div>
                                 {
@@ -376,13 +364,7 @@ export const CalendarioPage = () => {
                                         value={edicion[index].valorEditadoPrimerEncuentro}
                                         onChange={(e) => onChangePrimerEncuentro(index, e.target.value)}
                                       />
-                                      {
-                                        edicion[index].fechaPrimerEncuentro &&
-                                        <button type="button"
-                                          className="rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">
-                                          <BiCheck className="size-5 fill-white" />
-                                        </button>
-                                      }
+
                                     </dd>
 
                                   </div>

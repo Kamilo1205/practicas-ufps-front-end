@@ -86,7 +86,7 @@ export const fetchGetEmpresaById = async (id: string): Promise<Empresa> => {
   return response.data;
 }
 
-export const getTodosLosTutores = async (): Promise<Tutor[]> => {
+export const getTodosLosTutoresApi = async (): Promise<Tutor[]> => {
   const response = await axios.get(`/tutores`);
   console.log(response.data);
   return response.data;
@@ -137,4 +137,5 @@ export const getEstudiantesAsignadosATutorApi = async (): Promise<any> => {
   const response = await axios.get(`asignacion/tutor/semestre-actual`);
   console.log(response.data);
   return response.data;
- }
+}
+ 

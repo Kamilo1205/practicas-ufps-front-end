@@ -11,7 +11,7 @@ export const MenuList = () => {
     roles.director : roles.coordinador
   //TODO: Restringir acceso a los roles
   const navLinks = [
-    { to: '/coordinador/primerospasos', text: 'Primeros pasos', icon: HiOutlineChartPie, roles: [roles.administrador, roles.coordinador,] },
+    { to: '/coordinador/primerospasos', text: 'Primeros pasos', icon: HiOutlineChartPie, roles: [roles.administrador,] },
     { to: '/coordinador/configuraciones', text: 'Configuraciones', icon: HiOutlineChartPie, roles: [roles.administrador,] },
     { to: '/coordinador/ARL', text: 'ARL', icon: HiOutlineChartPie, roles: [roles.administrador, roles.coordinador,] },
     { to: '/coordinador/usuarios', text: 'Usuarios', icon: HiOutlineUsers, roles: [roles.administrador] },
@@ -19,7 +19,7 @@ export const MenuList = () => {
     { to: `/${rolUrl}/estudiantes`, text: 'Estudiantes', icon: HiOutlineUser, roles: [roles.administrador, roles.director, roles.coordinador] },
     { to: `/${rolUrl}/tutores`, text: 'Tutores', icon: HiOutlineUsers, roles: [roles.administrador, roles.director, roles.coordinador] },
     { to: `/${rolUrl}/practicas`, text: 'Practicas', icon: HiOutlineFolder, roles: [roles.administrador, roles.coordinador, roles.director] },
-    { to: '/coordinador/calendario', text: 'Calendario', icon: HiOutlineCalendar, roles: [roles.administrador, roles.coordinador] },
+    { to: '/coordinador/calendario', text: 'Calendario', icon: HiOutlineCalendar, roles: [roles.administrador] },
     { to: `/${rolUrl}/reportes`, text: 'Reportes', icon: HiOutlineChartPie, roles: [roles.administrador, roles.coordinador, roles.director] },
     { to: '/empresa/tutores', text: 'Tutores', icon: HiOutlineUsers, roles: [roles.empresa] },
     { to: '/empresa/practicantes', text: 'Practicantes', icon: HiOutlineUsers, roles: [roles.empresa] },

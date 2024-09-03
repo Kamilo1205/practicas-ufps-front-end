@@ -9,7 +9,7 @@ const Tabs = [
     id: 0,
     name: "Tutores",
   },
-  
+
 
 ]
 
@@ -17,15 +17,18 @@ export const GestionTutoresPage = () => {
   const [tab, setTab] = useState(0);
   const [currentPage, setCurrentPage] = useState(1);
   const [totalTutores, setTotalTutores] = useState(0);
+  const [tutores, setTutores] = useState([])
 
-
-  const {tutores,} = useEmpresas()
+  const { getTodosLosTutores, } = useEmpresas()
   console.log(tutores)
 
   useEffect(() => {
     //TODO: Verificar si se necesita hacer petición a la API o el hoock ya trae los datos.
-      setTotalTutores(tutores.length)
-  
+    getTodosLosTutores().then((response) => {
+      setTutores(response);
+      setTotalTutores(response.length);
+    });
+
   }, [])
 
   return (<>
@@ -42,33 +45,34 @@ export const GestionTutoresPage = () => {
       tab === 0 && (
         <>
           {
-            tutores.length === 0 ?  (
+            tutores.length === 0 ? (
               <EmptyStateMessage
                 message="No hay tutores registrados"
                 submesage="Puede registrar un nuevo tutor para una empresa"
                 buttonText="Agregar tutor"
-                setOpen={()=>{}}
+                setOpen={() => { }}
               />
             )
-              : 
+              :
               <TablaPaginadaComponent
                 itemsPerPage={5}
-                encabezados={["Nombre", "Empresa", "Email", "Estado"]}
+                encabezados={["Nombre", "Empresa", "Email", "Teléfono", "Estado"]}
                 currentPage={currentPage}
                 setCurrentPage={setCurrentPage}
                 totalItems={totalTutores}
                 filas={tutores.map((tutor) => [
-                  `${tutor.nombre} ${tutor.apellidos}`,
-                  tutor.empresa.nombre,
-                  tutor.email,
-                  tutor.activo ? "Activo" : "Inactivo"
+                  `${tutor?.nombre} ${tutor?.apellidos}`,
+                  tutor?.empresa?.nombreLegal,
+                  tutor?.usuario?.email,
+                  tutor?.telefono,
+                  tutor?.usuario?.estaActivo ? "Activo" : "Inactivo"
 
                 ])}
               />
           }
-          
+
         </>
       )
     }
   </>)
- }
+}

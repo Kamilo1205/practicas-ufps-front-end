@@ -34,7 +34,7 @@ export const actualizarDecanoApi = async (data: Decano) => {
 }
 
 export const actualizarDirectorApi = async (data: Director) => {
-  const response = await axios.patch(URL_DIRECTOR, data)
+  const response = await axios.patch(`${URL_DIRECTOR}/${data?.id}`, data)
   return response.data
 }
 

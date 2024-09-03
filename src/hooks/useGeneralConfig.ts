@@ -19,7 +19,8 @@ export const useGeneralConfig = () => {
     })
   }, [])
   
-  const crearDirector = async (director: Director | Omit<Director,'id'>) => {
+  const crearDirector = async (director: Director | Omit<Director, 'id'>) => {
+    console.log(director)
     if (director?.id) {
       console.log('actualizar')
       actualizarDirectorApi(director).then((data) => {
@@ -29,7 +30,14 @@ export const useGeneralConfig = () => {
           icon: 'success',
           showConfirmButton: true
         })
-      }).catch((err) => console.log(err))
+      }).catch((err) => {
+        console.log(err)
+        Swal.fire({
+          title: 'Error al actualizar el director',
+          icon: 'error',
+          showConfirmButton: true
+        })
+      })
     }
     else {
       console.log('crear')
@@ -40,7 +48,14 @@ export const useGeneralConfig = () => {
           icon: 'success',
           showConfirmButton: true
         })
-      }, (err) => console.log(err))
+      }, (err) => {
+        console.log(err)
+        Swal.fire({
+          title: 'Error al crear el director',
+          icon: 'error',
+          showConfirmButton: true
+        })
+      })
     }
   }
 

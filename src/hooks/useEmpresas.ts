@@ -17,7 +17,8 @@ import {
     habilitarTutorEmpresaApi,
     registrarDependenciaApi,
     subirConvenio,
-    getEstudiantesAsignadosATutorApi
+    getEstudiantesAsignadosATutorApi,
+    getTodosLosTutoresApi
 } from '../api/empresa.api';
 import { Empresa, Tutor } from '../interfaces';
 import Swal from 'sweetalert2';
@@ -215,7 +216,7 @@ const useEmpresas = (): UseEmpresasReturn => {
   const getTodosLosTutores = async (): Promise<Tutor[]> => { 
     setCargando(true);
     try {
-      const data = await getTodosLosTutores();
+      const data = await getTodosLosTutoresApi();
       setTutores(data);
       setError(null);
       return data;
