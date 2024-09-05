@@ -168,19 +168,19 @@ const usePlantrabajo = (): UsePlantrabajoReturn => {
     setLoading(true);
     try {
       Swal.fire({
-        title: 'Realizando aprobación...',
-        text: 'Por favor, espere.',
+        title: "Realizando aprobación...",
+        text: "Por favor, espere.",
         allowOutsideClick: false,
         didOpen: () => {
           Swal.showLoading();
-        }
+        },
       });
       await aprobarEmpresaAPI(id);
-      Swal.close()
+      Swal.close();
       setError(null);
       return "ok"; // Devuelve `PlanDeTrabajo`
     } catch (err) {
-      Swal.close()
+      Swal.close();
 
       setError(err as AxiosError);
       return "false";
@@ -193,7 +193,16 @@ const usePlantrabajo = (): UsePlantrabajoReturn => {
   const aprobarPlanTutor = async (id: string): Promise<string> => {
     setLoading(true);
     try {
+      Swal.fire({
+        title: "Realizando aprobación...",
+        text: "Por favor, espere.",
+        allowOutsideClick: false,
+        didOpen: () => {
+          Swal.showLoading();
+        },
+      });
       await aprobarPlanTutorAPI(id);
+      Swal.close();
       setError(null);
       return "ok"; // Devuelve `PlanDeTrabajo`
     } catch (err) {
@@ -326,10 +335,20 @@ const usePlantrabajo = (): UsePlantrabajoReturn => {
   const aprobarInformeEmpresa = async (id: string): Promise<string> => {
     setLoading(true);
     try {
+      Swal.fire({
+        title: "Realizando aprobación...",
+        text: "Por favor, espere.",
+        allowOutsideClick: false,
+        didOpen: () => {
+          Swal.showLoading();
+        },
+      });
       await aprobarInformeEmpresaAPI(id);
+      Swal.close();
       setError(null);
       return "ok"; // Devuelve `PlanDeTrabajo`
     } catch (err) {
+      Swal.close();
       setError(err as AxiosError);
       return "false"; // Lanza el error para que sea manejado por el llamador si es necesario
     } finally {
@@ -340,10 +359,20 @@ const usePlantrabajo = (): UsePlantrabajoReturn => {
   const aprobarInformeTutor = async (id: string): Promise<string> => {
     setLoading(true);
     try {
+      Swal.fire({
+        title: "Realizando aprobación...",
+        text: "Por favor, espere.",
+        allowOutsideClick: false,
+        didOpen: () => {
+          Swal.showLoading();
+        },
+      });
       await aprobarInformeTutorAPI(id);
+      Swal.close();
       setError(null);
       return "ok"; // Devuelve `PlanDeTrabajo`
     } catch (err) {
+      Swal.close();
       setError(err as AxiosError);
       return "false"; // Lanza el error para que sea manejado por el llamador si es necesario
     } finally {
@@ -368,7 +397,7 @@ const usePlantrabajo = (): UsePlantrabajoReturn => {
   const updateGranttInforme = async (file: File, id: string): Promise<any> => {
     setLoading(true);
     try {
-      const data = await updateDiagramaInforme(file,id);
+      const data = await updateDiagramaInforme(file, id);
       setError(null);
       return data;
     } catch (err) {

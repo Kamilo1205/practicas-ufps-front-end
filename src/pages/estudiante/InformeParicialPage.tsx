@@ -248,7 +248,7 @@ const InformeParicialPage: FC<InfoProps> = ({ rol, plantrabajo }) => {
               </div>
               <div className="w-full flex justify-end">
                 <Checkbox
-                  onChange={handleCheckboxChangeCoordinador}
+                  onChange={handleCheckboxChangeTutor}
                   checked={aprobacionTutor}
                 />
               </div>

@@ -61,18 +61,18 @@ const PlanDeTrabajoPage: React.FC<PlanTrabProps> = ({
   const [aprobacionTutor, setAprobacionTutor] = useState(false);
   const [aprobacionCoordinador, setAprobacionCoordinador] = useState(false);
   const handleCheckboxChangeTutor = () => {
-    aprobarPlanEmpresa(planTrabajo?.id).then((response) => {
-      if (response == "ok") {
-        setAprobacionTutor(true);
-      } else {
-        Swal.fire({
-          title: "Ha ocurrido un error",
-          text: "No se guardo la Información",
-          icon: "error",
-          confirmButtonText: "Aceptar",
-        });
-      }
-    });
+     aprobarPlanTutor(planTrabajo?.id).then((response) => {
+       if (response == "ok") {
+         setAprobacionTutor(true);
+       } else {
+         Swal.fire({
+           title: "Ha ocurrido un error",
+           text: "No se guardo la Información",
+           icon: "error",
+           confirmButtonText: "Aceptar",
+         });
+       }
+     });
   };
 
   const handleCheckboxChangeCoordinador = () => {
@@ -80,7 +80,12 @@ const PlanDeTrabajoPage: React.FC<PlanTrabProps> = ({
       if (response == "ok") {
         setAprobacionCoordinador(true);
       } else {
-        console.log("error");
+       Swal.fire({
+         title: "Ha ocurrido un error",
+         text: "No se guardo la Información",
+         icon: "error",
+         confirmButtonText: "Aceptar",
+       });
       }
     });
   };
@@ -227,7 +232,7 @@ const PlanDeTrabajoPage: React.FC<PlanTrabProps> = ({
               </div>
               <div className="w-full flex justify-end">
                 <Checkbox
-                  onChange={handleCheckboxChangeCoordinador}
+                  onChange={handleCheckboxChangeTutor}
                   checked={aprobacionTutor}
                 />
               </div>

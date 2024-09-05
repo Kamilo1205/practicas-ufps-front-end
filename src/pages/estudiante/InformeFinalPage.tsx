@@ -50,7 +50,7 @@ const InformeFinalPage: FC<InfoProps> = ({ rol, plantrabajo }) => {
 
   const handleCheckboxChangeTutor = () => {
     aprobarInformeTutor(plantrabajo?.informeFinal?.id).then((response) => {
-      if (response === "ok") {
+      if (response == "ok") {
         setAprobacionTutor(true);
       } else {
         Swal.fire({
@@ -66,7 +66,7 @@ const InformeFinalPage: FC<InfoProps> = ({ rol, plantrabajo }) => {
   const handleCheckboxChangeCoordinador = () => {
     aprobarInformeEmpresa(plantrabajo?.informeFinal?.id).then((response) => {
       console.log(response);
-      if (response === "ok") {
+      if (response == "ok") {
         setAprobacionCoordinador(true);
       } else {
         Swal.fire({
@@ -145,6 +145,7 @@ const InformeFinalPage: FC<InfoProps> = ({ rol, plantrabajo }) => {
     if (plantrabajo === undefined) {
       setLoading(true);
     } else if (informeFinal != null) {
+      setLoading(true);
       setID(informeFinal.id);
       setAdap(informeFinal.adaptacion);
       setTol(informeFinal.tolerancia);
@@ -246,7 +247,7 @@ const InformeFinalPage: FC<InfoProps> = ({ rol, plantrabajo }) => {
               </div>
               <div className="w-full flex justify-end">
                 <Checkbox
-                  onChange={handleCheckboxChangeCoordinador}
+                  onChange={handleCheckboxChangeTutor}
                   checked={aprobacionTutor}
                 />
               </div>
