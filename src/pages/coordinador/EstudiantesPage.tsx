@@ -80,6 +80,8 @@ export const EstudiantesPage = () => {
   const [mostrarPerfil, setMostrarPerfil] = useState<boolean>(false);
   const [estudianteSeleccionado, setEstudianteSeleccionado] =
     useState<EstudianteI | null>(null);
+  const [estudiateSelect, setEstudianteSelect] = useState<any>(null);
+
   const [filtro, setFiltro] = useState<string>("");
   const [estudiantesCargados, setEstudiantesCargados] =
     useState<boolean>(false);
@@ -142,6 +144,11 @@ export const EstudiantesPage = () => {
     setEstudiantesCargados(false);
   }, [tab, filtro, currentPage, itemsPerPage, Tabs, estudiantesCargados]);
 
+  const handdleSelectEstudiante = (estudiante: any) => {
+    console.log('abrir plan de trabajo')
+    setOpenPlan(true);
+    setEstudianteSelect(estudiante);
+  }
   return (
     <>
       <div className="mb-10">
@@ -162,6 +169,21 @@ export const EstudiantesPage = () => {
             title="Agregar estudiantes"
           />
         )}
+      {openPlan && (
+        <PlanDeTrabajoVista
+          rol="coordinador"
+          initialOpen={true}
+          open={openPlan}
+          setOpen={setOpenPlan}
+          estudiante={estudiateSelect}
+          plantrabajo2={
+            estudiateSelect?.asignaciones?.find(
+              (a) => a.solicitud.semestre.actual
+            )?.planDeTrabajo
+          }
+          isTutor={true}
+        />
+      )}
       <DialogComponent
         isOpen={mostrarPerfil}
         onClose={() => setMostrarPerfil(false)}
@@ -263,26 +285,14 @@ export const EstudiantesPage = () => {
                         <span>Pendiente</span>
                       </div>
                     ) : (
-                      <div onClick={() => setOpenPlan(!openPlan)}>
+                      <div onClick={() => handdleSelectEstudiante(estudiante)}>
                         <BiCheck className="text-green-500 w-5 h-5" />
                         <span className="text-blue-400 flex">
                           Ver
                           <span className="self-center">
                             <BiArrowToRight />
                           </span>
-                          {openPlan && (
-                            <PlanDeTrabajoVista
-                              rol="coordinador"
-                              initialOpen={true}
-                              estudiante={estudiante}
-                              plantrabajo2={
-                                estudiante?.asignaciones?.find(
-                                  (a) => a.solicitud.semestre.actual
-                                )?.planDeTrabajo
-                              }
-                              isTutor={true}
-                            />
-                          )}
+
                         </span>
                       </div>
                     )

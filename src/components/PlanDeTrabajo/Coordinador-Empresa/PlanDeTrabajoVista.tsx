@@ -22,7 +22,7 @@ const estudiante2 = {
 };
 const PlanDeTrabajoVista: FC<PlanProps> = ({
   initialOpen,
-  open,
+  open = false,
   setOpen,
   isTutor,
   rol,

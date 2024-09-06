@@ -8,9 +8,8 @@ import PlanDeTrabajoVista from "../../components/PlanDeTrabajo/Coordinador-Empre
 import InformeParcialVista from "../../components/VistasCoorDTutor/InformeParcialVista";
 import InformeFinalVista from "../../components/VistasCoorDTutor/InformeFinalVista";
 import { Avatar } from "../../components/ui";
-import { EstudianteI } from "../../interfaces/responses.interface";
 import Swal from "sweetalert2";
-import { primerInforme } from "./../../interfaces/primerInforme";
+
 
 export const PracticantesPage = () => {
   const { getPracticantesAsignadosATutor } = useEmpresas();
@@ -20,10 +19,6 @@ export const PracticantesPage = () => {
   const [itemsPerPage] = useState<number>(5); // Suponiendo que el backend maneja 10 ítems por página
   const [filtro, setFiltro] = useState<string>("");
 
-  const [estudianteSeleccionado, setEstudianteSeleccionado] =
-    useState<EstudianteI | null>(null);
-  const [estudiantesCargados, setEstudiantesCargados] =
-    useState<boolean>(false);
   const [openPlan, setOpenPlan] = useState(false);
   const [openInfoP, setOpenInfoP] = useState(false);
   const [openInfoF, setOpenInfoF] = useState(false);
@@ -32,6 +27,7 @@ export const PracticantesPage = () => {
   console.log(estudiateSelect,);
   console.log(openPlan)
   const handdleSelectEstudiante = (estudiante: any) => {
+    console.log('abrir plan de trabajo')
     setOpenPlan(true);
     setEstudianteSelect(estudiante);
   }
