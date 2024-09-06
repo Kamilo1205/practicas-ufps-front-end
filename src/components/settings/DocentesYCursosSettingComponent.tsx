@@ -261,7 +261,7 @@ export const DocentesYCursosSettingComponent = () => {
                 }
                 <div className="min-w-0 flex-auto">
                   <p className="text-sm font-semibold leading-6 text-gray-900">{docente.nombres} {docente.apellidos}</p>
-                  <p className="mt-1 truncate text-xs leading-5 text-gray-500">{docente.email}</p>
+                  <p className="mt-1 truncate text-xs leading-5 text-gray-500">{docente?.usuario?.email}</p>
                 </div>
               </div>
               <div className="shrink-0 sm:flex sm:flex-col sm:items-end">

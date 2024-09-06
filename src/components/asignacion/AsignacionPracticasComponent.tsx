@@ -24,13 +24,15 @@ interface AsignacionPracticasComponentProps {
 export const AsignacionPracticasComponent = ({ solicitud, setMostrarPerfil, asignarEstudiante, desasignarEstudiante }: AsignacionPracticasComponentProps) => {
 
 
-  console.log('solicitud', solicitud.solicitud.asignaciones)
+  console.log('solicitud', solicitud)
   const [solicitudState,] = useState<Solicitud>(solicitud.solicitud)
   const [perfilSeleccionado, setPerfilSeleccionado] = useState<EstudianteAspirante | null>(null)
   const [filtro, setFiltro] = useState<string>('')
   const [perfilesAspirantesFiltrado, setPerfilesAspirantesFiltrado] = useState<EstudianteAspirante[]>([])
 
   console.log('perfilSeleccionado', perfilSeleccionado)
+  console.log(perfilSeleccionado?.estudiante?.herramientas?.find(h => h.id === solicitudState?.herramientas[0].id))
+  console.log(solicitudState)
   const onAsignarPracticante = (nombrePracticante: string) => {
     Swal.fire({
       title: 'Asignar practicante',
@@ -120,13 +122,24 @@ export const AsignacionPracticasComponent = ({ solicitud, setMostrarPerfil, asig
   }, [solicitud])
 
   useEffect(() => {
-    if (filtro === '') return setPerfilesAspirantesFiltrado(solicitud.aspirantes)
+    if (filtro === '') return setPerfilesAspirantesFiltrado(
+      solicitud.aspirantes.filter(
+        aspirante =>
+          aspirante.estudiante?.usuario?.estaRegistrado
+          && aspirante?.estudiante?.asignaciones.length === 0
+      ))
     setPerfilesAspirantesFiltrado(
       solicitud.aspirantes.filter(
         aspirante =>
-          aspirante.estudiante.primerNombre.toUpperCase().includes(filtro.toUpperCase())
-          || aspirante.estudiante.primerApellido.toUpperCase().includes(filtro.toUpperCase())
-          || String(aspirante.estudiante.codigo).includes(filtro)))
+          (aspirante.estudiante?.primerNombre?.toUpperCase().includes(filtro.toUpperCase())
+            || aspirante.estudiante?.primerApellido?.toUpperCase().includes(filtro.toUpperCase())
+            || String(aspirante.estudiante?.codigo)?.includes(filtro))
+          && (
+            aspirante?.estudiante?.asignaciones.length === 0
+            && aspirante.estudiante?.usuario?.estaRegistrado
+          )
+
+      ))
   }, [filtro])
 
   return (<>
@@ -157,13 +170,13 @@ export const AsignacionPracticasComponent = ({ solicitud, setMostrarPerfil, asig
                   <li
                     key={estudiante.id}
                     onClick={() => setPerfilSeleccionado({
-                      estudiante: estudiante.estudiante,
+                      estudiante: solicitud.aspirantes.find(a => a.estudiante.id === estudiante.estudiante.id)?.estudiante,
                       score: 15
                     })}
                     className={`flex cursor-pointer ${perfilSeleccionado && estudiante.id === perfilSeleccionado?.estudiante.id && 'bg-slate-100'} justify-between rounded-md w-72 pr-5 hover:bg-slate-100`}>
                     <div className="flex space-x-1">
                       <div>
-                        <AvatarScore score={Number(perfilSeleccionado?.score)} />
+                        <AvatarScore score={Number(solicitud?.aspirantes?.find(a => a.estudiante.id === estudiante.estudiante.id)?.score)} />
                       </div>
                       <span className="font-normal text-sm text-gray-600 self-center">{`
                       ${estudiante.estudiante.codigo}-${estudiante.estudiante.primerNombre} ${estudiante.estudiante.primerApellido}
@@ -256,11 +269,11 @@ export const AsignacionPracticasComponent = ({ solicitud, setMostrarPerfil, asig
 
                         perfilSeleccionado?.estudiante?.herramientas?.find(h => h.id === herramienta.id) ? <span
                           key={`${herramienta.id}`}
-                          className="text-sm bg-red-100 text-gray-600 px-1 py-0.5 rounded-md">{herramienta?.nombre}</span>
+                          className="text-sm bg-green-100 text-gray-600 px-1 py-0.5 rounded-md">{herramienta?.nombre}</span>
                           :
                           <span
                             key={`${herramienta.id}`}
-                            className="text-sm bg-green-100 text-gray-600 px-1 py-0.5 rounded-md" > {herramienta?.nombre}
+                            className="text-sm bg-red-100 text-gray-600 px-1 py-0.5 rounded-md" > {herramienta?.nombre}
                           </span>
 
                       ))

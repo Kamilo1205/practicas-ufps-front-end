@@ -22,12 +22,14 @@ const estudiante2 = {
 };
 const PlanDeTrabajoVista: FC<PlanProps> = ({
   initialOpen,
+  open,
+  setOpen,
   isTutor,
   rol,
   estudiante,
   plantrabajo2,
 }) => {
-  const [open, setOpen] = useState<boolean>(initialOpen);
+
   const [planTrabajo, setPlanTrabajo] = useState<PlanDeTrabajo>();
   const [planTrabajo2, setPlanTrabajo2] = useState<PlanDeTrabajo>();
   const { fetchMiPlanTrabajoActualEstudiante, fetchPlanTrabajoById } =

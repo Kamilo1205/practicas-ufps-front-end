@@ -27,11 +27,15 @@ export const PracticantesPage = () => {
   const [openPlan, setOpenPlan] = useState(false);
   const [openInfoP, setOpenInfoP] = useState(false);
   const [openInfoF, setOpenInfoF] = useState(false);
-
+  const [estudiateSelect, setEstudianteSelect] = useState<any>(null);
   console.log(practicantes);
-  console.log(
-    practicantes[0]?.estudiante?.planesDeTrabajo.find((a) => a.semestre.actual)
-  );
+  console.log(estudiateSelect,);
+  console.log(openPlan)
+  const handdleSelectEstudiante = (estudiante: any) => {
+    setOpenPlan(true);
+    setEstudianteSelect(estudiante);
+  }
+
   useEffect(() => {
     Swal.fire({
       title: "Cargando practicantes",
@@ -58,6 +62,19 @@ export const PracticantesPage = () => {
   return (
     <>
       <div className="mb-10">
+        {openPlan && (
+          <PlanDeTrabajoVista
+            rol="coordinador"
+            initialOpen={true}
+            open={openPlan}
+            setOpen={setOpenPlan}
+            estudiante={estudiateSelect.estudiante}
+            plantrabajo2={estudiateSelect?.estudiante?.planesDeTrabajo.find(
+              (a) => a.semestre.actual
+            )}
+            isTutor={true}
+          />
+        )}
         <div className="text-gray-600 font-bold text-2xl">
           Practicantes asignados
         </div>
@@ -68,7 +85,7 @@ export const PracticantesPage = () => {
           submesage=""
           buttonText=""
           showButton={false}
-          setOpen={() => {}}
+          setOpen={() => { }}
         />
       ) : (
         <>
@@ -114,24 +131,14 @@ export const PracticantesPage = () => {
                       <span>Pendiente</span>
                     </div>
                   ) : (
-                    <div onClick={() => setOpenPlan(!openPlan)}>
+                    <div onClick={() => handdleSelectEstudiante(estudiante)}>
                       <BiCheck className="text-green-500 w-5 h-5" />
                       <span className="text-blue-400 flex">
                         Ver
                         <span className="self-center">
                           <BiArrowToRight />
                         </span>
-                        {openPlan && (
-                          <PlanDeTrabajoVista
-                            rol="coordinador"
-                            initialOpen={true}
-                            estudiante={estudiante.estudiante}
-                            plantrabajo2={estudiante?.estudiante?.planesDeTrabajo.find(
-                              (a) => a.semestre.actual
-                            )}
-                            isTutor={true}
-                          />
-                        )}
+
                       </span>
                     </div>
                   )

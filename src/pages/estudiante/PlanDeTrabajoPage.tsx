@@ -61,31 +61,39 @@ const PlanDeTrabajoPage: React.FC<PlanTrabProps> = ({
   const [aprobacionTutor, setAprobacionTutor] = useState(false);
   const [aprobacionCoordinador, setAprobacionCoordinador] = useState(false);
   const handleCheckboxChangeTutor = () => {
-     aprobarPlanTutor(planTrabajo?.id).then((response) => {
-       if (response == "ok") {
-         setAprobacionTutor(true);
-       } else {
-         Swal.fire({
-           title: "Ha ocurrido un error",
-           text: "No se guardo la Información",
-           icon: "error",
-           confirmButtonText: "Aceptar",
-         });
-       }
-     });
+    aprobarPlanEmpresa(planTrabajo?.id).then((response) => {
+      if (response == "ok") {
+        setAprobacionTutor(true);
+      } else {
+        Swal.fire({
+          title: "Ha ocurrido un error",
+          text: "No se guardo la Información",
+          icon: "error",
+          confirmButtonText: "Aceptar",
+        });
+      }
+    }).catch((err) => {
+      console.log(err);
+      Swal.fire({
+        title: 'Error',
+        text: 'No se ha podido asignar el docente.',
+        icon: 'error',
+        showConfirmButton: true
+      })
+    });
   };
 
   const handleCheckboxChangeCoordinador = () => {
-    aprobarPlanEmpresa(planTrabajo.id).then((response) => {
+    aprobarPlanTutor(planTrabajo.id).then((response) => {
       if (response == "ok") {
         setAprobacionCoordinador(true);
       } else {
-       Swal.fire({
-         title: "Ha ocurrido un error",
-         text: "No se guardo la Información",
-         icon: "error",
-         confirmButtonText: "Aceptar",
-       });
+        Swal.fire({
+          title: "Ha ocurrido un error",
+          text: "No se guardo la Información",
+          icon: "error",
+          confirmButtonText: "Aceptar",
+        });
       }
     });
   };
@@ -230,8 +238,9 @@ const PlanDeTrabajoPage: React.FC<PlanTrabProps> = ({
                   Aprobación de Tutor Empresa
                 </div>
               </div>
-              <div className="w-full flex justify-end">
+              <div className="w-full flex justify-end cursor-pointer">
                 <Checkbox
+
                   onChange={handleCheckboxChangeTutor}
                   checked={aprobacionTutor}
                 />
