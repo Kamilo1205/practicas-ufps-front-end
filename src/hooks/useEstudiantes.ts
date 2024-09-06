@@ -48,18 +48,16 @@ const useEstudiantes = (): UseEstudiantesReturn => {
   const fetchEstudiante = async (): Promise<Estudiante | null> => {
     setCargando(true);
     try {
-      console.log('fetchEstudiante');
+   
       const data = await fetchEstudianteAPI();
-      console.log(data);
-      setEstudiante(data);
-      setError(null);
+      setError(null);      
+      setCargando(false);
+  
       return data;
     } catch (err) {
       setError(err as AxiosError);
       return null;
-    } finally {
-      setCargando(false);
-    }
+    } 
   };
 
   const fetchEstudianteById = async (id: string): Promise<Estudiante | null> => {

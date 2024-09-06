@@ -9,23 +9,36 @@ import PlanDeTrabajoVista from "./../components/PlanDeTrabajo/Coordinador-Empres
 import InformeParcialVista from "../components/VistasCoorDTutor/InformeParcialVista";
 import InformeFinalVista from "../components/VistasCoorDTutor/InformeFinalVista";
 import EvaluacionEstudianteVista from "../components/VistasCoorDTutor/EvaluacionPracticaVista";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import useEstudiantes from "../hooks/useEstudiantes";
 import { SolicitudCambio } from "../pages/estudiante/SolicitudCambioPlanTrabajo";
+import { Usuario } from "../interfaces";
 
-export const EstudianteRouter = () => {
-  const { user } = useAuth();
-  const { estudiante, fetchEstudiante } = useEstudiantes();
+interface EstudianteRouterProps {
+  user: Usuario
+}
+
+export const EstudianteRouter = ({ user }: EstudianteRouterProps) => {
+
+  const [estudiante, setEstudiante] = useState(null);
+  const { fetchEstudiante } = useEstudiantes();
+
   useEffect(() => {
-    if (!estudiante) fetchEstudiante();
-  }, [estudiante]);
+    if (!estudiante) fetchEstudiante()
+      .then((data) => {
+        setEstudiante(data)
+      });
+  }, []);
 
   return (
     <Routes>
       {user?.estaRegistrado ? (
         <>
           <Route path="/" element={<Layout />}>
-            <Route index path="" element={<PerfilPage />} />
+            <Route index path="" element={
+              <PerfilPage
+                estudiante={estudiante}
+              />} />
             <Route path="usuarios" element={<UsuariosPage />} />
             <Route
               path="plantrabajo"

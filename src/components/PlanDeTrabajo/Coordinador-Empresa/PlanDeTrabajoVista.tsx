@@ -2,11 +2,11 @@ import { FC, useEffect, useState } from "react";
 import { DialogComponent } from "./../../ui/Dialog/DialogComponent";
 import PlanDeTrabajoPage from "./../../../pages/estudiante/PlanDeTrabajoPage";
 import usePlantrabajo from "../../../hooks/usePlanTrabajo";
-import { fetchCiudadById } from "../../../api/ciudades.api";
+
 import { useAuth } from "../../../contexts";
 import { Estudiante } from "../../../interfaces/estudiante.interface";
 import { PlanDeTrabajo } from "../../../interfaces/plantrabajo.interface";
-import { fetchPlanTrabajoActual } from "./../../../api/plantrabajo.api";
+
 import { IoCloseSharp } from "react-icons/io5";
 interface PlanProps {
   initialOpen: boolean;
@@ -17,9 +17,7 @@ interface PlanProps {
   plantrabajo2?: PlanDeTrabajo;
 }
 
-const estudiante2 = {
-  nombre: "hola",
-};
+
 const PlanDeTrabajoVista: FC<PlanProps> = ({
   initialOpen,
   open = false,

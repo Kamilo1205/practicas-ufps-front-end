@@ -9,20 +9,20 @@ import { Comment } from "../../components/PlanDeTrabajo/Actividad/types";
 import Swal from "sweetalert2";
 import { Estudiante } from "../../interfaces/estudiante.interface";
 import { PlanDeTrabajo } from "../../interfaces/plantrabajo.interface";
-import { IntensidadHoraria } from "./../../interfaces/intensidad.interface";
-import { Input, Label, TextArea } from "../../components/ui";
-import useComentario from "../../hooks/useComentario";
+
+import { Label, } from "../../components/ui";
+
 import { Comentario } from "../../interfaces";
 import CollapseObj from "../../components/ui/Button/CollapseObj";
 import CollapseAct from "../../components/ui/Button/CollapseAct";
 import { useAuth } from "./../../contexts/AuthContext";
 import usePlantrabajo from "../../hooks/usePlanTrabajo";
 import { Resultado } from "../../interfaces/resultado.interface";
-import { string } from "zod";
+
 import Checkbox from "./../../components/ui/Input/Checkbox";
 import FileUpload from "./../../components/PlanDeTrabajo/FileUpload";
 import LoadingSpinner from "../../components/ui/Pagination/LoadingSpiner";
-import FileUploadInforme from "../../components/PlanDeTrabajo/FileUploadInforme";
+
 
 interface PlanTrabProps {
   estudiante: Estudiante;
@@ -129,6 +129,7 @@ const PlanDeTrabajoPage: React.FC<PlanTrabProps> = ({
   const [comentarioAct, setComentarioAct] = useState<Comentario[]>([]);
 
   useEffect(() => {
+    console.log('PlanDeTrabajoPage effect disparado')
     if (planTrabajo === undefined) {
       setLoading(true);
     } else if (planTrabajo != null) {

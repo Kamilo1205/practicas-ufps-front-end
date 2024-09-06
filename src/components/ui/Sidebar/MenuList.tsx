@@ -6,7 +6,6 @@ import { roles } from '../../../interfaces/rol.interface';
 export const MenuList = () => {
   //{ to: '/coordinador/documentos', text: 'Documentos', icon: HiOutlineDocumentDuplicate, roles: ['administrador', 'director-programa', 'coordinador'] },
   const { user } = useAuth();
-  console.log('')
   const rolUrl = user?.roles.find(u => u.nombre == roles.director) ?
     roles.director : roles.coordinador
   //TODO: Restringir acceso a los roles

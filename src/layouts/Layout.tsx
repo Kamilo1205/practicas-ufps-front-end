@@ -10,19 +10,22 @@ import { CgProfile } from 'react-icons/cg';
 
 
 import { useConfigNotificaciones } from '../hooks/useConfigNotificaciones';
+import { roles } from '../interfaces/rol.interface';
 
 
-
+const NotificacionesConfigComponent = () => {
+  useConfigNotificaciones()
+  return <></>
+}
 
 export const Layout = () => {
   const { user, logout } = useAuth();
   const [open, setOpen] = useState<boolean>(false);
 
-  useConfigNotificaciones()
 
   return (
     <div className="overflow-x-hidden">
-
+      {user?.roles.find(rol => rol.nombre === roles.coordinador) && <NotificacionesConfigComponent />}
       <Sidebar />
       <SidebarOvers open={open} setOpen={setOpen} />
       <div className="flex justify-between items-center gap-x-6 z-10 sticky top-0 p-4 ring-0 ring-offset-0 sm:px-6 lg:hidden">

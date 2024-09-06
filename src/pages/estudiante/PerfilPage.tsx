@@ -1,23 +1,14 @@
 import { useEffect, useState } from 'react';
-
-import useEstudiantes from '../../hooks/useEstudiantes';
 import { EstudiantePerfilComponent } from '../../components/usuarios/perfil/EstudiantePerfilComponent';
-import { useAuth } from '../../contexts';
-import { set } from 'zod';
 import LoadingSpinner from '../../components/ui/Pagination/LoadingSpiner';
 
-export const PerfilPage = () => {
+export const PerfilPage = ({ estudiante }: any) => {
 
   const [loading, setLoading] = useState(true)
-  const { estudiante, fetchEstudiante } = useEstudiantes();
-  const cargarEstudiante = async () => {
-    console.log('se dispara')
-    await fetchEstudiante();
-    setLoading(false)
-  }
+
   useEffect(() => {
-    if (!estudiante) cargarEstudiante();
-  }, []);
+    if (estudiante) setLoading(false);
+  }, [estudiante]);
 
   return (
     <div>
