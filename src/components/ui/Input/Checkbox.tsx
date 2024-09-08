@@ -30,7 +30,7 @@ const Checkbox: React.FC<CheckboxProps> = ({
     <label className="flex items-center space-x-2">
       <input
         type="checkbox"
-        className="form-checkbox text-green-500 mr-3 rounded"
+        className="form-checkbox text-green-500 mr-3 rounded cursor-pointer"
         style={{ width: "20px", height: "20px" }}
         checked={isChecked}
         onChange={handleChange}

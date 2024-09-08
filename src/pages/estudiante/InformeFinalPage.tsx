@@ -49,7 +49,7 @@ const InformeFinalPage: FC<InfoProps> = ({ rol, plantrabajo }) => {
   const [aprobacionCoordinador, setAprobacionCoordinador] = useState(false);
 
   const handleCheckboxChangeTutor = () => {
-    aprobarInformeTutor(plantrabajo?.informeFinal?.id).then((response) => {
+    aprobarInformeEmpresa(plantrabajo?.informeFinal?.id).then((response) => {
       if (response == "ok") {
         setAprobacionTutor(true);
       } else {
@@ -64,7 +64,7 @@ const InformeFinalPage: FC<InfoProps> = ({ rol, plantrabajo }) => {
   };
 
   const handleCheckboxChangeCoordinador = () => {
-    aprobarInformeEmpresa(plantrabajo?.informeFinal?.id).then((response) => {
+    aprobarInformeTutor(plantrabajo?.informeFinal?.id).then((response) => {
       console.log(response);
       if (response == "ok") {
         setAprobacionCoordinador(true);
@@ -155,11 +155,11 @@ const InformeFinalPage: FC<InfoProps> = ({ rol, plantrabajo }) => {
       setConcl(informeFinal.conclusion);
 
       if (informeFinal?.tutorEmpresarialAprobo != null) {
-        setAprobacionCoordinador(true);
+        setAprobacionTutor(true);
       }
 
       if (informeFinal?.tutorInstitucionalAprobo != null) {
-        setAprobacionTutor(true);
+        setAprobacionCoordinador(true);
       }
       setLoading(false);
     } else setLoading(false);

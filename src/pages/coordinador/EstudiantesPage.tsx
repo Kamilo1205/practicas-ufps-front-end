@@ -149,6 +149,19 @@ export const EstudiantesPage = () => {
     setOpenPlan(true);
     setEstudianteSelect(estudiante);
   }
+
+  const handdleSelecEstudianteInfoParcial = (estudiante: any) => {
+    console.log('abrir informe parcial')
+    setOpenInfoP(true);
+    setEstudianteSelect(estudiante);
+  }
+
+  const handdleSelecEstudianteInfoFinal = (estudiante: any) => {
+    console.log('abrir informe final')
+    setOpenInfoF(true);
+    setEstudianteSelect(estudiante);
+  }
+
   return (
     <>
       <div className="mb-10">
@@ -175,6 +188,32 @@ export const EstudiantesPage = () => {
           initialOpen={true}
           open={openPlan}
           setOpen={setOpenPlan}
+          estudiante={estudiateSelect}
+          plantrabajo2={
+            estudiateSelect?.asignaciones?.find(
+              (a) => a?.solicitud?.semestre?.actual
+            )?.planDeTrabajo
+          }
+          isTutor={true}
+        />
+      )}
+      {openInfoP && (
+        <InformeParcialVista
+          rol="coordinador"
+          initialOpen={true}
+          estudiante={estudiateSelect}
+          plantrabajo2={
+            estudiateSelect?.asignaciones?.find(
+              (a) => a?.solicitud?.semestre?.actual
+            )?.planDeTrabajo
+          }
+          isTutor={true}
+        />
+      )}
+      {openInfoF && (
+        <InformeFinalVista
+          rol="coordinador"
+          initialOpen={true}
           estudiante={estudiateSelect}
           plantrabajo2={
             estudiateSelect?.asignaciones?.find(
@@ -307,26 +346,14 @@ export const EstudiantesPage = () => {
                       <span>Pendiente</span>
                     </div>
                   ) : (
-                    <div onClick={() => setOpenInfoP(!openInfoP)}>
+                    <div onClick={() => handdleSelecEstudianteInfoParcial(estudiante)}>
                       <BiCheck className="text-green-500 w-5 h-5" />
                       <span className="text-blue-400 flex">
                         Ver
                         <span className="self-center">
                           <BiArrowToRight />
                         </span>
-                        {openInfoP && (
-                          <InformeParcialVista
-                            rol="coordinador"
-                            initialOpen={true}
-                            estudiante={estudiante}
-                            plantrabajo2={
-                              estudiante?.asignaciones?.find(
-                                (a) => a.solicitud.semestre.actual
-                              )?.planDeTrabajo
-                            }
-                            isTutor={true}
-                          />
-                        )}
+
                       </span>
                     </div>
                   )}
@@ -340,26 +367,14 @@ export const EstudiantesPage = () => {
                       <span>Pendiente</span>
                     </div>
                   ) : (
-                    <div onClick={() => setOpenInfoF(!openInfoF)}>
+                    <div onClick={() => handdleSelecEstudianteInfoFinal(estudiante)}>
                       <BiCheck className="text-green-500 w-5 h-5" />
                       <span className="text-blue-400 flex">
                         Ver
                         <span className="self-center">
                           <BiArrowToRight />
                         </span>
-                        {openInfoF && (
-                          <InformeFinalVista
-                            rol="coordinador"
-                            initialOpen={true}
-                            estudiante={estudiante}
-                            plantrabajo2={
-                              estudiante?.asignaciones?.find(
-                                (a) => a.solicitud.semestre.actual
-                              )?.planDeTrabajo
-                            }
-                            isTutor={true}
-                          />
-                        )}
+
                       </span>
                     </div>
                   )}

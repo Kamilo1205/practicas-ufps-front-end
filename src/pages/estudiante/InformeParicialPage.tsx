@@ -35,7 +35,7 @@ const InformeParicialPage: FC<InfoProps> = ({ rol, plantrabajo }) => {
     aprobarInformeEmpresa,
     aprobarInformeTutor,
   } = usePlantrabajo();
-
+  console.log('pn', plantrabajo);
   const { user } = useAuth();
   const roles = user?.roles;
   const rolesNecesarios = ["tutor", "coordinador"];
@@ -51,7 +51,7 @@ const InformeParicialPage: FC<InfoProps> = ({ rol, plantrabajo }) => {
   const [aprobacionCoordinador, setAprobacionCoordinador] = useState(false);
 
   const handleCheckboxChangeTutor = () => {
-    aprobarInformeTutor(plantrabajo?.primerInforme?.id).then((response) => {
+    aprobarInformeEmpresa(plantrabajo?.primerInforme?.id).then((response) => {
       if (response === "ok") {
         setAprobacionTutor(true);
       } else {
@@ -65,7 +65,7 @@ const InformeParicialPage: FC<InfoProps> = ({ rol, plantrabajo }) => {
     });
   };
   const handleCheckboxChangeCoordinador = () => {
-    aprobarInformeEmpresa(plantrabajo?.primerInforme?.id).then((response) => {
+    aprobarInformeTutor(plantrabajo?.primerInforme?.id).then((response) => {
       if (response === "ok") {
         setAprobacionCoordinador(true);
       } else {
@@ -154,12 +154,12 @@ const InformeParicialPage: FC<InfoProps> = ({ rol, plantrabajo }) => {
 
       // Verificar la aprobación del tutor empresarial
       if (primerInforme.tutorEmpresarialAprobo != null) {
-        setAprobacionCoordinador(true);
+        setAprobacionTutor(true);
       }
 
       // Verificar la aprobación del tutor institucional
       if (primerInforme.tutorInstitucionalAprobo != null) {
-        setAprobacionTutor(true);
+        setAprobacionCoordinador(true);
       }
       setLoading(false);
     } else setLoading(false);

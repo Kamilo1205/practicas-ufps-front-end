@@ -32,6 +32,17 @@ export const PracticantesPage = () => {
     setEstudianteSelect(estudiante);
   }
 
+  const handledSelectInformeParcial = (estudiante: any) => {
+    console.log('abrir informe parcial')
+    setOpenInfoP(true);
+    setEstudianteSelect(estudiante);
+  }
+  const handledSelectInformeFinal = (estudiante: any) => {
+    console.log('abrir informe final')
+    setOpenInfoF(true);
+    setEstudianteSelect(estudiante);
+  }
+
   useEffect(() => {
     Swal.fire({
       title: "Cargando practicantes",
@@ -65,9 +76,26 @@ export const PracticantesPage = () => {
             open={openPlan}
             setOpen={setOpenPlan}
             estudiante={estudiateSelect.estudiante}
-            plantrabajo2={estudiateSelect?.estudiante?.planesDeTrabajo.find(
-              (a) => a.semestre.actual
-            )}
+            plantrabajo2={estudiateSelect?.planDeTrabajo}
+            isTutor={true}
+          />
+        )}
+        {openInfoP && (
+          <InformeParcialVista
+            rol="coordinador"
+            initialOpen={true}
+            estudiante={estudiateSelect?.estudiante}
+            plantrabajo2={estudiateSelect?.planDeTrabajo}
+            isTutor={true}
+          />
+        )}
+
+        {openInfoF && (
+          <InformeFinalVista
+            rol="coordinador"
+            initialOpen={true}
+            estudiante={estudiateSelect?.estudiante}
+            plantrabajo2={estudiateSelect?.planDeTrabajo}
             isTutor={true}
           />
         )}
@@ -141,63 +169,39 @@ export const PracticantesPage = () => {
                 }
               </div>,
               <div className="flex justify-center cursor-pointer w-full pr-6">
-                {!estudiante?.estudiante?.planesDeTrabajo.find(
-                  (a) => a.semestre.actual
-                )?.primerInforme ? (
+                {!estudiante?.planDeTrabajo?.primerInforme ? (
                   <div className="flex justify-center pr-6">
                     <IoAlertCircle className="text-yellow-500 w-5 h-5" />
                     <span>Pendiente</span>
                   </div>
                 ) : (
-                  <div onClick={() => setOpenInfoP(!openInfoP)}>
+                  <div onClick={() => handledSelectInformeParcial(estudiante)}>
                     <BiCheck className="text-green-500 w-5 h-5" />
                     <span className="text-blue-400 flex">
                       Ver
                       <span className="self-center">
                         <BiArrowToRight />
                       </span>
-                      {openInfoP && (
-                        <InformeParcialVista
-                          rol="coordinador"
-                          initialOpen={true}
-                          estudiante={estudiante?.estudiante}
-                          plantrabajo2={estudiante?.estudiante?.planesDeTrabajo?.find(
-                            (a) => a.semestre.actual
-                          )}
-                          isTutor={true}
-                        />
-                      )}
+
                     </span>
                   </div>
                 )}
               </div>,
               <div className="flex justify-center cursor-pointer w-full pr-6">
-                {!estudiante?.estudiante?.planesDeTrabajo.find(
-                  (a) => a.semestre.actual
-                )?.informeFinal ? (
+                {!estudiante?.planDeTrabajo?.informeFinal ? (
                   <div className="flex justify-center pr-6">
                     <IoAlertCircle className="text-yellow-500 w-5 h-5" />
                     <span>Pendiente</span>
                   </div>
                 ) : (
-                  <div onClick={() => setOpenInfoF(!openInfoF)}>
+                  <div onClick={() => handledSelectInformeFinal(estudiante)}>
                     <BiCheck className="text-green-500 w-5 h-5" />
                     <span className="text-blue-400 flex">
                       Ver
                       <span className="self-center">
                         <BiArrowToRight />
                       </span>
-                      {openInfoF && (
-                        <InformeFinalVista
-                          rol="coordinador"
-                          initialOpen={true}
-                          estudiante={estudiante}
-                          plantrabajo2={estudiante?.estudiante?.planesDeTrabajo?.find(
-                            (a) => a.semestre.actual
-                          )}
-                          isTutor={true}
-                        />
-                      )}
+
                     </span>
                   </div>
                 )}

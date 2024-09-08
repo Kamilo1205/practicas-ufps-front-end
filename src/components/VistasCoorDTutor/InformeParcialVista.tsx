@@ -26,6 +26,7 @@ const InformeParcialVista: FC<ParcialProps> = ({
   const [open, setOpen] = useState<boolean>(initialOpen);
   const [planTrabajo, setPlanTrabajo] = useState<PlanDeTrabajo>();
   const [planTrabajo2, setPlanTrabajo2] = useState<PlanDeTrabajo>();
+  console.log("planTrabajo2", planTrabajo2);
   const { fetchMiPlanTrabajoActualEstudiante, fetchPlanTrabajoById } =
     usePlantrabajo();
   const { user } = useAuth();
