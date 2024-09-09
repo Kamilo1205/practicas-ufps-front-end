@@ -1,7 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { LuSearchCheck } from "react-icons/lu";
 import { Pagination } from "../Pagination/Pagination";
-import LoadingSpinner from "../Pagination/LoadingSpiner";
 
 
 interface TablaPaginadaProps {
@@ -17,19 +16,7 @@ interface TablaPaginadaProps {
   loading?: boolean;
 }
 
-const LoadingSkeletonComponent = () => {
-  return (
-    <div className="w-full">
-      <div className="w-full max-w-md bg-white mx-auto rounded-lg p-4 shadow-lg">
-        <div className="flex gap-2">
-          <div className="w-16 h-16 shrink-0 bg-gray-300 rounded-full animate-pulse"></div>
 
-        </div>
-      </div>
-    </div>
-
-  )
-}
 
 export const TablaPaginadaComponent = ({
 
