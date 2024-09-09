@@ -123,7 +123,7 @@ export const useGrupos = () => {
   }, [grupos, docentes])
 
   const getDocentesDiponibles = () => { 
-    return docentes.filter((docente) => !grupos.find((grupo) => grupo.docente && grupo.docente.nombres === docente.nombres))
+    return docentes.filter((docente) => !docente.fechaEliminacion )
   }
   const obtenerSiguienteNombreGrupo = (): string => {
     if (grupos.length === 0) {

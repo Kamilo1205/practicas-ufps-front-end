@@ -33,7 +33,7 @@ export const CoordinadorRouter = ({ user }: CoordinadorRouterProps) => {
         {rolesUser.includes(roles.administrador) && <Route path='/primerospasos' element={<IntroduccionPage />} />}
         <Route path='configuraciones' element={<ConfiguracionesPage />} />
         <Route path='ARL' element={<ArlPage />} />
-        <Route path='usuarios' element={<UsuariosPage />} />
+
         <Route path='empresas' element={<EmpresaPage />} />
         <Route path='estudiantes' element={<EstudiantesPage />} />
         <Route path='documentos' element={<DocumentosPage />} />
