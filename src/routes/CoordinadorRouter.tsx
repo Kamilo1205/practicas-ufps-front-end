@@ -15,13 +15,22 @@ import { ConfiguracionesPage } from '../pages/coordinador/ConfiguracionPage';
 import { ArlPage } from '../pages/coordinador/ArlPage';
 import { IntroduccionPage } from '../pages/coordinador/IntroduccionPage';
 import { ReportesPage } from '../pages/coordinador/ReportesPage';
+import { Usuario } from '../interfaces';
+import { roles } from '../interfaces/rol.interface';
 //import { roles } from '../interfaces/rol.interface';
 
-export const CoordinadorRouter = () => {
+interface CoordinadorRouterProps {
+  user: Usuario;
+}
+
+export const CoordinadorRouter = ({ user }: CoordinadorRouterProps) => {
+
+  const rolesUser = user.roles.map(rol => rol.nombre);
+
   return (
     <Routes>
       <Route element={<Layout />}>
-        <Route path='/primerospasos' element={<IntroduccionPage />} />
+        {rolesUser.includes(roles.administrador) && <Route path='/primerospasos' element={<IntroduccionPage />} />}
         <Route path='configuraciones' element={<ConfiguracionesPage />} />
         <Route path='ARL' element={<ArlPage />} />
         <Route path='usuarios' element={<UsuariosPage />} />
@@ -34,7 +43,8 @@ export const CoordinadorRouter = () => {
         <Route path='tutores' element={<GestionTutoresPage />} />
         <Route path='configuraciones' element={<ConfiguracionesPage />} />
         <Route path='reportes' element={<ReportesPage />} />
-        <Route path="*" element={<Navigate to="/coordinador/primerospasos" replace />} />
+        <Route path="*" element={<Navigate to={`${rolesUser.includes(roles.administrador) ?
+          '/coordinador/primerospasos' : '/coordinador/estudiantes'}`} replace />} />
       </Route>
     </Routes>
   );

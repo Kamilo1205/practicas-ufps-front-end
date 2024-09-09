@@ -39,7 +39,7 @@ export const AppRouter = () => {
       {
         isAuthenticated && user && user.roles?.some(rol => rol.nombre == roles.coordinador) && (
           <>
-            <Route path='coordinador/*' element={<CoordinadorRouter />} />
+            <Route path='coordinador/*' element={<CoordinadorRouter user={user} />} />
             <Route path='*' element={<Navigate to="/coordinador" />} />
           </>
         )
