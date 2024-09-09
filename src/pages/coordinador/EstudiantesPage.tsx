@@ -69,8 +69,7 @@ export const EstudiantesPage = () => {
     estudiantes: [],
     total: 0,
   });
-  //console.log('a', estudiantes.estudiantes[0]?.asignaciones?.find((a) => a.solicitud.semestre.actual))
-  console.log(estudiantes);
+
   const [totalItems, setTotalItems] = useState<number>(0); // Número total de ítems
   const [currentPage, setCurrentPage] = useState<number>(1);
   const [itemsPerPage] = useState<number>(5); // Suponiendo que el backend maneja 10 ítems por página
@@ -81,13 +80,14 @@ export const EstudiantesPage = () => {
   const [estudianteSeleccionado, setEstudianteSeleccionado] =
     useState<EstudianteI | null>(null);
   const [estudiateSelect, setEstudianteSelect] = useState<any>(null);
-
   const [filtro, setFiltro] = useState<string>("");
   const [estudiantesCargados, setEstudiantesCargados] =
     useState<boolean>(false);
   const [openPlan, setOpenPlan] = useState(false);
   const [openInfoP, setOpenInfoP] = useState(false);
   const [openInfoF, setOpenInfoF] = useState(false);
+
+  const [loading, setLoading] = useState<boolean>(false);
   //const navigate = useNavigate();
   //const location = useLocation();
 
@@ -122,6 +122,7 @@ export const EstudiantesPage = () => {
   }, [filtro]);
 
   useEffect(() => {
+    setLoading(true);
     const fetchData = async () => {
       //TODO: Ajustar cuando se hagan los cambios en el backend.
       //TODO: Implementar peti para que solo traiga inactivos.
@@ -138,6 +139,7 @@ export const EstudiantesPage = () => {
         estudiantes: data.data || [],
         total: 100,
       });
+      setLoading(false);
       //console.log(data);
     };
     fetchData();
@@ -276,6 +278,7 @@ export const EstudiantesPage = () => {
         <div>
           <>
             <TablaPaginadaComponent
+              loading={loading}
               filtrar
               setCurrentPage={setCurrentPage}
               filtro={filtro}
