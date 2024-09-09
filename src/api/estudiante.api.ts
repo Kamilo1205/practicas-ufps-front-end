@@ -26,7 +26,7 @@ export const fetchEstudiantes = async (page: number = 1, limit: number = 10, gru
 
   }
   const response = await axios.get(`/estudiantes?page=${page}&limit=${limit}${filtros.grupoFiltro}${filtros.estaInactivoFiltro}&search=${search}`);
-  //TODO: Tengo sospechas de que el search no está funcionando correctamente.
+  
  console.log(response.data);
   return response.data;
 };

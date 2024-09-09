@@ -3,7 +3,6 @@ import Swal from 'sweetalert2'
 import dayjs from 'dayjs'
 import { Disclosure, DisclosureButton, DisclosurePanel } from "@headlessui/react";
 import { IoChevronDown } from "react-icons/io5";
-import { BiCheck } from "react-icons/bi";
 import { useSemestre } from "../../hooks/useSemestre";
 import { Semestre } from "../../schemas/semestreSchema";
 dayjs().format()
@@ -16,11 +15,6 @@ interface TimelineItem {
 
 }
 
-interface ApiResponse {
-  ok: boolean;
-  message: string;
-
-}
 /*
 const prueba = ({ nombre = 'JJ' }: any) => {
   return <h1>{`Hola ${nombre}!`}</h1>
@@ -45,20 +39,20 @@ const getCalendario = (semestre: Semestre) => {
       content: 'Plazo máximo para que los estudiantes diligencien el formulario de inscripción de de sus datos para las practicas profesionales',
     },
     {
-      fechaInicial: semestre.fechaInicioPlanDeTrabajo || '',
-      fechaFinal: semestre.fechaFinPlanDeTrabajo || '',
+      fechaInicial: dayjs(semestre.fechaInicioPlanDeTrabajo).format('YYYY-MM-DD') || '',
+      fechaFinal: dayjs(semestre.fechaFinPlanDeTrabajo).format('YYYY-MM-DD') || '',
       title: 'Entrega del plan de trabajo',
       content: 'Fecha límite para que los estudiantes entreguen la carta de presentación a la empresa',
     },
     {
-      fechaInicial: semestre.fechaInicioPrimerInforme || '',
-      fechaFinal: semestre.fechaFinPrimerInforme || '',
+      fechaInicial: dayjs(semestre.fechaInicioPrimerInforme).format('YYYY-MM-DD') || '',
+      fechaFinal: dayjs(semestre.fechaFinPrimerInforme).format('YYYY-MM-DD') || '',
       title: 'Entrega del primer informe',
       content: 'Se finalizan las clases del semestre 2022-2',
     },
     {
-      fechaInicial: semestre.fechaInicioInformeFinal || '',
-      fechaFinal: semestre.fechaFinInformeFinal || '',
+      fechaInicial: dayjs(semestre.fechaInicioInformeFinal).format('YYYY-MM-DD') || '',
+      fechaFinal: dayjs(semestre.fechaFinInformeFinal).format('YYYY-MM-DD') || '',
       title: 'Entregas del informe final',
       content: 'Se finalizan las clases del semestre 2022-2',
     },
