@@ -125,7 +125,7 @@ export const ReportesPage = () => {
                 <summary className="flex justify-between items-center font-medium cursor-pointer list-none">
                   <div className="flex flex-row flex-wrap ">
                     <span className="font-semibold">Reporte de estudiantes y empresas asignadas (seleccione un semestre ) </span>
-                    <p className="font-light whitespace-normal">Corresponde a lás asignaciones de los estudiantes del semestre actual.</p>
+                    <p className="font-light whitespace-normal">Corresponde a lás asignaciones de los estudiantes del semestre que usted seleccione.</p>
                   </div>,
 
                   <span className="transition group-open:rotate-180">

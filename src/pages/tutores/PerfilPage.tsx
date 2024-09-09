@@ -14,7 +14,7 @@ interface Tutor {
 export const PerfilPage = () => {
 
   const { user } = useAuth()
-  console.log(user)
+
 
   const [tutor, setTutor] = useState<Tutor | null>(user);
   return (<>
