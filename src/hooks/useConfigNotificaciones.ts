@@ -28,6 +28,7 @@ const Toast = Swal.mixin({
 const faltanFechas = (semestre: Semestre) =>{
   const {fechaInicio, fechaFin, fechaInicioPlanDeTrabajo, fechaFinPlanDeTrabajo, fechaInicioPrimerInforme, fechaFinPrimerInforme, fechaInicioInformeFinal, fechaFinInformeFinal} = semestre
   const fechas = [fechaInicio, fechaFin, fechaInicioPlanDeTrabajo, fechaFinPlanDeTrabajo, fechaInicioPrimerInforme, fechaFinPrimerInforme, fechaInicioInformeFinal, fechaFinInformeFinal]
+  console.log(fechas)
   const fechasFaltantes = fechas.filter(fecha => fecha === null)
   return fechasFaltantes.length > 0
 }

@@ -27,32 +27,33 @@ const getCalendario = (semestre: Semestre) => {
 
   return [
     {
-      fechaInicial: semestre.fechaInicio || '',
-      fechaFinal: semestre.fechaFin || '',
+      fechaInicial: semestre.fechaInicio ? dayjs(semestre.fechaInicio).format('YYYY-MM-DD') : '',
+      fechaFinal: semestre.fechaFin ? dayjs(semestre.fechaFin).format('YYYY-MM-DD') : '',
       title: 'Inicio y cierre del semestre',
       content: 'Esta fecha marca el inicio de las clases del semestre 2022-2, ',
     },
     {
-      fechaInicial: '',
-      fechaFinal: '',
+      fechaInicial: semestre?.fechaInicioInscripcion ? dayjs(semestre?.fechaInicioInscripcion).format('YYYY-MM-DD') : '',
+      fechaFinal: semestre?.fechaFinInscripcion ? dayjs(semestre?.fechaFinInscripcion).format('YYYY-MM-DD') : '',
+      fechaPrimerEncuentro: semestre?.fechaPrimerEncuentro ? dayjs(semestre?.fechaPrimerEncuentro).format('YYYY-MM-DD') : '',
       title: 'Inscripción de datos por parte del estudiante',
       content: 'Plazo máximo para que los estudiantes diligencien el formulario de inscripción de de sus datos para las practicas profesionales',
     },
     {
-      fechaInicial: dayjs(semestre.fechaInicioPlanDeTrabajo).format('YYYY-MM-DD') || '',
-      fechaFinal: dayjs(semestre.fechaFinPlanDeTrabajo).format('YYYY-MM-DD') || '',
+      fechaInicial: semestre.fechaInicioPlanDeTrabajo ? dayjs(semestre.fechaInicioPlanDeTrabajo).format('YYYY-MM-DD') : '',
+      fechaFinal: semestre.fechaFinPlanDeTrabajo ? dayjs(semestre.fechaFinPlanDeTrabajo).format('YYYY-MM-DD') : '',
       title: 'Entrega del plan de trabajo',
       content: 'Fecha límite para que los estudiantes entreguen la carta de presentación a la empresa',
     },
     {
-      fechaInicial: dayjs(semestre.fechaInicioPrimerInforme).format('YYYY-MM-DD') || '',
-      fechaFinal: dayjs(semestre.fechaFinPrimerInforme).format('YYYY-MM-DD') || '',
+      fechaInicial: semestre.fechaInicioPrimerInforme ? dayjs(semestre.fechaInicioPrimerInforme).format('YYYY-MM-DD') : '',
+      fechaFinal: semestre.fechaFinPrimerInforme ? dayjs(semestre.fechaFinPrimerInforme).format('YYYY-MM-DD') : '',
       title: 'Entrega del primer informe',
       content: 'Se finalizan las clases del semestre 2022-2',
     },
     {
-      fechaInicial: dayjs(semestre.fechaInicioInformeFinal).format('YYYY-MM-DD') || '',
-      fechaFinal: dayjs(semestre.fechaFinInformeFinal).format('YYYY-MM-DD') || '',
+      fechaInicial: semestre.fechaInicioInformeFinal ? dayjs(semestre.fechaInicioInformeFinal).format('YYYY-MM-DD') : '',
+      fechaFinal: semestre.fechaFinInformeFinal ? dayjs(semestre.fechaFinInformeFinal).format('YYYY-MM-DD') : '',
       title: 'Entregas del informe final',
       content: 'Se finalizan las clases del semestre 2022-2',
     },
@@ -115,7 +116,7 @@ export const CalendarioPage = () => {
         fechaFinal: false,
         valorEditadoFechaInicial: item?.fechaInicial || '',
         valorEditadoFechaFinal: item?.fechaFinal || '',
-        valorEditadoPrimerEncuentro: ''
+        valorEditadoPrimerEncuentro: item?.fechaPrimerEncuentro || ''
 
       }
     }))
@@ -136,6 +137,9 @@ export const CalendarioPage = () => {
         ...semestre,
         fechaInicio: edicion[0].valorEditadoFechaInicial !== '' ? edicion[0].valorEditadoFechaInicial : semestre?.fechaInicio,
         fechaFin: edicion[0].valorEditadoFechaFinal !== '' ? edicion[0].valorEditadoFechaFinal : semestre?.fechaFin,
+        fechaInicioInscripcion: edicion[1].valorEditadoFechaInicial !== '' ? edicion[1].valorEditadoFechaInicial : semestre?.fechaInicioInscripcion,
+        fechaFinInscripcion: edicion[1].valorEditadoFechaFinal !== '' ? edicion[1].valorEditadoFechaFinal : semestre?.fechaFinInscripcion,
+        fechaPrimerEncuentro: edicion[1].valorEditadoPrimerEncuentro !== '' ? edicion[1].valorEditadoPrimerEncuentro : semestre?.fechaPrimerEncuentro,
         fechaInicioPlanDeTrabajo: edicion[2].valorEditadoFechaInicial !== '' ? edicion[2].valorEditadoFechaInicial : semestre?.fechaInicioPlanDeTrabajo,
         fechaFinPlanDeTrabajo: edicion[2].valorEditadoFechaFinal !== '' ? edicion[2].valorEditadoFechaFinal : semestre?.fechaFinPlanDeTrabajo,
         fechaInicioPrimerInforme: edicion[3].valorEditadoFechaInicial !== '' ? edicion[3].valorEditadoFechaInicial : semestre?.fechaInicioPrimerInforme,
