@@ -6,61 +6,12 @@ import { asignarDocenteApi, deleteGrupoPracticaApi, getGruposPracticasApi, postG
 const fetchGruposAPI = async () => { 
   const response = await getGruposPracticasApi()
   return response
-  /*return Promise.resolve([
-    {
-      id: '1',
-      nombre: 'Grupo A',
-      docente: {
-        id: '1',
-        nombres: 'Docente A',
-        correo: 'docenteA@correo.com'
-
-      },
-    },
-    {
-      id: '2',
-      nombre: 'Grupo B',
-      docente: {
-        id: '2',
-        nombres: 'Docente B',
-        correo: 'docenteB@correo.com'
-
-      
-      },
-    
-    },
-    {
-      id: '3',
-      nombre: 'Grupo C',
-      docente: null,
-    }
-  ]);*/
+  
 }
 
 const fetchDocentes = async () => {
   return getDocentesApi()
-  /*return Promise.resolve([
-    {
-      id: '1',
-      nombres: 'Docente A',
-      email: 'docenteA@email.com'
-    },
-    {
-      id: '2',
-      nombres: 'Docente B',
-      email: 'docenteB@email.com'
-    },
-    {
-      id: '3',
-      nombres: 'Docente C',
-      email: 'docenteC@email.com'
-    },
-    {
-      id: '4',
-      nombres: 'Docente D',
-      email: 'docenteD@email.com'
-    }
-  ]);*/
+
  }
 
 
@@ -95,13 +46,14 @@ export const useGrupos = () => {
    
       fetchGruposAPI()
         .then((resp) => {
-          const grup = resp.map((grupo: any) => { 
+          let grup = resp.filter((grupo: any) => !grupo.fechaEliminacion)
+          grup = grup.map((grupo: any) => { 
             return {
               ...grupo,
               docente: grupo.tutor
-            }
+            }  
           })
-          //console.log('grupo', grup, resp)
+          console.log('grupo', grup)
           setGrupos(grup);
         })
         .catch((err) => setError(err));
@@ -126,26 +78,35 @@ export const useGrupos = () => {
     return docentes.filter((docente) => !docente.fechaEliminacion )
   }
   const obtenerSiguienteNombreGrupo = (): string => {
-    if (grupos.length === 0) {
-      return 'Grupo A';
-    }
+    const totalGrupos = grupos.length;
 
-    const ultimoGrupo = grupos[grupos.length - 1];
-    const ultimaLetra = ultimoGrupo.nombre.charAt(ultimoGrupo.nombre.length - 1);
-    const nuevaLetra = String.fromCharCode(ultimaLetra.charCodeAt(0) + 1);
+    // Calcular la siguiente letra en base al número de grupos existentes
+    const nuevaLetra = String.fromCharCode(65 + totalGrupos); // 65 es el código ASCII de 'A'
 
     return `Grupo ${nuevaLetra}`;
   };
 
   const crearNuevoGrupo = () => {
-    /*const fetching = Promise.resolve({
-      id: String(grupos.length + 1),
-      nombre: obtenerSiguienteNombreGrupo(),
- 
-    });*/
-    const fetching = postGruposPracticasApi({ nombre: obtenerSiguienteNombreGrupo()})
+  
+    const nombreNuevoGrupo = obtenerSiguienteNombreGrupo()
+    console.log('nombre nuevo grupo', nombreNuevoGrupo)
+    if (grupos.find((grupo) => grupo.nombre === nombreNuevoGrupo)) {
+      setError('Ya existe un grupo con ese nombre');
+      Swal.fire({
+        title: 'Error',
+        text: `Ya existe un grupo con ese nombre. ${nombreNuevoGrupo}`,
+        icon: 'error'
+      })
+      return;
+     }
+    const fetching = postGruposPracticasApi({ nombre: nombreNuevoGrupo})
     fetching.then((resp) => {
       setGrupos([...grupos, resp]);
+      Swal.fire(
+        'Creado!',
+        'El grupo ha sido creado.',
+        'success'
+      )
     }).catch((err) => setError(err));
   };
 

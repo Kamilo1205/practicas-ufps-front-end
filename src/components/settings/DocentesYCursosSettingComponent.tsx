@@ -62,11 +62,7 @@ export const DocentesYCursosSettingComponent = () => {
     }).then((result) => {
       if (result.isConfirmed) {
         crearNuevoGrupo()
-        Swal.fire(
-          'Creado!',
-          'El grupo ha sido creado.',
-          'success'
-        )
+
       }
     })
   }
@@ -168,7 +164,7 @@ export const DocentesYCursosSettingComponent = () => {
       <tbody className="border-t border-gray-300">
         {
           grupos.map((grupo, index) => (
-            !grupo.fechaEliminacion && <tr key={grupo.id} className="border-t border-r border-gray-300">
+            !grupo?.fechaEliminacion && <tr key={grupo.id} className="border-t border-r border-gray-300">
               <td className="border-r border-gray-300 p-3">
                 {
 
@@ -267,7 +263,7 @@ export const DocentesYCursosSettingComponent = () => {
               <div className="shrink-0 sm:flex sm:flex-col sm:items-end">
 
                 {
-                  !docente.fechaEliminacion ? <Button
+                  !docente?.fechaEliminacion ? <Button
                     className="bg-red-500 hover:bg-red-400 w-fit px-4 self-center"
                     variant="outline"
                     onClick={() => {
