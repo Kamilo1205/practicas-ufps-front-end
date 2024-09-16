@@ -45,6 +45,11 @@ export const updateEstudiante = async (id: string, estudianteActualizado: Partia
   return response.data;
 };
 
+export const patchEstudiante = async (estudianteActualizado: Partial<Omit<Estudiante, 'id'>>): Promise<Estudiante> => { 
+  const response = await axios.patch(`/estudiantes`, estudianteActualizado);
+  return response.data;
+}
+
 // Eliminar un estudiante por ID
 export const deleteEstudiante = async (id: string): Promise<void> => {
   await axios.delete(`/estudiantes/${id}`);

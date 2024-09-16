@@ -4,6 +4,8 @@ import { TabComponent } from "../../ui/Tab/TabComponent";
 import { EstudianteI } from "../../../interfaces/responses.interface";
 import { roles } from "../../../interfaces/rol.interface";
 import { fetchGetDocumentoPorId } from "../../../api/documento.api";
+import { patchEstudiante } from "../../../api/estudiante.api";
+import Swal from "sweetalert2";
 
 
 interface EstudiantePerfilProps {
@@ -55,7 +57,8 @@ export const EstudiantePerfilComponent = ({ estudiante, rol = '' }: EstudiantePe
   const puedeActivarDesactivar = permisos.activacion.includes(rol)
   //const puedeEditar = permisos.edicion.includes(rol)
   const soloVista = permisos.soloVista.includes(rol)
-  console.log('estudiante', estudiante)
+  //console.log('estudiante', estudiante)
+  console.log('rol', rol)
   const [tab, setTab] = useState(0)
   const [loadingDocs, setLoadingDocs] = useState(false)
   const [documentosUrls, setDocumentosUrls] = useState({
@@ -64,8 +67,77 @@ export const EstudiantePerfilComponent = ({ estudiante, rol = '' }: EstudiantePe
     hojaDeVidaUrl: ''
   })
 
+  const [editar, setEditar] = useState({
+
+    telefono: {
+      editar: false,
+      valor: estudiante?.telefono || ''
+    },
+    direccion: {
+      editar: false,
+      valor: estudiante?.direccionResidencia || ''
+    },
+    ciudadResidencia: {
+      editar: false,
+      valor: estudiante?.ciudadResidencia?.nombre || ''
+    },
+    eps: {
+      editar: false,
+      valor: estudiante?.eps?.nombre || ''
+    }
+  })
+
   const asignacion = estudiante?.asignaciones.find(asignacion => asignacion.solicitud?.semestre?.actual)
-  console.log('asignacion', asignacion)
+  console.log('asignacion', editar)
+
+  const actualizarInfoEstudiante = () => {
+    //TODO Actualizar la información del estudiante
+    const datosActualizados = {
+      telefono: editar.telefono.valor,
+      direccionResidencia: editar.direccion.valor,
+
+    }
+
+
+    // Llamada para actualizar la información del estudiante
+    patchEstudiante(datosActualizados)
+      .then(() => {
+        Swal.fire({
+          icon: 'success',
+          title: 'Información actualizada',
+          showConfirmButton: false,
+          timer: 1500
+        })
+      })
+      .catch((error) => {
+        console.error("Error actualizando estudiante:", error);
+        Swal.fire({
+          icon: 'error',
+          title: 'Error al actualizar la información',
+          showConfirmButton: false,
+          timer: 1500
+        })
+      });
+
+    setEditar({
+      telefono: {
+        editar: false,
+        valor: editar.telefono.valor
+      },
+      direccion: {
+        editar: false,
+        valor: editar.direccion.valor
+      },
+      ciudadResidencia: {
+        editar: false,
+        valor: editar.ciudadResidencia.valor
+      },
+      eps: {
+        editar: false,
+        valor: editar.eps.valor
+      }
+    });
+  }
 
   useEffect(() => {
     if (estudiante &&
@@ -151,6 +223,11 @@ export const EstudiantePerfilComponent = ({ estudiante, rol = '' }: EstudiantePe
                 <dd className="mt-1 text-sm leading-6 text-gray-700 sm:col-span-2 sm:mt-0">{estudiante ? estudiante?.codigo : 'Dato no registrado' || ''}</dd>
               </div>
               <div className="px-4 py-3 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
+                <dt className="text-sm font-medium leading-6 text-gray-900">Documento</dt>
+                <dd className="mt-1 text-sm leading-6 text-gray-700 sm:col-span-2 sm:mt-0">
+                  {estudiante ? estudiante?.numeroDocumento : 'Dato no registrado' || ''}</dd>
+              </div>
+              <div className="px-4 py-3 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
                 <dt className="text-sm font-medium leading-6 text-gray-900">Correo</dt>
                 <dd className="mt-1 text-sm leading-6 text-gray-700 sm:col-span-2 sm:mt-0">{estudiante ? estudiante?.usuario?.email : 'Dato no registrado' || ''}</dd>
               </div>
@@ -161,14 +238,94 @@ export const EstudiantePerfilComponent = ({ estudiante, rol = '' }: EstudiantePe
               </div>
               <div className="px-4 py-3 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
                 <dt className="text-sm font-medium leading-6 text-gray-900">Telefono</dt>
-                <dd className="mt-1 text-sm leading-6 text-gray-700 sm:col-span-2 sm:mt-0 capitalize">{estudiante ? estudiante?.telefono : 'Dato no registrado' || ''}</dd>
+                <dd className="mt-1 text-sm leading-6 text-gray-700 sm:col-span-2 sm:mt-0 capitalize">
+                  {
+                    editar.telefono.editar ? (
+                      <div className="flex gap-2">
+                        <input
+                          type="text"
+                          className="border border-gray-200 p-1 rounded-md"
+                          defaultValue={estudiante?.telefono || ''}
+                          onChange={(e) => setEditar({ ...editar, telefono: { editar: true, valor: e.target.value } })}
+                        />
+                        <button
+                          onClick={() => actualizarInfoEstudiante()}
+                          className="bg-green-600 text-white px-2 py-1 rounded-md">Guardar</button>
+                        <button onClick={() => setEditar({ ...editar, telefono: { editar: false, valor: estudiante?.telefono || '' } })} className="bg-red-600 text-white px-2 py-1 rounded-md">
+                          Cancelar</button>
+                      </div>
+                    ) : estudiante?.telefono || 'Dato no registrado' || ''
+                  }
+                  {
+                    rol === roles.estudiante && !editar.telefono.editar && (
+                      <div className="inline">
+                        <button
+                          onClick={() => setEditar({ ...editar, telefono: { editar: true, valor: estudiante?.telefono || '' } })}
+                          className="ml-4 self-center text-blue-600 cursor-pointer">
+                          Editar
+                        </button>
+                      </div>
+                    )
+                  }
+                </dd>
               </div>
               <div className="px-4 py-3 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
                 <dt className="text-sm font-medium leading-6 text-gray-900">Dirección</dt>
-                <dd className="mt-1 text-sm leading-6 text-gray-700 sm:col-span-2 sm:mt-0 capitalize">{`${estudiante ? estudiante?.direccionResidencia : 'Dato no registrado' || ''}, ${estudiante?.ciudadResidencia?.nombre || ''}`}</dd>
+                <dd className="mt-1 text-sm leading-6 text-gray-700 sm:col-span-2 sm:mt-0 capitalize">
+
+
+                  {
+                    editar.direccion.editar ? (
+                      <div className="flex gap-2">
+                        <input
+                          type="text"
+                          className="border border-gray-200 p-1 rounded-md"
+                          defaultValue={estudiante?.direccionResidencia || ''}
+                          onChange={(e) => setEditar({ ...editar, direccion: { editar: true, valor: e.target.value } })}
+                        />
+                        <button
+                          onClick={() => actualizarInfoEstudiante()}
+                          className="bg-green-600 text-white px-2 py-1 rounded-md">Guardar</button>
+                        <button onClick={() => setEditar({ ...editar, direccion: { editar: false, valor: estudiante?.ciudadResidencia?.nombre } })} className="bg-red-600 text-white px-2 py-1 rounded-md">
+                          Cancelar</button>
+                      </div>
+                    ) : estudiante?.direccionResidencia || 'Dato no registrado' || ''
+                  }
+                  {
+                    rol === roles.estudiante && !editar.direccion.editar && (
+                      <div className="inline">
+                        <button
+                          onClick={() => setEditar({
+                            ...editar, direccion: {
+                              editar: true,
+                              valor: estudiante?.direccionResidencia || ''
+
+                            }
+                          })}
+                          className="ml-4 self-center text-blue-600 cursor-pointer">
+                          Editar
+                        </button>
+                      </div>
+                    )
+                  }
+
+                </dd>
+              </div>
+              <div className="px-4 py-3 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
+                <dt className="text-sm font-medium leading-6 text-gray-900">Ciudad de residencia</dt>
+                <dd className="mt-1 text-sm leading-6 text-gray-700 sm:col-span-2 sm:mt-0 capitalize">
+                  {`${estudiante ? `${estudiante?.ciudadResidencia?.nombre}
+                  `
+                    : 'Dato no registrado' || ''} `}</dd>
               </div>
 
-
+              <div className="px-4 py-3 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
+                <dt className="text-sm font-medium leading-6 text-gray-900">EPS</dt>
+                <dd className="mt-1 text-sm leading-6 text-gray-700 sm:col-span-2 sm:mt-0 capitalize">
+                  {`${estudiante ? `${estudiante?.eps?.nombre},
+                   ${estudiante?.ciudadResidencia?.departamento?.nombre}`
+                    : 'Dato no registrado' || ''} `}</dd>
+              </div>
             </dl>
           )
         }

@@ -13,6 +13,7 @@ import { useEffect, useState } from "react";
 import useEstudiantes from "../hooks/useEstudiantes";
 import { SolicitudCambio } from "../pages/estudiante/SolicitudCambioPlanTrabajo";
 import { Usuario } from "../interfaces";
+import { roles } from "../interfaces/rol.interface";
 
 interface EstudianteRouterProps {
   user: Usuario
@@ -37,6 +38,7 @@ export const EstudianteRouter = ({ user }: EstudianteRouterProps) => {
           <Route path="/" element={<Layout />}>
             <Route index path="" element={
               <PerfilPage
+                rol={roles.estudiante}
                 estudiante={estudiante}
               />} />
             <Route path="usuarios" element={<UsuariosPage />} />
