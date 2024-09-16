@@ -35,8 +35,11 @@ const PlanDeTrabajoVista: FC<PlanProps> = ({
   const { user } = useAuth();
   const roles = user?.roles;
   const esEstudiante = roles?.some((role) => role.nombre === "estudiante");
+  const [loading, setLoading] = useState(false);
+
   useEffect(() => {
-    if (estudiante?.id) {
+    if (estudiante?.id && !loading) {
+
       if (esEstudiante) {
         fetchMiPlanTrabajoActualEstudiante()
           .then((result) => {
@@ -44,7 +47,8 @@ const PlanDeTrabajoVista: FC<PlanProps> = ({
           })
           .catch((error) => {
             console.error("Error fetching plan de trabajo:", error);
-          });
+          })
+          .finally(() => setLoading(false));
       } else {
         fetchPlanTrabajoById(plantrabajo2?.id)
           .then((result) => {
@@ -52,7 +56,8 @@ const PlanDeTrabajoVista: FC<PlanProps> = ({
           })
           .catch((error) => {
             console.error("Error fetching plan de trabajo:", error);
-          });
+          })
+          .finally(() => setLoading(false));
       }
     }
   }, [estudiante?.id]);

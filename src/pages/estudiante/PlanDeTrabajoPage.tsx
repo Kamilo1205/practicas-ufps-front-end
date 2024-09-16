@@ -133,7 +133,7 @@ const PlanDeTrabajoPage: React.FC<PlanTrabProps> = ({
     if (planTrabajo === undefined) {
       setLoading(true);
     } else if (planTrabajo != null) {
-      setLoading(true);
+
       // Verificar y establecer comentarios de la sección de actividades
       const comentariosActividades =
         planTrabajo.seccionActividades?.comentarios;

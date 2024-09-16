@@ -45,7 +45,7 @@ export const AsignacionPracticasComponent = ({ solicitud, setMostrarPerfil, asig
     }).then((result) => {
       if (result.isConfirmed && perfilSeleccionado) {
         Swal.fire({
-          title: 'Cargando los aspirantes a la solicitud...',
+          title: 'Realizando asignación...',
           text: 'Por favor, espere.',
           allowOutsideClick: false,
           didOpen: () => {
